@@ -1,0 +1,118 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulatedCardReader", "SimulatedCardReader\SimulatedCardReader.csproj", "{F653AE61-23B3-473B-950D-60B7E1FC0E0A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulatedServerHost", "SimulatedServerHost\SimulatedServerHost.csproj", "{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Framework\Core\Core.csproj", "{510E1A4A-266D-4441-B9C3-EDFE9E132C0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "..\Framework\Server\Server.csproj", "{5732710B-AD4F-4BAF-A9EA-E37761DE7410}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardReaderServiceProvider", "..\Framework\ServiceClasses\CardReaderServiceProvider\CardReaderServiceProvider.csproj", "{97EC8312-0E5B-4DB1-89AF-A1B51CD9B8DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterServiceProvider", "..\Framework\ServiceClasses\PrinterServiceProvider\PrinterServiceProvider.csproj", "{1EFA4A1A-6F0F-4F2E-B296-21A4C85F62C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextTerminalServiceProvider", "..\Framework\ServiceClasses\TextTerminalServiceProvider\TextTerminalServiceProvider.csproj", "{A1D98FDE-A46B-4604-A967-67CC7964E439}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HOTS_V2BF", "HOTS_V2BF\HOTS_V2BF.csproj", "{0317485B-F227-4707-85B3-5B794D9A1786}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HOTS_V2BF_ServerHost", "HOTS_V2BF_ServerHost\HOTS_V2BF_ServerHost.csproj", "{A30B4A81-E5C4-4911-8EA1-0C98CBF61E46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F653AE61-23B3-473B-950D-60B7E1FC0E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F653AE61-23B3-473B-950D-60B7E1FC0E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F653AE61-23B3-473B-950D-60B7E1FC0E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F653AE61-23B3-473B-950D-60B7E1FC0E0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{510E1A4A-266D-4441-B9C3-EDFE9E132C0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{510E1A4A-266D-4441-B9C3-EDFE9E132C0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{510E1A4A-266D-4441-B9C3-EDFE9E132C0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{510E1A4A-266D-4441-B9C3-EDFE9E132C0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5732710B-AD4F-4BAF-A9EA-E37761DE7410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5732710B-AD4F-4BAF-A9EA-E37761DE7410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5732710B-AD4F-4BAF-A9EA-E37761DE7410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5732710B-AD4F-4BAF-A9EA-E37761DE7410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97EC8312-0E5B-4DB1-89AF-A1B51CD9B8DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97EC8312-0E5B-4DB1-89AF-A1B51CD9B8DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97EC8312-0E5B-4DB1-89AF-A1B51CD9B8DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97EC8312-0E5B-4DB1-89AF-A1B51CD9B8DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EFA4A1A-6F0F-4F2E-B296-21A4C85F62C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EFA4A1A-6F0F-4F2E-B296-21A4C85F62C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EFA4A1A-6F0F-4F2E-B296-21A4C85F62C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EFA4A1A-6F0F-4F2E-B296-21A4C85F62C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0317485B-F227-4707-85B3-5B794D9A1786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0317485B-F227-4707-85B3-5B794D9A1786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0317485B-F227-4707-85B3-5B794D9A1786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0317485B-F227-4707-85B3-5B794D9A1786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A30B4A81-E5C4-4911-8EA1-0C98CBF61E46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A30B4A81-E5C4-4911-8EA1-0C98CBF61E46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A30B4A81-E5C4-4911-8EA1-0C98CBF61E46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A30B4A81-E5C4-4911-8EA1-0C98CBF61E46}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23393606-79E1-406A-96B2-F18F0E861BBA}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 8
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccProjectUniqueName0 = SimulatedCardReader\\SimulatedCardReader.csproj
+		SccProjectName0 = SimulatedCardReader
+		SccAuxPath0 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath0 = SimulatedCardReader
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName1 = SimulatedServerHost\\SimulatedServerHost.csproj
+		SccProjectName1 = SimulatedServerHost
+		SccAuxPath1 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath1 = SimulatedServerHost
+		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName2 = ..\\Framework\\Core\\Core.csproj
+		SccProjectName2 = ../Framework/Core
+		SccAuxPath2 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath2 = ..\\Framework\\Core
+		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName3 = ..\\Framework\\Server\\Server.csproj
+		SccProjectName3 = ../Framework/Server
+		SccAuxPath3 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath3 = ..\\Framework\\Server
+		SccProvider3 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName4 = ..\\Framework\\ServiceClasses\\CardReaderServiceProvider\\CardReaderServiceProvider.csproj
+		SccProjectName4 = ../Framework/ServiceClasses/CardReaderServiceProvider
+		SccAuxPath4 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath4 = ..\\Framework\\ServiceClasses\\CardReaderServiceProvider
+		SccProvider4 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName5 = ..\\Framework\\ServiceClasses\\PrinterServiceProvider\\PrinterServiceProvider.csproj
+		SccProjectName5 = ../Framework/ServiceClasses/PrinterServiceProvider
+		SccAuxPath5 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath5 = ..\\Framework\\ServiceClasses\\PrinterServiceProvider
+		SccProvider5 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName6 = ..\\Framework\\ServiceClasses\\TextTerminalServiceProvider\\TextTerminalServiceProvider.csproj
+		SccProjectName6 = ../Framework/ServiceClasses/TextTerminalServiceProvider
+		SccAuxPath6 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath6 = ..\\Framework\\ServiceClasses\\TextTerminalServiceProvider
+		SccProvider6 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName7 = HOTS_V2BF\\HOTS_V2BF.csproj
+		SccProjectName7 = HOTS_V2BF
+		SccAuxPath7 = http://teamsystem:8080/tfs/kal-tfs-collection
+		SccLocalPath7 = HOTS_V2BF
+		SccProvider7 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+	EndGlobalSection
+EndGlobal

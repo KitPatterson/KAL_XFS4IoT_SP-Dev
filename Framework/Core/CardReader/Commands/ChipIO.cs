@@ -1,0 +1,54 @@
+/***********************************************************************************************\
+ * (C) KAL ATM Software GmbH, 2021
+ * 
+ * This file was created automatically as part of the XFS4IoT CardReader interface.
+ * ChipIO.cs uses automatically generated parts. 
+ * ChipIO.cs was created at 03/03/2021 05:09:26 PM
+\***********************************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using XFS4IoT.Commands;
+
+namespace XFS4IoT.CardReader.Commands
+{
+
+
+	//Original name = ChipIO
+	[DataContract]
+	[Command(Name = "CardReader.ChipIO")]
+	public sealed class ChipIO : Command<ChipIOPayload>
+	{
+
+		public ChipIO(string RequestId, ChipIOPayload Payload)
+			: base(RequestId, Payload)
+		{ }
+
+	}
+
+	[DataContract]
+	public sealed class ChipIOPayload : MessagePayload
+	{
+
+
+		public ChipIOPayload(int Timeout, string ChipProtocol = null, string ChipData = null)
+			: base(Timeout)
+		{
+			this.ChipProtocol = ChipProtocol;
+			this.ChipData = ChipData;
+		}
+
+		/// <summary>
+		///Identifies the protocol that is used to communicate with the chip. Possible values are those described in CardReader.Capabilities. This field is ignored in communications with Memory Cards. The Service Provider knows which memory card type is currently inserted and therefore there is no need for the application to manage this.
+		/// </summary>
+		[DataMember(Name = "chipProtocol")] 
+		public string ChipProtocol { get; private set; }
+		/// <summary>
+		///The Base64 encoded data to be sent to the chip.
+		/// </summary>
+		[DataMember(Name = "chipData")] 
+		public string ChipData { get; private set; }
+	}
+
+}
