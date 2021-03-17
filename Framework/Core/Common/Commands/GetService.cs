@@ -7,10 +7,23 @@ namespace XFS4IoT.Common.Commands
 {
     [DataContract]
     [Command(Name = "Common.GetService")]
-    public sealed class GetService : Command<MessagePayload>
+    public sealed class GetServiceCommand : Command<GetServiceCommand.PayloadData>
     {
-        public GetService(string RequestId, MessagePayload Payload)
+        public GetServiceCommand(string RequestId, GetServiceCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
+
+
+        [DataContract]
+        public sealed class PayloadData : MessagePayload
+        {
+
+            public PayloadData(int Timeout)
+                : base(Timeout)
+            {
+            }
+
+
+        }
     }
 }

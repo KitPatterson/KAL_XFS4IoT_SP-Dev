@@ -2,6 +2,8 @@
 
 using XFS4IoT;
 using XFS4IoTServer;
+using XFS4IoT.TextTerminal.Events;
+using XFS4IoT.Common.Events;
 
 namespace TextTerminal
 {
@@ -17,16 +19,16 @@ namespace TextTerminal
             this.requestId = requestId;
         }
 
-        public void FieldErrorEvent(XFS4IoT.TextTerminal.Events.FieldErrorEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.FieldErrorEvent(requestId, Payload));
+        public void FieldErrorEvent(FieldErrorEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.FieldErrorEvent(requestId, Payload));
 
         public void FieldWarningEvent() => connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.FieldWarningEvent(requestId));
 
-        public void KeyEvent(XFS4IoT.TextTerminal.Events.KeyEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.KeyEvent(requestId, Payload));
+        public void KeyEvent(XFS4IoT.TextTerminal.Events.KeyEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.KeyEvent(requestId, Payload));
 
-        public void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.PowerSaveChangeEvent(requestId, Payload));
+        public void PowerSaveChangeEvent(PowerSaveChangeEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.PowerSaveChangeEvent(requestId, Payload));
 
-        public void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.DevicePositionEvent(requestId, Payload));
+        public void DevicePositionEvent(DevicePositionEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.DevicePositionEvent(requestId, Payload));
 
-        public void ServiceDetailEvent(XFS4IoT.Common.Events.ServiceDetailEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.ServiceDetailEvent(requestId, Payload));
+        public void ServiceDetailEvent(ServiceDetailEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.ServiceDetailEvent(requestId, Payload));
     }
 }

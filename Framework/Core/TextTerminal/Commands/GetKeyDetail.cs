@@ -3,9 +3,8 @@
  * 
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetKeyDetail.cs uses automatically generated parts. 
- * GetKeyDetail.cs was created at 03/03/2021 05:09:26 PM
+ * created at 3/16/2021 6:52:32 PM
 \***********************************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -13,30 +12,25 @@ using XFS4IoT.Commands;
 
 namespace XFS4IoT.TextTerminal.Commands
 {
+    //Original name = GetKeyDetail
+    [DataContract]
+    [Command(Name = "TextTerminal.GetKeyDetail")]
+    public sealed class GetKeyDetailCommand : Command<GetKeyDetailCommand.PayloadData>
+    {
+        public GetKeyDetailCommand(string RequestId, GetKeyDetailCommand.PayloadData Payload)
+            : base(RequestId, Payload)
+        { }
+
+        [DataContract]
+        public sealed class PayloadData : MessagePayload
+        {
+
+            public PayloadData(int Timeout)
+                : base(Timeout)
+            {
+            }
 
 
-	//Original name = GetKeyDetail
-	[DataContract]
-	[Command(Name = "TextTerminal.GetKeyDetail")]
-	public sealed class GetKeyDetail : Command<GetKeyDetailPayload>
-	{
-
-		public GetKeyDetail(string RequestId, GetKeyDetailPayload Payload)
-			: base(RequestId, Payload)
-		{ }
-
-	}
-
-	[DataContract]
-	public sealed class GetKeyDetailPayload : MessagePayload
-	{
-
-
-		public GetKeyDetailPayload(int Timeout)
-			: base(Timeout)
-		{
-		}
-
-	}
-
+        }
+    }
 }

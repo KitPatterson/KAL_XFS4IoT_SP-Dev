@@ -7,6 +7,11 @@ using CardReader;
 using XFS4IoT;
 using XFS4IoTFramework.CardReader;
 using XFS4IoTFramework.Common;
+using XFS4IoT.Common.Commands;
+using XFS4IoT.Common.Completions;
+using XFS4IoT.Completions;
+using XFS4IoT.CardReader.Commands;
+using XFS4IoT.CardReader.Completions;
 
 namespace KAL.XFS4IoTSP.CardReader.Simulator
 {
@@ -19,8 +24,8 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
         }
 
 
-        public async Task<XFS4IoT.CardReader.Responses.ReadRawDataPayload> ReadRawData(ICardReaderConnection connection, 
-                                                                                       XFS4IoT.CardReader.Commands.ReadRawDataPayload payload,
+        public async Task<ReadRawDataCompletion.PayloadData> ReadRawData(ICardReaderConnection connection, 
+                                                                                       ReadRawDataCommand.PayloadData payload,
                                                                                        CancellationToken cancellation)
         {
             await Task.Delay(2000, cancellation);
@@ -28,144 +33,144 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
 
             await Task.Delay(1000, cancellation);
 
-            List<XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass> DataClass = new List<XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass>();
-            DataClass.Add(new XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass(XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass.DataSourceEnum.Track1, XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass.StatusEnum.Ok, "B1234567890123456^SMITH/JOHN.MR^020945852301200589800568000000"));
-            DataClass.Add(new XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass(XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass.DataSourceEnum.Track2, XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass.StatusEnum.Ok, "1234567890123456=0209458523012005898"));
-            DataClass.Add(new XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass(XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass.DataSourceEnum.Chip, XFS4IoT.CardReader.Responses.ReadRawDataPayload.DataClass.StatusEnum.Ok, "011234567890123456==000667788903609640040000006200013010000020000098120209105123==00568000999999"));
+            List<ReadRawDataCompletion.PayloadData.DataClass> DataClass = new List<ReadRawDataCompletion.PayloadData.DataClass>();
+            DataClass.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track1, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "B1234567890123456^SMITH/JOHN.MR^020945852301200589800568000000"));
+            DataClass.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track2, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "1234567890123456=0209458523012005898"));
+            DataClass.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track3, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "011234567890123456==000667788903609640040000006200013010000020000098120209105123==00568000999999"));
 
-            MediaStatus = XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.MediaEnum.Present;
+            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return new XFS4IoT.CardReader.Responses.ReadRawDataPayload(XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success,
+            return new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                        "ok",
-                                                                       XFS4IoT.CardReader.Responses.ReadRawDataPayload.StatusEnum.Ok,
+                                                                       ReadRawDataCompletion.PayloadData.StatusEnum.Ok,
                                                                        DataClass);
         }
 
 
         public void Enable() { }
 
-        public Task<XFS4IoT.CardReader.Responses.FormListPayload> FormList(ICardReaderConnection connection,
-                                                                           XFS4IoT.CardReader.Commands.FormListPayload payload, 
+        public Task<FormListCompletion.PayloadData> FormList(ICardReaderConnection connection,
+                                                                           FormListCommand.PayloadData payload, 
                                                                            CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.QueryFormPayload> QueryForm(ICardReaderConnection connection, 
-                                                                             XFS4IoT.CardReader.Commands.QueryFormPayload payload, 
+        public Task<QueryFormCompletion.PayloadData> QueryForm(ICardReaderConnection connection, 
+                                                                             QueryFormCommand.PayloadData payload, 
                                                                              CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.QueryIFMIdentifierPayload> QueryIFMIdentifier(ICardReaderConnection connection, 
-                                                                                               XFS4IoT.CardReader.Commands.QueryIFMIdentifierPayload payload,
+        public Task<QueryIFMIdentifierCompletion.PayloadData> QueryIFMIdentifier(ICardReaderConnection connection, 
+                                                                                 QueryIFMIdentifierCommand.PayloadData payload,
+                                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<EMVClessQueryApplicationsCompletion.PayloadData> EMVClessQueryApplications(ICardReaderConnection connection, 
+                                                                                               EMVClessQueryApplicationsCommand.PayloadData payload,
                                                                                                CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.EMVClessQueryApplicationsPayload> EMVClessQueryApplications(ICardReaderConnection connection, 
-                                                                                                             XFS4IoT.CardReader.Commands.EMVClessQueryApplicationsPayload payload,
-                                                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ReadTrackPayload> ReadTrack(ICardReaderConnection connection, 
-                                                                             XFS4IoT.CardReader.Commands.ReadTrackPayload payload,
-                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.WriteTrackPayload> WriteTrack(ICardReaderConnection connection, 
-                                                                               XFS4IoT.CardReader.Commands.WriteTrackPayload payload,
-                                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public async Task<XFS4IoT.CardReader.Responses.EjectCardPayload> EjectCard(ICardReaderConnection connection,
-                                                                                   XFS4IoT.CardReader.Commands.EjectCardPayload payload,
-                                                                                   CancellationToken cancellation)
+        public Task<ReadTrackCompletion.PayloadData> ReadTrack(ICardReaderConnection connection, 
+                                                               ReadTrackCommand.PayloadData payload,
+                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<WriteTrackCompletion.PayloadData> WriteTrack(ICardReaderConnection connection, 
+                                                                 WriteTrackCommand.PayloadData payload,
+                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
+        public async Task<EjectCardCompletion.PayloadData> EjectCard(ICardReaderConnection connection,
+                                                                     EjectCardCommand.PayloadData payload,
+                                                                     CancellationToken cancellation)
         {
             await Task.Delay(1000, cancellation);
 
-            MediaStatus = XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.MediaEnum.Entering;
+            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Entering;
 
-            return new XFS4IoT.CardReader.Responses.EjectCardPayload(XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success,
-                                                                     "ok");
+            return new EjectCardCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                                                       "ok");
         }
 
-        public Task<XFS4IoT.CardReader.Responses.RetainCardPayload> RetainCard(ICardReaderConnection connection,
-                                                                               XFS4IoT.CardReader.Commands.RetainCardPayload payload,
-                                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ResetCountPayload> ResetCount(ICardReaderConnection connection, 
-                                                                               XFS4IoT.CardReader.Commands.ResetCountPayload payload,
-                                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.SetKeyPayload> SetKey(ICardReaderConnection connection,
-                                                                       XFS4IoT.CardReader.Commands.SetKeyPayload payload,
-                                                                       CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.WriteRawDataPayload> WriteRawData(ICardReaderConnection connection,
-                                                                                   XFS4IoT.CardReader.Commands.WriteRawDataPayload payload,
-                                                                                   CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ChipIOPayload> ChipIO(ICardReaderConnection connection,
-                                                                       XFS4IoT.CardReader.Commands.ChipIOPayload payload,
-                                                                       CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ResetPayload> Reset(ICardReaderConnection connection,
-                                                                     XFS4IoT.CardReader.Commands.ResetPayload payload,
+        public Task<RetainCardCompletion.PayloadData> RetainCard(ICardReaderConnection connection,
+                                                                 RetainCardCommand.PayloadData payload,
+                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<ResetCountCompletion.PayloadData> ResetCount(ICardReaderConnection connection, 
+                                                                 ResetCountCommand.PayloadData payload,
+                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<SetKeyCompletion.PayloadData> SetKey(ICardReaderConnection connection,
+                                                         SetKeyCommand.PayloadData payload,
+                                                         CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<WriteRawDataCompletion.PayloadData> WriteRawData(ICardReaderConnection connection,
+                                                                     WriteRawDataCommand.PayloadData payload,
                                                                      CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ChipPowerPayload> ChipPower(ICardReaderConnection connection,
-                                                                             XFS4IoT.CardReader.Commands.ChipPowerPayload payload,
-                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ParseDataPayload> ParseData(ICardReaderConnection connection,
-                                                                             XFS4IoT.CardReader.Commands.ParseDataPayload payload,
-                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.ParkCardPayload> ParkCard(ICardReaderConnection connection,
-                                                                           XFS4IoT.CardReader.Commands.ParkCardPayload payload,
-                                                                           CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.EMVClessConfigurePayload> EMVClessConfigure(ICardReaderConnection connection,
-                                                                                             XFS4IoT.CardReader.Commands.EMVClessConfigurePayload payload,
-                                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.EMVClessPerformTransactionPayload> EMVClessPerformTransaction(ICardReaderConnection connection,
-                                                                                                               XFS4IoT.CardReader.Commands.EMVClessPerformTransactionPayload payload,
-                                                                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.CardReader.Responses.EMVClessIssuerUpdatePayload> EMVClessIssuerUpdate(ICardReaderConnection connection,
-                                                                                                   XFS4IoT.CardReader.Commands.EMVClessIssuerUpdatePayload payload,
-                                                                                                   CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<ChipIOCompletion.PayloadData> ChipIO(ICardReaderConnection connection,
+                                                         ChipIOCommand.PayloadData payload,
+                                                         CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<ResetCompletion.PayloadData> Reset(ICardReaderConnection connection,
+                                                       ResetCommand.PayloadData payload,
+                                                       CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<ChipPowerCompletion.PayloadData> ChipPower(ICardReaderConnection connection,
+                                                               ChipPowerCommand.PayloadData payload,
+                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<ParseDataCompletion.PayloadData> ParseData(ICardReaderConnection connection,
+                                                               ParseDataCommand.PayloadData payload,
+                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<ParkCardCompletion.PayloadData> ParkCard(ICardReaderConnection connection,
+                                                             ParkCardCommand.PayloadData payload,
+                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<EMVClessConfigureCompletion.PayloadData> EMVClessConfigure(ICardReaderConnection connection,
+                                                                               EMVClessConfigureCommand.PayloadData payload,
+                                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<EMVClessPerformTransactionCompletion.PayloadData> EMVClessPerformTransaction(ICardReaderConnection connection,
+                                                                                                 EMVClessPerformTransactionCommand.PayloadData payload,
+                                                                                                  CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<EMVClessIssuerUpdateCompletion.PayloadData> EMVClessIssuerUpdate(ICardReaderConnection connection,
+                                                                                     EMVClessIssuerUpdateCommand.PayloadData payload,
+                                                                                     CancellationToken cancellation) => throw new System.NotImplementedException();
         
 
         
-        public Task<XFS4IoT.Common.Responses.StatusPayload> Status(ICommonConnection connection,
-                                                                   XFS4IoT.Common.Commands.StatusPayload payload,
+        public Task<StatusCompletion.PayloadData> Status(ICommonConnection connection,
+                                                                   StatusCommand.PayloadData payload,
                                                                    CancellationToken cancellation)
         {
-            XFS4IoT.Common.Responses.StatusPayload.CommonClass common = new XFS4IoT.Common.Responses.StatusPayload.CommonClass(
-                XFS4IoT.Common.Responses.StatusPayload.CommonClass.DeviceEnum.Online,
+            StatusCompletion.PayloadData.CommonClass common = new StatusCompletion.PayloadData.CommonClass(
+                StatusCompletion.PayloadData.CommonClass.DeviceEnum.Online,
                 new List<string>(), 
-                new XFS4IoT.Common.Responses.StatusPayload.CommonClass.GuideLightsClass(
-                    XFS4IoT.Common.Responses.StatusPayload.CommonClass.GuideLightsClass.FlashRateEnum.Off,
-                    XFS4IoT.Common.Responses.StatusPayload.CommonClass.GuideLightsClass.ColorEnum.Green, 
-                    XFS4IoT.Common.Responses.StatusPayload.CommonClass.GuideLightsClass.DirectionEnum.Off),
-                XFS4IoT.Common.Responses.StatusPayload.CommonClass.DevicePositionEnum.Inposition,
+                new StatusCompletion.PayloadData.CommonClass.GuideLightsClass(
+                    StatusCompletion.PayloadData.CommonClass.GuideLightsClass.FlashRateEnum.Off,
+                    StatusCompletion.PayloadData.CommonClass.GuideLightsClass.ColorEnum.Green,
+                    StatusCompletion.PayloadData.CommonClass.GuideLightsClass.DirectionEnum.Off),
+                StatusCompletion.PayloadData.CommonClass.DevicePositionEnum.Inposition,
                 0,
-                XFS4IoT.Common.Responses.StatusPayload.CommonClass.AntiFraudModuleEnum.Ok);
+                StatusCompletion.PayloadData.CommonClass.AntiFraudModuleEnum.Ok);
 
-            XFS4IoT.Common.Responses.StatusPayload.CardReaderClass cardReader = new XFS4IoT.Common.Responses.StatusPayload.CardReaderClass(
+            StatusCompletion.PayloadData.CardReaderClass cardReader = new StatusCompletion.PayloadData.CardReaderClass(
                 MediaStatus,
-                XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.RetainBinEnum.Ok,
-                XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.SecurityEnum.NotSupported,
+                StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok,
+                StatusCompletion.PayloadData.CardReaderClass.SecurityEnum.NotSupported,
                 0,
-                XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.ChipPowerEnum.PoweredOff);
+                StatusCompletion.PayloadData.CardReaderClass.ChipPowerEnum.PoweredOff);
 
-            return Task.FromResult(new XFS4IoT.Common.Responses.StatusPayload(XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success,
-                                                                              "ok",
-                                                                              common,
-                                                                              cardReader));
+            return Task.FromResult(new StatusCompletion.PayloadData(StatusCompletion.PayloadData.CompletionCodeEnum.Success,
+                                                                    "ok",
+                                                                    common,
+                                                                    cardReader));
         }
 
-        public Task<XFS4IoT.Common.Responses.CapabilitiesPayload> Capabilities(ICommonConnection connection, 
-                                                                               XFS4IoT.Common.Commands.CapabilitiesPayload payload,
-                                                                               CancellationToken cancellation)
+        public Task<CapabilitiesCompletion.PayloadData> Capabilities(ICommonConnection connection, 
+                                                                     CapabilitiesCommand.PayloadData payload,
+                                                                     CancellationToken cancellation)
         {
-            XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.GuideLightsClass guideLights = new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.GuideLightsClass(
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.GuideLightsClass.FlashRateClass(true, true, true, true),
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.GuideLightsClass.ColorClass(true, true, true, true, true, true, true),
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.GuideLightsClass.DirectionClass(false, false));
+            CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass guideLights = new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass(
+                new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass.FlashRateClass(true, true, true, true),
+                new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass.ColorClass(true, true, true, true, true, true, true),
+                new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass.DirectionClass(false, false));
 
-            XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass common = new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass(
+            CapabilitiesCompletion.PayloadData.CommonClass common = new CapabilitiesCompletion.PayloadData.CommonClass(
                 "1.0",
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.DeviceInformationClass(
+                new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass(
                     "Simulator",
                     "123456-78900001",
                     "1.0",
                     "KAL simualtor",
-                    new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.DeviceInformationClass.FirmwareClass(
+                    new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass.FirmwareClass(
                     "XFS4 SP",
                     "1.0",
                     "1.0"),
-                    new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.DeviceInformationClass.SoftwareClass(
+                    new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass.SoftwareClass(
                     "XFS4 SP",
                     "1.0",
                     "1.0")),
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CommonClass.VendorModeIformationClass(
+                new CapabilitiesCompletion.PayloadData.CommonClass.VendorModeIformationClass(
                     true,
                     new List<string>() { "ReadRawData", "EjectCard" }),
                 new List<string>() { "MediaInsertedEvent", "MediaRemovedEvent" },
@@ -177,61 +182,61 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                 false,
                 false);
 
-            XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass cardReader = new XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass(
-                XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.TypeEnum.Motor,
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.ReadTracksClass(true, true, true, false, false, false, false, false, false, false),
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.WriteTracksClass(true, true, true, false, false, false),
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.ChipProtocolsClass(true, true, false, false, false, false, false),
+            CapabilitiesCompletion.PayloadData.CardReaderClass cardReader = new CapabilitiesCompletion.PayloadData.CardReaderClass(
+                CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Motor,
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.ReadTracksClass(true, true, true, false, false, false, false, false, false, false),
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.WriteTracksClass(true, true, true, false, false, false),
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.ChipProtocolsClass(true, true, false, false, false, false, false),
                 100,
-                XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.SecurityTypeEnum.NotSupported,
-                XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.PowerOnOptionEnum.NoAction,
-                XFS4IoT.Common.Responses.CapabilitiesPayload.CardReaderClass.PowerOffOptionEnum.NoAction);
+                CapabilitiesCompletion.PayloadData.CardReaderClass.SecurityTypeEnum.NotSupported,
+                CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOnOptionEnum.NoAction,
+                CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOffOptionEnum.NoAction);
 
 
-            List<XFS4IoT.Common.Responses.CapabilitiesPayload.InterfacesClass> interfaces = new List<XFS4IoT.Common.Responses.CapabilitiesPayload.InterfacesClass>
+            List<CapabilitiesCompletion.PayloadData.InterfacesClass> interfaces = new List<CapabilitiesCompletion.PayloadData.InterfacesClass>
             {
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.InterfacesClass(
-                    XFS4IoT.Common.Responses.CapabilitiesPayload.InterfacesClass.NameEnum.Common,
+                new CapabilitiesCompletion.PayloadData.InterfacesClass(
+                    CapabilitiesCompletion.PayloadData.InterfacesClass.NameEnum.Common,
                     new List<string>(){ "Status", "Capabilities" },
                     new List<string>(),
                     1000,
                     new List<string>()),
-                new XFS4IoT.Common.Responses.CapabilitiesPayload.InterfacesClass(
-                    XFS4IoT.Common.Responses.CapabilitiesPayload.InterfacesClass.NameEnum.CardReader,
+                new CapabilitiesCompletion.PayloadData.InterfacesClass(
+                    CapabilitiesCompletion.PayloadData.InterfacesClass.NameEnum.CardReader,
                     new List<string>{ "ReadRawData", "EjectCard", "Reset" },
                     new List<string>{ "MediaDetectedEvent", "MediaInsertedEvent", "MediaRemovedEvent", "MediaRetainedEvent", "InvalidMediaEvent" },
                     1000,
                     new List<string>())
             };
 
-            return Task.FromResult(new XFS4IoT.Common.Responses.CapabilitiesPayload(XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success,
-                                                                                    "ok",
-                                                                                    interfaces,
-                                                                                    common,
-                                                                                    cardReader));
+            return Task.FromResult(new CapabilitiesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                                                                          "ok",
+                                                                          interfaces,
+                                                                          common,
+                                                                          cardReader));
         }
 
-        public Task<XFS4IoT.Common.Responses.SetGuidanceLightPayload> SetGuidanceLight(ICommonConnection connection,
-                                                                                       XFS4IoT.Common.Commands.SetGuidanceLightPayload payload,
-                                                                                       CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.Common.Responses.PowerSaveControlPayload> PowerSaveControl(ICommonConnection connection,
-                                                                                       XFS4IoT.Common.Commands.PowerSaveControlPayload payload,
-                                                                                       CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.Common.Responses.SynchronizeCommandPayload> SynchronizeCommand(ICommonConnection connection,
-                                                                                           XFS4IoT.Common.Commands.SynchronizeCommandPayload payload,
-                                                                                           CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.Common.Responses.SetTransactionStatePayload> SetTransactionState(ICommonConnection connection,
-                                                                                             XFS4IoT.Common.Commands.SetTransactionStatePayload payload,
-                                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<XFS4IoT.Common.Responses.GetTransactionStatePayload> GetTransactionState(ICommonConnection connection,
-                                                                                             XFS4IoT.Common.Commands.GetTransactionStatePayload payload,
-                                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<SetGuidanceLightCompletion.PayloadData> SetGuidanceLight(ICommonConnection connection,
+                                                                             SetGuidanceLightCommand.PayloadData payload,
+                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<PowerSaveControlCompletion.PayloadData> PowerSaveControl(ICommonConnection connection,
+                                                                             PowerSaveControlCommand.PayloadData payload,
+                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(ICommonConnection connection,
+                                                                                 SynchronizeCommandCommand.PayloadData payload,
+                                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(ICommonConnection connection,
+                                                                                   SetTransactionStateCommand.PayloadData payload,
+                                                                                   CancellationToken cancellation) => throw new System.NotImplementedException();
+        public Task<GetTransactionStateCompletion.PayloadData> GetTransactionState(ICommonConnection connection,
+                                                                                   GetTransactionStateCommand.PayloadData payload,
+                                                                                   CancellationToken cancellation) => throw new System.NotImplementedException();
 
         public async Task WaitForCardTaken(ICardReaderConnection connection, CancellationToken cancellation)
         {
             await Task.Delay(1000, cancellation);
 
-            MediaStatus = XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.MediaEnum.NotPresent;
+            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
 
             connection.MediaRemovedEvent();
         }
@@ -239,6 +244,6 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
         public ILogger Logger { get; }
 
 
-        private XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.MediaEnum MediaStatus = XFS4IoT.Common.Responses.StatusPayload.CardReaderClass.MediaEnum.NotPresent;
+        private StatusCompletion.PayloadData.CardReaderClass.MediaEnum MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
     }
 }

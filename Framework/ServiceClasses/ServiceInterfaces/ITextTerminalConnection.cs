@@ -2,20 +2,17 @@
 
 using XFS4IoTFramework.Common;
 
+
 namespace TextTerminal
 {
     public interface ITextTerminalConnection : ICommonConnection
     {
 
-        void FieldErrorEvent(XFS4IoT.TextTerminal.Events.FieldErrorEventPayload Payload);
+        void FieldErrorEvent(XFS4IoT.TextTerminal.Events.FieldErrorEvent.PayloadData Payload);
 
         void FieldWarningEvent();
 
-        void KeyEvent(XFS4IoT.TextTerminal.Events.KeyEventPayload Payload);
-
-        void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEventPayload Payload);
-
-        void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEventPayload Payload);
+        void KeyEvent(XFS4IoT.TextTerminal.Events.KeyEvent.PayloadData Payload);
 
     }
 }

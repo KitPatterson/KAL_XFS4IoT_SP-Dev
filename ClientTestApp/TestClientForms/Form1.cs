@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.Net.WebSockets;
+using XFS4IoT.Common.Commands;
+using XFS4IoT.Common.Completions;
+using XFS4IoT.CardReader.Commands;
+using XFS4IoT.CardReader.Completions;
 
 namespace TestClientForms
 {
@@ -36,9 +40,9 @@ namespace TestClientForms
                 return;
             }
 
-            XFS4IoT.CardReader.Commands.ReadRawData readRawDataCmd = new XFS4IoT.CardReader.Commands.ReadRawData(
+            ReadRawDataCommand readRawDataCmd = new ReadRawDataCommand(
                 Guid.NewGuid().ToString(), 
-                new XFS4IoT.CardReader.Commands.ReadRawDataPayload(
+                new ReadRawDataCommand.PayloadData(
                     CommandTimeout,
                     true,
                     true,
@@ -67,9 +71,9 @@ namespace TestClientForms
                 object cmdResponse = await cardReader.ReceiveMessageAsync();
                 if (cmdResponse is not null)
                 {
-                    if (cmdResponse.GetType() == typeof(XFS4IoT.CardReader.Responses.ReadRawData))
+                    if (cmdResponse.GetType() == typeof(ReadRawDataCompletion))
                     {
-                        XFS4IoT.CardReader.Responses.ReadRawData response = cmdResponse as XFS4IoT.CardReader.Responses.ReadRawData;
+                        ReadRawDataCompletion response = cmdResponse as ReadRawDataCompletion;
                         textBoxResponse.Text = response.Serialise();
                         break;
                     }
@@ -99,10 +103,10 @@ namespace TestClientForms
                 return;
             }
 
-            XFS4IoT.CardReader.Commands.EjectCard ejectCmd = new XFS4IoT.CardReader.Commands.EjectCard(
-                Guid.NewGuid().ToString(), new XFS4IoT.CardReader.Commands.EjectCardPayload(
+            EjectCardCommand ejectCmd = new EjectCardCommand(
+                Guid.NewGuid().ToString(), new EjectCardCommand.PayloadData(
                     CommandTimeout,
-                    XFS4IoT.CardReader.Commands.EjectCardPayload.EjectPositionEnum.ExitPosition));
+                    EjectCardCommand.PayloadData.EjectPositionEnum.ExitPosition));
 
             textBoxCommand.Text = ejectCmd.Serialise();
 
@@ -113,15 +117,15 @@ namespace TestClientForms
 
             object cmdResponse = await cardReader.ReceiveMessageAsync();
             if (cmdResponse is not null &&
-                cmdResponse.GetType() == typeof(XFS4IoT.CardReader.Responses.EjectCard))
+                cmdResponse.GetType() == typeof(EjectCardCompletion))
             {
-                XFS4IoT.CardReader.Responses.EjectCard response = cmdResponse as XFS4IoT.CardReader.Responses.EjectCard;
+                EjectCardCompletion response = cmdResponse as EjectCardCompletion;
                 if (response is not null)
                 {
                     textBoxResponse.Text = response.Serialise();
                 }
 
-                if (response.Payload.CompletionCode == XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success)
+                if (response.Payload.CompletionCode == EjectCardCompletion.PayloadData.CompletionCodeEnum.Success)
                 {
                     object unsolicEvent = await cardReader.ReceiveMessageAsync();
                     if (unsolicEvent.GetType() == typeof(XFS4IoT.CardReader.Events.MediaRemovedEvent))
@@ -146,7 +150,7 @@ namespace TestClientForms
                 return;
             }
 
-            XFS4IoT.Common.Commands.Status statusCmd = new XFS4IoT.Common.Commands.Status(Guid.NewGuid().ToString(), new XFS4IoT.Common.Commands.StatusPayload(CommandTimeout));
+            StatusCommand statusCmd = new StatusCommand(Guid.NewGuid().ToString(), new StatusCommand.PayloadData(CommandTimeout));
             textBoxCommand.Text = statusCmd.Serialise();
 
             await cardReader.SendCommandAsync(statusCmd);
@@ -156,9 +160,9 @@ namespace TestClientForms
 
             object cmdResponse = await cardReader.ReceiveMessageAsync();
             if (cmdResponse is not null &&
-                cmdResponse.GetType() == typeof(XFS4IoT.Common.Responses.Status))
+                cmdResponse.GetType() == typeof(StatusCompletion))
             {
-                XFS4IoT.Common.Responses.Status response = cmdResponse as XFS4IoT.Common.Responses.Status;
+                StatusCompletion response = cmdResponse as StatusCompletion;
                 if (response is not null)
                 {
                     textBoxResponse.Text = response.Serialise();
@@ -181,7 +185,7 @@ namespace TestClientForms
                 return;
             }
 
-            XFS4IoT.Common.Commands.Capabilities capabilitiesCmd = new XFS4IoT.Common.Commands.Capabilities(Guid.NewGuid().ToString(), new XFS4IoT.Common.Commands.CapabilitiesPayload(CommandTimeout));
+            CapabilitiesCommand capabilitiesCmd = new CapabilitiesCommand(Guid.NewGuid().ToString(), new CapabilitiesCommand.PayloadData(CommandTimeout));
             textBoxCommand.Text = capabilitiesCmd.Serialise();
 
             await cardReader.SendCommandAsync(capabilitiesCmd);
@@ -191,9 +195,9 @@ namespace TestClientForms
 
             object cmdResponse = await cardReader.ReceiveMessageAsync();
             if (cmdResponse is not null &&
-                cmdResponse.GetType() == typeof(XFS4IoT.Common.Responses.Capabilities))
+                cmdResponse.GetType() == typeof(CapabilitiesCompletion))
             {
-                XFS4IoT.Common.Responses.Capabilities response = cmdResponse as XFS4IoT.Common.Responses.Capabilities;
+                CapabilitiesCompletion response = cmdResponse as CapabilitiesCompletion;
                 if (response is not null)
                 {
                     textBoxResponse.Text = response.Serialise();
@@ -263,15 +267,15 @@ namespace TestClientForms
                                 return;
                             }
 
-                            commandString = new XFS4IoT.Common.Commands.GetService(Guid.NewGuid().ToString(), new XFS4IoT.Commands.MessagePayload(CommandTimeout)).Serialise();
-                            await Discovery.SendCommandAsync(new XFS4IoT.Common.Commands.GetService(Guid.NewGuid().ToString(), new XFS4IoT.Commands.MessagePayload(CommandTimeout)));
+                            commandString = new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(CommandTimeout)).Serialise();
+                            await Discovery.SendCommandAsync(new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(CommandTimeout)));
                             
                             object cmdResponse = await Discovery.ReceiveMessageAsync();
                             if (cmdResponse is not null)
                             {
-                                XFS4IoT.Common.Responses.GetService response = cmdResponse as XFS4IoT.Common.Responses.GetService;
+                                GetServiceCompletion response = cmdResponse as GetServiceCompletion;
                                 if (response is not null &&
-                                    response.GetType() == typeof(XFS4IoT.Common.Responses.GetService))
+                                    response.GetType() == typeof(GetServiceCompletion))
                                 {
                                     responseString = response.Serialise();
                                     var service =

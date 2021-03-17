@@ -3,9 +3,8 @@
  * 
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * QueryForm.cs uses automatically generated parts. 
- * QueryForm.cs was created at 03/03/2021 05:09:25 PM
+ * created at 3/16/2021 6:52:32 PM
 \***********************************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -13,36 +12,31 @@ using XFS4IoT.Commands;
 
 namespace XFS4IoT.CardReader.Commands
 {
+    //Original name = QueryForm
+    [DataContract]
+    [Command(Name = "CardReader.QueryForm")]
+    public sealed class QueryFormCommand : Command<QueryFormCommand.PayloadData>
+    {
+        public QueryFormCommand(string RequestId, QueryFormCommand.PayloadData Payload)
+            : base(RequestId, Payload)
+        { }
 
+        [DataContract]
+        public sealed class PayloadData : MessagePayload
+        {
 
-	//Original name = QueryForm
-	[DataContract]
-	[Command(Name = "CardReader.QueryForm")]
-	public sealed class QueryForm : Command<QueryFormPayload>
-	{
+            public PayloadData(int Timeout, string FormName = null)
+                : base(Timeout)
+            {
+                this.FormName = FormName;
+            }
 
-		public QueryForm(string RequestId, QueryFormPayload Payload)
-			: base(RequestId, Payload)
-		{ }
+            /// <summary>
+            ///The form name for which to retrieve details.
+            /// </summary>
+            [DataMember(Name = "formName")] 
+            public string FormName { get; private set; }
 
-	}
-
-	[DataContract]
-	public sealed class QueryFormPayload : MessagePayload
-	{
-
-
-		public QueryFormPayload(int Timeout, string FormName = null)
-			: base(Timeout)
-		{
-			this.FormName = FormName;
-		}
-
-		/// <summary>
-		///The form name for which to retrieve details.
-		/// </summary>
-		[DataMember(Name = "formName")] 
-		public string FormName { get; private set; }
-	}
-
+        }
+    }
 }

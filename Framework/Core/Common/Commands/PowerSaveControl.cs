@@ -3,9 +3,8 @@
  * 
  * This file was created automatically as part of the XFS4IoT Common interface.
  * PowerSaveControl.cs uses automatically generated parts. 
- * PowerSaveControl.cs was created at 03/03/2021 05:09:26 PM
+ * created at 3/16/2021 6:52:32 PM
 \***********************************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -13,36 +12,31 @@ using XFS4IoT.Commands;
 
 namespace XFS4IoT.Common.Commands
 {
+    //Original name = PowerSaveControl
+    [DataContract]
+    [Command(Name = "Common.PowerSaveControl")]
+    public sealed class PowerSaveControlCommand : Command<PowerSaveControlCommand.PayloadData>
+    {
+        public PowerSaveControlCommand(string RequestId, PowerSaveControlCommand.PayloadData Payload)
+            : base(RequestId, Payload)
+        { }
 
+        [DataContract]
+        public sealed class PayloadData : MessagePayload
+        {
 
-	//Original name = PowerSaveControl
-	[DataContract]
-	[Command(Name = "Common.PowerSaveControl")]
-	public sealed class PowerSaveControl : Command<PowerSaveControlPayload>
-	{
+            public PayloadData(int Timeout, int? MaxPowerSaveRecoveryTime = null)
+                : base(Timeout)
+            {
+                this.MaxPowerSaveRecoveryTime = MaxPowerSaveRecoveryTime;
+            }
 
-		public PowerSaveControl(string RequestId, PowerSaveControlPayload Payload)
-			: base(RequestId, Payload)
-		{ }
+            /// <summary>
+            ///Specifies the maximum number of seconds in which the device must be able to return to its normal operating state when exiting power save mode. The device will be set to the highest possible power save mode within this constraint. If usMaxPowerSaveRecoveryTime is set to zero then the device will exit the power saving mode. 
+            /// </summary>
+            [DataMember(Name = "maxPowerSaveRecoveryTime")] 
+            public int? MaxPowerSaveRecoveryTime { get; private set; }
 
-	}
-
-	[DataContract]
-	public sealed class PowerSaveControlPayload : MessagePayload
-	{
-
-
-		public PowerSaveControlPayload(int Timeout, int? MaxPowerSaveRecoveryTime = null)
-			: base(Timeout)
-		{
-			this.MaxPowerSaveRecoveryTime = MaxPowerSaveRecoveryTime;
-		}
-
-		/// <summary>
-		///Specifies the maximum number of seconds in which the device must be able to return to its normal operating state when exiting power save mode. The device will be set to the highest possible power save mode within this constraint. If usMaxPowerSaveRecoveryTime is set to zero then the device will exit the power saving mode. 
-		/// </summary>
-		[DataMember(Name = "maxPowerSaveRecoveryTime")] 
-		public int? MaxPowerSaveRecoveryTime { get; private set; }
-	}
-
+        }
+    }
 }

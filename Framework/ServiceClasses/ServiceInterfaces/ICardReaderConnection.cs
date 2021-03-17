@@ -13,25 +13,25 @@ namespace CardReader
 
         void MediaRemovedEvent();
 
-        void InvalidTrackDataEvent(XFS4IoT.CardReader.Events.InvalidTrackDataEventPayload Payload);
+        void InvalidTrackDataEvent(XFS4IoT.CardReader.Events.InvalidTrackDataEvent.PayloadData Payload);
 
         void InvalidMediaEvent();
 
-        void TrackDetectedEvent(XFS4IoT.CardReader.Events.TrackDetectedEventPayload Payload);
+        void TrackDetectedEvent(XFS4IoT.CardReader.Events.TrackDetectedEvent.PayloadData Payload);
 
-        void RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEventPayload Payload);
+        void RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEvent.PayloadData Payload);
 
         void MediaRetainedEvent();
 
-        void MediaDetectedEvent(XFS4IoT.CardReader.Events.MediaDetectedEventPayload Payload);
+        void MediaDetectedEvent(XFS4IoT.CardReader.Events.MediaDetectedEvent.PayloadData Payload);
 
-        void EMVClessReadStatusEvent(XFS4IoT.CardReader.Events.EMVClessReadStatusEventPayload Payload);
+        void EMVClessReadStatusEvent(XFS4IoT.CardReader.Events.EMVClessReadStatusEvent.PayloadData Payload);
 
-        void CardActionEvent(XFS4IoT.CardReader.Events.CardActionEventPayload Payload);
+        void CardActionEvent(XFS4IoT.CardReader.Events.CardActionEvent.PayloadData Payload);
 
-        void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEventPayload Payload);
+        void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEvent.PayloadData Payload);
 
-        void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEventPayload Payload);
+        void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEvent.PayloadData Payload);
 
     }
 }

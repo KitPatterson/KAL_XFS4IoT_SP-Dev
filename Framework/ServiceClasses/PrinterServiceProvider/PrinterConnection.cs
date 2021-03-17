@@ -2,6 +2,8 @@
 
 using XFS4IoT;
 using XFS4IoTServer;
+using XFS4IoT.Common.Events;
+using XFS4IoT.Printer.Events;
 
 namespace Printer
 {
@@ -17,46 +19,46 @@ namespace Printer
             this.requestId = requestId;
         }
 
-        public void RetractBinThresholdEvent(XFS4IoT.Printer.Events.RetractBinThresholdEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.RetractBinThresholdEvent(requestId, Payload));
+        public void RetractBinThresholdEvent(RetractBinThresholdEvent.PayloadData Payload) => connection.SendMessageAsync(new RetractBinThresholdEvent(requestId, Payload));
 
-        public void MediaTakenEvent() => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaTakenEvent(requestId));
+        public void MediaTakenEvent() => connection.SendMessageAsync(new MediaTakenEvent(requestId));
 
-        public void PaperThresholdEvent(XFS4IoT.Printer.Events.PaperThresholdEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.PaperThresholdEvent(requestId, Payload));
+        public void PaperThresholdEvent(PaperThresholdEvent.PayloadData Payload) => connection.SendMessageAsync(new PaperThresholdEvent(requestId, Payload));
 
-        public void TonerThresholdEvent(XFS4IoT.Printer.Events.TonerThresholdEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.TonerThresholdEvent(requestId, Payload));
+        public void TonerThresholdEvent(TonerThresholdEvent.PayloadData Payload) => connection.SendMessageAsync(new TonerThresholdEvent(requestId, Payload));
 
-        public void InkThresholdEvent(XFS4IoT.Printer.Events.InkThresholdEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.InkThresholdEvent(requestId, Payload));
+        public void InkThresholdEvent(InkThresholdEvent.PayloadData Payload) => connection.SendMessageAsync(new InkThresholdEvent(requestId, Payload));
 
-        public void MediaPresentedEvent(XFS4IoT.Printer.Events.MediaPresentedEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaPresentedEvent(requestId, Payload));
+        public void MediaPresentedEvent(MediaPresentedEvent.PayloadData Payload) => connection.SendMessageAsync(new MediaPresentedEvent(requestId, Payload));
 
-        public void MediaAutoRetractedEvent(XFS4IoT.Printer.Events.MediaAutoRetractedEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaAutoRetractedEvent(requestId, Payload));
+        public void MediaAutoRetractedEvent(MediaAutoRetractedEvent.PayloadData Payload) => connection.SendMessageAsync(new MediaAutoRetractedEvent(requestId, Payload));
 
-        public void NoMediaEvent(XFS4IoT.Printer.Events.NoMediaEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.NoMediaEvent(requestId, Payload));
+        public void NoMediaEvent(NoMediaEvent.PayloadData Payload) => connection.SendMessageAsync(new NoMediaEvent(requestId, Payload));
 
-        public void MediaInsertedEvent() => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaInsertedEvent(requestId));
+        public void MediaInsertedEvent() => connection.SendMessageAsync(new MediaInsertedEvent(requestId));
 
-        public void FieldErrorEvent(XFS4IoT.Printer.Events.FieldErrorEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.FieldErrorEvent(requestId, Payload));
+        public void FieldErrorEvent(FieldErrorEvent.PayloadData Payload) => connection.SendMessageAsync(new FieldErrorEvent(requestId, Payload));
 
-        public void FieldWarningEvent(XFS4IoT.Printer.Events.FieldWarningEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.FieldWarningEvent(requestId, Payload));
+        public void FieldWarningEvent(FieldWarningEvent.PayloadData Payload) => connection.SendMessageAsync(new FieldWarningEvent(requestId, Payload));
 
-        public void MediaRejectedEvent(XFS4IoT.Printer.Events.MediaRejectedEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaRejectedEvent(requestId, Payload));
+        public void MediaRejectedEvent(MediaRejectedEvent.PayloadData Payload) => connection.SendMessageAsync(new MediaRejectedEvent(requestId, Payload));
 
-        public void LampThresholdEvent(XFS4IoT.Printer.Events.LampThresholdEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.LampThresholdEvent(requestId, Payload));
+        public void LampThresholdEvent(LampThresholdEvent.PayloadData Payload) => connection.SendMessageAsync(new LampThresholdEvent(requestId, Payload));
 
-        public void MediaDetectedEvent(XFS4IoT.Printer.Events.MediaDetectedEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaDetectedEvent(requestId, Payload));
+        public void MediaDetectedEvent(MediaDetectedEvent.PayloadData Payload) => connection.SendMessageAsync(new MediaDetectedEvent(requestId, Payload));
 
-        public void DefinitionLoadedEvent(XFS4IoT.Printer.Events.DefinitionLoadedEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.DefinitionLoadedEvent(requestId, Payload));
+        public void DefinitionLoadedEvent(DefinitionLoadedEvent.PayloadData Payload) => connection.SendMessageAsync(new DefinitionLoadedEvent(requestId, Payload));
 
-        public void MediaInsertedUnsolicitedEvent() => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaInsertedUnsolicitedEvent(requestId));
+        public void MediaInsertedUnsolicitedEvent() => connection.SendMessageAsync(new MediaInsertedUnsolicitedEvent(requestId));
 
-        public void MediaPresentedUnsolicitedEvent(XFS4IoT.Printer.Events.MediaPresentedUnsolicitedEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.MediaPresentedUnsolicitedEvent(requestId, Payload));
+        public void MediaPresentedUnsolicitedEvent(MediaPresentedUnsolicitedEvent.PayloadData Payload) => connection.SendMessageAsync(new MediaPresentedUnsolicitedEvent(requestId, Payload));
 
-        public void RetractBinStatusEvent(XFS4IoT.Printer.Events.RetractBinStatusEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Printer.Events.RetractBinStatusEvent(requestId, Payload));
+        public void RetractBinStatusEvent(RetractBinStatusEvent.PayloadData Payload) => connection.SendMessageAsync(new RetractBinStatusEvent(requestId, Payload));
 
-        public void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.PowerSaveChangeEvent(requestId, Payload));
+        public void PowerSaveChangeEvent(PowerSaveChangeEvent.PayloadData Payload) => connection.SendMessageAsync(new PowerSaveChangeEvent(requestId, Payload));
 
-        public void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.DevicePositionEvent(requestId, Payload));
+        public void DevicePositionEvent(DevicePositionEvent.PayloadData Payload) => connection.SendMessageAsync(new DevicePositionEvent(requestId, Payload));
 
-        public void ServiceDetailEvent(XFS4IoT.Common.Events.ServiceDetailEventPayload Payload) => connection.SendMessageAsync(new XFS4IoT.Common.Events.ServiceDetailEvent(requestId, Payload));
+        public void ServiceDetailEvent(ServiceDetailEvent.PayloadData Payload) => connection.SendMessageAsync(new ServiceDetailEvent(requestId, Payload));
     }
 }

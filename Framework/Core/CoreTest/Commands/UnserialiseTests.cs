@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using XFS4IoT.Commands;
+using XFS4IoT.Completions;
 using System;
 using XFS4IoT;
 using XFS4IoT.CardReader.Commands;
@@ -51,12 +52,12 @@ namespace XFS4IoTCoreTest.Command
                  }
             }";
 
-            var assemblyName = Assembly.GetAssembly(typeof(ReadRawData))?.GetName();
+            var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCommand))?.GetName();
             IsNotNull(assemblyName);
 
             var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Command, assemblyName)
             {
-                { typeof(ReadRawData) }
+                { typeof(ReadRawDataCommand) }
             };
 
             bool rc = decoder.TryUnserialise(ReadCardJSON, out object resultMessage);
@@ -64,15 +65,15 @@ namespace XFS4IoTCoreTest.Command
             IsTrue(rc);
             IsNotNull(resultMessage);
 
-            Command<ReadRawDataPayload> result = resultMessage as Command<ReadRawDataPayload> ?? throw new Exception();
+            Command<ReadRawDataCommand.PayloadData> result = resultMessage as Command<ReadRawDataCommand.PayloadData> ?? throw new Exception();
 
             IsNotNull(result);
 
-            IsInstanceOfType(result, typeof(ReadRawData));
-            ReadRawData readCardCommand = result as ReadRawData;
+            IsInstanceOfType(result, typeof(ReadRawDataCommand));
+            ReadRawDataCommand readCardCommand = result as ReadRawDataCommand;
             IsNotNull(readCardCommand);
             IsNotNull(readCardCommand.Payload);
-            ReadRawDataPayload readCardPayload = readCardCommand.Payload as ReadRawDataPayload;
+            ReadRawDataCommand.PayloadData readCardPayload = readCardCommand.Payload as ReadRawDataCommand.PayloadData;
             IsNotNull(readCardPayload);
             AreEqual(true, readCardPayload.Track1);
         }
@@ -136,12 +137,12 @@ namespace XFS4IoTCoreTest.Command
                     ""ddi"":true
             }";
 
-            var assemblyName = Assembly.GetAssembly(typeof(ReadRawData))?.GetName();
+            var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCommand))?.GetName();
             IsNotNull(assemblyName);
 
             var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Command, assemblyName)
             {
-                { typeof(ReadRawData) }
+                { typeof(ReadRawDataCommand) }
             };
 
             bool rc = decoder.TryUnserialise(AcceptCardJSON, out object result);
@@ -152,14 +153,14 @@ namespace XFS4IoTCoreTest.Command
         [TestMethod]
         public void UnserialiseStringToObjectNotJSON()
         {
-            var assemblyName = Assembly.GetAssembly(typeof(ReadRawData))?.GetName();
+            var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCommand))?.GetName();
             IsNotNull(assemblyName);
 
             var AcceptCardJSON = @"Not JSON";
 
             var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Command, assemblyName)
             {
-                { typeof(ReadRawData) }
+                { typeof(ReadRawDataCommand) }
             };
 
             bool rc = decoder.TryUnserialise(AcceptCardJSON, out object result);
@@ -168,24 +169,24 @@ namespace XFS4IoTCoreTest.Command
         }
 
         [Command(Name = "Common.TestCommand1")]
-        public class TestCommand1 : Command<MessagePayload>
+        public class TestCommand1 : Command<XFS4IoT.Commands.MessagePayload>
         {
-            public TestCommand1() : base(Guid.NewGuid().ToString(), new MessagePayload(10000)) { }
+            public TestCommand1() : base(Guid.NewGuid().ToString(), new XFS4IoT.Commands.MessagePayload(10000)) { }
         }
         [Command(Name = "Common.TestCommand2")]
-        public class TestCommand2 : Command<MessagePayload>
+        public class TestCommand2 : Command<XFS4IoT.Commands.MessagePayload>
         {
-            public TestCommand2() : base(Guid.NewGuid().ToString(), new MessagePayload(20000)) { }
+            public TestCommand2() : base(Guid.NewGuid().ToString(), new XFS4IoT.Commands.MessagePayload(20000)) { }
         }
-        [Response(Name = "Common.TestResponse1")]
-        public class TestResponse1 : XFS4IoT.Responses.Response<XFS4IoT.Responses.MessagePayload>
+        [Completion(Name = "Common.TestResponse1")]
+        public class TestResponse1 : Completion<XFS4IoT.Completions.MessagePayload>
         {
-            public TestResponse1() : base(Guid.NewGuid().ToString(), new XFS4IoT.Responses.MessagePayload(XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success, "good")) { }
+            public TestResponse1() : base(Guid.NewGuid().ToString(), new XFS4IoT.Completions.MessagePayload(XFS4IoT.Completions.MessagePayload.CompletionCodeEnum.Success, "good")) { }
         }
-        [Response(Name = "Common.TestResponse2")]
-        public class TestResponse2 : XFS4IoT.Responses.Response<XFS4IoT.Responses.MessagePayload>
+        [Completion(Name = "Common.TestResponse2")]
+        public class TestResponse2 : Completion<XFS4IoT.Completions.MessagePayload>
         {
-            public TestResponse2() : base(Guid.NewGuid().ToString(), new XFS4IoT.Responses.MessagePayload(XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.Success, "error")) { }
+            public TestResponse2() : base(Guid.NewGuid().ToString(), new XFS4IoT.Completions.MessagePayload(XFS4IoT.Completions.MessagePayload.CompletionCodeEnum.Success, "error")) { }
         }
 
         [TestMethod]

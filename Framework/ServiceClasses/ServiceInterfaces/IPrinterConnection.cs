@@ -7,45 +7,45 @@ namespace Printer
     public interface IPrinterConnection : ICommonConnection
     {
 
-        void RetractBinThresholdEvent(XFS4IoT.Printer.Events.RetractBinThresholdEventPayload Payload);
+        void RetractBinThresholdEvent(XFS4IoT.Printer.Events.RetractBinThresholdEvent.PayloadData Payload);
 
         void MediaTakenEvent();
 
-        void PaperThresholdEvent(XFS4IoT.Printer.Events.PaperThresholdEventPayload Payload);
+        void PaperThresholdEvent(XFS4IoT.Printer.Events.PaperThresholdEvent.PayloadData Payload);
 
-        void TonerThresholdEvent(XFS4IoT.Printer.Events.TonerThresholdEventPayload Payload);
+        void TonerThresholdEvent(XFS4IoT.Printer.Events.TonerThresholdEvent.PayloadData Payload);
 
-        void InkThresholdEvent(XFS4IoT.Printer.Events.InkThresholdEventPayload Payload);
+        void InkThresholdEvent(XFS4IoT.Printer.Events.InkThresholdEvent.PayloadData Payload);
 
-        void MediaPresentedEvent(XFS4IoT.Printer.Events.MediaPresentedEventPayload Payload);
+        void MediaPresentedEvent(XFS4IoT.Printer.Events.MediaPresentedEvent.PayloadData Payload);
 
-        void MediaAutoRetractedEvent(XFS4IoT.Printer.Events.MediaAutoRetractedEventPayload Payload);
+        void MediaAutoRetractedEvent(XFS4IoT.Printer.Events.MediaAutoRetractedEvent.PayloadData Payload);
 
-        void NoMediaEvent(XFS4IoT.Printer.Events.NoMediaEventPayload Payload);
+        void NoMediaEvent(XFS4IoT.Printer.Events.NoMediaEvent.PayloadData Payload);
 
         void MediaInsertedEvent();
 
-        void FieldErrorEvent(XFS4IoT.Printer.Events.FieldErrorEventPayload Payload);
+        void FieldErrorEvent(XFS4IoT.Printer.Events.FieldErrorEvent.PayloadData Payload);
 
-        void FieldWarningEvent(XFS4IoT.Printer.Events.FieldWarningEventPayload Payload);
+        void FieldWarningEvent(XFS4IoT.Printer.Events.FieldWarningEvent.PayloadData Payload);
 
-        void MediaRejectedEvent(XFS4IoT.Printer.Events.MediaRejectedEventPayload Payload);
+        void MediaRejectedEvent(XFS4IoT.Printer.Events.MediaRejectedEvent.PayloadData Payload);
 
-        void LampThresholdEvent(XFS4IoT.Printer.Events.LampThresholdEventPayload Payload);
+        void LampThresholdEvent(XFS4IoT.Printer.Events.LampThresholdEvent.PayloadData Payload);
 
-        void MediaDetectedEvent(XFS4IoT.Printer.Events.MediaDetectedEventPayload Payload);
+        void MediaDetectedEvent(XFS4IoT.Printer.Events.MediaDetectedEvent.PayloadData Payload);
 
-        void DefinitionLoadedEvent(XFS4IoT.Printer.Events.DefinitionLoadedEventPayload Payload);
+        void DefinitionLoadedEvent(XFS4IoT.Printer.Events.DefinitionLoadedEvent.PayloadData Payload);
 
         void MediaInsertedUnsolicitedEvent();
 
-        void MediaPresentedUnsolicitedEvent(XFS4IoT.Printer.Events.MediaPresentedUnsolicitedEventPayload Payload);
+        void MediaPresentedUnsolicitedEvent(XFS4IoT.Printer.Events.MediaPresentedUnsolicitedEvent.PayloadData Payload);
 
-        void RetractBinStatusEvent(XFS4IoT.Printer.Events.RetractBinStatusEventPayload Payload);
+        void RetractBinStatusEvent(XFS4IoT.Printer.Events.RetractBinStatusEvent.PayloadData Payload);
 
-        void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEventPayload Payload);
+        void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEvent.PayloadData Payload);
 
-        void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEventPayload Payload);
+        void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEvent.PayloadData Payload);
 
     }
 }

@@ -6,7 +6,10 @@ using XFS4IoT;
 using System.Linq;
 using System.Threading;
 using XFS4IoT.CardReader;
-
+using XFS4IoT.Common.Commands;
+using XFS4IoT.Common.Completions;
+using XFS4IoT.CardReader.Commands;
+using XFS4IoT.CardReader.Completions;
 using System.Runtime.InteropServices;
 
 namespace TestClient
@@ -74,23 +77,23 @@ namespace TestClient
                 Thread.Sleep(30000);
             }
 
-            Logger.WriteLine($"Sending {nameof(XFS4IoT.Common.Commands.GetService)} command");
+            Logger.WriteLine($"Sending {nameof(GetServiceCommand)} command");
 
-            await Discovery.SendCommandAsync(new XFS4IoT.Common.Commands.GetService(Guid.NewGuid().ToString(), new XFS4IoT.Commands.MessagePayload(60000)));
+            await Discovery.SendCommandAsync(new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(60000)));
             Logger.WriteLine($"Waiting for response...");
 
             object cmdResponse = await Discovery.ReceiveMessageAsync();
             if (cmdResponse is null)
-                Logger.WriteLine($"Invalid response to {nameof(XFS4IoT.Common.Responses.GetService)}");
-            XFS4IoT.Common.Responses.GetService response = cmdResponse as XFS4IoT.Common.Responses.GetService;
+                Logger.WriteLine($"Invalid response to {nameof(GetServiceCompletion)}");
+            GetServiceCompletion response = cmdResponse as GetServiceCompletion;
             if (response is null)
-                Logger.WriteLine($"Invalid type of response to {nameof(XFS4IoT.Common.Responses.GetService)}");
+                Logger.WriteLine($"Invalid type of response to {nameof(GetServiceCompletion)}");
 
             if (response is not null)
                 EndPointDetails(response.Payload);
         }
 
-        private static void EndPointDetails(XFS4IoT.Common.Responses.GetServicePayload endpointDetails)
+        private static void EndPointDetails(GetServiceCompletion.PayloadData endpointDetails)
         {
             Logger.WriteLine($"Got endpoint details {endpointDetails}");
             Logger.WriteLine($"Services:\n{string.Join("\n", from ep in endpointDetails.Services select ep.ToString())}");
@@ -98,7 +101,7 @@ namespace TestClient
             CardReaderUri = FindServiceUri(endpointDetails, XFSConstants.ServiceClass.CardReader);
         }
 
-        private static Uri FindServiceUri(XFS4IoT.Common.Responses.GetServicePayload endpointDetails, XFSConstants.ServiceClass ServiceClass)
+        private static Uri FindServiceUri(GetServiceCompletion.PayloadData endpointDetails, XFSConstants.ServiceClass ServiceClass)
         {
             var service =
                 (from ep in endpointDetails.Services
@@ -123,11 +126,11 @@ namespace TestClient
             // Open the actual network connection
             cardReader.ConnectAsync().Wait(1000);
 
-            Logger.WriteLine($"Sending {nameof(XFS4IoT.CardReader.Commands.ReadRawData)} command");
+            Logger.WriteLine($"Sending {nameof(ReadRawDataCommand)} command");
 
             //MessageBox((IntPtr)0, "Send CardReader ReadRawData command to read chip card", "XFS4IoT Test Client", 0);
             // Create a new command and send it to the device
-            var command = new XFS4IoT.CardReader.Commands.ReadRawData(Guid.NewGuid().ToString(), new XFS4IoT.CardReader.Commands.ReadRawDataPayload(60000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
+            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(), new ReadRawDataCommand.PayloadData(60000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
             await cardReader.SendCommandAsync(command);
 
             // Wait for a response from the device. 
@@ -139,11 +142,11 @@ namespace TestClient
 
                 if (cmdResponse is null)
                 {
-                    Logger.WriteLine($"Invalid response. {nameof(XFS4IoT.CardReader.Responses.ReadRawData)}");
+                    Logger.WriteLine($"Invalid response. {nameof(ReadRawDataCompletion)}");
                     break;
                 }
 
-                if (cmdResponse.GetType() != typeof(XFS4IoT.CardReader.Responses.ReadRawData))
+                if (cmdResponse.GetType() != typeof(ReadRawDataCompletion))
                 {
                     if (cmdResponse.GetType() == typeof(XFS4IoT.CardReader.Events.MediaInsertedEvent))
                     {
@@ -152,15 +155,15 @@ namespace TestClient
                     }
                     else
                     {
-                        Logger.WriteLine($"Unexpected type of response. {nameof(XFS4IoT.CardReader.Responses.ReadRawData)}");
+                        Logger.WriteLine($"Unexpected type of response. {nameof(ReadRawDataCompletion)}");
                     }
                 }
 
-                XFS4IoT.CardReader.Responses.ReadRawData response = cmdResponse as XFS4IoT.CardReader.Responses.ReadRawData;
+                ReadRawDataCompletion response = cmdResponse as ReadRawDataCompletion;
                 if (response is null)
-                    Logger.WriteLine($"Invalid type of response. {nameof(XFS4IoT.CardReader.Responses.ReadRawData)}");
+                    Logger.WriteLine($"Invalid type of response. {nameof(ReadRawDataCompletion)}");
                 else
-                    Logger.WriteLine($"Response received. {nameof(XFS4IoT.CardReader.Responses.ReadRawData)}");
+                    Logger.WriteLine($"Response received. {nameof(ReadRawDataCompletion)}");
 
                 break;
             }

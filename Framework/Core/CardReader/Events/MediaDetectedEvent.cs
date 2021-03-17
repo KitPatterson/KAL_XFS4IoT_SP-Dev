@@ -3,55 +3,55 @@
  * 
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * MediaDetectedEvent.cs uses automatically generated parts. 
- * MediaDetectedEvent.cs was created at 03/03/2021 05:09:25 PM
+ * created at 3/16/2021 6:52:32 PM
 \***********************************************************************************************/
-
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using XFS4IoT.Events;
 
 namespace XFS4IoT.CardReader.Events
 {
 
+    [DataContract]
+    [Event(Name = "CardReader.MediaDetectedEvent")]
+    public sealed class MediaDetectedEvent : Event<MediaDetectedEvent.PayloadData>
+    {
 
-	[DataContract]
-	[Event(Name = "CardReader.MediaDetectedEvent")]
-	public sealed class MediaDetectedEvent : Event<MediaDetectedEventPayload>
-	{
-
-		public MediaDetectedEvent(string RequestId, MediaDetectedEventPayload Payload)
-			: base(RequestId, Payload)
-		{ }
-
-	}
-
-	[DataContract]
-	public sealed class MediaDetectedEventPayload : MessagePayloadBase
-	{
-
-		public enum ResetOutEnum
-		{
-			Ejected,
-			Retained,
-			ReadPosition,
-			Jammed,
-		}
+        public MediaDetectedEvent(string RequestId, PayloadData Payload)
+            : base(RequestId, Payload)
+        { }
 
 
-		public MediaDetectedEventPayload(ResetOutEnum? ResetOut = null)
-			: base()
-		{
-			this.ResetOut = ResetOut;
-		}
+        [DataContract]
+        public sealed class PayloadData : MessagePayloadBase
+        {
 
-		/// <summary>
-		///Specifies the action that was performed on any card found within the IDC as one of the following:**ejected**
-		////The card was ejected.**retained**
-		////The card was retained.**readPosition**
-		////The card is in read position.**jammed**
-		////The card is jammed in the device.
-		/// </summary>
-		[DataMember(Name = "resetOut")] 
-		public ResetOutEnum? ResetOut { get; private set; }
-	}
+            public enum ResetOutEnum
+            {
+                Ejected,
+                Retained,
+                ReadPosition,
+                Jammed,
+            }
 
+
+            public PayloadData(ResetOutEnum? ResetOut = null)
+                : base()
+            {
+                this.ResetOut = ResetOut;
+            }
+
+            /// <summary>
+            ///Specifies the action that was performed on any card found within the IDC as one of the following:**ejected**
+            ////The card was ejected.**retained**
+            ////The card was retained.**readPosition**
+            ////The card is in read position.**jammed**
+            ////The card is jammed in the device.
+            /// </summary>
+            [DataMember(Name = "resetOut")] 
+            public ResetOutEnum? ResetOut { get; private set; }
+        }
+
+    }
 }

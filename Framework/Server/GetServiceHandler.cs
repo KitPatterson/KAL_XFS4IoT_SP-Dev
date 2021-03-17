@@ -6,10 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoTServer;
+using XFS4IoT.Common.Commands;
+using XFS4IoT.Common.Completions;
 
 namespace Server
 {
-    [CommandHandler(typeof(ServicePublisher), typeof(XFS4IoT.Common.Commands.GetService))]
+    [CommandHandler(typeof(ServicePublisher), typeof(XFS4IoT.Common.Commands.GetServiceCommand))]
     public class GetServiceHandler : ICommandHandler
     {
 
@@ -32,17 +34,17 @@ namespace Server
             command.IsNotNull($"Invalid parameter received in the {nameof(Handle)} method. {nameof(command)}");
             Contracts.IsNotNull(cancel, $"Invalid parameter received in the {nameof(Handle)} method. {nameof(cancel)}");
 
-            XFS4IoT.Common.Commands.GetService getServiceCommand = command as XFS4IoT.Common.Commands.GetService;
+            XFS4IoT.Common.Commands.GetServiceCommand getServiceCommand = command as XFS4IoT.Common.Commands.GetServiceCommand;
             getServiceCommand.IsNotNull($"Unexpected command received in the {nameof(Handle)} method. {nameof(command)}");
 
             // For now just return good result and fixed services available
-            XFS4IoT.Common.Responses.GetServicePayload payLoad = new XFS4IoT.Common.Responses.GetServicePayload(XFS4IoT.Common.Responses.GetServicePayload.CompletionCodeEnum.Success,
+            GetServiceCompletion.PayloadData payLoad = new GetServiceCompletion.PayloadData(GetServiceCompletion.PayloadData.CompletionCodeEnum.Success,
                                                                                                                 "ok",
                                                                                                                 "KAL",
                                                                                                                 from service in ServicePublisher.Services
-                                                                                                                select new XFS4IoT.Common.Responses.GetServicePayload.ServiceUriDetails(service.WSUri.AbsoluteUri));
+                                                                                                                select new GetServiceCompletion.PayloadData.ServiceUriDetails(service.WSUri.AbsoluteUri));
 
-            await Connection.SendMessageAsync(new XFS4IoT.Common.Responses.GetService(getServiceCommand.Headers.RequestId, payLoad));
+            await Connection.SendMessageAsync(new GetServiceCompletion(getServiceCommand.Headers.RequestId, payLoad));
         }
 
         public async Task HandleError(IConnection Connection, object command, Exception commandErrorException)
@@ -51,16 +53,16 @@ namespace Server
             command.IsNotNull($"Invalid parameter received in the {nameof(Handle)} method. {nameof(command)}");
             commandErrorException.IsNotNull($"Invalid parameter received in the {nameof(Handle)} method. {nameof(commandErrorException)}");
 
-            XFS4IoT.Common.Commands.GetService getServiceCommand = command as XFS4IoT.Common.Commands.GetService;
+            GetServiceCommand getServiceCommand = command as GetServiceCommand;
             getServiceCommand.IsNotNull($"Unexpected command received in the {nameof(Handle)} method. {nameof(command)}");
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            GetServiceCompletion.PayloadData.CompletionCodeEnum errorCode = GetServiceCompletion.PayloadData.CompletionCodeEnum.InternalError;
             if (commandErrorException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = GetServiceCompletion.PayloadData.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.GetServicePayload payLoad = new XFS4IoT.Common.Responses.GetServicePayload(errorCode, commandErrorException.Message);
+            GetServiceCompletion.PayloadData payLoad = new GetServiceCompletion.PayloadData(errorCode, commandErrorException.Message);
   
-            await Connection.SendMessageAsync(new XFS4IoT.Common.Responses.GetService(getServiceCommand.Headers.RequestId, payLoad));
+            await Connection.SendMessageAsync(new GetServiceCompletion(getServiceCommand.Headers.RequestId, payLoad));
         }
     }
 }

@@ -3,57 +3,57 @@
  * 
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * IllegalKeyAccessEvent.cs uses automatically generated parts. 
- * IllegalKeyAccessEvent.cs was created at 03/03/2021 05:09:26 PM
+ * created at 3/16/2021 6:52:32 PM
 \***********************************************************************************************/
-
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using XFS4IoT.Events;
 
 namespace XFS4IoT.Crypto.Events
 {
 
+    [DataContract]
+    [Event(Name = "Crypto.IllegalKeyAccessEvent")]
+    public sealed class IllegalKeyAccessEvent : Event<IllegalKeyAccessEvent.PayloadData>
+    {
 
-	[DataContract]
-	[Event(Name = "Crypto.IllegalKeyAccessEvent")]
-	public sealed class IllegalKeyAccessEvent : Event<IllegalKeyAccessEventPayload>
-	{
-
-		public IllegalKeyAccessEvent(string RequestId, IllegalKeyAccessEventPayload Payload)
-			: base(RequestId, Payload)
-		{ }
-
-	}
-
-	[DataContract]
-	public sealed class IllegalKeyAccessEventPayload : MessagePayloadBase
-	{
-
-		public enum ErrorCodeEnum
-		{
-			Keynotfound,
-			Keynovalue,
-			Useviolation,
-			Algorithmnotsupp,
-		}
+        public IllegalKeyAccessEvent(string RequestId, PayloadData Payload)
+            : base(RequestId, Payload)
+        { }
 
 
-		public IllegalKeyAccessEventPayload(string KeyName = null, ErrorCodeEnum? ErrorCode = null)
-			: base()
-		{
-			this.KeyName = KeyName;
-			this.ErrorCode = ErrorCode;
-		}
+        [DataContract]
+        public sealed class PayloadData : MessagePayloadBase
+        {
 
-		/// <summary>
-		///Specifies the name of the key that caused the error. 
-		/// </summary>
-		[DataMember(Name = "keyName")] 
-		public string KeyName { get; private set; }
-		/// <summary>
-		///Specifies the type of illegal key access that occurred
-		/// </summary>
-		[DataMember(Name = "errorCode")] 
-		public ErrorCodeEnum? ErrorCode { get; private set; }
-	}
+            public enum ErrorCodeEnum
+            {
+                Keynotfound,
+                Keynovalue,
+                Useviolation,
+                Algorithmnotsupp,
+            }
 
+
+            public PayloadData(string KeyName = null, ErrorCodeEnum? ErrorCode = null)
+                : base()
+            {
+                this.KeyName = KeyName;
+                this.ErrorCode = ErrorCode;
+            }
+
+            /// <summary>
+            ///Specifies the name of the key that caused the error. 
+            /// </summary>
+            [DataMember(Name = "keyName")] 
+            public string KeyName { get; private set; }
+            /// <summary>
+            ///Specifies the type of illegal key access that occurred
+            /// </summary>
+            [DataMember(Name = "errorCode")] 
+            public ErrorCodeEnum? ErrorCode { get; private set; }
+        }
+
+    }
 }

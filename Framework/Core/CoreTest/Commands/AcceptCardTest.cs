@@ -15,7 +15,7 @@ namespace XFS4IoTCoreTest.Command
         [TestMethod]
         public void Constructor()
         {
-            var command = new ReadRawData(Guid.NewGuid().ToString(), new ReadRawDataPayload(1000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
+            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(), new ReadRawDataCommand.PayloadData(1000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
 
             Assert.AreEqual(1000, command.Payload.Timeout);
         }
@@ -23,7 +23,7 @@ namespace XFS4IoTCoreTest.Command
         [TestMethod]
         public void SerialiseString()
         {
-            var command = new ReadRawData("ee6d592b-483c-4c22-98ef-1070e290bf4f", new ReadRawDataPayload(5000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
+            var command = new ReadRawDataCommand("ee6d592b-483c-4c22-98ef-1070e290bf4f", new ReadRawDataCommand.PayloadData(5000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
 
             string result = command.Serialise();
 

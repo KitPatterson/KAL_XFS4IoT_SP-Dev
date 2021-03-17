@@ -30,7 +30,7 @@ namespace XFS4IoT
             }
             else if (AutoPopulate == AutoPopulateType.Response)
             {
-                searchType = typeof(ResponseAttribute);
+                searchType = typeof(CompletionAttribute);
             }
             else if (AutoPopulate != AutoPopulateType.None)
             {
@@ -88,7 +88,7 @@ namespace XFS4IoT
 
             // Sniff headers first and know message type
             if (searchType == typeof(CommandAttribute) ||
-                searchType == typeof(ResponseAttribute))
+                searchType == typeof(CompletionAttribute))
             {
                 if (!TryUnserialise(JSON, typeof(MessageDeserializerHelper<MessagePayloadBase>), out object objMessage))
                     return false;

@@ -6,10 +6,15 @@ using System.Threading;
 using XFS4IoT;
 using XFS4IoTTextTerminal;
 using XFS4IoTServer;
+using XFS4IoT.Completions;
+using XFS4IoT.Common.Commands;
+using XFS4IoT.Common.Completions;
+using XFS4IoT.TextTerminal.Commands;
+using XFS4IoT.TextTerminal.Completions;
 
 namespace TextTerminal
 {
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.GetFormList))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(GetFormListCommand))]
     public class GetFormListHandler : ICommandHandler
     {
         public GetFormListHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -21,32 +26,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetFormList(Connection, command as XFS4IoT.TextTerminal.Commands.GetFormList, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetFormList(Connection, command as GetFormListCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.GetFormList getFormListcommand = command as XFS4IoT.TextTerminal.Commands.GetFormList;
+            GetFormListCommand getFormListcommand = command as GetFormListCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.GetFormList response = new XFS4IoT.TextTerminal.Responses.GetFormList(getFormListcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.GetFormListPayload(errorCode, commandException.Message));
+            GetFormListCompletion response = new GetFormListCompletion(getFormListcommand.Headers.RequestId, new GetFormListCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteGetFormList(IConnection connection, XFS4IoT.TextTerminal.Commands.GetFormList getFormList, CancellationToken cancel)
+        private async Task ExecuteGetFormList(IConnection connection, GetFormListCommand getFormList, CancellationToken cancel)
         {
             getFormList.IsNotNull($"Invalid parameter in the ExecuteGetFormList method. {nameof(getFormList)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, getFormList.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.GetFormList()");
-            Task<XFS4IoT.TextTerminal.Responses.GetFormListPayload> task = ServiceProvider.Device.GetFormList(textTerminalConnection, getFormList.Payload, cancel);
+            Task<GetFormListCompletion.PayloadData> task = ServiceProvider.Device.GetFormList(textTerminalConnection, getFormList.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.GetFormList() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.GetFormList response = new XFS4IoT.TextTerminal.Responses.GetFormList(getFormList.Headers.RequestId, task.Result);
+            GetFormListCompletion response = new GetFormListCompletion(getFormList.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -55,7 +60,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.GetQueryForm))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(GetQueryFormCommand))]
     public class GetQueryFormHandler : ICommandHandler
     {
         public GetQueryFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -67,32 +72,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetQueryForm(Connection, command as XFS4IoT.TextTerminal.Commands.GetQueryForm, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetQueryForm(Connection, command as GetQueryFormCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.GetQueryForm getQueryFormcommand = command as XFS4IoT.TextTerminal.Commands.GetQueryForm;
+            GetQueryFormCommand getQueryFormcommand = command as GetQueryFormCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.GetQueryForm response = new XFS4IoT.TextTerminal.Responses.GetQueryForm(getQueryFormcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.GetQueryFormPayload(errorCode, commandException.Message));
+            GetQueryFormCompletion response = new GetQueryFormCompletion(getQueryFormcommand.Headers.RequestId, new GetQueryFormCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteGetQueryForm(IConnection connection, XFS4IoT.TextTerminal.Commands.GetQueryForm getQueryForm, CancellationToken cancel)
+        private async Task ExecuteGetQueryForm(IConnection connection, GetQueryFormCommand getQueryForm, CancellationToken cancel)
         {
             getQueryForm.IsNotNull($"Invalid parameter in the ExecuteGetQueryForm method. {nameof(getQueryForm)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, getQueryForm.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.GetQueryForm()");
-            Task<XFS4IoT.TextTerminal.Responses.GetQueryFormPayload> task = ServiceProvider.Device.GetQueryForm(textTerminalConnection, getQueryForm.Payload, cancel);
+            Task<GetQueryFormCompletion.PayloadData> task = ServiceProvider.Device.GetQueryForm(textTerminalConnection, getQueryForm.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.GetQueryForm() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.GetQueryForm response = new XFS4IoT.TextTerminal.Responses.GetQueryForm(getQueryForm.Headers.RequestId, task.Result);
+            GetQueryFormCompletion response = new GetQueryFormCompletion(getQueryForm.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -101,7 +106,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.GetQueryField))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(GetQueryFieldCommand))]
     public class GetQueryFieldHandler : ICommandHandler
     {
         public GetQueryFieldHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -113,32 +118,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetQueryField(Connection, command as XFS4IoT.TextTerminal.Commands.GetQueryField, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetQueryField(Connection, command as GetQueryFieldCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.GetQueryField getQueryFieldcommand = command as XFS4IoT.TextTerminal.Commands.GetQueryField;
+            GetQueryFieldCommand getQueryFieldcommand = command as GetQueryFieldCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.GetQueryField response = new XFS4IoT.TextTerminal.Responses.GetQueryField(getQueryFieldcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.GetQueryFieldPayload(errorCode, commandException.Message));
+            GetQueryFieldCompletion response = new GetQueryFieldCompletion(getQueryFieldcommand.Headers.RequestId, new GetQueryFieldCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteGetQueryField(IConnection connection, XFS4IoT.TextTerminal.Commands.GetQueryField getQueryField, CancellationToken cancel)
+        private async Task ExecuteGetQueryField(IConnection connection, GetQueryFieldCommand getQueryField, CancellationToken cancel)
         {
             getQueryField.IsNotNull($"Invalid parameter in the ExecuteGetQueryField method. {nameof(getQueryField)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, getQueryField.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.GetQueryField()");
-            Task<XFS4IoT.TextTerminal.Responses.GetQueryFieldPayload> task = ServiceProvider.Device.GetQueryField(textTerminalConnection, getQueryField.Payload, cancel);
+            Task<GetQueryFieldCompletion.PayloadData> task = ServiceProvider.Device.GetQueryField(textTerminalConnection, getQueryField.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.GetQueryField() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.GetQueryField response = new XFS4IoT.TextTerminal.Responses.GetQueryField(getQueryField.Headers.RequestId, task.Result);
+            GetQueryFieldCompletion response = new GetQueryFieldCompletion(getQueryField.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -147,7 +152,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.GetKeyDetail))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(GetKeyDetailCommand))]
     public class GetKeyDetailHandler : ICommandHandler
     {
         public GetKeyDetailHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -159,32 +164,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetKeyDetail(Connection, command as XFS4IoT.TextTerminal.Commands.GetKeyDetail, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetKeyDetail(Connection, command as GetKeyDetailCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.GetKeyDetail getKeyDetailcommand = command as XFS4IoT.TextTerminal.Commands.GetKeyDetail;
+            GetKeyDetailCommand getKeyDetailcommand = command as GetKeyDetailCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.GetKeyDetail response = new XFS4IoT.TextTerminal.Responses.GetKeyDetail(getKeyDetailcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.GetKeyDetailPayload(errorCode, commandException.Message));
+            GetKeyDetailCompletion response = new GetKeyDetailCompletion(getKeyDetailcommand.Headers.RequestId, new GetKeyDetailCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteGetKeyDetail(IConnection connection, XFS4IoT.TextTerminal.Commands.GetKeyDetail getKeyDetail, CancellationToken cancel)
+        private async Task ExecuteGetKeyDetail(IConnection connection, GetKeyDetailCommand getKeyDetail, CancellationToken cancel)
         {
             getKeyDetail.IsNotNull($"Invalid parameter in the ExecuteGetKeyDetail method. {nameof(getKeyDetail)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, getKeyDetail.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.GetKeyDetail()");
-            Task<XFS4IoT.TextTerminal.Responses.GetKeyDetailPayload> task = ServiceProvider.Device.GetKeyDetail(textTerminalConnection, getKeyDetail.Payload, cancel);
+            Task<GetKeyDetailCompletion.PayloadData> task = ServiceProvider.Device.GetKeyDetail(textTerminalConnection, getKeyDetail.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.GetKeyDetail() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.GetKeyDetail response = new XFS4IoT.TextTerminal.Responses.GetKeyDetail(getKeyDetail.Headers.RequestId, task.Result);
+            GetKeyDetailCompletion response = new GetKeyDetailCompletion(getKeyDetail.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -193,7 +198,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.Beep))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(BeepCommand))]
     public class BeepHandler : ICommandHandler
     {
         public BeepHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -205,32 +210,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteBeep(Connection, command as XFS4IoT.TextTerminal.Commands.Beep, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteBeep(Connection, command as BeepCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.Beep beepcommand = command as XFS4IoT.TextTerminal.Commands.Beep;
+            BeepCommand beepcommand = command as BeepCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.Beep response = new XFS4IoT.TextTerminal.Responses.Beep(beepcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.BeepPayload(errorCode, commandException.Message));
+            BeepCompletion response = new BeepCompletion(beepcommand.Headers.RequestId, new BeepCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteBeep(IConnection connection, XFS4IoT.TextTerminal.Commands.Beep beep, CancellationToken cancel)
+        private async Task ExecuteBeep(IConnection connection, BeepCommand beep, CancellationToken cancel)
         {
             beep.IsNotNull($"Invalid parameter in the ExecuteBeep method. {nameof(beep)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, beep.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.Beep()");
-            Task<XFS4IoT.TextTerminal.Responses.BeepPayload> task = ServiceProvider.Device.Beep(textTerminalConnection, beep.Payload, cancel);
+            Task<BeepCompletion.PayloadData> task = ServiceProvider.Device.Beep(textTerminalConnection, beep.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.Beep() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.Beep response = new XFS4IoT.TextTerminal.Responses.Beep(beep.Headers.RequestId, task.Result);
+            BeepCompletion response = new BeepCompletion(beep.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -239,7 +244,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.ClearScreen))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(ClearScreenCommand))]
     public class ClearScreenHandler : ICommandHandler
     {
         public ClearScreenHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -251,32 +256,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteClearScreen(Connection, command as XFS4IoT.TextTerminal.Commands.ClearScreen, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteClearScreen(Connection, command as ClearScreenCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.ClearScreen clearScreencommand = command as XFS4IoT.TextTerminal.Commands.ClearScreen;
+            ClearScreenCommand clearScreencommand = command as ClearScreenCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.ClearScreen response = new XFS4IoT.TextTerminal.Responses.ClearScreen(clearScreencommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.ClearScreenPayload(errorCode, commandException.Message));
+            ClearScreenCompletion response = new ClearScreenCompletion(clearScreencommand.Headers.RequestId, new ClearScreenCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteClearScreen(IConnection connection, XFS4IoT.TextTerminal.Commands.ClearScreen clearScreen, CancellationToken cancel)
+        private async Task ExecuteClearScreen(IConnection connection, ClearScreenCommand clearScreen, CancellationToken cancel)
         {
             clearScreen.IsNotNull($"Invalid parameter in the ExecuteClearScreen method. {nameof(clearScreen)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, clearScreen.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.ClearScreen()");
-            Task<XFS4IoT.TextTerminal.Responses.ClearScreenPayload> task = ServiceProvider.Device.ClearScreen(textTerminalConnection, clearScreen.Payload, cancel);
+            Task<ClearScreenCompletion.PayloadData> task = ServiceProvider.Device.ClearScreen(textTerminalConnection, clearScreen.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.ClearScreen() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.ClearScreen response = new XFS4IoT.TextTerminal.Responses.ClearScreen(clearScreen.Headers.RequestId, task.Result);
+            ClearScreenCompletion response = new ClearScreenCompletion(clearScreen.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -285,7 +290,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.DispLight))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(DispLightCommand))]
     public class DispLightHandler : ICommandHandler
     {
         public DispLightHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -297,32 +302,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteDispLight(Connection, command as XFS4IoT.TextTerminal.Commands.DispLight, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteDispLight(Connection, command as DispLightCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.DispLight dispLightcommand = command as XFS4IoT.TextTerminal.Commands.DispLight;
+            DispLightCommand dispLightcommand = command as DispLightCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.DispLight response = new XFS4IoT.TextTerminal.Responses.DispLight(dispLightcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.DispLightPayload(errorCode, commandException.Message));
+            DispLightCompletion response = new DispLightCompletion(dispLightcommand.Headers.RequestId, new DispLightCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteDispLight(IConnection connection, XFS4IoT.TextTerminal.Commands.DispLight dispLight, CancellationToken cancel)
+        private async Task ExecuteDispLight(IConnection connection, DispLightCommand dispLight, CancellationToken cancel)
         {
             dispLight.IsNotNull($"Invalid parameter in the ExecuteDispLight method. {nameof(dispLight)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, dispLight.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.DispLight()");
-            Task<XFS4IoT.TextTerminal.Responses.DispLightPayload> task = ServiceProvider.Device.DispLight(textTerminalConnection, dispLight.Payload, cancel);
+            Task<DispLightCompletion.PayloadData> task = ServiceProvider.Device.DispLight(textTerminalConnection, dispLight.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.DispLight() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.DispLight response = new XFS4IoT.TextTerminal.Responses.DispLight(dispLight.Headers.RequestId, task.Result);
+            DispLightCompletion response = new DispLightCompletion(dispLight.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -331,7 +336,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.SetLed))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(SetLedCommand))]
     public class SetLedHandler : ICommandHandler
     {
         public SetLedHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -343,32 +348,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetLed(Connection, command as XFS4IoT.TextTerminal.Commands.SetLed, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetLed(Connection, command as SetLedCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.SetLed setLedcommand = command as XFS4IoT.TextTerminal.Commands.SetLed;
+            SetLedCommand setLedcommand = command as SetLedCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.SetLed response = new XFS4IoT.TextTerminal.Responses.SetLed(setLedcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.SetLedPayload(errorCode, commandException.Message));
+            SetLedCompletion response = new SetLedCompletion(setLedcommand.Headers.RequestId, new SetLedCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteSetLed(IConnection connection, XFS4IoT.TextTerminal.Commands.SetLed setLed, CancellationToken cancel)
+        private async Task ExecuteSetLed(IConnection connection, SetLedCommand setLed, CancellationToken cancel)
         {
             setLed.IsNotNull($"Invalid parameter in the ExecuteSetLed method. {nameof(setLed)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, setLed.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.SetLed()");
-            Task<XFS4IoT.TextTerminal.Responses.SetLedPayload> task = ServiceProvider.Device.SetLed(textTerminalConnection, setLed.Payload, cancel);
+            Task<SetLedCompletion.PayloadData> task = ServiceProvider.Device.SetLed(textTerminalConnection, setLed.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.SetLed() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.SetLed response = new XFS4IoT.TextTerminal.Responses.SetLed(setLed.Headers.RequestId, task.Result);
+            SetLedCompletion response = new SetLedCompletion(setLed.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -377,7 +382,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.SetResolution))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(SetResolutionCommand))]
     public class SetResolutionHandler : ICommandHandler
     {
         public SetResolutionHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -389,32 +394,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetResolution(Connection, command as XFS4IoT.TextTerminal.Commands.SetResolution, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetResolution(Connection, command as SetResolutionCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.SetResolution setResolutioncommand = command as XFS4IoT.TextTerminal.Commands.SetResolution;
+            SetResolutionCommand setResolutioncommand = command as SetResolutionCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.SetResolution response = new XFS4IoT.TextTerminal.Responses.SetResolution(setResolutioncommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.SetResolutionPayload(errorCode, commandException.Message));
+            SetResolutionCompletion response = new SetResolutionCompletion(setResolutioncommand.Headers.RequestId, new SetResolutionCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteSetResolution(IConnection connection, XFS4IoT.TextTerminal.Commands.SetResolution setResolution, CancellationToken cancel)
+        private async Task ExecuteSetResolution(IConnection connection, SetResolutionCommand setResolution, CancellationToken cancel)
         {
             setResolution.IsNotNull($"Invalid parameter in the ExecuteSetResolution method. {nameof(setResolution)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, setResolution.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.SetResolution()");
-            Task<XFS4IoT.TextTerminal.Responses.SetResolutionPayload> task = ServiceProvider.Device.SetResolution(textTerminalConnection, setResolution.Payload, cancel);
+            Task<SetResolutionCompletion.PayloadData> task = ServiceProvider.Device.SetResolution(textTerminalConnection, setResolution.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.SetResolution() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.SetResolution response = new XFS4IoT.TextTerminal.Responses.SetResolution(setResolution.Headers.RequestId, task.Result);
+            SetResolutionCompletion response = new SetResolutionCompletion(setResolution.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -423,7 +428,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.WriteForm))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(WriteFormCommand))]
     public class WriteFormHandler : ICommandHandler
     {
         public WriteFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -435,32 +440,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteWriteForm(Connection, command as XFS4IoT.TextTerminal.Commands.WriteForm, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteWriteForm(Connection, command as WriteFormCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.WriteForm writeFormcommand = command as XFS4IoT.TextTerminal.Commands.WriteForm;
+            WriteFormCommand writeFormcommand = command as WriteFormCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.WriteForm response = new XFS4IoT.TextTerminal.Responses.WriteForm(writeFormcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.WriteFormPayload(errorCode, commandException.Message));
+            WriteFormCompletion response = new WriteFormCompletion(writeFormcommand.Headers.RequestId, new WriteFormCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteWriteForm(IConnection connection, XFS4IoT.TextTerminal.Commands.WriteForm writeForm, CancellationToken cancel)
+        private async Task ExecuteWriteForm(IConnection connection, WriteFormCommand writeForm, CancellationToken cancel)
         {
             writeForm.IsNotNull($"Invalid parameter in the ExecuteWriteForm method. {nameof(writeForm)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, writeForm.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.WriteForm()");
-            Task<XFS4IoT.TextTerminal.Responses.WriteFormPayload> task = ServiceProvider.Device.WriteForm(textTerminalConnection, writeForm.Payload, cancel);
+            Task<WriteFormCompletion.PayloadData> task = ServiceProvider.Device.WriteForm(textTerminalConnection, writeForm.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.WriteForm() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.WriteForm response = new XFS4IoT.TextTerminal.Responses.WriteForm(writeForm.Headers.RequestId, task.Result);
+            WriteFormCompletion response = new WriteFormCompletion(writeForm.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -469,7 +474,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.ReadForm))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(ReadFormCommand))]
     public class ReadFormHandler : ICommandHandler
     {
         public ReadFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -481,32 +486,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteReadForm(Connection, command as XFS4IoT.TextTerminal.Commands.ReadForm, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteReadForm(Connection, command as ReadFormCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.ReadForm readFormcommand = command as XFS4IoT.TextTerminal.Commands.ReadForm;
+            ReadFormCommand readFormcommand = command as ReadFormCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.ReadForm response = new XFS4IoT.TextTerminal.Responses.ReadForm(readFormcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.ReadFormPayload(errorCode, commandException.Message));
+            ReadFormCompletion response = new ReadFormCompletion(readFormcommand.Headers.RequestId, new ReadFormCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteReadForm(IConnection connection, XFS4IoT.TextTerminal.Commands.ReadForm readForm, CancellationToken cancel)
+        private async Task ExecuteReadForm(IConnection connection, ReadFormCommand readForm, CancellationToken cancel)
         {
             readForm.IsNotNull($"Invalid parameter in the ExecuteReadForm method. {nameof(readForm)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, readForm.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.ReadForm()");
-            Task<XFS4IoT.TextTerminal.Responses.ReadFormPayload> task = ServiceProvider.Device.ReadForm(textTerminalConnection, readForm.Payload, cancel);
+            Task<ReadFormCompletion.PayloadData> task = ServiceProvider.Device.ReadForm(textTerminalConnection, readForm.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.ReadForm() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.ReadForm response = new XFS4IoT.TextTerminal.Responses.ReadForm(readForm.Headers.RequestId, task.Result);
+            ReadFormCompletion response = new ReadFormCompletion(readForm.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -515,7 +520,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.Write))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(WriteCommand))]
     public class WriteHandler : ICommandHandler
     {
         public WriteHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -527,32 +532,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteWrite(Connection, command as XFS4IoT.TextTerminal.Commands.Write, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteWrite(Connection, command as WriteCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.Write writecommand = command as XFS4IoT.TextTerminal.Commands.Write;
+            WriteCommand writecommand = command as WriteCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.Write response = new XFS4IoT.TextTerminal.Responses.Write(writecommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.WritePayload(errorCode, commandException.Message));
+            WriteCompletion response = new WriteCompletion(writecommand.Headers.RequestId, new WriteCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteWrite(IConnection connection, XFS4IoT.TextTerminal.Commands.Write write, CancellationToken cancel)
+        private async Task ExecuteWrite(IConnection connection, WriteCommand write, CancellationToken cancel)
         {
             write.IsNotNull($"Invalid parameter in the ExecuteWrite method. {nameof(write)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, write.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.Write()");
-            Task<XFS4IoT.TextTerminal.Responses.WritePayload> task = ServiceProvider.Device.Write(textTerminalConnection, write.Payload, cancel);
+            Task<WriteCompletion.PayloadData> task = ServiceProvider.Device.Write(textTerminalConnection, write.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.Write() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.Write response = new XFS4IoT.TextTerminal.Responses.Write(write.Headers.RequestId, task.Result);
+            WriteCompletion response = new WriteCompletion(write.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -561,7 +566,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.Read))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(ReadCommand))]
     public class ReadHandler : ICommandHandler
     {
         public ReadHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -573,32 +578,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteRead(Connection, command as XFS4IoT.TextTerminal.Commands.Read, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteRead(Connection, command as ReadCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.Read readcommand = command as XFS4IoT.TextTerminal.Commands.Read;
+            ReadCommand readcommand = command as ReadCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.Read response = new XFS4IoT.TextTerminal.Responses.Read(readcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.ReadPayload(errorCode, commandException.Message));
+            ReadCompletion response = new ReadCompletion(readcommand.Headers.RequestId, new ReadCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteRead(IConnection connection, XFS4IoT.TextTerminal.Commands.Read read, CancellationToken cancel)
+        private async Task ExecuteRead(IConnection connection, ReadCommand read, CancellationToken cancel)
         {
             read.IsNotNull($"Invalid parameter in the ExecuteRead method. {nameof(read)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, read.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.Read()");
-            Task<XFS4IoT.TextTerminal.Responses.ReadPayload> task = ServiceProvider.Device.Read(textTerminalConnection, read.Payload, cancel);
+            Task<ReadCompletion.PayloadData> task = ServiceProvider.Device.Read(textTerminalConnection, read.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.Read() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.Read response = new XFS4IoT.TextTerminal.Responses.Read(read.Headers.RequestId, task.Result);
+            ReadCompletion response = new ReadCompletion(read.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -607,7 +612,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.Reset))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(ResetCommand))]
     public class ResetHandler : ICommandHandler
     {
         public ResetHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -619,32 +624,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteReset(Connection, command as XFS4IoT.TextTerminal.Commands.Reset, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteReset(Connection, command as ResetCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.Reset resetcommand = command as XFS4IoT.TextTerminal.Commands.Reset;
+            ResetCommand resetcommand = command as ResetCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.Reset response = new XFS4IoT.TextTerminal.Responses.Reset(resetcommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.ResetPayload(errorCode, commandException.Message));
+            ResetCompletion response = new ResetCompletion(resetcommand.Headers.RequestId, new ResetCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteReset(IConnection connection, XFS4IoT.TextTerminal.Commands.Reset reset, CancellationToken cancel)
+        private async Task ExecuteReset(IConnection connection, ResetCommand reset, CancellationToken cancel)
         {
             reset.IsNotNull($"Invalid parameter in the ExecuteReset method. {nameof(reset)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, reset.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.Reset()");
-            Task<XFS4IoT.TextTerminal.Responses.ResetPayload> task = ServiceProvider.Device.Reset(textTerminalConnection, reset.Payload, cancel);
+            Task<ResetCompletion.PayloadData> task = ServiceProvider.Device.Reset(textTerminalConnection, reset.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.Reset() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.Reset response = new XFS4IoT.TextTerminal.Responses.Reset(reset.Headers.RequestId, task.Result);
+            ResetCompletion response = new ResetCompletion(reset.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -653,7 +658,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.TextTerminal.Commands.DefineKeys))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(DefineKeysCommand))]
     public class DefineKeysHandler : ICommandHandler
     {
         public DefineKeysHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -665,32 +670,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteDefineKeys(Connection, command as XFS4IoT.TextTerminal.Commands.DefineKeys, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteDefineKeys(Connection, command as DefineKeysCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.TextTerminal.Commands.DefineKeys defineKeyscommand = command as XFS4IoT.TextTerminal.Commands.DefineKeys;
+            DefineKeysCommand defineKeyscommand = command as DefineKeysCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.TextTerminal.Responses.DefineKeys response = new XFS4IoT.TextTerminal.Responses.DefineKeys(defineKeyscommand.Headers.RequestId, new XFS4IoT.TextTerminal.Responses.DefineKeysPayload(errorCode, commandException.Message));
+            DefineKeysCompletion response = new DefineKeysCompletion(defineKeyscommand.Headers.RequestId, new DefineKeysCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteDefineKeys(IConnection connection, XFS4IoT.TextTerminal.Commands.DefineKeys defineKeys, CancellationToken cancel)
+        private async Task ExecuteDefineKeys(IConnection connection, DefineKeysCommand defineKeys, CancellationToken cancel)
         {
             defineKeys.IsNotNull($"Invalid parameter in the ExecuteDefineKeys method. {nameof(defineKeys)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, defineKeys.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.DefineKeys()");
-            Task<XFS4IoT.TextTerminal.Responses.DefineKeysPayload> task = ServiceProvider.Device.DefineKeys(textTerminalConnection, defineKeys.Payload, cancel);
+            Task<DefineKeysCompletion.PayloadData> task = ServiceProvider.Device.DefineKeys(textTerminalConnection, defineKeys.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.DefineKeys() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.TextTerminal.Responses.DefineKeys response = new XFS4IoT.TextTerminal.Responses.DefineKeys(defineKeys.Headers.RequestId, task.Result);
+            DefineKeysCompletion response = new DefineKeysCompletion(defineKeys.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -699,7 +704,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.Status))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(StatusCommand))]
     public class StatusHandler : ICommandHandler
     {
         public StatusHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -711,32 +716,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteStatus(Connection, command as XFS4IoT.Common.Commands.Status, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteStatus(Connection, command as StatusCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.Status statuscommand = command as XFS4IoT.Common.Commands.Status;
+            StatusCommand statuscommand = command as StatusCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.Status response = new XFS4IoT.Common.Responses.Status(statuscommand.Headers.RequestId, new XFS4IoT.Common.Responses.StatusPayload(errorCode, commandException.Message));
+            StatusCompletion response = new StatusCompletion(statuscommand.Headers.RequestId, new StatusCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteStatus(IConnection connection, XFS4IoT.Common.Commands.Status status, CancellationToken cancel)
+        private async Task ExecuteStatus(IConnection connection, StatusCommand status, CancellationToken cancel)
         {
             status.IsNotNull($"Invalid parameter in the ExecuteStatus method. {nameof(status)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, status.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.Status()");
-            Task<XFS4IoT.Common.Responses.StatusPayload> task = ServiceProvider.Device.Status(textTerminalConnection, status.Payload, cancel);
+            Task<StatusCompletion.PayloadData> task = ServiceProvider.Device.Status(textTerminalConnection, status.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.Status() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.Status response = new XFS4IoT.Common.Responses.Status(status.Headers.RequestId, task.Result);
+            StatusCompletion response = new StatusCompletion(status.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -745,7 +750,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.Capabilities))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(CapabilitiesCommand))]
     public class CapabilitiesHandler : ICommandHandler
     {
         public CapabilitiesHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -757,32 +762,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteCapabilities(Connection, command as XFS4IoT.Common.Commands.Capabilities, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteCapabilities(Connection, command as CapabilitiesCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.Capabilities capabilitiescommand = command as XFS4IoT.Common.Commands.Capabilities;
+            CapabilitiesCommand capabilitiescommand = command as CapabilitiesCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.Capabilities response = new XFS4IoT.Common.Responses.Capabilities(capabilitiescommand.Headers.RequestId, new XFS4IoT.Common.Responses.CapabilitiesPayload(errorCode, commandException.Message));
+            CapabilitiesCompletion response = new CapabilitiesCompletion(capabilitiescommand.Headers.RequestId, new CapabilitiesCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteCapabilities(IConnection connection, XFS4IoT.Common.Commands.Capabilities capabilities, CancellationToken cancel)
+        private async Task ExecuteCapabilities(IConnection connection, CapabilitiesCommand capabilities, CancellationToken cancel)
         {
             capabilities.IsNotNull($"Invalid parameter in the ExecuteCapabilities method. {nameof(capabilities)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, capabilities.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.Capabilities()");
-            Task<XFS4IoT.Common.Responses.CapabilitiesPayload> task = ServiceProvider.Device.Capabilities(textTerminalConnection, capabilities.Payload, cancel);
+            Task<CapabilitiesCompletion.PayloadData> task = ServiceProvider.Device.Capabilities(textTerminalConnection, capabilities.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.Capabilities() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.Capabilities response = new XFS4IoT.Common.Responses.Capabilities(capabilities.Headers.RequestId, task.Result);
+            CapabilitiesCompletion response = new CapabilitiesCompletion(capabilities.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -791,7 +796,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.SetGuidanceLight))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(SetGuidanceLightCommand))]
     public class SetGuidanceLightHandler : ICommandHandler
     {
         public SetGuidanceLightHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -803,32 +808,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetGuidanceLight(Connection, command as XFS4IoT.Common.Commands.SetGuidanceLight, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetGuidanceLight(Connection, command as SetGuidanceLightCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.SetGuidanceLight setGuidanceLightcommand = command as XFS4IoT.Common.Commands.SetGuidanceLight;
+            SetGuidanceLightCommand setGuidanceLightcommand = command as SetGuidanceLightCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.SetGuidanceLight response = new XFS4IoT.Common.Responses.SetGuidanceLight(setGuidanceLightcommand.Headers.RequestId, new XFS4IoT.Common.Responses.SetGuidanceLightPayload(errorCode, commandException.Message));
+            SetGuidanceLightCompletion response = new SetGuidanceLightCompletion(setGuidanceLightcommand.Headers.RequestId, new SetGuidanceLightCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteSetGuidanceLight(IConnection connection, XFS4IoT.Common.Commands.SetGuidanceLight setGuidanceLight, CancellationToken cancel)
+        private async Task ExecuteSetGuidanceLight(IConnection connection, SetGuidanceLightCommand setGuidanceLight, CancellationToken cancel)
         {
             setGuidanceLight.IsNotNull($"Invalid parameter in the ExecuteSetGuidanceLight method. {nameof(setGuidanceLight)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, setGuidanceLight.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.SetGuidanceLight()");
-            Task<XFS4IoT.Common.Responses.SetGuidanceLightPayload> task = ServiceProvider.Device.SetGuidanceLight(textTerminalConnection, setGuidanceLight.Payload, cancel);
+            Task<SetGuidanceLightCompletion.PayloadData> task = ServiceProvider.Device.SetGuidanceLight(textTerminalConnection, setGuidanceLight.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.SetGuidanceLight() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.SetGuidanceLight response = new XFS4IoT.Common.Responses.SetGuidanceLight(setGuidanceLight.Headers.RequestId, task.Result);
+            SetGuidanceLightCompletion response = new SetGuidanceLightCompletion(setGuidanceLight.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -837,7 +842,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.PowerSaveControl))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(PowerSaveControlCommand))]
     public class PowerSaveControlHandler : ICommandHandler
     {
         public PowerSaveControlHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -849,32 +854,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecutePowerSaveControl(Connection, command as XFS4IoT.Common.Commands.PowerSaveControl, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecutePowerSaveControl(Connection, command as PowerSaveControlCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.PowerSaveControl powerSaveControlcommand = command as XFS4IoT.Common.Commands.PowerSaveControl;
+            PowerSaveControlCommand powerSaveControlcommand = command as PowerSaveControlCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.PowerSaveControl response = new XFS4IoT.Common.Responses.PowerSaveControl(powerSaveControlcommand.Headers.RequestId, new XFS4IoT.Common.Responses.PowerSaveControlPayload(errorCode, commandException.Message));
+            PowerSaveControlCompletion response = new PowerSaveControlCompletion(powerSaveControlcommand.Headers.RequestId, new PowerSaveControlCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecutePowerSaveControl(IConnection connection, XFS4IoT.Common.Commands.PowerSaveControl powerSaveControl, CancellationToken cancel)
+        private async Task ExecutePowerSaveControl(IConnection connection, PowerSaveControlCommand powerSaveControl, CancellationToken cancel)
         {
             powerSaveControl.IsNotNull($"Invalid parameter in the ExecutePowerSaveControl method. {nameof(powerSaveControl)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, powerSaveControl.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.PowerSaveControl()");
-            Task<XFS4IoT.Common.Responses.PowerSaveControlPayload> task = ServiceProvider.Device.PowerSaveControl(textTerminalConnection, powerSaveControl.Payload, cancel);
+            Task<PowerSaveControlCompletion.PayloadData> task = ServiceProvider.Device.PowerSaveControl(textTerminalConnection, powerSaveControl.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.PowerSaveControl() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.PowerSaveControl response = new XFS4IoT.Common.Responses.PowerSaveControl(powerSaveControl.Headers.RequestId, task.Result);
+            PowerSaveControlCompletion response = new PowerSaveControlCompletion(powerSaveControl.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -883,7 +888,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.SynchronizeCommand))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(SynchronizeCommandCommand))]
     public class SynchronizeCommandHandler : ICommandHandler
     {
         public SynchronizeCommandHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -895,32 +900,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSynchronizeCommand(Connection, command as XFS4IoT.Common.Commands.SynchronizeCommand, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSynchronizeCommand(Connection, command as SynchronizeCommandCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.SynchronizeCommand synchronizeCommandcommand = command as XFS4IoT.Common.Commands.SynchronizeCommand;
+            SynchronizeCommandCommand synchronizeCommandcommand = command as SynchronizeCommandCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.SynchronizeCommand response = new XFS4IoT.Common.Responses.SynchronizeCommand(synchronizeCommandcommand.Headers.RequestId, new XFS4IoT.Common.Responses.SynchronizeCommandPayload(errorCode, commandException.Message));
+            SynchronizeCommandCompletion response = new SynchronizeCommandCompletion(synchronizeCommandcommand.Headers.RequestId, new SynchronizeCommandCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteSynchronizeCommand(IConnection connection, XFS4IoT.Common.Commands.SynchronizeCommand synchronizeCommand, CancellationToken cancel)
+        private async Task ExecuteSynchronizeCommand(IConnection connection, SynchronizeCommandCommand synchronizeCommand, CancellationToken cancel)
         {
             synchronizeCommand.IsNotNull($"Invalid parameter in the ExecuteSynchronizeCommand method. {nameof(synchronizeCommand)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, synchronizeCommand.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.SynchronizeCommand()");
-            Task<XFS4IoT.Common.Responses.SynchronizeCommandPayload> task = ServiceProvider.Device.SynchronizeCommand(textTerminalConnection, synchronizeCommand.Payload, cancel);
+            Task<SynchronizeCommandCompletion.PayloadData> task = ServiceProvider.Device.SynchronizeCommand(textTerminalConnection, synchronizeCommand.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.SynchronizeCommand() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.SynchronizeCommand response = new XFS4IoT.Common.Responses.SynchronizeCommand(synchronizeCommand.Headers.RequestId, task.Result);
+            SynchronizeCommandCompletion response = new SynchronizeCommandCompletion(synchronizeCommand.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -929,7 +934,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.SetTransactionState))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(SetTransactionStateCommand))]
     public class SetTransactionStateHandler : ICommandHandler
     {
         public SetTransactionStateHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -941,32 +946,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetTransactionState(Connection, command as XFS4IoT.Common.Commands.SetTransactionState, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteSetTransactionState(Connection, command as SetTransactionStateCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.SetTransactionState setTransactionStatecommand = command as XFS4IoT.Common.Commands.SetTransactionState;
+            SetTransactionStateCommand setTransactionStatecommand = command as SetTransactionStateCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.SetTransactionState response = new XFS4IoT.Common.Responses.SetTransactionState(setTransactionStatecommand.Headers.RequestId, new XFS4IoT.Common.Responses.SetTransactionStatePayload(errorCode, commandException.Message));
+            SetTransactionStateCompletion response = new SetTransactionStateCompletion(setTransactionStatecommand.Headers.RequestId, new SetTransactionStateCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteSetTransactionState(IConnection connection, XFS4IoT.Common.Commands.SetTransactionState setTransactionState, CancellationToken cancel)
+        private async Task ExecuteSetTransactionState(IConnection connection, SetTransactionStateCommand setTransactionState, CancellationToken cancel)
         {
             setTransactionState.IsNotNull($"Invalid parameter in the ExecuteSetTransactionState method. {nameof(setTransactionState)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, setTransactionState.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.SetTransactionState()");
-            Task<XFS4IoT.Common.Responses.SetTransactionStatePayload> task = ServiceProvider.Device.SetTransactionState(textTerminalConnection, setTransactionState.Payload, cancel);
+            Task<SetTransactionStateCompletion.PayloadData> task = ServiceProvider.Device.SetTransactionState(textTerminalConnection, setTransactionState.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.SetTransactionState() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.SetTransactionState response = new XFS4IoT.Common.Responses.SetTransactionState(setTransactionState.Headers.RequestId, task.Result);
+            SetTransactionStateCompletion response = new SetTransactionStateCompletion(setTransactionState.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }
@@ -975,7 +980,7 @@ namespace TextTerminal
         private ILogger Logger { get; }
     }
 
-    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(XFS4IoT.Common.Commands.GetTransactionState))]
+    [CommandHandler(typeof(TextTerminalServiceProvider), typeof(GetTransactionStateCommand))]
     public class GetTransactionStateHandler : ICommandHandler
     {
         public GetTransactionStateHandler(ICommandDispatcher Dispatcher, ILogger logger)
@@ -987,32 +992,32 @@ namespace TextTerminal
             this.Logger = logger;
         }
 
-        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetTransactionState(Connection, command as XFS4IoT.Common.Commands.GetTransactionState, cancel);
+        public async Task Handle(IConnection Connection, object command, CancellationToken cancel) => await ExecuteGetTransactionState(Connection, command as GetTransactionStateCommand, cancel);
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            XFS4IoT.Common.Commands.GetTransactionState getTransactionStatecommand = command as XFS4IoT.Common.Commands.GetTransactionState;
+            GetTransactionStateCommand getTransactionStatecommand = command as GetTransactionStateCommand;
 
-            XFS4IoT.Responses.MessagePayload.CompletionCodeEnum errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InternalError;
+            MessagePayload.CompletionCodeEnum errorCode = MessagePayload.CompletionCodeEnum.InternalError;
             if (commandException.GetType() == typeof(InvalidDataException))
-                errorCode = XFS4IoT.Responses.MessagePayload.CompletionCodeEnum.InvalidData;
+                errorCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            XFS4IoT.Common.Responses.GetTransactionState response = new XFS4IoT.Common.Responses.GetTransactionState(getTransactionStatecommand.Headers.RequestId, new XFS4IoT.Common.Responses.GetTransactionStatePayload(errorCode, commandException.Message));
+            GetTransactionStateCompletion response = new GetTransactionStateCompletion(getTransactionStatecommand.Headers.RequestId, new GetTransactionStateCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        private async Task ExecuteGetTransactionState(IConnection connection, XFS4IoT.Common.Commands.GetTransactionState getTransactionState, CancellationToken cancel)
+        private async Task ExecuteGetTransactionState(IConnection connection, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
         {
             getTransactionState.IsNotNull($"Invalid parameter in the ExecuteGetTransactionState method. {nameof(getTransactionState)}");
 
             ITextTerminalConnection textTerminalConnection = new TextTerminalConnection(connection, getTransactionState.Headers.RequestId);
 
             Logger.Log(Constants.DeviceClass, "TextTerminalDev.GetTransactionState()");
-            Task<XFS4IoT.Common.Responses.GetTransactionStatePayload> task = ServiceProvider.Device.GetTransactionState(textTerminalConnection, getTransactionState.Payload, cancel);
+            Task<GetTransactionStateCompletion.PayloadData> task = ServiceProvider.Device.GetTransactionState(textTerminalConnection, getTransactionState.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"TextTerminalDev.GetTransactionState() -> {task.Result.CompletionCode}");
 
-            XFS4IoT.Common.Responses.GetTransactionState response = new XFS4IoT.Common.Responses.GetTransactionState(getTransactionState.Headers.RequestId, task.Result);
+            GetTransactionStateCompletion response = new GetTransactionStateCompletion(getTransactionState.Headers.RequestId, task.Result);
 
             await connection.SendMessageAsync(response);
         }

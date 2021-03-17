@@ -8,12 +8,12 @@ namespace XFS4IoTServerTest
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Runtime.InteropServices;
     using System.Diagnostics;
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using XFS4IoT;
+    using XFS4IoT.CardReader.Commands;
     using static Assert;
 
     [TestClass]
@@ -49,7 +49,7 @@ namespace XFS4IoTServerTest
         /// </summary>
         private readonly IMessageDecoder CommandDecoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Command, Assembly.GetAssembly(typeof(EndPointTest))?.GetName())
         {
-            { typeof( XFS4IoT.CardReader.Commands.ReadRawData) },
+            { typeof( ReadRawDataCommand) },
             //{ typeof( ReadRawData) },
         };
 

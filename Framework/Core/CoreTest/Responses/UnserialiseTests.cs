@@ -5,8 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System;
 using XFS4IoT;
-using XFS4IoT.CardReader.Responses;
-using XFS4IoT.Responses;
+using XFS4IoT.CardReader.Commands;
+using XFS4IoT.CardReader.Completions;
+using XFS4IoT.Completions;
 
 namespace XFS4IoTCoreTest.Response
 {
@@ -27,12 +28,12 @@ namespace XFS4IoTCoreTest.Response
         {
             var ReadCardJSON = @"{""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":1},""payload"":{""completionCode"":0,""errorDescription"":""OK"",""data"":[{""data"":""123456789"",""status"":0,""type"":0},{""data"":""123456789"",""status"":1,""type"":1},{""data"":""123456789"",""status"":2,""type"":2}],""errorCode"":0}}";
 
-            var assemblyName = Assembly.GetAssembly(typeof(ReadRawData))?.GetName();
+            var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCompletion))?.GetName();
             IsNotNull(assemblyName);
 
             var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Response, assemblyName)
             {
-                { typeof(ReadRawData) }
+                { typeof(ReadRawDataCompletion) }
             };
 
             bool rc = decoder.TryUnserialise(ReadCardJSON, out object resultMessage);
@@ -40,15 +41,15 @@ namespace XFS4IoTCoreTest.Response
             IsTrue(rc);
             IsNotNull(resultMessage);
 
-            Response<ReadRawDataPayload> result = resultMessage as Response<ReadRawDataPayload> ?? throw new Exception();
+            Completion<ReadRawDataCompletion.PayloadData> result = resultMessage as Completion<ReadRawDataCompletion.PayloadData> ?? throw new Exception();
 
             IsNotNull(result);
 
-            IsInstanceOfType(result, typeof(ReadRawData));
-            ReadRawData readCardCommand = result as ReadRawData;
-            IsNotNull(readCardCommand);
-            IsNotNull(readCardCommand.Payload);
-            ReadRawDataPayload readCardPayload = readCardCommand.Payload as ReadRawDataPayload;
+            IsInstanceOfType(result, typeof(ReadRawDataCompletion));
+            ReadRawDataCompletion readCardCompletion = result as ReadRawDataCompletion;
+            IsNotNull(readCardCompletion);
+            IsNotNull(readCardCompletion.Payload);
+            ReadRawDataCompletion.PayloadData readCardPayload = readCardCompletion.Payload as ReadRawDataCompletion.PayloadData;
             IsNotNull(readCardPayload);
             AreEqual(3, readCardPayload.Data.Count);
         }
@@ -75,12 +76,12 @@ namespace XFS4IoTCoreTest.Response
                     ""ddi"":true
             }";
 
-            var assemblyName = Assembly.GetAssembly(typeof(ReadRawData))?.GetName();
+            var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCommand))?.GetName();
             IsNotNull(assemblyName);
 
-            var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Response, assemblyName)
+            var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Command, assemblyName)
             {
-                { typeof(ReadRawData) }
+                { typeof(ReadRawDataCommand) }
             };
 
             bool rc = decoder.TryUnserialise(AcceptCardJSON, out object result);
@@ -92,12 +93,12 @@ namespace XFS4IoTCoreTest.Response
         public void UnserialiseStringToObjectNotJSON()
         {
             var AcceptCardJSON = @"Not JSON";
-            var assemblyName = Assembly.GetAssembly(typeof(ReadRawData))?.GetName();
+            var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCommand))?.GetName();
             IsNotNull(assemblyName);
 
-            var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Response, assemblyName)
+            var decoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Command, assemblyName)
             {
-                { typeof(ReadRawData) }
+                { typeof(ReadRawDataCommand) }
             };
 
             bool rc = decoder.TryUnserialise(AcceptCardJSON, out object result);

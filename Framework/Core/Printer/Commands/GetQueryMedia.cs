@@ -3,9 +3,8 @@
  * 
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryMedia.cs uses automatically generated parts. 
- * GetQueryMedia.cs was created at 03/03/2021 05:09:27 PM
+ * created at 3/16/2021 6:52:32 PM
 \***********************************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -13,36 +12,31 @@ using XFS4IoT.Commands;
 
 namespace XFS4IoT.Printer.Commands
 {
+    //Original name = GetQueryMedia
+    [DataContract]
+    [Command(Name = "Printer.GetQueryMedia")]
+    public sealed class GetQueryMediaCommand : Command<GetQueryMediaCommand.PayloadData>
+    {
+        public GetQueryMediaCommand(string RequestId, GetQueryMediaCommand.PayloadData Payload)
+            : base(RequestId, Payload)
+        { }
 
+        [DataContract]
+        public sealed class PayloadData : MessagePayload
+        {
 
-	//Original name = GetQueryMedia
-	[DataContract]
-	[Command(Name = "Printer.GetQueryMedia")]
-	public sealed class GetQueryMedia : Command<GetQueryMediaPayload>
-	{
+            public PayloadData(int Timeout, string MediaName = null)
+                : base(Timeout)
+            {
+                this.MediaName = MediaName;
+            }
 
-		public GetQueryMedia(string RequestId, GetQueryMediaPayload Payload)
-			: base(RequestId, Payload)
-		{ }
+            /// <summary>
+            ///The media name for which to retrieve details.
+            /// </summary>
+            [DataMember(Name = "mediaName")] 
+            public string MediaName { get; private set; }
 
-	}
-
-	[DataContract]
-	public sealed class GetQueryMediaPayload : MessagePayload
-	{
-
-
-		public GetQueryMediaPayload(int Timeout, string MediaName = null)
-			: base(Timeout)
-		{
-			this.MediaName = MediaName;
-		}
-
-		/// <summary>
-		///The media name for which to retrieve details.
-		/// </summary>
-		[DataMember(Name = "mediaName")] 
-		public string MediaName { get; private set; }
-	}
-
+        }
+    }
 }

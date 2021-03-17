@@ -1,11 +1,12 @@
 ﻿// (C) KAL ATM Software GmbH, 2021
 
 using XFS4IoTServer;
+using XFS4IoT.Common.Events;
 
 namespace XFS4IoTFramework.Common
 {
     public interface ICommonConnection
     {
-        void ServiceDetailEvent(XFS4IoT.Common.Events.ServiceDetailEventPayload Payload);
+        void ServiceDetailEvent(ServiceDetailEvent.PayloadData Payload);
     }
 }
