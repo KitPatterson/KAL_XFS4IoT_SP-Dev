@@ -38,7 +38,7 @@ namespace XFS4IoTCoreTest.Response
 
             string res = response.Serialise();
 
-            AreEqual(@"{""payload"":{""errorCode"":""ok"",""data"":[{""type"":""track1"",""status"":""ok"",""data"":""123456789""},{""type"":""track2"",""status"":""missing"",""data"":""123456789""},{""type"":""track3"",""status"":""invalid"",""data"":""123456789""}],""completionCode"":""success"",""errorDescription"":""OK""},""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":""response""}}", res);
+            AreEqual(@"{""payload"":{""status"":""ok"",""data"":[{""dataSource"":""track1"",""status"":""ok"",""data"":""123456789""},{""dataSource"":""track2"",""status"":""errorDataMissing"",""data"":""123456789""},{""dataSource"":""track3"",""status"":""errorDataInvalid"",""data"":""123456789""}],""completionCode"":""success"",""errorDescription"":""OK""},""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":""response""}}", res);
         }
     }
 }
