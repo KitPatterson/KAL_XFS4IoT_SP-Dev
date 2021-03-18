@@ -26,7 +26,7 @@ namespace XFS4IoTCoreTest.Response
         [TestMethod]
         public void UnserialiseStringToObject()
         {
-            var ReadCardJSON = @"{""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":1},""payload"":{""completionCode"":0,""errorDescription"":""OK"",""data"":[{""data"":""123456789"",""status"":0,""type"":0},{""data"":""123456789"",""status"":1,""type"":1},{""data"":""123456789"",""status"":2,""type"":2}],""errorCode"":0}}";
+            var ReadCardJSON = @"{""payload"":{""track1"":{""status"":""ok"",""data"":""123456789""},""track2"":{""status"":""dataMissing"",""data"":""123456789""},""track3"":{""status"":""dataInvalid"",""data"":""123456789""},""completionCode"":""success"",""errorDescription"":""OK""},""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":""response""}}";
 
             var assemblyName = Assembly.GetAssembly(typeof(ReadRawDataCompletion))?.GetName();
             IsNotNull(assemblyName);
@@ -51,7 +51,9 @@ namespace XFS4IoTCoreTest.Response
             IsNotNull(readCardCompletion.Payload);
             ReadRawDataCompletion.PayloadData readCardPayload = readCardCompletion.Payload as ReadRawDataCompletion.PayloadData;
             IsNotNull(readCardPayload);
-            AreEqual(3, readCardPayload.Data.Count);
+            IsNotNull(readCardPayload.Track1);
+            IsNotNull(readCardPayload.Track2);
+            IsNotNull(readCardPayload.Track3);
         }
 
         [TestMethod]

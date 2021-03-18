@@ -33,17 +33,12 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
 
             await Task.Delay(1000, cancellation);
 
-            List<ReadRawDataCompletion.PayloadData.DataClass> DataClass = new List<ReadRawDataCompletion.PayloadData.DataClass>();
-            DataClass.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track1, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "B1234567890123456^SMITH/JOHN.MR^020945852301200589800568000000"));
-            DataClass.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track2, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "1234567890123456=0209458523012005898"));
-            DataClass.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track3, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "011234567890123456==000667788903609640040000006200013010000020000098120209105123==00568000999999"));
-
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
-                                                                       "ok",
-                                                                       ReadRawDataCompletion.PayloadData.StatusEnum.Ok,
-                                                                       DataClass);
+            return new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, "ok", null,
+                new ReadRawDataCompletion.PayloadData.Track1Class(ReadRawDataCompletion.PayloadData.Track1Class.StatusEnum.Ok, "B1234567890123456^SMITH/JOHN.MR^020945852301200589800568000000"),
+                new ReadRawDataCompletion.PayloadData.Track2Class(ReadRawDataCompletion.PayloadData.Track2Class.StatusEnum.Ok, "1234567890123456=0209458523012005898"),
+                new ReadRawDataCompletion.PayloadData.Track3Class(ReadRawDataCompletion.PayloadData.Track3Class.StatusEnum.Ok, "011234567890123456==000667788903609640040000006200013010000020000098120209105123==00568000999999"));
         }
 
 
@@ -138,7 +133,12 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                 StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok,
                 StatusCompletion.PayloadData.CardReaderClass.SecurityEnum.NotSupported,
                 0,
-                StatusCompletion.PayloadData.CardReaderClass.ChipPowerEnum.PoweredOff);
+                StatusCompletion.PayloadData.CardReaderClass.ChipPowerEnum.PoweredOff,
+                StatusCompletion.PayloadData.CardReaderClass.ChipModuleEnum.Ok,
+                StatusCompletion.PayloadData.CardReaderClass.MagWriteModuleEnum.Ok,
+                StatusCompletion.PayloadData.CardReaderClass.FrontImageModuleEnum.Ok,
+                StatusCompletion.PayloadData.CardReaderClass.BackImageModuleEnum.Ok,
+                new List<string>());
 
             return Task.FromResult(new StatusCompletion.PayloadData(StatusCompletion.PayloadData.CompletionCodeEnum.Success,
                                                                     "ok",
@@ -190,7 +190,13 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                 100,
                 CapabilitiesCompletion.PayloadData.CardReaderClass.SecurityTypeEnum.NotSupported,
                 CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOnOptionEnum.NoAction,
-                CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOffOptionEnum.NoAction);
+                CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOffOptionEnum.NoAction,
+                false, false, 
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.WriteModeClass(false, true, true, true),
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.ChipPowerClass(false, true, true, true),
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.MemoryChipProtocolsClass(true, true),
+                new CapabilitiesCompletion.PayloadData.CardReaderClass.EjectPositionClass(true, false),
+                0);
 
 
             List<CapabilitiesCompletion.PayloadData.InterfacesClass> interfaces = new List<CapabilitiesCompletion.PayloadData.InterfacesClass>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Completions;
+using static XFS4IoT.CardReader.Completions.ReadRawDataCompletion.PayloadData;
 
 namespace XFS4IoTCoreTest.Response
 {
@@ -16,29 +17,31 @@ namespace XFS4IoTCoreTest.Response
         [TestMethod]
         public void Constructor()
         {
-            List<ReadRawDataCompletion.PayloadData.DataClass> Data = new List<ReadRawDataCompletion.PayloadData.DataClass>();
-            Data.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track1, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok,      "123456789"));
-            Data.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track2, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.ErrorDataMissing, "123456789"));
-            Data.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track3, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.ErrorDataInvalid, "123456789"));
-            var response = new ReadRawDataCompletion(Guid.NewGuid().ToString(), new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, "OK", ReadRawDataCompletion.PayloadData.StatusEnum.Ok, Data));
-            AreEqual(3, response.Payload.Data.Count);
-            AreEqual(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track1, response.Payload.Data[0].DataSource);
-            AreEqual("123456789", response.Payload.Data[1].Data);
-            AreEqual(ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.ErrorDataInvalid, response.Payload.Data[2].Status);
+            var payload = new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, "OK", null, 
+                new Track1Class(Track1Class.StatusEnum.Ok, "123456789"), 
+                new Track2Class(Track2Class.StatusEnum.DataMissing, "123456789"), 
+                new Track3Class(Track3Class.StatusEnum.DataInvalid, "123456789"));
+            var response = new ReadRawDataCompletion(Guid.NewGuid().ToString(), payload);
+
+            IsNotNull(response.Payload.Track1);
+            IsNotNull(response.Payload.Track2);
+            IsNotNull(response.Payload.Track3);
+            AreEqual("123456789", response.Payload.Track1.Data);
+            AreEqual(Track3Class.StatusEnum.DataInvalid, response.Payload.Track3.Status);
         }
 
         [TestMethod]
         public void SerialiseString()
         {
-            List<ReadRawDataCompletion.PayloadData.DataClass> Data = new List<ReadRawDataCompletion.PayloadData.DataClass>();
-            Data.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track1, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.Ok, "123456789"));
-            Data.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track2, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.ErrorDataMissing, "123456789"));
-            Data.Add(new ReadRawDataCompletion.PayloadData.DataClass(ReadRawDataCompletion.PayloadData.DataClass.DataSourceEnum.Track3, ReadRawDataCompletion.PayloadData.DataClass.StatusEnum.ErrorDataInvalid, "123456789"));
-            var response = new ReadRawDataCompletion("ee6d592b-483c-4c22-98ef-1070e290bf4f", new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, "OK", ReadRawDataCompletion.PayloadData.StatusEnum.Ok, Data));
+            var payload = new ReadRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, "OK", null,
+                new Track1Class(Track1Class.StatusEnum.Ok, "123456789"),
+                new Track2Class(Track2Class.StatusEnum.DataMissing, "123456789"),
+                new Track3Class(Track3Class.StatusEnum.DataInvalid, "123456789"));
+            var response = new ReadRawDataCompletion("ee6d592b-483c-4c22-98ef-1070e290bf4f", payload);
 
             string res = response.Serialise();
 
-            AreEqual(@"{""payload"":{""status"":""ok"",""data"":[{""dataSource"":""track1"",""status"":""ok"",""data"":""123456789""},{""dataSource"":""track2"",""status"":""errorDataMissing"",""data"":""123456789""},{""dataSource"":""track3"",""status"":""errorDataInvalid"",""data"":""123456789""}],""completionCode"":""success"",""errorDescription"":""OK""},""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":""response""}}", res);
+            AreEqual(@"{""payload"":{""track1"":{""status"":""ok"",""data"":""123456789""},""track2"":{""status"":""dataMissing"",""data"":""123456789""},""track3"":{""status"":""dataInvalid"",""data"":""123456789""},""completionCode"":""success"",""errorDescription"":""OK""},""headers"":{""name"":""CardReader.ReadRawData"",""requestId"":""ee6d592b-483c-4c22-98ef-1070e290bf4f"",""type"":""response""}}", res);
         }
     }
 }
