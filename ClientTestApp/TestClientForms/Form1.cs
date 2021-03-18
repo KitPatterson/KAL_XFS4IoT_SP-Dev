@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
@@ -40,24 +36,24 @@ namespace TestClientForms
                 return;
             }
 
-            ReadRawDataCommand readRawDataCmd = new ReadRawDataCommand(
+            var readRawDataCmd = new ReadRawDataCommand(
                 Guid.NewGuid().ToString(), 
                 new ReadRawDataCommand.PayloadData(
-                    CommandTimeout,
-                    true,
-                    true,
-                    true,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false));
+                    Timeout: CommandTimeout,
+                    Track1: true,
+                    Track2: true,
+                    Track3: true,
+                    Chip: false,
+                    Security: false,
+                    FluxInactive: false,
+                    Watermark: false,
+                    MemoryChip: false,
+                    Track1Front: false,
+                    FrontImage: false,
+                    BackImage: false,
+                    Track1JIS: false,
+                    Track3JIS: false,
+                    Ddi: false));
 
             textBoxCommand.Text = readRawDataCmd.Serialise();
 
@@ -69,23 +65,18 @@ namespace TestClientForms
             for (; ; )
             {
                 object cmdResponse = await cardReader.ReceiveMessageAsync();
-                if (cmdResponse is not null)
+                if (cmdResponse is ReadRawDataCompletion response )
                 {
-                    if (cmdResponse.GetType() == typeof(ReadRawDataCompletion))
-                    {
-                        ReadRawDataCompletion response = cmdResponse as ReadRawDataCompletion;
-                        textBoxResponse.Text = response.Serialise();
-                        break;
-                    }
-                    else if (cmdResponse.GetType() == typeof(XFS4IoT.CardReader.Events.MediaInsertedEvent))
-                    {
-                        XFS4IoT.CardReader.Events.MediaInsertedEvent insertedEv = cmdResponse as XFS4IoT.CardReader.Events.MediaInsertedEvent;
-                        textBoxEvent.Text = insertedEv.Serialise();
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    textBoxResponse.Text = response.Serialise();
+                    break;
+                }
+                else if (cmdResponse is XFS4IoT.CardReader.Events.MediaInsertedEvent insertedEv)
+                {
+                    textBoxEvent.Text = insertedEv.Serialise();
+                }
+                else
+                {
+                    break;
                 }
             }
         }
@@ -103,10 +94,10 @@ namespace TestClientForms
                 return;
             }
 
-            EjectCardCommand ejectCmd = new EjectCardCommand(
+            var ejectCmd = new EjectCardCommand(
                 Guid.NewGuid().ToString(), new EjectCardCommand.PayloadData(
-                    CommandTimeout,
-                    EjectCardCommand.PayloadData.EjectPositionEnum.ExitPosition));
+                    Timeout: CommandTimeout,
+                    EjectPosition: EjectCardCommand.PayloadData.EjectPositionEnum.ExitPosition));
 
             textBoxCommand.Text = ejectCmd.Serialise();
 
@@ -116,21 +107,15 @@ namespace TestClientForms
             textBoxEvent.Text = string.Empty;
 
             object cmdResponse = await cardReader.ReceiveMessageAsync();
-            if (cmdResponse is not null &&
-                cmdResponse.GetType() == typeof(EjectCardCompletion))
+            if (cmdResponse is  EjectCardCompletion response)
             {
-                EjectCardCompletion response = cmdResponse as EjectCardCompletion;
-                if (response is not null)
-                {
-                    textBoxResponse.Text = response.Serialise();
-                }
+                textBoxResponse.Text = response.Serialise();
 
                 if (response.Payload.CompletionCode == EjectCardCompletion.PayloadData.CompletionCodeEnum.Success)
                 {
                     object unsolicEvent = await cardReader.ReceiveMessageAsync();
-                    if (unsolicEvent.GetType() == typeof(XFS4IoT.CardReader.Events.MediaRemovedEvent))
-                    {
-                        XFS4IoT.CardReader.Events.MediaRemovedEvent removedEv = unsolicEvent as XFS4IoT.CardReader.Events.MediaRemovedEvent;
+                    if (unsolicEvent is XFS4IoT.CardReader.Events.MediaRemovedEvent removedEv) 
+                    { 
                         textBoxEvent.Text = removedEv.Serialise();
                     }
                 }
@@ -150,7 +135,7 @@ namespace TestClientForms
                 return;
             }
 
-            StatusCommand statusCmd = new StatusCommand(Guid.NewGuid().ToString(), new StatusCommand.PayloadData(CommandTimeout));
+            var statusCmd = new StatusCommand(Guid.NewGuid().ToString(), new StatusCommand.PayloadData(CommandTimeout));
             textBoxCommand.Text = statusCmd.Serialise();
 
             await cardReader.SendCommandAsync(statusCmd);
@@ -159,16 +144,11 @@ namespace TestClientForms
             textBoxEvent.Text = string.Empty;
 
             object cmdResponse = await cardReader.ReceiveMessageAsync();
-            if (cmdResponse is not null &&
-                cmdResponse.GetType() == typeof(StatusCompletion))
+            if (cmdResponse is StatusCompletion response)
             {
-                StatusCompletion response = cmdResponse as StatusCompletion;
-                if (response is not null)
-                {
-                    textBoxResponse.Text = response.Serialise();
-                    textBoxStDevice.Text = response.Payload.Common.Device.ToString();
-                    textBoxStMedia.Text = response.Payload.CardReader.Media.ToString();
-                }
+                textBoxResponse.Text = response.Serialise();
+                textBoxStDevice.Text = response.Payload.Common.Device.ToString();
+                textBoxStMedia.Text = response.Payload.CardReader.Media.ToString();
             }
         }
 
@@ -185,7 +165,7 @@ namespace TestClientForms
                 return;
             }
 
-            CapabilitiesCommand capabilitiesCmd = new CapabilitiesCommand(Guid.NewGuid().ToString(), new CapabilitiesCommand.PayloadData(CommandTimeout));
+            var capabilitiesCmd = new CapabilitiesCommand(Guid.NewGuid().ToString(), new CapabilitiesCommand.PayloadData(CommandTimeout));
             textBoxCommand.Text = capabilitiesCmd.Serialise();
 
             await cardReader.SendCommandAsync(capabilitiesCmd);
@@ -194,15 +174,10 @@ namespace TestClientForms
             textBoxEvent.Text = string.Empty;
 
             object cmdResponse = await cardReader.ReceiveMessageAsync();
-            if (cmdResponse is not null &&
-                cmdResponse.GetType() == typeof(CapabilitiesCompletion))
+            if (cmdResponse is CapabilitiesCompletion response)
             {
-                CapabilitiesCompletion response = cmdResponse as CapabilitiesCompletion;
-                if (response is not null)
-                {
-                    textBoxResponse.Text = response.Serialise();
-                    textBoxDeviceType.Text = response.Payload.CardReader.Type.ToString();
-                }
+                textBoxResponse.Text = response.Serialise();
+                textBoxDeviceType.Text = response.Payload.CardReader.Type.ToString();
             }
         }
 
@@ -236,66 +211,59 @@ namespace TestClientForms
 
             ServicePort = null;
 
-            await Task.Run(async () =>
+            var cancels = new CancellationTokenSource(); 
+            foreach (int port in PortRanges)
             {
-                
-                foreach (int port in PortRanges)
+                try
                 {
-                    try
+                    cancels.CancelAfter(400);
+                    WebSocketState state;
+                    using (var socket = new ClientWebSocket())
                     {
-                        ClientWebSocket socket = new ClientWebSocket();
-                        var task = socket.ConnectAsync(new Uri($"{textBoxServiceURI.Text}:{port}/XFS4IoT/v1.0"), CancellationToken.None);
-                        Task.WaitAny(new[] { task }, 400);
-                        if (socket.State == WebSocketState.Open)
+                        await socket.ConnectAsync(new Uri($"{textBoxServiceURI.Text}:{port}/xfs4iot/v1.0"), cancels.Token);
+                        state = socket.State;
+                    }
+                    if (state == WebSocketState.Open)
+                    {
+                        ServicePort = port;
+                        var Discovery = new XFS4IoTClient.ClientConnection(new Uri($"{textBoxServiceURI.Text}:{ServicePort}/xfs4iot/v1.0"));
+
+                        try
                         {
-                            ServicePort = port;
-                            try
-                            {
-                                socket.Dispose();
-                            }
-                            catch (Exception)
-                            { }
+                            await Discovery.ConnectAsync();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
 
-                            var Discovery = new XFS4IoTClient.ClientConnection(new Uri($"{textBoxServiceURI.Text}:{ServicePort}/XFS4IoT/v1.0"));
+                        var getServiceCommand = new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(CommandTimeout));
+                        commandString = getServiceCommand.Serialise();
+                        await Discovery.SendCommandAsync(getServiceCommand);
 
-                            try
-                            {
-                                await Discovery.ConnectAsync();
-                            }
-                            catch (Exception)
-                            {
-                                return;
-                            }
-
-                            commandString = new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(CommandTimeout)).Serialise();
-                            await Discovery.SendCommandAsync(new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(CommandTimeout)));
-                            
-                            object cmdResponse = await Discovery.ReceiveMessageAsync();
-                            if (cmdResponse is not null)
-                            {
-                                GetServiceCompletion response = cmdResponse as GetServiceCompletion;
-                                if (response is not null &&
-                                    response.GetType() == typeof(GetServiceCompletion))
-                                {
-                                    responseString = response.Serialise();
-                                    var service =
-                                        (from ep in response.Payload.Services
+                        object cmdResponse = await Discovery.ReceiveMessageAsync();
+                        if (cmdResponse is GetServiceCompletion response)
+                        {
+                            responseString = response.Serialise();
+                            var service =
+                                (from ep in response.Payload.Services
                                          where ep.ServiceUri.Contains("CardReader")
                                          select ep
-                                         ).FirstOrDefault()
-                                         ?.ServiceUri;
+                                ).FirstOrDefault()
+                                ?.ServiceUri;
 
-                                    if (!string.IsNullOrEmpty(service))
-                                        cardServiceURI = (string)service;
-                                }
-                            }
-                            return;
+                            if (!string.IsNullOrEmpty(service))
+                                cardServiceURI = service;
                         }
+                        break;
                     }
-                    catch (System.Net.HttpListenerException)
-                    { }
                 }
-            });
+                catch (System.Net.HttpListenerException)
+                { }
+                // Timeout - skip port. 
+                catch (TaskCanceledException)
+                { }
+            }
 
             if (ServicePort is null)
             {
