@@ -34,16 +34,11 @@ namespace XFS4IoT
         [DataContract]
         public enum TypeEnum
         {
-            [EnumMember(Value = "command")]
             Command,
-            [EnumMember(Value = "response")] 
-            Response,
-            [EnumMember(Value = "event")] 
-            Event,
-            [EnumMember(Value = "completion")] 
-            Completion,
-            [EnumMember(Value = "acknowledgement")] 
             Acknowledgement,
+            Event,
+            Completion,
+            Unsolicited,
         }
 
         /// <summary>

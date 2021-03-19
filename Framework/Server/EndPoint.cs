@@ -38,9 +38,6 @@ namespace XFS4IoTServer
                 Prefixes = { EndPointUri.ToString() },
             };
 
-            // 1 second timeout. 
-            //httpListener.TimeoutManager.DrainEntityBody = new TimeSpan(0,0,1);
-            //httpListener.TimeoutManager.RequestQueue = new TimeSpan(0,0,1);
             HttpListener.Start();
 
             Logger.Log(Constants.Component, $"New endpoint at {EndPointUri.ToString()}");

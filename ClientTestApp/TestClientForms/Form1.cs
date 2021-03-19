@@ -217,18 +217,20 @@ namespace TestClientForms
 
             ServicePort = null;
 
-            var cancels = new CancellationTokenSource(); 
+            
             foreach (int port in PortRanges)
             {
                 try
                 {
-                    cancels.CancelAfter(400);
                     WebSocketState state;
                     using (var socket = new ClientWebSocket())
                     {
+                        var cancels = new CancellationTokenSource();
+                        cancels.CancelAfter(400);
                         await socket.ConnectAsync(new Uri($"{textBoxServiceURI.Text}:{port}/xfs4iot/v1.0"), cancels.Token);
                         state = socket.State;
                     }
+                    
                     if (state == WebSocketState.Open)
                     {
                         ServicePort = port;
@@ -264,9 +266,10 @@ namespace TestClientForms
                         break;
                     }
                 }
+                catch (WebSocketException)
+                { }
                 catch (System.Net.HttpListenerException)
                 { }
-                // Timeout - skip port. 
                 catch (TaskCanceledException)
                 { }
             }
