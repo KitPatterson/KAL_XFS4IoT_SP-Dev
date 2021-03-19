@@ -19,7 +19,7 @@ namespace XFS4IoT.Completions
         /// <param name="RequestId">request id</param>
         /// <param name="Payload">payload contents</param>
         public Completion(string RequestId, T Payload) :
-            base(RequestId, MessageHeader.TypeEnum.Response, Payload)
+            base(RequestId, MessageHeader.TypeEnum.Completion, Payload)
         { }
     }
 }
