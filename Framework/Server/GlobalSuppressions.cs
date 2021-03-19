@@ -1,4 +1,9 @@
-﻿// (C) KAL ATM Software GmbH, 2021
+﻿/***********************************************************************************************\
+ * (C) KAL ATM Software GmbH, 2021
+ * KAL ATM Software GmbH licenses this file to you under the MIT license.
+ * See the LICENSE file in the project root for more information.
+\***********************************************************************************************/
+
 // This file is used by Code Analysis to maintain SuppressMessage
 // attributes that are applied to this project.
 // Project-level suppressions either have no target or are given

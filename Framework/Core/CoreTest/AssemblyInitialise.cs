@@ -1,6 +1,9 @@
 ﻿/***********************************************************************************************\
- * (C) Korala Associates Ltd 2019
+ * (C) KAL ATM Software GmbH, 2021
+ * KAL ATM Software GmbH licenses this file to you under the MIT license.
+ * See the LICENSE file in the project root for more information.
 \***********************************************************************************************/
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XFS4IoT.UnitTestCore; 
 
