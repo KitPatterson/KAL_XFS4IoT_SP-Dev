@@ -227,7 +227,7 @@ namespace TestClientForms
                     {
                         var cancels = new CancellationTokenSource();
                         cancels.CancelAfter(400);
-                        await socket.ConnectAsync(new Uri($"{textBoxServiceURI.Text}:{port}/xfs4iot/v1.0"), CancellationToken.None);
+                        await socket.ConnectAsync(new Uri($"{textBoxServiceURI.Text}:{port}/xfs4iot/v1.0"), cancels.Token);
                         state = socket.State;
                     }
                     
