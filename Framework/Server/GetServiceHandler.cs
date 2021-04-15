@@ -15,7 +15,7 @@ using XFS4IoT.Common.Completions;
 
 namespace Server
 {
-    [CommandHandler(typeof(ServicePublisher), typeof(XFS4IoT.Common.Commands.GetServiceCommand))]
+    [CommandHandler(XFSConstants.ServiceClass.Publisher, typeof(XFS4IoT.Common.Commands.GetServiceCommand))]
     public class GetServiceHandler : ICommandHandler
     {
 

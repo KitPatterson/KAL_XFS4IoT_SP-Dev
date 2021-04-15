@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterServiceProvider", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextTerminalServiceProvider", "..\Framework\ServiceClasses\TextTerminalServiceProvider\TextTerminalServiceProvider.csproj", "{A1D98FDE-A46B-4604-A967-67CC7964E439}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonServiceProvider", "..\Framework\ServiceClasses\CommonServiceProvider\CommonServiceProvider.csproj", "{F74540DA-763D-41E0-8537-70E802D3BC65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1D98FDE-A46B-4604-A967-67CC7964E439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F74540DA-763D-41E0-8537-70E802D3BC65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F74540DA-763D-41E0-8537-70E802D3BC65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F74540DA-763D-41E0-8537-70E802D3BC65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F74540DA-763D-41E0-8537-70E802D3BC65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

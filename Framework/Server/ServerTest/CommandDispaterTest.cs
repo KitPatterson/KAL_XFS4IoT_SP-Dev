@@ -21,7 +21,7 @@ namespace XFS4IoTServer.Test
         [TestMethod]
         public async Task NewMessageDispatcherTest()
         {
-            var dispatcher = new CommandDispatcher( typeof(TestServiceProvider), new TestLogger() );
+            var dispatcher = new CommandDispatcher( new[] { XFSConstants.ServiceClass.Publisher }, new TestLogger() );
 
 
             await dispatcher.Dispatch(new TestConnection(), new TestMessage1(), new CancellationToken());
@@ -83,7 +83,7 @@ namespace XFS4IoTServer.Test
         { }
     }
 
-    [CommandHandler(typeof(TestServiceProvider), typeof(TestMessage1))]
+    [CommandHandler(XFSConstants.ServiceClass.Publisher, typeof(TestMessage1))]
     public class TestMessageHandler1 : ICommandHandler
     {
         public TestMessageHandler1(ICommandDispatcher _, ILogger _1 ){}
@@ -102,8 +102,8 @@ namespace XFS4IoTServer.Test
             await Task.CompletedTask;
         }
     }
-    [CommandHandler(typeof(TestServiceProvider), typeof(TestMessage2))]
-    [CommandHandler(typeof(TestServiceProvider), typeof(TestMessage3))]
+    [CommandHandler(XFSConstants.ServiceClass.Publisher, typeof(TestMessage2))]
+    [CommandHandler(XFSConstants.ServiceClass.Publisher, typeof(TestMessage3))]
     //[CommandHandler(typeof(Int32))] // Non-CommandMessage types will FE on process startup. 
     public class TestMessageHandler2 : ICommandHandler
     {
