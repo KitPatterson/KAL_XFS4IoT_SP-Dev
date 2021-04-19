@@ -18,11 +18,8 @@ namespace XFS4IoTServer
     {
         public CommandDispatcher(IEnumerable<XFSConstants.ServiceClass> Services, ILogger Logger, AssemblyName AssemblyName = null)
         {
-            Services.IsNotNull($"Invalid parameter in the {nameof(CommandDispatcher)} constructor. {nameof(Services)}"); 
-            Logger.IsNotNull($"Invalid parameter in the {nameof(CommandDispatcher)} constructor. {nameof(Logger)}");
-
-            this.Logger = Logger;
-            this.ServiceClasses = Services;
+            this.Logger = Logger.IsNotNull();
+            this.ServiceClasses = Services.IsNotNull();
 
             // Find all the classes (in the named assembly if a name is give,) which 
             // have the CommandHandlerAttribute, and match them with the 'Type' value on 

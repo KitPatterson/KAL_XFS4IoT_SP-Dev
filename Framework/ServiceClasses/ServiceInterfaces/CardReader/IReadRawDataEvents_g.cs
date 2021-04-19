@@ -5,24 +5,25 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * IReadRawDataEvents_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 
 using XFS4IoTServer;
+using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
     public interface IReadRawDataEvents : ICardReaderEvents
     {
 
-        void InsertCardEvent();
+        Task InsertCardEvent();
 
-        void MediaInsertedEvent();
+        Task MediaInsertedEvent();
 
-        void InvalidMediaEvent();
+        Task InvalidMediaEvent();
 
-        void TrackDetectedEvent(XFS4IoT.CardReader.Events.TrackDetectedEvent.PayloadData Payload);
+        Task TrackDetectedEvent(XFS4IoT.CardReader.Events.TrackDetectedEvent.PayloadData Payload);
 
     }
 }

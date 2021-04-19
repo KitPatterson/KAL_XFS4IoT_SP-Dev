@@ -5,12 +5,13 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ReadRawDataEvents_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 
 using XFS4IoT;
 using XFS4IoTServer;
+using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
@@ -21,13 +22,13 @@ namespace XFS4IoTFramework.CardReader
             : base(connection, requestId)
         { }
 
-        public void InsertCardEvent() => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InsertCardEvent(requestId));
+        public async Task InsertCardEvent() => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InsertCardEvent(requestId));
 
-        public void MediaInsertedEvent() => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaInsertedEvent(requestId));
+        public async Task MediaInsertedEvent() => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaInsertedEvent(requestId));
 
-        public void InvalidMediaEvent() => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InvalidMediaEvent(requestId));
+        public async Task InvalidMediaEvent() => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InvalidMediaEvent(requestId));
 
-        public void TrackDetectedEvent(XFS4IoT.CardReader.Events.TrackDetectedEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.TrackDetectedEvent(requestId, Payload));
+        public async Task TrackDetectedEvent(XFS4IoT.CardReader.Events.TrackDetectedEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.TrackDetectedEvent(requestId, Payload));
 
     }
 }

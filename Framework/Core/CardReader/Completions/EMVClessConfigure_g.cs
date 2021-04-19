@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessConfigure_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -43,7 +43,17 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```invalidTerminalData``` - Input data  [terminalData](#cardreader.emvclessconfigure.command.properties.terminaldata) was invalid.  Contactless chip card reader could not be configured successfully.* ```invalidAidData``` - Input data  [aidData](#cardreader.emvclessconfigure.command.properties.aiddata) was invalid. Contactless chip  card reader could not be configured successfully.* ```invalidKeyData``` - Input data  [keyData](#cardreader.emvclessconfigure.command.properties.keydata) was invalid. Contactless chip  card reader could not be configured successfully.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```invalidTerminalData``` - Input data
+            ///   [terminalData](#cardreader.emvclessconfigure.command.properties.terminaldata) was invalid.
+            ///   Contactless chip card reader could not be configured successfully.
+            /// * ```invalidAidData``` - Input data
+            ///   [aidData](#cardreader.emvclessconfigure.command.properties.aiddata) was invalid. Contactless chip
+            ///   card reader could not be configured successfully.
+            /// * ```invalidKeyData``` - Input data
+            ///   [keyData](#cardreader.emvclessconfigure.command.properties.keydata) was invalid. Contactless chip
+            ///   card reader could not be configured successfully.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

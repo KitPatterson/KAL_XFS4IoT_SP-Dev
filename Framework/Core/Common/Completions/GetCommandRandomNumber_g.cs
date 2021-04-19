@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * GetCommandRandomNumber_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -36,7 +36,10 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///A nonce that should be included in the authorisation token in a command used to provide end to end protection.The nonce will be given as HEX (upper case.)
+            /// A nonce that should be included in the authorisation token in a command used to provide 
+            /// end to end protection.
+            /// 
+            /// The nonce will be given as HEX (upper case.)
             /// </summary>
             [DataMember(Name = "commandRandomNumber")] 
             public string CommandRandomNumber { get; private set; }

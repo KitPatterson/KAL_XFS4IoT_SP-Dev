@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * DispensePaper_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -46,7 +46,16 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///The paper source to dispense from. It can be one of the following:* ```any``` - Any paper source can be used; it is determined by the service.* ```upper``` - Use the only paper source or the upper paper source, if there is more than one paper  supply.* ```lower``` - Use the lower paper source.* ```internal``` - Use the external paper.* ```aux``` - Use the auxiliary paper source.* ```aux2``` - Use the second auxiliary paper source.* ```park``` - Use the parking station paper source.
+            /// The paper source to dispense from. It can be one of the following:
+            /// 
+            /// * ```any``` - Any paper source can be used; it is determined by the service.
+            /// * ```upper``` - Use the only paper source or the upper paper source, if there is more than one paper
+            ///   supply.
+            /// * ```lower``` - Use the lower paper source.
+            /// * ```internal``` - Use the external paper.
+            /// * ```aux``` - Use the auxiliary paper source.
+            /// * ```aux2``` - Use the second auxiliary paper source.
+            /// * ```park``` - Use the parking station paper source.
             /// </summary>
             [DataMember(Name = "paperSource")] 
             public PaperSourceEnum? PaperSource { get; private set; }

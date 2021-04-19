@@ -28,11 +28,11 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
 
 
         public async Task<ReadRawDataCompletion.PayloadData> ReadRawData(IReadRawDataEvents connection, 
-                                                                                       ReadRawDataCommand.PayloadData payload,
-                                                                                       CancellationToken cancellation)
+                                                                         ReadRawDataCommand.PayloadData payload,
+                                                                         CancellationToken cancellation)
         {
             await Task.Delay(2000, cancellation);
-            connection.MediaInsertedEvent();
+            await connection.MediaInsertedEvent();
 
             await Task.Delay(1000, cancellation);
 
@@ -231,7 +231,7 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
 
-            connection.MediaRemovedEvent();
+            await connection.MediaRemovedEvent();
         }
 
         public Task<GetCommandRandomNumberCompletion.PayloadData> GetCommandRandomNumber(IGetCommandRandomNumberEvents events,

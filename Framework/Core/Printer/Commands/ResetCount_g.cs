@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ResetCount_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -35,7 +35,7 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///Specifies the height of the media in terms of the base vertical resolution.
+            /// Specifies the height of the media in terms of the base vertical resolution.
             /// </summary>
             [DataMember(Name = "binNumber")] 
             public int? BinNumber { get; private set; }

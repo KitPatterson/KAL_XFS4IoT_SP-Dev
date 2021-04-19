@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * Status_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -27,7 +27,7 @@ namespace XFS4IoT.Common.Completions
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///Status information common to all XFS4IoT services.
+            /// Status information common to all XFS4IoT services.
             /// </summary>
             public class CommonClass
             {
@@ -49,7 +49,7 @@ namespace XFS4IoT.Common.Completions
                 public List<string> Extra { get; private set; }
                 
                 /// <summary>
-                ///Specifies the state of the guidance light indicators. A number of guidance light types are defined below. Vendor specific guidance lights are defined starting from the end of the array.
+                /// Specifies the state of the guidance light indicators. A number of guidance light types are defined below. Vendor specific guidance lights are defined starting from the end of the array.
                 /// </summary>
                 public class GuideLightsClass 
                 {
@@ -132,7 +132,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CardReader interface. This will be omitted if the CardReader interface is not supported.
+            /// Status information for XFS4IoT services implementing the CardReader interface. This will be omitted if the CardReader interface is not supported.
             /// </summary>
             public class CardReaderClass
             {
@@ -238,7 +238,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CashAcceptor interface. This will be omitted if the CashAcceptor interface is not supported.
+            /// Status information for XFS4IoT services implementing the CashAcceptor interface. This will be omitted if the CashAcceptor interface is not supported.
             /// </summary>
             public class CashAcceptorClass
             {
@@ -274,7 +274,7 @@ namespace XFS4IoT.Common.Completions
                 public bool? DropBox { get; private set; }
                 
                 /// <summary>
-                ///Array of structures for each position from which items can be accepted.
+                /// Array of structures for each position from which items can be accepted.
                 /// </summary>
                 public class PositionsClass 
                 {
@@ -381,7 +381,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CashDispenser interface. This will be omitted if the CashDispenser interface is not supported.
+            /// Status information for XFS4IoT services implementing the CashDispenser interface. This will be omitted if the CashDispenser interface is not supported.
             /// </summary>
             public class CashDispenserClass
             {
@@ -398,7 +398,7 @@ namespace XFS4IoT.Common.Completions
                 public IntermediateStackerEnum? IntermediateStacker { get; private set; }
                 
                 /// <summary>
-                ///Array of structures for each position to which items can be dispensed or presented.
+                /// Array of structures for each position to which items can be dispensed or presented.
                 /// </summary>
                 public class PositionsClass 
                 {
@@ -487,7 +487,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CashManagement interface. This will be omitted if the CashManagement interface is not supported.
+            /// Status information for XFS4IoT services implementing the CashManagement interface. This will be omitted if the CashManagement interface is not supported.
             /// </summary>
             public class CashManagementClass
             {
@@ -530,7 +530,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the KeyManagement interface. This will be omitted if the KeyManagement interface is not supported.
+            /// Status information for XFS4IoT services implementing the KeyManagement interface. This will be omitted if the KeyManagement interface is not supported.
             /// </summary>
             public class KeyManagementClass
             {
@@ -565,7 +565,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the Keyboard interface. This will be omitted if the Keyboard interface is not supported.
+            /// Status information for XFS4IoT services implementing the Keyboard interface. This will be omitted if the Keyboard interface is not supported.
             /// </summary>
             public class KeyboardClass
             {
@@ -586,7 +586,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the TextTerminal interface. This will be omitted if the TextTerminal interface is not supported.
+            /// Status information for XFS4IoT services implementing the TextTerminal interface. This will be omitted if the TextTerminal interface is not supported.
             /// </summary>
             public class TextTerminalClass
             {
@@ -612,7 +612,9 @@ namespace XFS4IoT.Common.Completions
                 public int? DisplaySizeY { get; private set; }
                 
                 /// <summary>
-                ///Specifies array that specifies the state of each LED.Specifies the state of the na, off or a combination of the following flags consisting of one type B, and optionally one type C
+                /// Specifies array that specifies the state of each LED.
+                /// Specifies the state of the na, off or a combination of the following flags consisting of one type B, 
+                /// and optionally one type C
                 /// </summary>
                 public class LedsClass 
                 {
@@ -676,7 +678,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the Printer interface. This will be omitted if the Printer interface is not supported.
+            /// Status information for XFS4IoT services implementing the Printer interface. This will be omitted if the Printer interface is not supported.
             /// </summary>
             public class PrinterClass
             {
@@ -694,7 +696,14 @@ namespace XFS4IoT.Common.Completions
                 public MediaEnum? Media { get; private set; }
                 
                 /// <summary>
-                ///Specifies the state of paper supplies as one of the following values:* ```notSupported``` - Capability not supported by the device.* ```unknown``` - Status cannot be determined with device in its current state.* ```full``` - The paper supply is full.* ```low``` - The paper supply is low.* ```out``` - The paper supply is empty.* ```jammed``` - The paper supply is jammed.
+                /// Specifies the state of paper supplies as one of the following values:
+                /// 
+                /// * ```notSupported``` - Capability not supported by the device.
+                /// * ```unknown``` - Status cannot be determined with device in its current state.
+                /// * ```full``` - The paper supply is full.
+                /// * ```low``` - The paper supply is low.
+                /// * ```out``` - The paper supply is empty.
+                /// * ```jammed``` - The paper supply is jammed.
                 /// </summary>
                 public class PaperClass 
                 {
@@ -809,7 +818,7 @@ namespace XFS4IoT.Common.Completions
                 public LampEnum? Lamp { get; private set; }
                 
                 /// <summary>
-                ///An array of bin state objects. If no retain bins are supported, the array will be empty.
+                /// An array of bin state objects. If no retain bins are supported, the array will be empty.
                 /// </summary>
                 public class RetractBinsClass 
                 {
@@ -838,7 +847,12 @@ namespace XFS4IoT.Common.Completions
                 public int? MediaOnStacker { get; private set; }
                 
                 /// <summary>
-                ///Specifies the type of paper loaded as one of the following:* ```unknown``` - No paper is loaded, reporting of this paper type is not supported or the paper type cannot  be determined.* ```single``` - The paper can be printed on only one side.* ```dual``` - The paper can be printed on both sides.
+                /// Specifies the type of paper loaded as one of the following:
+                /// 
+                /// * ```unknown``` - No paper is loaded, reporting of this paper type is not supported or the paper type cannot
+                ///   be determined.
+                /// * ```single``` - The paper can be printed on only one side.
+                /// * ```dual``` - The paper can be printed on both sides.
                 /// </summary>
                 public class PaperTypeClass 
                 {
@@ -930,7 +944,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CardEmbosser interface. This will be omitted if the CardEmbosser interface is not supported.
+            /// Status information for XFS4IoT services implementing the CardEmbosser interface. This will be omitted if the CardEmbosser interface is not supported.
             /// </summary>
             public class CardEmbosserClass
             {
@@ -1010,7 +1024,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the BarcodeReader interface. This will be omitted if the BarcodeReader interface is not supported.
+            /// Status information for XFS4IoT services implementing the BarcodeReader interface. This will be omitted if the BarcodeReader interface is not supported.
             /// </summary>
             public class BarcodeReaderClass
             {
@@ -1033,7 +1047,7 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
+            /// Status information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
             /// </summary>
             public class BiometricClass
             {
@@ -1050,7 +1064,8 @@ namespace XFS4IoT.Common.Completions
                 public bool? Capture { get; private set; }
                 
                 /// <summary>
-                ///Specifies the current data persistence mode. The data persistence mode controls how biometric data that has been captured using the [Biometric.Read](#biometric.read) command will be handled.
+                /// Specifies the current data persistence mode. The data persistence mode controls how biometric data that has been captured using the 
+                /// [Biometric.Read](#biometric.read) command will be handled.
                 /// </summary>
                 public class DataPersistenceClass 
                 {
@@ -1102,62 +1117,62 @@ namespace XFS4IoT.Common.Completions
             }
 
             /// <summary>
-            ///Status information common to all XFS4IoT services.
+            /// Status information common to all XFS4IoT services.
             /// </summary>
             [DataMember(Name = "common")] 
             public CommonClass Common { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CardReader interface. This will be omitted if the CardReader interface is not supported.
+            /// Status information for XFS4IoT services implementing the CardReader interface. This will be omitted if the CardReader interface is not supported.
             /// </summary>
             [DataMember(Name = "cardReader")] 
             public CardReaderClass CardReader { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CashAcceptor interface. This will be omitted if the CashAcceptor interface is not supported.
+            /// Status information for XFS4IoT services implementing the CashAcceptor interface. This will be omitted if the CashAcceptor interface is not supported.
             /// </summary>
             [DataMember(Name = "cashAcceptor")] 
             public CashAcceptorClass CashAcceptor { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CashDispenser interface. This will be omitted if the CashDispenser interface is not supported.
+            /// Status information for XFS4IoT services implementing the CashDispenser interface. This will be omitted if the CashDispenser interface is not supported.
             /// </summary>
             [DataMember(Name = "cashDispenser")] 
             public CashDispenserClass CashDispenser { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CashManagement interface. This will be omitted if the CashManagement interface is not supported.
+            /// Status information for XFS4IoT services implementing the CashManagement interface. This will be omitted if the CashManagement interface is not supported.
             /// </summary>
             [DataMember(Name = "cashManagement")] 
             public CashManagementClass CashManagement { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the KeyManagement interface. This will be omitted if the KeyManagement interface is not supported.
+            /// Status information for XFS4IoT services implementing the KeyManagement interface. This will be omitted if the KeyManagement interface is not supported.
             /// </summary>
             [DataMember(Name = "keyManagement")] 
             public KeyManagementClass KeyManagement { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the Keyboard interface. This will be omitted if the Keyboard interface is not supported.
+            /// Status information for XFS4IoT services implementing the Keyboard interface. This will be omitted if the Keyboard interface is not supported.
             /// </summary>
             [DataMember(Name = "keyboard")] 
             public KeyboardClass Keyboard { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the TextTerminal interface. This will be omitted if the TextTerminal interface is not supported.
+            /// Status information for XFS4IoT services implementing the TextTerminal interface. This will be omitted if the TextTerminal interface is not supported.
             /// </summary>
             [DataMember(Name = "textTerminal")] 
             public TextTerminalClass TextTerminal { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the Printer interface. This will be omitted if the Printer interface is not supported.
+            /// Status information for XFS4IoT services implementing the Printer interface. This will be omitted if the Printer interface is not supported.
             /// </summary>
             [DataMember(Name = "printer")] 
             public PrinterClass Printer { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the CardEmbosser interface. This will be omitted if the CardEmbosser interface is not supported.
+            /// Status information for XFS4IoT services implementing the CardEmbosser interface. This will be omitted if the CardEmbosser interface is not supported.
             /// </summary>
             [DataMember(Name = "cardEmbosser")] 
             public CardEmbosserClass CardEmbosser { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the BarcodeReader interface. This will be omitted if the BarcodeReader interface is not supported.
+            /// Status information for XFS4IoT services implementing the BarcodeReader interface. This will be omitted if the BarcodeReader interface is not supported.
             /// </summary>
             [DataMember(Name = "barcodeReader")] 
             public BarcodeReaderClass BarcodeReader { get; private set; }
             /// <summary>
-            ///Status information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
+            /// Status information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
             /// </summary>
             [DataMember(Name = "biometric")] 
             public BiometricClass Biometric { get; private set; }

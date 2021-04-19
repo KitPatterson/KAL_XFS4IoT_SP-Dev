@@ -5,12 +5,13 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ResetEvents_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 
 using XFS4IoT;
 using XFS4IoTServer;
+using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
@@ -21,7 +22,7 @@ namespace XFS4IoTFramework.CardReader
             : base(connection, requestId)
         { }
 
-        public void MediaDetectedEvent(XFS4IoT.CardReader.Events.MediaDetectedEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaDetectedEvent(requestId, Payload));
+        public async Task MediaDetectedEvent(XFS4IoT.CardReader.Events.MediaDetectedEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaDetectedEvent(requestId, Payload));
 
     }
 }

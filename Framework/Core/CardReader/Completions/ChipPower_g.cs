@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ChipPower_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -47,12 +47,19 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```chipPowerNotSupported``` - The specified action is not supported by the hardware device.* ```mediaJam``` - The card is jammed (only applies to contact user chips). Operator intervention is required.* ```noMedia``` - There is no card inside the device (may not apply for contactless user chips).* ```invalidMedia``` - No chip found; card may have been inserted or pulled through the wrong way.* ```invalidData``` - An error occurred while communicating with the chip.* ```atrNotObtained``` - The ATR has not been obtained (only applies to user chips).
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```chipPowerNotSupported``` - The specified action is not supported by the hardware device.
+            /// * ```mediaJam``` - The card is jammed (only applies to contact user chips). Operator intervention is required.
+            /// * ```noMedia``` - There is no card inside the device (may not apply for contactless user chips).
+            /// * ```invalidMedia``` - No chip found; card may have been inserted or pulled through the wrong way.
+            /// * ```invalidData``` - An error occurred while communicating with the chip.
+            /// * ```atrNotObtained``` - The ATR has not been obtained (only applies to user chips).
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
             /// <summary>
-            ///The Base64 encoded data received from the chip.
+            /// The Base64 encoded data received from the chip.
             /// </summary>
             [DataMember(Name = "chipData")] 
             public string ChipData { get; private set; }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryField_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -35,7 +35,7 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Details of the field(s) requested. For each object, the key is the field name.
+            /// Details of the field(s) requested. For each object, the key is the field name.
             /// </summary>
             public class FieldsClass
             {
@@ -58,12 +58,17 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```formNotFound``` - The specified form cannot be found.* ```fieldNotFound``` - The specified field cannot be found.* ```formInvalid``` - The specified form is invalid.* ```fieldInvalid``` - The specified field is invalid.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```formNotFound``` - The specified form cannot be found.
+            /// * ```fieldNotFound``` - The specified field cannot be found.
+            /// * ```formInvalid``` - The specified form is invalid.
+            /// * ```fieldInvalid``` - The specified field is invalid.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
             /// <summary>
-            ///Details of the field(s) requested. For each object, the key is the field name.
+            /// Details of the field(s) requested. For each object, the key is the field name.
             /// </summary>
             [DataMember(Name = "fields")] 
             public FieldsClass Fields { get; private set; }

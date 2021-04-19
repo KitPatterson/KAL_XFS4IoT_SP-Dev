@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * PowerSaveChangeEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -38,7 +38,7 @@ namespace XFS4IoT.Common.Events
             }
 
             /// <summary>
-            ///Specifies the actual number of seconds required by the device to resume its normal operational state. This value is zero if the device exited the power saving mode
+            /// Specifies the actual number of seconds required by the device to resume its normal operational state. This value is zero if the device exited the power saving mode
             /// </summary>
             [DataMember(Name = "powerSaveRecoveryTime")] 
             public int? PowerSaveRecoveryTime { get; private set; }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * InkThresholdEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,7 +45,11 @@ namespace XFS4IoT.Printer.Events
             }
 
             /// <summary>
-            ///Specifies the current state of the stamping ink as one of the following:* ```full``` - The stamping ink in the printer is in a good state.* ```low``` - The stamping ink in the printer is low.* ```out``` - The stamping ink in the printer is out.
+            /// Specifies the current state of the stamping ink as one of the following:
+            /// 
+            /// * ```full``` - The stamping ink in the printer is in a good state.
+            /// * ```low``` - The stamping ink in the printer is low.
+            /// * ```out``` - The stamping ink in the printer is out.
             /// </summary>
             [DataMember(Name = "state")] 
             public StateEnum? State { get; private set; }

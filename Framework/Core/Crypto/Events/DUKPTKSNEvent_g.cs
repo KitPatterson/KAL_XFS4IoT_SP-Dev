@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * DUKPTKSNEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -39,12 +39,12 @@ namespace XFS4IoT.Crypto.Events
             }
 
             /// <summary>
-            ///Specifies the name of the DUKPT Key derivation key. 
+            /// Specifies the name of the DUKPT Key derivation key. 
             /// </summary>
             [DataMember(Name = "key")] 
             public string Key { get; private set; }
             /// <summary>
-            ///structure that contains the KSN formatted in base64.
+            /// structure that contains the KSN formatted in base64.
             /// </summary>
             [DataMember(Name = "ksn")] 
             public string Ksn { get; private set; }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ChipPower_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -42,7 +42,11 @@ namespace XFS4IoT.CardReader.Commands
             }
 
             /// <summary>
-            ///Specifies the action to perform as one of the following:* ```cold``` - The chip is powered on and reset.* ```warm``` - The chip is reset.* ```off``` - The chip is powered off.
+            /// Specifies the action to perform as one of the following:
+            /// 
+            /// * ```cold``` - The chip is powered on and reset.
+            /// * ```warm``` - The chip is reset.
+            /// * ```off``` - The chip is powered off.
             /// </summary>
             [DataMember(Name = "chipPower")] 
             public ChipPowerEnum? ChipPower { get; private set; }

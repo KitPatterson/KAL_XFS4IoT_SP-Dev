@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * SupplyReplenish_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,37 +41,37 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///The only paper supply or the upper paper supply was replenished.
+            /// The only paper supply or the upper paper supply was replenished.
             /// </summary>
             [DataMember(Name = "upper")] 
             public bool? Upper { get; private set; }
             /// <summary>
-            ///The lower paper supply was replenished.
+            /// The lower paper supply was replenished.
             /// </summary>
             [DataMember(Name = "lower")] 
             public bool? Lower { get; private set; }
             /// <summary>
-            ///The auxiliary paper supply was replenished.
+            /// The auxiliary paper supply was replenished.
             /// </summary>
             [DataMember(Name = "aux")] 
             public bool? Aux { get; private set; }
             /// <summary>
-            ///The second auxiliary paper supply was replenished.
+            /// The second auxiliary paper supply was replenished.
             /// </summary>
             [DataMember(Name = "aux2")] 
             public bool? Aux2 { get; private set; }
             /// <summary>
-            ///The toner supply was replenished.
+            /// The toner supply was replenished.
             /// </summary>
             [DataMember(Name = "toner")] 
             public bool? Toner { get; private set; }
             /// <summary>
-            ///The ink supply was replenished.
+            /// The ink supply was replenished.
             /// </summary>
             [DataMember(Name = "ink")] 
             public bool? Ink { get; private set; }
             /// <summary>
-            ///The imaging lamp was replaced.
+            /// The imaging lamp was replaced.
             /// </summary>
             [DataMember(Name = "lamp")] 
             public bool? Lamp { get; private set; }

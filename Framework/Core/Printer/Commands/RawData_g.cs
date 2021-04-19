@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * RawData_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -42,12 +42,16 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///Specifies that input data from the device is expected in response to sending the raw data (i.e. thedata contains a command requesting data). Possible values are:* ```no``` - No input data is expected.* ```yes``` - Input data is expected.
+            /// Specifies that input data from the device is expected in response to sending the raw data (i.e. the
+            /// data contains a command requesting data). Possible values are:
+            /// 
+            /// * ```no``` - No input data is expected.
+            /// * ```yes``` - Input data is expected.
             /// </summary>
             [DataMember(Name = "inputData")] 
             public InputDataEnum? InputData { get; private set; }
             /// <summary>
-            ///BASE64 encoded device dependent data to be sent to the device.
+            /// BASE64 encoded device dependent data to be sent to the device.
             /// </summary>
             [DataMember(Name = "data")] 
             public string Data { get; private set; }

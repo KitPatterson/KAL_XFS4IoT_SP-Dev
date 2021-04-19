@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * IllegalKeyAccessEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -47,12 +47,12 @@ namespace XFS4IoT.Crypto.Events
             }
 
             /// <summary>
-            ///Specifies the name of the key that caused the error. 
+            /// Specifies the name of the key that caused the error. 
             /// </summary>
             [DataMember(Name = "keyName")] 
             public string KeyName { get; private set; }
             /// <summary>
-            ///Specifies the type of illegal key access that occurred
+            /// Specifies the type of illegal key access that occurred
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

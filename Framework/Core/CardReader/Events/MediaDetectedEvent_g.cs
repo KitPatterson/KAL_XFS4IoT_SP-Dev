@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * MediaDetectedEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -46,7 +46,12 @@ namespace XFS4IoT.CardReader.Events
             }
 
             /// <summary>
-            ///Specifies the action that was performed on any card found within the device as one of the following:* ```ejected``` - The card was ejected.* ```retained``` - The card was retained.* ```readPosition``` - The card is in read position.* ```jammed``` - The card is jammed in the device.
+            /// Specifies the action that was performed on any card found within the device as one of the following:
+            /// 
+            /// * ```ejected``` - The card was ejected.
+            /// * ```retained``` - The card was retained.
+            /// * ```readPosition``` - The card is in read position.
+            /// * ```jammed``` - The card is jammed in the device.
             /// </summary>
             [DataMember(Name = "resetOut")] 
             public ResetOutEnum? ResetOut { get; private set; }

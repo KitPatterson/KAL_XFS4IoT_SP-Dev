@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetFormList_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -36,7 +36,7 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///Array of the form names.
+            /// Array of the form names.
             /// </summary>
             [DataMember(Name = "formList")] 
             public List<string> FormList{ get; private set; }

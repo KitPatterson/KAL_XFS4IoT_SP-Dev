@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetKeyDetail_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -37,12 +37,14 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///String which holds the printable characters (numeric and alphanumeric keys) on the Text Terminal Unit, e.g. “0123456789ABCabc” if those text terminal input keys are present. This field is not set if no keys of this type are present on the device.
+            /// String which holds the printable characters (numeric and alphanumeric keys) on the Text Terminal Unit, 
+            /// e.g. “0123456789ABCabc” if those text terminal input keys are present. This field is not set if no keys 
+            /// of this type are present on the device.
             /// </summary>
             [DataMember(Name = "keys")] 
             public string Keys { get; private set; }
             /// <summary>
-            ///Array of command keys on the Text Terminal Unit.
+            /// Array of command keys on the Text Terminal Unit.
             /// </summary>
             [DataMember(Name = "commandKeys")] 
             public List<string> CommandKeys{ get; private set; }

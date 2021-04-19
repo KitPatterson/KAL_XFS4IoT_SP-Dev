@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * SynchronizeCommand_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,7 @@ namespace XFS4IoT.Common.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///A payload that represents the parameter that is normally associated with the command.
+            /// A payload that represents the parameter that is normally associated with the command.
             /// </summary>
             public class CmdDataClass
             {
@@ -49,12 +49,12 @@ namespace XFS4IoT.Common.Commands
             }
 
             /// <summary>
-            ///The command name to be synchronized and executed next. 
+            /// The command name to be synchronized and executed next. 
             /// </summary>
             [DataMember(Name = "command")] 
             public string Command { get; private set; }
             /// <summary>
-            ///A payload that represents the parameter that is normally associated with the command.
+            /// A payload that represents the parameter that is normally associated with the command.
             /// </summary>
             [DataMember(Name = "cmdData")] 
             public object CmdData { get; private set; }

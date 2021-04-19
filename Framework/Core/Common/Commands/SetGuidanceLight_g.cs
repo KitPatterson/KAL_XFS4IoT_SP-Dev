@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * SetGuidanceLight_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -80,7 +80,7 @@ namespace XFS4IoT.Common.Commands
             }
 
             /// <summary>
-            ///Specifies the index of the guidance light to set as one of the values defined within the capabilities section: 
+            /// Specifies the index of the guidance light to set as one of the values defined within the capabilities section: 
             /// </summary>
             [DataMember(Name = "guidLight")] 
             public int? GuidLight { get; private set; }

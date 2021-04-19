@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * KeyEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -39,12 +39,14 @@ namespace XFS4IoT.TextTerminal.Events
             }
 
             /// <summary>
-            ///On a numeric or alphanumeric key press this parameter holds the value of the key pressed. This value is not set if no numeric or alphanumeric key was pressed.
+            /// On a numeric or alphanumeric key press this parameter holds the value of the key pressed. 
+            /// This value is not set if no numeric or alphanumeric key was pressed.
             /// </summary>
             [DataMember(Name = "key")] 
             public string Key { get; private set; }
             /// <summary>
-            ///On a Command key press this parameter holds the value of the Command key pressed, e.g. ckEnter.This value is not set when no command key was pressed.
+            /// On a Command key press this parameter holds the value of the Command key pressed, e.g. ckEnter.
+            /// This value is not set when no command key was pressed.
             /// </summary>
             [DataMember(Name = "commandKey")] 
             public string CommandKey { get; private set; }

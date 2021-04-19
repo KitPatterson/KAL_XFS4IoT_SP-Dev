@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * MediaPresentedEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -39,12 +39,13 @@ namespace XFS4IoT.Printer.Events
             }
 
             /// <summary>
-            ///Specifies the index (starting from one) of the presented wad, where a Wad is a bunch of one or more pagespresented as a bunch.
+            /// Specifies the index (starting from one) of the presented wad, where a Wad is a bunch of one or more pages
+            /// presented as a bunch.
             /// </summary>
             [DataMember(Name = "wadIndex")] 
             public int? WadIndex { get; private set; }
             /// <summary>
-            ///Specifies the total number of wads in the print job, zero if the total number of wads is not known.
+            /// Specifies the total number of wads in the print job, zero if the total number of wads is not known.
             /// </summary>
             [DataMember(Name = "totalWads")] 
             public int? TotalWads { get; private set; }

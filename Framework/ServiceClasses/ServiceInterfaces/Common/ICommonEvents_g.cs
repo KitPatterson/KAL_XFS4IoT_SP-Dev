@@ -5,20 +5,21 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * ICommonEvents_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 
 using XFS4IoTServer;
+using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.Common
 {
     public interface ICommonEvents
     {
 
-        void PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEvent.PayloadData Payload);
+        Task PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEvent.PayloadData Payload);
 
-        void DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEvent.PayloadData Payload);
+        Task DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEvent.PayloadData Payload);
 
     }
 }

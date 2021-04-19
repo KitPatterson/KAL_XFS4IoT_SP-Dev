@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ClearScreen_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -38,22 +38,22 @@ namespace XFS4IoT.TextTerminal.Commands
             }
 
             /// <summary>
-            ///Specifies the horizontal position of the area to be cleared.
+            /// Specifies the horizontal position of the area to be cleared.
             /// </summary>
             [DataMember(Name = "positionX")] 
             public int? PositionX { get; private set; }
             /// <summary>
-            ///Specifies the vertical position of the area to be cleared.
+            /// Specifies the vertical position of the area to be cleared.
             /// </summary>
             [DataMember(Name = "positionY")] 
             public int? PositionY { get; private set; }
             /// <summary>
-            ///Specifies the width position of the area to be cleared.
+            /// Specifies the width position of the area to be cleared.
             /// </summary>
             [DataMember(Name = "width")] 
             public int? Width { get; private set; }
             /// <summary>
-            ///Specifies the height position of the area to be cleared.
+            /// Specifies the height position of the area to be cleared.
             /// </summary>
             [DataMember(Name = "height")] 
             public int? Height { get; private set; }

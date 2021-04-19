@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * Reset_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -44,7 +44,13 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```shutterFail``` - Open or close of the shutter failed due to manipulation or hardware error.* ```retractBinFull``` - The retract bin is full; no more media can be retracted. The current media is  still in the device.* ```mediaJammed``` - The media is jammed; operator intervention is required.* ```paperJammed``` - The paper is jammed.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```shutterFail``` - Open or close of the shutter failed due to manipulation or hardware error.
+            /// * ```retractBinFull``` - The retract bin is full; no more media can be retracted. The current media is
+            ///   still in the device.
+            /// * ```mediaJammed``` - The media is jammed; operator intervention is required.
+            /// * ```paperJammed``` - The paper is jammed.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

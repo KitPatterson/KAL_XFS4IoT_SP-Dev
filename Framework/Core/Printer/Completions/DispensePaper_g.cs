@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * DispensePaper_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,7 +45,15 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```paperJammed``` - The paper is jammed.* ```paperOut``` - The paper supply is empty.* ```sequenceInvalid``` - Programming error. Invalid command sequence (e.g. there is already media in  the print position).* ```sourceInvalid``` - The selected paper source is not supported by the hardware.* ```mediaRetracted``` - Presented media was automatically retracted before all wads could be  presented and before the command could complete successfully.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```paperJammed``` - The paper is jammed.
+            /// * ```paperOut``` - The paper supply is empty.
+            /// * ```sequenceInvalid``` - Programming error. Invalid command sequence (e.g. there is already media in
+            ///   the print position).
+            /// * ```sourceInvalid``` - The selected paper source is not supported by the hardware.
+            /// * ```mediaRetracted``` - Presented media was automatically retracted before all wads could be
+            ///   presented and before the command could complete successfully.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

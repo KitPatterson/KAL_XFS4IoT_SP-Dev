@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * RetainBinThresholdEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,7 +45,11 @@ namespace XFS4IoT.CardReader.Events
             }
 
             /// <summary>
-            ///Specifies the state of the ID card unit retain bin as one of the following:* ```ok``` - The retain bin of the ID card unit was emptied.* ```full``` - The retain bin of the ID card unit is full.* ```high``` - The retain bin of the ID card unit is nearly full.
+            /// Specifies the state of the ID card unit retain bin as one of the following:
+            /// 
+            /// * ```ok``` - The retain bin of the ID card unit was emptied.
+            /// * ```full``` - The retain bin of the ID card unit is full.
+            /// * ```high``` - The retain bin of the ID card unit is nearly full.
             /// </summary>
             [DataMember(Name = "state")] 
             public StateEnum? State { get; private set; }

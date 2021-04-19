@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * DispLight_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -36,7 +36,7 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///Specifies whether the lighting of the text terminal unit is switched on (TRUE) or off (FALSE).
+            /// Specifies whether the lighting of the text terminal unit is switched on (TRUE) or off (FALSE).
             /// </summary>
             [DataMember(Name = "mode")] 
             public bool? Mode { get; private set; }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ParkCard_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -42,12 +42,21 @@ namespace XFS4IoT.CardReader.Commands
             }
 
             /// <summary>
-            ///Specifies which way to move the card as one of the following values:* ```in``` - The card is moved to the parking station from the read/write, chip I/O or transport  position.* ```out``` - The card is moved from the parking station to the read/write, chip I/O or transport  position. Once the card has been moved any command can be executed e.g.  [CardReader.EjectCard](#cardreader.ejectcard) or [CardReader.ReadRawData](#cardreader.readrawdata).
+            /// Specifies which way to move the card as one of the following values:
+            /// 
+            /// * ```in``` - The card is moved to the parking station from the read/write, chip I/O or transport
+            ///   position.
+            /// * ```out``` - The card is moved from the parking station to the read/write, chip I/O or transport
+            ///   position. Once the card has been moved any command can be executed e.g.
+            ///   [CardReader.EjectCard](#cardreader.ejectcard) or [CardReader.ReadRawData](#cardreader.readrawdata).
             /// </summary>
             [DataMember(Name = "direction")] 
             public DirectionEnum? Direction { get; private set; }
             /// <summary>
-            ///Specifies which which parking station should be used for this command. This value is the same index asis identified in the[parkingStationMedia](#common.status.completion.properties.cardreader.parkingstationmedia) array of[Common.Status](#common.status).
+            /// Specifies which which parking station should be used for this command. This value is the same index as
+            /// is identified in the
+            /// [parkingStationMedia](#common.status.completion.properties.cardreader.parkingstationmedia) array of
+            /// [Common.Status](#common.status).
             /// </summary>
             [DataMember(Name = "parkingStation")] 
             public int? ParkingStation { get; private set; }

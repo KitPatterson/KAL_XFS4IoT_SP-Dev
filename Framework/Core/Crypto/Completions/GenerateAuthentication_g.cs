@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * GenerateAuthentication_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -52,12 +52,28 @@ namespace XFS4IoT.Crypto.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```keyNotFound``` - The specified key was not found.* ```modeNotSupported``` - The mode specified by modeOfUse is not supported.* ```accessDenied``` - The encryption module is either not initialized or not ready for any vendor specificreason.* ```keyNoValue``` - The specified key name was found but the corresponding key value has not beenloaded.* ```useViolation``` - The use specified by keyUsage is not supported.* ```invalidKeyLength``` - The length of startValue is not supported or the length of an encryption key isnot compatible with the encryption operation required.* ```noChipTransactionActive```- A chipcard key is used as encryption key and there is no chip transactionactive.* ```algorithmNotSupported``` - The algorithm specified by bAlgorithm is not supported.* ```macInvalid``` - The MAC verification failed.* ```signatureInvalid``` - The signature verification failed.* ```cryptoMethodNotSupported``` - The cryptographic method specified by cryptoMethod is not supported.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```keyNotFound``` - The specified key was not found.
+            /// * ```modeNotSupported``` - The mode specified by modeOfUse is not supported.
+            /// * ```accessDenied``` - The encryption module is either not initialized or not ready for any vendor specific
+            /// reason.
+            /// * ```keyNoValue``` - The specified key name was found but the corresponding key value has not been
+            /// loaded.
+            /// * ```useViolation``` - The use specified by keyUsage is not supported.
+            /// * ```invalidKeyLength``` - The length of startValue is not supported or the length of an encryption key is
+            /// not compatible with the encryption operation required.
+            /// * ```noChipTransactionActive```- A chipcard key is used as encryption key and there is no chip transaction
+            /// active.
+            /// * ```algorithmNotSupported``` - The algorithm specified by bAlgorithm is not supported.
+            /// * ```macInvalid``` - The MAC verification failed.
+            /// * ```signatureInvalid``` - The signature verification failed.
+            /// * ```cryptoMethodNotSupported``` - The cryptographic method specified by cryptoMethod is not supported.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
             /// <summary>
-            ///The mac value or signature formatted in Base64.
+            /// The mac value or signature formatted in Base64.
             /// </summary>
             [DataMember(Name = "authenticationData")] 
             public string AuthenticationData { get; private set; }

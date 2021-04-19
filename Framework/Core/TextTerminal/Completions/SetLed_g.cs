@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetLed_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,7 +41,9 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:* ```invalidLed``` - An attempt to set a LED to a new value was invalid because the LED does not exist.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```invalidLed``` - An attempt to set a LED to a new value was invalid because the LED does not exist.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

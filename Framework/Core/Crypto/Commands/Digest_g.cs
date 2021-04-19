@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * Digest_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -42,12 +42,13 @@ namespace XFS4IoT.Crypto.Commands
             }
 
             /// <summary>
-            ///Specifies which hash algorithm should be used to calculate the hash. See the [Crypto.Capabilities](#common.capabilities.completion.properties.crypto) section for valid algorithms.
+            /// Specifies which hash algorithm should be used to calculate the hash. 
+            /// See the [Crypto.Capabilities](#common.capabilities.completion.properties.crypto) section for valid algorithms.
             /// </summary>
             [DataMember(Name = "hashAlgorithm")] 
             public HashAlgorithmEnum? HashAlgorithm { get; private set; }
             /// <summary>
-            ///Contains the length and the data to be hashed formatted in base64.
+            /// Contains the length and the data to be hashed formatted in base64.
             /// </summary>
             [DataMember(Name = "digestInput")] 
             public string DigestInput { get; private set; }

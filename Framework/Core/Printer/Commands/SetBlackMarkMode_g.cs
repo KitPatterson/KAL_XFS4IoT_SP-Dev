@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * SetBlackMarkMode_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,7 +41,10 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///Specifies the desired black mark detection mode as one of the following:* ```on``` - Turns the black mark detection and associated functionality on.* ```off``` - Turns the black mark detection and associated functionality off.
+            /// Specifies the desired black mark detection mode as one of the following:
+            /// 
+            /// * ```on``` - Turns the black mark detection and associated functionality on.
+            /// * ```off``` - Turns the black mark detection and associated functionality off.
             /// </summary>
             [DataMember(Name = "blackMarkMode")] 
             public BlackMarkModeEnum? BlackMarkMode { get; private set; }

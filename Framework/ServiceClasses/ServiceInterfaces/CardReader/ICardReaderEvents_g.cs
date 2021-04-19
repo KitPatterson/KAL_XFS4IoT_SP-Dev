@@ -5,22 +5,23 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ICardReaderEvents_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 
 using XFS4IoTServer;
+using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
     public interface ICardReaderEvents
     {
 
-        void MediaRemovedEvent();
+        Task MediaRemovedEvent();
 
-        void RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEvent.PayloadData Payload);
+        Task RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEvent.PayloadData Payload);
 
-        void CardActionEvent(XFS4IoT.CardReader.Events.CardActionEvent.PayloadData Payload);
+        Task CardActionEvent(XFS4IoT.CardReader.Events.CardActionEvent.PayloadData Payload);
 
     }
 }

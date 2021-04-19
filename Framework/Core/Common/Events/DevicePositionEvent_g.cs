@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * DevicePositionEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,7 +45,7 @@ namespace XFS4IoT.Common.Events
             }
 
             /// <summary>
-            ///Position of the device.
+            /// Position of the device.
             /// </summary>
             [DataMember(Name = "position")] 
             public PositionEnum? Position { get; private set; }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * PrintRawFile_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,11 @@ namespace XFS4IoT.Printer.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///Specifies the manner in which the media should be handled after each page is printed, as a combinationof the following flags. If no flags are set, no actions will be performed, as when printing multiplepages on a single media item. Note that the[clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) flag is notapplicable to this this command and will be ignored.
+            /// Specifies the manner in which the media should be handled after each page is printed, as a combination
+            /// of the following flags. If no flags are set, no actions will be performed, as when printing multiple
+            /// pages on a single media item. Note that the
+            /// [clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) flag is not
+            /// applicable to this this command and will be ignored.
             /// </summary>
             public class MediaControlClass
             {
@@ -115,17 +119,33 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///This is the full path and file name of the file to be printed. This value cannot contain UNICODEcharacters.
+            /// This is the full path and file name of the file to be printed. This value cannot contain UNICODE
+            /// characters.
             /// </summary>
             [DataMember(Name = "fileName")] 
             public string FileName { get; private set; }
             /// <summary>
-            ///Specifies the manner in which the media should be handled after each page is printed, as a combinationof the following flags. If no flags are set, no actions will be performed, as when printing multiplepages on a single media item. Note that the[clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) flag is notapplicable to this this command and will be ignored.
+            /// Specifies the manner in which the media should be handled after each page is printed, as a combination
+            /// of the following flags. If no flags are set, no actions will be performed, as when printing multiple
+            /// pages on a single media item. Note that the
+            /// [clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) flag is not
+            /// applicable to this this command and will be ignored.
             /// </summary>
             [DataMember(Name = "mediaControl")] 
             public object MediaControl { get; private set; }
             /// <summary>
-            ///Specifies the paper source to use when printing. If omitted, the Service Provider will determine thepaper source that will be used. This parameter is ignored if there is already paper in the printposition. Possible values are:* ```any``` - Any paper source can be used; it is determined by the service.* ```upper``` - Use the only paper source or the upper paper source, if there is more than one paper  supply.* ```lower``` - Use the lower paper source.* ```external``` - Use the external paper source (such as envelope tray or single sheet feed).* ```aux``` - Use the auxiliary paper source.* ```aux2``` - Use the second auxiliary paper source.* ```park``` - Use the parking station.
+            /// Specifies the paper source to use when printing. If omitted, the Service Provider will determine the
+            /// paper source that will be used. This parameter is ignored if there is already paper in the print
+            /// position. Possible values are:
+            /// 
+            /// * ```any``` - Any paper source can be used; it is determined by the service.
+            /// * ```upper``` - Use the only paper source or the upper paper source, if there is more than one paper
+            ///   supply.
+            /// * ```lower``` - Use the lower paper source.
+            /// * ```external``` - Use the external paper source (such as envelope tray or single sheet feed).
+            /// * ```aux``` - Use the auxiliary paper source.
+            /// * ```aux2``` - Use the second auxiliary paper source.
+            /// * ```park``` - Use the parking station.
             /// </summary>
             [DataMember(Name = "paperSource")] 
             public PaperSourceEnum? PaperSource { get; private set; }

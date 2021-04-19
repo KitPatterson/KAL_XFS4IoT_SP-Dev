@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * Beep_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,7 @@ namespace XFS4IoT.TextTerminal.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///Specifies whether the beeper should be turned on or off.
+            /// Specifies whether the beeper should be turned on or off.
             /// </summary>
             public class BeepClass
             {
@@ -69,7 +69,7 @@ namespace XFS4IoT.TextTerminal.Commands
             }
 
             /// <summary>
-            ///Specifies whether the beeper should be turned on or off.
+            /// Specifies whether the beeper should be turned on or off.
             /// </summary>
             [DataMember(Name = "beep")] 
             public object Beep { get; private set; }

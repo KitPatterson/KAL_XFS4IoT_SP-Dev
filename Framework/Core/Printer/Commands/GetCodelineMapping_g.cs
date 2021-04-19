@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetCodelineMapping_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,7 +41,11 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///Specifies the code-line format that the mapping for the special characters is required for. This fieldcan be one of the following values:* ```cmc7``` - Report the CMC7 mapping.* ```e13b``` - Report the E13B mapping.
+            /// Specifies the code-line format that the mapping for the special characters is required for. This field
+            /// can be one of the following values:
+            /// 
+            /// * ```cmc7``` - Report the CMC7 mapping.
+            /// * ```e13b``` - Report the E13B mapping.
             /// </summary>
             [DataMember(Name = "codelineFormat")] 
             public CodelineFormatEnum? CodelineFormat { get; private set; }

@@ -5,12 +5,13 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * CardReaderEvents_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 
 using XFS4IoT;
 using XFS4IoTServer;
+using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
@@ -26,11 +27,11 @@ namespace XFS4IoTFramework.CardReader
             this.requestId = requestId;
         }
 
-        public void MediaRemovedEvent() => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaRemovedEvent(requestId));
+        public async Task MediaRemovedEvent() => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaRemovedEvent(requestId));
 
-        public void RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.RetainBinThresholdEvent(requestId, Payload));
+        public async Task RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.RetainBinThresholdEvent(requestId, Payload));
 
-        public void CardActionEvent(XFS4IoT.CardReader.Events.CardActionEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.CardActionEvent(requestId, Payload));
+        public async Task CardActionEvent(XFS4IoT.CardReader.Events.CardActionEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CardReader.Events.CardActionEvent(requestId, Payload));
 
     }
 }

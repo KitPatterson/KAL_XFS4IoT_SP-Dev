@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * CardActionEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -53,12 +53,20 @@ namespace XFS4IoT.CardReader.Events
             }
 
             /// <summary>
-            ///Specifies which action has been performed with the card. Possible values are:* ```retained``` - The card has been retained.* ```ejected``` - The card has been ejected.* ```readPosition``` - The card has been moved to the read position.
+            /// Specifies which action has been performed with the card. Possible values are:
+            /// 
+            /// * ```retained``` - The card has been retained.
+            /// * ```ejected``` - The card has been ejected.
+            /// * ```readPosition``` - The card has been moved to the read position.
             /// </summary>
             [DataMember(Name = "action")] 
             public ActionEnum? Action { get; private set; }
             /// <summary>
-            ///Position of card before being retained or ejected. Possible values are:* ```unknown``` - The position of the card cannot be determined.* ```present``` - The card was present in the reader.* ```entering``` - The card was entering the reader.
+            /// Position of card before being retained or ejected. Possible values are:
+            /// 
+            /// * ```unknown``` - The position of the card cannot be determined.
+            /// * ```present``` - The card was present in the reader.
+            /// * ```entering``` - The card was entering the reader.
             /// </summary>
             [DataMember(Name = "position")] 
             public PositionEnum? Position { get; private set; }

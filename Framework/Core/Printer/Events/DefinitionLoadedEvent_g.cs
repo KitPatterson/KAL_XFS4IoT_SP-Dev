@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * DefinitionLoadedEvent_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,12 +45,16 @@ namespace XFS4IoT.Printer.Events
             }
 
             /// <summary>
-            ///Specifies the name of the form or media just loaded.
+            /// Specifies the name of the form or media just loaded.
             /// </summary>
             [DataMember(Name = "name")] 
             public string Name { get; private set; }
             /// <summary>
-            ///Specifies the type of definition loaded. This field can be one of the following values:* ```form``` - The form identified by [name](#printer.definitionloadedevent.event.properties.name) has  been loaded.* ```media``` - The media identified by *name* has been loaded.
+            /// Specifies the type of definition loaded. This field can be one of the following values:
+            /// 
+            /// * ```form``` - The form identified by [name](#printer.definitionloadedevent.event.properties.name) has
+            ///   been loaded.
+            /// * ```media``` - The media identified by *name* has been loaded.
             /// </summary>
             [DataMember(Name = "type")] 
             public TypeEnum? Type { get; private set; }

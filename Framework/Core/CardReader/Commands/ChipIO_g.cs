@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ChipIO_g.cs uses automatically generated parts. 
- * created at 4/19/2021 3:05:28 PM
+ * created at 4/19/2021 7:48:19 PM
 \***********************************************************************************************/
 
 using System;
@@ -36,12 +36,15 @@ namespace XFS4IoT.CardReader.Commands
             }
 
             /// <summary>
-            ///Identifies the protocol that is used to communicate with the chip. Possible values are those describedin CardReader.Capabilities. This field is ignored in communications with Memory Cards. The ServiceProvider knows which memory card type is currently inserted and therefore there is no need for theapplication to manage this.
+            /// Identifies the protocol that is used to communicate with the chip. Possible values are those described
+            /// in CardReader.Capabilities. This field is ignored in communications with Memory Cards. The Service
+            /// Provider knows which memory card type is currently inserted and therefore there is no need for the
+            /// application to manage this.
             /// </summary>
             [DataMember(Name = "chipProtocol")] 
             public string ChipProtocol { get; private set; }
             /// <summary>
-            ///The Base64 encoded data to be sent to the chip.
+            /// The Base64 encoded data to be sent to the chip.
             /// </summary>
             [DataMember(Name = "chipData")] 
             public string ChipData { get; private set; }
