@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ControlPassbook_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -46,13 +46,7 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**noMediaPresent**
-            ////  No media present in a position where it should be or the media was removed during the operation.**pageTurnFail**
-            ////  The device was not able to turn the page.**mediaJammed**
-            ////  The media is jammed. Operator intervention is required.**passbookClosed**
-            ////  There were fewer pages left than specified to turn. As a result of the operation, the passbook has  been closed.**lastOrFirstPageReached**
-            ////  The printer cannot close the passbook because there were fewer pages left than specified to turn. As  a result of the operation, the last or the first page has been reached and is open.**mediaSize**
-            ////  The media has an incorrect size.
+            ///Specifies the error code if applicable. The following values are possible:* ```noMediaPresent``` - No media present in a position where it should be or the media was removed  during the operation.* ```pageTurnFail``` - The device was not able to turn the page.* ```mediaJammed``` - The media is jammed. Operator intervention is required.* ```passbookClosed``` - There were fewer pages left than specified to turn. As a result of the  operation, the passbook has been closed.* ```lastOrFirstPageReached``` - The printer cannot close the passbook because there were fewer pages  left than specified to turn. As a result of the operation, the last or the first page has been  reached and is open.* ```mediaSize``` - The media has an incorrect size.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

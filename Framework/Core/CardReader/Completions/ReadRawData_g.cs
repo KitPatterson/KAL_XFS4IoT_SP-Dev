@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ReadRawData_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -129,14 +129,7 @@ namespace XFS4IoT.CardReader.Completions
             public sealed class ChipClass
             {
                 /// <summary>
-                ///The status values applicable to all data sources. Possible values are:**ok**
-                ////The data is OK.**dataMissing**
-                ////The track/chip/memory chip is blank.**dataInvalid**
-                ////The data contained on the track/chip/memory chip is invalid. This will typically be returned when *data* reports **badReadLevel** or **dataInvalid**.**dataTooLong**
-                ////The data contained on the track/chip/memory chip is too long.**dataTooShort**
-                ////The data contained on the track/chip/memory chip is too short.**dataSourceNotSupported**
-                ////The data source to read from is not supported by the Service Provider.**dataSourceMissing**
-                ////The data source to read from is missing on the card, or is unable to be read due to a hardware problem, or the module has not been initialized. For example, this will be returned on a request to read a Memory Card and the customer has entered a magnetic card without associated memory chip. This will also be reported when *data* reports **noData**, **notInitialized** or **hardwareError**. This will also be reported when the image reader could not create a BMP file due to the state of the image reader or due to a failure.
+                ///The status values applicable to all data sources. Possible values are:* ```ok``` - The data is OK.* ```dataMissing``` - The track/chip/memory chip is blank.* ```dataInvalid``` - The data contained on the track/chip/memory chip is invalid. This will typically be  returned when [data](#cardreader.readrawdata.completion.properties.security.data) reports *badReadLevel* or  *dataInvalid*.* ```dataTooLong``` - The data contained on the track/chip/memory chip is too long.* ```dataTooShort``` - The data contained on the track/chip/memory chip is too short.* ```dataSourceNotSupported``` - The data source to read from is not supported by the Service Provider.* ```dataSourceMissing``` - The data source to read from is missing on the card, or is unable to be read due to  a hardware problem, or the module has not been initialized. For example, this will be returned on a request to  read a Memory Card and the customer has entered a magnetic card without associated memory chip. This will also  be reported when *data* reports *noData*, *notInitialized* or *hardwareError*. This will also be reported when  the image reader could not create a BMP file due to the state of the image reader or due to a failure.
                 /// </summary>
                 public enum StatusEnum
                 {
@@ -157,14 +150,7 @@ namespace XFS4IoT.CardReader.Completions
                 }
 
                 /// <summary>
-                ///The status values applicable to all data sources. Possible values are:**ok**
-                ////The data is OK.**dataMissing**
-                ////The track/chip/memory chip is blank.**dataInvalid**
-                ////The data contained on the track/chip/memory chip is invalid. This will typically be returned when *data* reports **badReadLevel** or **dataInvalid**.**dataTooLong**
-                ////The data contained on the track/chip/memory chip is too long.**dataTooShort**
-                ////The data contained on the track/chip/memory chip is too short.**dataSourceNotSupported**
-                ////The data source to read from is not supported by the Service Provider.**dataSourceMissing**
-                ////The data source to read from is missing on the card, or is unable to be read due to a hardware problem, or the module has not been initialized. For example, this will be returned on a request to read a Memory Card and the customer has entered a magnetic card without associated memory chip. This will also be reported when *data* reports **noData**, **notInitialized** or **hardwareError**. This will also be reported when the image reader could not create a BMP file due to the state of the image reader or due to a failure.
+                ///The status values applicable to all data sources. Possible values are:* ```ok``` - The data is OK.* ```dataMissing``` - The track/chip/memory chip is blank.* ```dataInvalid``` - The data contained on the track/chip/memory chip is invalid. This will typically be  returned when [data](#cardreader.readrawdata.completion.properties.security.data) reports *badReadLevel* or  *dataInvalid*.* ```dataTooLong``` - The data contained on the track/chip/memory chip is too long.* ```dataTooShort``` - The data contained on the track/chip/memory chip is too short.* ```dataSourceNotSupported``` - The data source to read from is not supported by the Service Provider.* ```dataSourceMissing``` - The data source to read from is missing on the card, or is unable to be read due to  a hardware problem, or the module has not been initialized. For example, this will be returned on a request to  read a Memory Card and the customer has entered a magnetic card without associated memory chip. This will also  be reported when *data* reports *noData*, *notInitialized* or *hardwareError*. This will also be reported when  the image reader could not create a BMP file due to the state of the image reader or due to a failure.
                 /// </summary>
                 [DataMember(Name = "status")] 
                 public StatusEnum? Status { get; private set; }
@@ -484,15 +470,7 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**mediaJam**
-            ////The card is jammed. Operator intervention is required.**shutterFail**
-            ////The open of the shutter failed due to manipulation or hardware error. Operator intervention is required.**noMedia**
-            ////The card was removed before completion of the read action (the event [CardReader.MediaInsertedEvent](#message-CardReader.MediaInsertedEvent) has been generated). For motor driven devices, the read is disabled; i.e. another command has to be issued to enable the reader for card entry.**invalidMedia**
-            ////No track or chip found; card may have been inserted or pulled through the wrong way.**cardTooShort**
-            ////The card that was inserted is too short. When this error occurs the card remains at the exit slot.**cardTooLong**
-            ////The card that was inserted is too long. When this error occurs the card remains at the exit slot.**securityFail**
-            ////The security module failed reading the cards security sign.**cardCollision**
-            ////There was an unresolved collision of two or more contactless card signals.
+            ///Specifies the error code if applicable. The following values are possible:* ```mediaJam``` - The card is jammed. Operator intervention is required.* ```shutterFail``` - The open of the shutter failed due to manipulation or hardware error. Operator  intervention is required.* ```noMedia``` - The card was removed before completion of the read action (the event  [CardReader.MediaInsertedEvent](#cardreader.mediainsertedevent) has been generated). For motor  driven devices, the read is disabled; i.e. another command has to be issued to enable the reader for  card entry.* ```invalidMedia``` - No track or chip found; card may have been inserted or pulled through the wrong  way.* ```cardTooShort``` - The card that was inserted is too short. When this error occurs the card  remains at the exit slot.* ```cardTooLong``` - The card that was inserted is too long. When this error occurs the card remains  at the exit slot.* ```securityFail``` - The security module failed reading the cards security sign.* ```cardCollision``` - There was an unresolved collision of two or more contactless card signals.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
@@ -512,7 +490,7 @@ namespace XFS4IoT.CardReader.Completions
             [DataMember(Name = "track3")] 
             public Track3Class Track3 { get; private set; }
             /// <summary>
-            ///Contains the ATR data read from the chip. For contactless chip card readers, multiple identification information can be returned if the card reader detects more than one chip. Each chip identification information is returned as an individual *data* array element.
+            ///Contains the ATR data read from the chip. For contactless chip card readers, multiple identificationinformation can be returned if the card reader detects more than one chip. Each chip identificationinformation is returned as an individual *data* array element.
             /// </summary>
             [DataMember(Name = "chip")] 
             public List<ChipClass> Chip{ get; private set; }

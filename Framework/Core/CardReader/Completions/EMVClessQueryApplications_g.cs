@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessQueryApplications_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -37,13 +37,13 @@ namespace XFS4IoT.CardReader.Completions
                 }
 
                 /// <summary>
-                ///Contains the Base64 encoded payment system application identifier (AID) supported by the intelligent contactless card unit.
+                ///Contains the Base64 encoded payment system application identifier (AID) supported by theintelligent contactless card unit.
                 /// </summary>
                 [DataMember(Name = "aid")] 
                 public string Aid { get; private set; }
 
                 /// <summary>
-                ///Contains the Base64 encoded Kernel Identifier associated with the *aid*. This data may be empty if the reader does not support Kernel Identifiers for example in the case of legacy approved contactless readers.
+                ///Contains the Base64 encoded Kernel Identifier associated with the *aid*. This data may be emptyif the reader does not support Kernel Identifiers for example in the case of legacy approvedcontactless readers.
                 /// </summary>
                 [DataMember(Name = "kernelIdentifier")] 
                 public string KernelIdentifier { get; private set; }
@@ -60,7 +60,7 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///An array of application data objects which specifies a supported identifier (AID) and associated Kernel Identifier.
+            ///An array of application data objects which specifies a supported identifier (AID) and associatedKernel Identifier.
             /// </summary>
             [DataMember(Name = "appData")] 
             public List<AppDataClass> AppData{ get; private set; }

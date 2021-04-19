@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryField_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,7 +41,7 @@ namespace XFS4IoT.Printer.Commands
             [DataMember(Name = "formName")] 
             public string FormName { get; private set; }
             /// <summary>
-            ///The name of the field about which to retrieve details. If omitted, then details are retrieved for all fields on the form.
+            ///The name of the field about which to retrieve details. If omitted, then details are retrieved for allfields on the form.
             /// </summary>
             [DataMember(Name = "fieldName")] 
             public string FieldName { get; private set; }

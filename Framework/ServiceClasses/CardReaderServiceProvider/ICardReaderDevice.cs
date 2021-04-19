@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ICardReaderDevice.cs uses automatically generated parts. 
- * created at 15/04/2021 14:06:39
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 
@@ -20,20 +20,6 @@ namespace XFS4IoTFramework.CardReader
     {
 
         /// <summary>
-        /// |-  This command is used to retrieve the list of forms available on the device.
-        /// </summary>
-        Task<XFS4IoT.CardReader.Completions.FormListCompletion.PayloadData> FormList(IFormListEvents events, 
-                                                                                     XFS4IoT.CardReader.Commands.FormListCommand.PayloadData payload, 
-                                                                                     CancellationToken cancellation);
-
-        /// <summary>
-        /// |-  This command is used to retrieve details of the definition of a specified form.
-        /// </summary>
-        Task<XFS4IoT.CardReader.Completions.QueryFormCompletion.PayloadData> QueryForm(IQueryFormEvents events, 
-                                                                                       XFS4IoT.CardReader.Commands.QueryFormCommand.PayloadData payload, 
-                                                                                       CancellationToken cancellation);
-
-        /// <summary>
         /// This command is used to retrieve the complete list of registration authority Interface Module (IFM) identifiers.The primary registration authority is EMVCo but other organizations are also supported for historical or localcountry requirements.New registration authorities may be added in the future so applications should be able to handle the return of new(as yet undefined) IFM identifiers.
         /// </summary>
         Task<XFS4IoT.CardReader.Completions.QueryIFMIdentifierCompletion.PayloadData> QueryIFMIdentifier(IQueryIFMIdentifierEvents events, 
@@ -46,20 +32,6 @@ namespace XFS4IoTFramework.CardReader
         Task<XFS4IoT.CardReader.Completions.EMVClessQueryApplicationsCompletion.PayloadData> EMVClessQueryApplications(IEMVClessQueryApplicationsEvents events, 
                                                                                                                        XFS4IoT.CardReader.Commands.EMVClessQueryApplicationsCommand.PayloadData payload, 
                                                                                                                        CancellationToken cancellation);
-
-        /// <summary>
-        /// For motor driven card readers, the ID card unit checks whether a card has been inserted. If so, the tracks areread immediately as described the form specified by the[formName](#cardreader.readtrack.command.properties.formname) parameter.If no card has been inserted, and for all other categories of devices, the ID card unit waits for the applicationspecified [timeout](#cardreader.readtrack.command.properties.timeout) for a card to be either inserted or pulledthrough. Again the next step is reading the tracks specified in the form (see[Form Description](#cardreader.generalinformation.formdescription), for a more detailed description of the formsmechanism). When the SECURE tag is specified in the associated form, the results of a security check via asecurity module (i.e. MM, CIM86) are specified and added to the track data.A [CardReader.InsertCardEvent](#cardreader.insertcardevent) will be generated when there is no card in the cardreader and the device is ready to accept a card. If the security check fails however this should not stop validdata being returned. The error *securityFail* will be returned if the form specifies only security data to be readand the security check could not be executed, in all other cases the *security* field of the output parameter willbe set to the relevant value including *hardwareError*.
-        /// </summary>
-        Task<XFS4IoT.CardReader.Completions.ReadTrackCompletion.PayloadData> ReadTrack(IReadTrackEvents events, 
-                                                                                       XFS4IoT.CardReader.Commands.ReadTrackCommand.PayloadData payload, 
-                                                                                       CancellationToken cancellation);
-
-        /// <summary>
-        /// For motor-driven card readers, the ID card unit checks whether a card has been inserted. If so, the data iswritten to the track as described in the form specified by the[formName](#cardreader.writetrack.command.properties.formname) parameter, and the other parameters.If no card has been inserted, and for all other categories of devices, the ID card unit waits for the applicationspecified [timeout](#cardreader.writetrack.command.properties.timeout) for a card to be either inserted or pulledthrough. The next step is writing the data defined by the form and the parameters to the respective track (see[Form Description](#cardreader.generalinformation.formdescription), for a more detailed description of the formsmechanism).This procedure is followed by data verification.A [CardReader.InsertCardEvent](#cardreader.insertcardevent) will be generated when there is no card in the cardreader and the device is ready to accept a card.If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
-        /// </summary>
-        Task<XFS4IoT.CardReader.Completions.WriteTrackCompletion.PayloadData> WriteTrack(IWriteTrackEvents events, 
-                                                                                         XFS4IoT.CardReader.Commands.WriteTrackCommand.PayloadData payload, 
-                                                                                         CancellationToken cancellation);
 
         /// <summary>
         /// This command is only applicable to motor driven card readers and latched dip card readers.For motorized card readers the default operation is that the card is driven to the exit slot from where the usercan remove it. The card remains in position for withdrawal until either it is taken or another command is issuedthat moves the card.For latched dip readers, this command causes the card to be unlatched (if not already unlatched), enablingremoval.After successful completion of this command, a [CardReader.MediaRemovedEvent](#cardreader.mediaremovedevent) isgenerated to inform the application when the card is taken.
@@ -122,13 +94,6 @@ namespace XFS4IoTFramework.CardReader
         /// </summary>
         Task<XFS4IoT.CardReader.Completions.ChipPowerCompletion.PayloadData> ChipPower(IChipPowerEvents events, 
                                                                                        XFS4IoT.CardReader.Commands.ChipPowerCommand.PayloadData payload, 
-                                                                                       CancellationToken cancellation);
-
-        /// <summary>
-        /// This command takes the form name and output of a successful[CardReader.ReadRawData](#cardreader.readrawdata) and returns the parsed string.
-        /// </summary>
-        Task<XFS4IoT.CardReader.Completions.ParseDataCompletion.PayloadData> ParseData(IParseDataEvents events, 
-                                                                                       XFS4IoT.CardReader.Commands.ParseDataCommand.PayloadData payload, 
                                                                                        CancellationToken cancellation);
 
         /// <summary>

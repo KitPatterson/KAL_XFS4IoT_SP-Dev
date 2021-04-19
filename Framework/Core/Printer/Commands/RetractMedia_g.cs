@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * RetractMedia_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -35,7 +35,7 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///This number has to be between one and the number of bins supported by this device. If omitted, the media will be retracted to the transport. After it has been retracted to the transport, in a subsequent operation the media can be ejected again, or retracted to one of the retract bins.
+            ///This number has to be between one and the number of bins supported by this device. If omitted, themedia will be retracted to the transport. After it has been retracted to the transport, in asubsequent operation the media can be ejected again, or retracted to one of the retract bins.
             /// </summary>
             [DataMember(Name = "binNumber")] 
             public int? BinNumber { get; private set; }

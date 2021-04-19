@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * Reset_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -43,10 +43,7 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**mediaJam**
-            ////The card is jammed. Operator intervention is required.**shutterFail**
-            ////The device is unable to open and close its shutter.**retainBinFull**
-            ////The retain bin is full; no more cards can be retained. The current card is still in the device.
+            ///Specifies the error code if applicable. The following values are possible:* ```mediaJam``` - The card is jammed. Operator intervention is required.* ```shutterFail``` - The device is unable to open and close its shutter.* ```retainBinFull``` - The retain bin is full; no more cards can be retained. The current card is  still in the device.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

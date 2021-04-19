@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessConfigure_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,31 +41,31 @@ namespace XFS4IoT.CardReader.Commands
                 }
 
                 /// <summary>
-                ///The application identifier to be accepted by the contactless chip card reader. The [CardReader.EMVClessQueryApplications](#command-CardReader.EMVClessQueryApplications) command will return the list of supported application identifiers.
+                ///The application identifier to be accepted by the contactless chip card reader. The[CardReader.EMVClessQueryApplications](#cardreader.emvclessqueryapplications) command willreturn the list of supported application identifiers.
                 /// </summary>
                 [DataMember(Name = "aid")] 
                 public string Aid { get; private set; }
 
                 /// <summary>
-                ///If *partialSelection* is **true**, partial name selection of the specified AID is enabled. If *partialSelection* is **false**, partial name selection is disabled. A detailed explanation for partial name selection is given in EMV 4.3 Book 1, Section 11.3.5.
+                ///If *partialSelection* is *true*, partial name selection of the specified AID is enabled. If*partialSelection* is *false*, partial name selection is disabled. A detailed explanation forpartial name selection is given in EMV 4.3 Book 1, Section 11.3.5.
                 /// </summary>
                 [DataMember(Name = "partialSelection")] 
                 public bool? PartialSelection { get; private set; }
 
                 /// <summary>
-                ///The transaction type supported by the AID. This indicates the type of financial transaction represented by the first two digits of the ISO 8583:1987 Processing Code.
+                ///The transaction type supported by the AID. This indicates the type of financial transactionrepresented by the first two digits of the ISO 8583:1987 Processing Code.
                 /// </summary>
                 [DataMember(Name = "transactionType")] 
                 public int? TransactionType { get; private set; }
 
                 /// <summary>
-                ///Base64 encoded representation of the EMVCo defined kernel identifier associated with the *aid*. This field will be ignored if the reader does not support kernel identifiers.
+                ///Base64 encoded representation of the EMVCo defined kernel identifier associated with the *aid*.This field will be ignored if the reader does not support kernel identifiers.
                 /// </summary>
                 [DataMember(Name = "kernelIdentifier")] 
                 public string KernelIdentifier { get; private set; }
 
                 /// <summary>
-                ///Base64 encoded representation of the list of BER-TLV formatted configuration data, applicable to the specific AID-Kernel ID-Transaction Type combination. The appropriate payment systems specifications define the BER-TLV tags to be configured.
+                ///Base64 encoded representation of the list of BER-TLV formatted configuration data, applicable tothe specific AID-Kernel ID-Transaction Type combination. The appropriate payment systemsspecifications define the BER-TLV tags to be configured.
                 /// </summary>
                 [DataMember(Name = "configData")] 
                 public string ConfigData { get; private set; }
@@ -83,7 +83,7 @@ namespace XFS4IoT.CardReader.Commands
                 }
 
                 /// <summary>
-                ///Specifies the payment system's Registered Identifier (RID). RID is the first 5 bytes of the AID and identifies the payments system.
+                ///Specifies the payment system's Registered Identifier (RID). RID is the first 5 bytes of the AIDand identifies the payments system.
                 /// </summary>
                 [DataMember(Name = "rid")] 
                 public string Rid { get; private set; }
@@ -106,17 +106,17 @@ namespace XFS4IoT.CardReader.Commands
             }
 
             /// <summary>
-            ///Base64 encoded representation of the BER-TLV formatted data for the terminal e.g. Terminal Type, Transaction Category Code, Merchant Name & Location etc. Any terminal based data elements referenced in the Payment Systems Specifications or EMVCo Contactless Payment Systems Specifications Books may be included (see References [2] to [14] section for more details).
+            ///Base64 encoded representation of the BER-TLV formatted data for the terminal e.g. Terminal Type,Transaction Category Code, Merchant Name & Location etc. Any terminal based data elements referencedin the Payment Systems Specifications or EMVCo Contactless Payment Systems Specifications Books may beincluded (see References [2] to [14] section for more details).
             /// </summary>
             [DataMember(Name = "terminalData")] 
             public string TerminalData { get; private set; }
             /// <summary>
-            ///Specifies the list of acceptable payment system applications. For EMVCo approved contactless card readers each AID is associated with a Kernel Identifier and a Transaction Type. Legacy approved contactless readers may use only the AID.Each AID-Transaction Type or each AID-Kernel-Transaction Type combination will have its own unique set of configuration data. See References [2] and [3] for more details.
+            ///Specifies the list of acceptable payment system applications. For EMVCo approved contactless cardreaders each AID is associated with a Kernel Identifier and a Transaction Type. Legacy approvedcontactless readers may use only the AID.Each AID-Transaction Type or each AID-Kernel-Transaction Type combination will have its own unique setof configuration data. See References [2] and [3] for more details.
             /// </summary>
             [DataMember(Name = "aidData")] 
             public List<AidDataClass> AidData{ get; private set; }
             /// <summary>
-            ///Specifies the encryption key information required by an intelligent contactless chip card reader for offline data authentication.
+            ///Specifies the encryption key information required by an intelligent contactless chip card reader foroffline data authentication.
             /// </summary>
             [DataMember(Name = "keyData")] 
             public List<KeyDataClass> KeyData{ get; private set; }

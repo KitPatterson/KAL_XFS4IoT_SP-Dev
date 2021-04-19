@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LoadDefinition_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -44,11 +44,7 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**fileNotFound**
-            ////  The specified file cannot be found.**formInvalid**
-            ////  The form is invalid.**mediaInvalid**
-            ////  The media definition is invalid.**definitionExists**
-            ////  The specified form or media definition already exists and the *overwrite* flag was false.
+            ///Specifies the error code if applicable. The following values are possible:* ```fileNotFound``` - The specified file cannot be found.* ```formInvalid``` - The form is invalid.* ```mediaInvalid``` - The media definition is invalid.* ```definitionExists``` - The specified form or media definition already exists and the *overwrite*  flag was false.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

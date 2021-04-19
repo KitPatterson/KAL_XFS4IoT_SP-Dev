@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * WriteRawDataEvents_g.cs uses automatically generated parts. 
- * created at 15/04/2021 14:41:31
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 
@@ -25,9 +25,9 @@ namespace XFS4IoTFramework.CardReader
 
         public void MediaInsertedEvent() => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.MediaInsertedEvent(requestId));
 
-        public void InvalidTrackDataEvent(XFS4IoT.CardReader.Events.InvalidTrackDataEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InvalidTrackDataEvent(requestId, Payload));
-
         public void InvalidMediaEvent() => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InvalidMediaEvent(requestId));
+
+        public void InvalidTrackDataEvent(XFS4IoT.CardReader.Events.InvalidTrackDataEvent.PayloadData Payload) => connection.SendMessageAsync(new XFS4IoT.CardReader.Events.InvalidTrackDataEvent(requestId, Payload));
 
     }
 }

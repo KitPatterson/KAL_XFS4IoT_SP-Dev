@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * CryptoData_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,7 @@ namespace XFS4IoT.Crypto.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this command. For a list of valid values see the Attributes capability field. The values specified must be compatible with the key identified by Key.
+            ///This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for thiscommand. For a list of valid values see the [Capability.Attributes](#common.capabilities.completion.properties.crypto.cryptoattributes) field. The values specified must becompatible with the key identified by Key.
             /// </summary>
             public class CryptoAttributesClass
             {
@@ -90,12 +90,12 @@ namespace XFS4IoT.Crypto.Commands
             [DataMember(Name = "key")] 
             public string Key { get; private set; }
             /// <summary>
-            ///If startValue specifies an Initialization Vector (IV), then this parameter specifies the name of the stored key used to decrypt the startValue to obtain the IV. If startValue is not set and this parameter is set, then this parameter specifies the name of the IV that has been previously imported via TR-31. If this parameter is not set, startValue is used as the Initialization Vector.
+            ///If startValue specifies an Initialization Vector (IV), then this parameter specifies the name of thestored key used to decrypt the startValue to obtain the IV. If startValue is not set and thisparameter is set, then this parameter specifies the name of the IV that has been previously importedvia TR-31. If this parameter is not set, startValue is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")] 
             public string StartValueKey { get; private set; }
             /// <summary>
-            ///The initialization vector for CBC / CFB encryption. If this parameter and startValueKey are both not set the default value for CBC / CFB is all zeroes.
+            ///The initialization vector for CBC / CFB encryption. If this parameter and startValueKey are both notset the default value for CBC / CFB is all zeroes.
             /// </summary>
             [DataMember(Name = "startValue")] 
             public string StartValue { get; private set; }
@@ -110,7 +110,7 @@ namespace XFS4IoT.Crypto.Commands
             [DataMember(Name = "cryptData")] 
             public string CryptData { get; private set; }
             /// <summary>
-            ///This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this command. For a list of valid values see the Attributes capability field. The values specified must be compatible with the key identified by Key.
+            ///This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for thiscommand. For a list of valid values see the [Capability.Attributes](#common.capabilities.completion.properties.crypto.cryptoattributes) field. The values specified must becompatible with the key identified by Key.
             /// </summary>
             [DataMember(Name = "cryptoAttributes")] 
             public object CryptoAttributes { get; private set; }

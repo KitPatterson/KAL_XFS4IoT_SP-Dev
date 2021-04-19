@@ -47,24 +47,12 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
 
         public void Enable() { }
 
-        public Task<FormListCompletion.PayloadData> FormList(IFormListEvents connection,
-                                                                           FormListCommand.PayloadData payload, 
-                                                                           CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<QueryFormCompletion.PayloadData> QueryForm(IQueryFormEvents connection, 
-                                                                             QueryFormCommand.PayloadData payload, 
-                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
         public Task<QueryIFMIdentifierCompletion.PayloadData> QueryIFMIdentifier(IQueryIFMIdentifierEvents connection, 
                                                                                  QueryIFMIdentifierCommand.PayloadData payload,
                                                                                  CancellationToken cancellation) => throw new System.NotImplementedException();
         public Task<EMVClessQueryApplicationsCompletion.PayloadData> EMVClessQueryApplications(IEMVClessQueryApplicationsEvents connection, 
                                                                                                EMVClessQueryApplicationsCommand.PayloadData payload,
                                                                                                CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ReadTrackCompletion.PayloadData> ReadTrack(IReadTrackEvents connection, 
-                                                               ReadTrackCommand.PayloadData payload,
-                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<WriteTrackCompletion.PayloadData> WriteTrack(IWriteTrackEvents connection, 
-                                                                 WriteTrackCommand.PayloadData payload,
-                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
         public async Task<EjectCardCompletion.PayloadData> EjectCard(IEjectCardEvents connection,
                                                                      EjectCardCommand.PayloadData payload,
                                                                      CancellationToken cancellation)
@@ -97,9 +85,6 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                                                        CancellationToken cancellation) => throw new System.NotImplementedException();
         public Task<ChipPowerCompletion.PayloadData> ChipPower(IChipPowerEvents connection,
                                                                ChipPowerCommand.PayloadData payload,
-                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ParseDataCompletion.PayloadData> ParseData(IParseDataEvents connection,
-                                                               ParseDataCommand.PayloadData payload,
                                                                CancellationToken cancellation) => throw new System.NotImplementedException();
         public Task<ParkCardCompletion.PayloadData> ParkCard(IParkCardEvents connection,
                                                              ParkCardCommand.PayloadData payload,
@@ -171,7 +156,6 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                     "1.0"),
                     new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass.SoftwareClass(
                     "XFS4 SP",
-                    "1.0",
                     "1.0")),
                 new CapabilitiesCompletion.PayloadData.CommonClass.VendorModeIformationClass(
                     true,

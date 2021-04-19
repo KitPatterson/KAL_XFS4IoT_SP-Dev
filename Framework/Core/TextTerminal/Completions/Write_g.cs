@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * Write_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -41,7 +41,7 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:\"characterSetsData\": Character set(s) supported by Service Provider is inconsistent with use of text value.
+            ///Specifies the error code if applicable. The following values are possible:* ```characterSetsData``` - Character set(s) supported by Service Provider is inconsistent with use of text value.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

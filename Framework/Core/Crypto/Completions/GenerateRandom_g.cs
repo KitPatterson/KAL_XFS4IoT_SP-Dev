@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Crypto interface.
  * GenerateRandom_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -43,7 +43,7 @@ namespace XFS4IoT.Crypto.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:\"modeNotSupported\": The mode specified by modeOfUse is not supported.\"accessDenied\": The encryption module is either not initialized or not ready for any vendor specific reason.
+            ///Specifies the error code if applicable. The following values are possible:* ```modeNotSupported``` - The mode specified by modeOfUse is not supported.* ```accessDenied``` - The encryption module is either not initialized or not ready for any vendor specific reason.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

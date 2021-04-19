@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessIssuerUpdate_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -34,7 +34,7 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Contains the BER-TLV formatted data read from the chip. This will be omitted if no data has been returned.
+            ///Contains the BER-TLV formatted data read from the chip. This will be omitted if no data has beenreturned.
             /// </summary>
             public class ChipClass
             {
@@ -64,7 +64,7 @@ namespace XFS4IoT.CardReader.Completions
                 public string DataRead { get; private set; }
                 
                 /// <summary>
-                ///The Entry Point Outcome specified in EMVCo Specifications for Contactless Payment Systems (Book A and B). This can be omitted for contactless chip card readers that do not follow EMVCo Entry Point Specifications.
+                ///The Entry Point Outcome specified in EMVCo Specifications for Contactless Payment Systems (Book A and B).This can be omitted for contactless chip card readers that do not follow EMVCo Entry Point Specifications.
                 /// </summary>
                 public class ClessOutcomeClass 
                 {
@@ -89,7 +89,7 @@ namespace XFS4IoT.CardReader.Completions
                     public bool? Receipt { get; private set; }
                     
                     /// <summary>
-                    ///The user interface details required to be displayed to the cardholder after processing the outcome of a contactless transaction. If no user interface details are required, this will be omitted. Please refer to EMVCo Contactless Specifications for Payment Systems Book A, Section 6.2 for details of the data within this object.
+                    ///The user interface details required to be displayed to the cardholder after processing the outcome of acontactless transaction. If no user interface details are required, this will be omitted. Please referto EMVCo Contactless Specifications for Payment Systems Book A, Section 6.2 for details of the datawithin this object.
                     /// </summary>
                     public class UiOutcomeClass 
                     {
@@ -138,7 +138,7 @@ namespace XFS4IoT.CardReader.Completions
                     public UiOutcomeClass UiOutcome { get; private set; }
                     
                     /// <summary>
-                    ///The user interface details required to be displayed to the cardholder when a transaction needs to be completed with a re-tap. If no user interface details are required, this will be omitted.
+                    ///The user interface details required to be displayed to the cardholder when a transaction needs to becompleted with a re-tap. If no user interface details are required, this will be omitted.
                     /// </summary>
                     public class UiRestartClass 
                     {
@@ -229,15 +229,12 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**noMedia**
-            ////The card was removed before completion of the read action.**invalidMedia**
-            ////No track or chip found or card tapped cannot be used with this command (e.g. contactless storage cards or a different card than what was used to complete the [CardReader.EMVClessPerformTransaction](#command-CardReader.EMVClessPerformTransaction) command).**transactionNotInitiated**
-            ////This command was issued before calling the CardReader.EMVClessPerformTransaction command.
+            ///Specifies the error code if applicable. The following values are possible:* ```noMedia``` - The card was removed before completion of the read action.* ```invalidMedia``` - No track or chip found or card tapped cannot be used with this command (e.g.  contactless storage cards or a different card than what was used to complete the  [CardReader.EMVClessPerformTransaction](#cardreader.emvclessperformtransaction) command).* ```transactionNotInitiated``` - This command was issued before calling the  CardReader.EMVClessPerformTransaction command.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
             /// <summary>
-            ///Contains the BER-TLV formatted data read from the chip. This will be omitted if no data has been returned.
+            ///Contains the BER-TLV formatted data read from the chip. This will be omitted if no data has beenreturned.
             /// </summary>
             [DataMember(Name = "chip")] 
             public ChipClass Chip { get; private set; }

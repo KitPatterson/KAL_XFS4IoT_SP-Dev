@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ITextTerminalDevice.cs uses automatically generated parts. 
- * created at 15/04/2021 15:46:45
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 
@@ -20,77 +20,77 @@ namespace XFS4IoTFramework.TextTerminal
     {
 
         /// <summary>
-        /// This command is used to retrieve the  list of forms available on the device.
+        /// |-  This command is used to retrieve the  list of forms available on the device.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.GetFormListCompletion.PayloadData> GetFormList(IGetFormListEvents events, 
                                                                                              XFS4IoT.TextTerminal.Commands.GetFormListCommand.PayloadData payload, 
                                                                                              CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to retrieve details of the definition of a specified form.
+        /// |-  This command is used to retrieve details of the definition of a specified form.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.GetQueryFormCompletion.PayloadData> GetQueryForm(IGetQueryFormEvents events, 
                                                                                                XFS4IoT.TextTerminal.Commands.GetQueryFormCommand.PayloadData payload, 
                                                                                                CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to retrieve details of the definition of a single or all fields on a specified form.
+        /// |-  This command is used to retrieve details of the definition of a single or all fields on a specified form.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.GetQueryFieldCompletion.PayloadData> GetQueryField(IGetQueryFieldEvents events, 
                                                                                                  XFS4IoT.TextTerminal.Commands.GetQueryFieldCommand.PayloadData payload, 
                                                                                                  CancellationToken cancellation);
 
         /// <summary>
-        /// This command returns information about the Keys (buttons) supported by the device.This command should be issued to determine which Keys are available.
+        /// This command returns information about the Keys (buttons) supported by the device. This command should be issued to determine which Keys are available.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.GetKeyDetailCompletion.PayloadData> GetKeyDetail(IGetKeyDetailEvents events, 
                                                                                                XFS4IoT.TextTerminal.Commands.GetKeyDetailCommand.PayloadData payload, 
                                                                                                CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to beep at the text terminal unit.
+        /// |-  This command is used to beep at the text terminal unit.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.BeepCompletion.PayloadData> Beep(IBeepEvents events, 
                                                                                XFS4IoT.TextTerminal.Commands.BeepCommand.PayloadData payload, 
                                                                                CancellationToken cancellation);
 
         /// <summary>
-        /// This command clears the specified area of the text terminal unit screen.The cursor is positioned to the upper left corner of the cleared area.
+        /// |-  This command clears the specified area of the text terminal unit screen.The cursor is positioned to the upper left corner of the cleared area.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.ClearScreenCompletion.PayloadData> ClearScreen(IClearScreenEvents events, 
                                                                                              XFS4IoT.TextTerminal.Commands.ClearScreenCommand.PayloadData payload, 
                                                                                              CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to switch the lighting of the text terminal unit on or off.
+        /// |-  This command is used to switch the lighting of the text terminal unit on or off.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.DispLightCompletion.PayloadData> DispLight(IDispLightEvents events, 
                                                                                          XFS4IoT.TextTerminal.Commands.DispLightCommand.PayloadData payload, 
                                                                                          CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to set the status of the LEDs.
+        /// |-  This command is used to set the status of the LEDs.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.SetLedCompletion.PayloadData> SetLed(ISetLedEvents events, 
                                                                                    XFS4IoT.TextTerminal.Commands.SetLedCommand.PayloadData payload, 
                                                                                    CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to set the resolution of the display.The screen is cleared and the cursor is positioned at the upper left position.
+        /// This command is used to set the resolution of the display. The screen is cleared and the cursor is positioned at the upper left position.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.SetResolutionCompletion.PayloadData> SetResolution(ISetResolutionEvents events, 
                                                                                                  XFS4IoT.TextTerminal.Commands.SetResolutionCommand.PayloadData payload, 
                                                                                                  CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to display a form by merging the supplied variable field data with the defined form and field data specified in the form.
+        /// |-  This command is used to display a form by merging the supplied variable field data with the defined form and field data specified in the form.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.WriteFormCompletion.PayloadData> WriteForm(IWriteFormEvents events, 
                                                                                          XFS4IoT.TextTerminal.Commands.WriteFormCommand.PayloadData payload, 
                                                                                          CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to read data from input fields on the specified form.
+        /// |-  This command is used to read data from input fields on the specified form.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.ReadFormCompletion.PayloadData> ReadForm(IReadFormEvents events, 
                                                                                        XFS4IoT.TextTerminal.Commands.ReadFormCommand.PayloadData payload, 
@@ -104,7 +104,7 @@ namespace XFS4IoTFramework.TextTerminal
                                                                                  CancellationToken cancellation);
 
         /// <summary>
-        /// This command activates the keyboard of the text terminal unit for input of the specified number of characters. Depending on the specified flush mode the input buffer is cleared.During this command, pressing an active key results in a Key event containing the key details. On completion of the command (when the maximum number of keys have been pressed or a terminator key is pressed), the entered string, as interpreted by the Service Provider, is returned. The Service Provider takes command keys into account when interpreting the data.
+        /// This command activates the keyboard of the text terminal unit for input of the specified number of characters. Depending on the specified flush mode the input buffer is cleared. During this command, pressing an active key results in a [TextTerminal.KeyEvent](#textterminal.keyevent) event containing the key details. On completion of the command (when the maximum number of keys have been pressed or a terminator key is pressed), the entered string, as interpreted by the Service Provider, is returned. The Service Provider takes command keys into account when interpreting the data.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.ReadCompletion.PayloadData> Read(IReadEvents events, 
                                                                                XFS4IoT.TextTerminal.Commands.ReadCommand.PayloadData payload, 
@@ -118,7 +118,7 @@ namespace XFS4IoTFramework.TextTerminal
                                                                                  CancellationToken cancellation);
 
         /// <summary>
-        /// This command defines the keys that will be active during the next ReadForm command.The configured set will be active until the next ReadForm command ends, at which point the default values are restored.
+        /// This command defines the keys that will be active during the next [TextTerminal.ReadForm](#textterminal.readform) command.The configured set will be active until the next [TextTerminal.ReadForm](#textterminal.readform) command ends, at which point the default values are restored.
         /// </summary>
         Task<XFS4IoT.TextTerminal.Completions.DefineKeysCompletion.PayloadData> DefineKeys(IDefineKeysEvents events, 
                                                                                            XFS4IoT.TextTerminal.Commands.DefineKeysCommand.PayloadData payload, 

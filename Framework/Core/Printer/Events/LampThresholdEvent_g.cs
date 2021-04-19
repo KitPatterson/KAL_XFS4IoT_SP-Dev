@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LampThresholdEvent_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,10 +45,7 @@ namespace XFS4IoT.Printer.Events
             }
 
             /// <summary>
-            ///Specifies the current state of the imaging lamp as one of the following values:**ok**
-            ////  The imaging lamp is in a good state.**fading**
-            ////  The imaging lamp is fading and should be changed.**inop**
-            ////  The imaging lamp is inoperative.
+            ///Specifies the current state of the imaging lamp as one of the following values:* ```ok``` - The imaging lamp is in a good state.* ```fading``` - The imaging lamp is fading and should be changed.* ```inop``` - The imaging lamp is inoperative.
             /// </summary>
             [DataMember(Name = "state")] 
             public StateEnum? State { get; private set; }

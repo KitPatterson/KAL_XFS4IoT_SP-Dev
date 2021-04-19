@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadImage_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -101,44 +101,27 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///Specifies the format of the front image returned by this command as one of the following. If omitted, no front image is returned.**tif**
-            ////  The returned image is in TIF 6.0 format.**wmf**
-            ////  The returned image is in WMF (Windows Metafile) format.**bmp**
-            ////  The returned image is in BMP format.**jpg**
-            ////  The returned image is in JPG format.
+            ///Specifies the format of the front image returned by this command as one of the following. If omitted,no front image is returned.* ```tif``` - The returned image is in TIF 6.0 format.* ```wmf``` - The returned image is in WMF (Windows Metafile) format.* ```bmp``` - The returned image is in BMP format.* ```jpg``` - The returned image is in JPG format.
             /// </summary>
             [DataMember(Name = "frontImageType")] 
             public FrontImageTypeEnum? FrontImageType { get; private set; }
             /// <summary>
-            ///Specifies the format of the back image returned by this command as one of the following. If omitted, no back image is returned.**tif**
-            ////  The returned image is in TIF 6.0 format.**wmf**
-            ////  The returned image is in WMF (Windows Metafile) format.**bmp**
-            ////  The returned image is in BMP format.**jpg**
-            ////  The returned image is in JPG format.
+            ///Specifies the format of the back image returned by this command as one of the following. If omitted,no back image is returned.* ```tif``` - The returned image is in TIF 6.0 format.* ```wmf``` - The returned image is in WMF (Windows Metafile) format.* ```bmp``` - The returned image is in BMP format.* ```jpg``` - The returned image is in JPG format.
             /// </summary>
             [DataMember(Name = "backImageType")] 
             public BackImageTypeEnum? BackImageType { get; private set; }
             /// <summary>
-            ///Specifies the color format of the requested front image as one of the following:**binary**
-            ////  The scanned images has to be returned in binary (image contains two colors,  usually the colorsblack and white).**grayscale**
-            ////  The scanned images has to be returned in gray scale (image contains multiple gray colors).**fullcolor**
-            ////  The scanned images has to be returned in full color (image contains colors like red, green, blueetc.).
+            ///Specifies the color format of the requested front image as one of the following:* ```binary``` - The scanned images has to be returned in binary (image contains two colors,  usually  the colors black and white).* ```grayscale``` - The scanned images has to be returned in gray scale (image contains multiple gray  colors).* ```fullcolor``` - The scanned images has to be returned in full color (image contains colors like  red, green, blueetc.).
             /// </summary>
             [DataMember(Name = "frontImageColorFormat")] 
             public FrontImageColorFormatEnum? FrontImageColorFormat { get; private set; }
             /// <summary>
-            ///Specifies the color format of the requested back image as one of the following:**binary**
-            ////  The scanned images has to be returned in binary (image contains two colors,  usually the colorsblack and white).**grayscale**
-            ////  The scanned images has to be returned in gray scale (image contains multiple gray colors).**fullcolor**
-            ////  The scanned images has to be returned in full color (image contains colors like red, green, blueetc.).
+            ///Specifies the color format of the requested back image as one of the following:* ```binary``` - The scanned images has to be returned in binary (image contains two colors,  usually  the colors black and white).* ```grayscale``` - The scanned images has to be returned in gray scale (image contains multiple gray  colors).* ```fullcolor``` - The scanned images has to be returned in full color (image contains colors like  red, green, blue etc.).
             /// </summary>
             [DataMember(Name = "backImageColorFormat")] 
             public BackImageColorFormatEnum? BackImageColorFormat { get; private set; }
             /// <summary>
-            ///Specifies the code line (MICR data) format, as one of the following flags (zero if source not selected):**cmc7**
-            ////  Read CMC7 code line.**e13b**
-            ////  Read E13B code line.**ocr**
-            ////  Read code line using OCR.
+            ///Specifies the code line (MICR data) format, as one of the following flags (zero if source notselected):* ```cmc7``` - Read CMC7 code line.* ```e13b``` - Read E13B code line.* ```ocr``` - Read code line using OCR.
             /// </summary>
             [DataMember(Name = "codelineFormat")] 
             public CodelineFormatEnum? CodelineFormat { get; private set; }
@@ -148,12 +131,12 @@ namespace XFS4IoT.Printer.Commands
             [DataMember(Name = "imageSource")] 
             public object ImageSource { get; private set; }
             /// <summary>
-            ///File specifying where to store the front image, e.g. \"C:\\\\Temp\\\\FrontImage.bmp\". If omitted or empty, the front image data will be returned in the output parameter. This value must not contain UNICODE characters.To reduce the size of data sent between the client and service, it is recommended to use of this parameter.
+            ///File specifying where to store the front image, e.g. \"C:\\\\Temp\\\\FrontImage.bmp\". If omitted or empty,the front image data will be returned in the output parameter. This value must not contain UNICODEcharacters.To reduce the size of data sent between the client and service, it is recommended to use of thisparameter.
             /// </summary>
             [DataMember(Name = "frontImageFile")] 
             public string FrontImageFile { get; private set; }
             /// <summary>
-            ///File specifying where to store the back image, e.g. \"C:\\\\Temp\\\\BackImage.bmp\". If omitted or empty, the back image data will be returned in the output parameter. This value must not contain UNICODE characters.To reduce the size of data sent between the client and service, it is recommended to use of this parameter.
+            ///File specifying where to store the back image, e.g. \"C:\\\\Temp\\\\BackImage.bmp\". If omitted or empty,the back image data will be returned in the output parameter. This value must not contain UNICODEcharacters.To reduce the size of data sent between the client and service, it is recommended to use of thisparameter.
             /// </summary>
             [DataMember(Name = "backImageFile")] 
             public string BackImageFile { get; private set; }

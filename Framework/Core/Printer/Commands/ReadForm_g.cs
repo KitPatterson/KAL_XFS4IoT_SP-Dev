@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadForm_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,7 @@ namespace XFS4IoT.Printer.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///Specifies the manner in which the media should be handled after the reading was done and can be a combination of the following flags. The clearBuffer flag is not applicable to this command.
+            ///Specifies the manner in which the media should be handled after the reading was done and can be acombination of the following flags. The[clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) flag is notapplicable to this command.
             /// </summary>
             public class MediaControlClass
             {
@@ -110,7 +110,7 @@ namespace XFS4IoT.Printer.Commands
             [DataMember(Name = "formName")] 
             public string FormName { get; private set; }
             /// <summary>
-            ///The field names from which to read input data. If this is omitted or empty, all input fields on the form will be read.
+            ///The field names from which to read input data. If this is omitted or empty, all input fields on theform will be read.
             /// </summary>
             [DataMember(Name = "fieldNames")] 
             public List<string> FieldNames{ get; private set; }
@@ -120,7 +120,7 @@ namespace XFS4IoT.Printer.Commands
             [DataMember(Name = "mediaName")] 
             public string MediaName { get; private set; }
             /// <summary>
-            ///Specifies the manner in which the media should be handled after the reading was done and can be a combination of the following flags. The clearBuffer flag is not applicable to this command.
+            ///Specifies the manner in which the media should be handled after the reading was done and can be acombination of the following flags. The[clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) flag is notapplicable to this command.
             /// </summary>
             [DataMember(Name = "mediaControl")] 
             public object MediaControl { get; private set; }

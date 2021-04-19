@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LoadDefinition_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -36,12 +36,12 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///This is the full path and file name of the file to be loaded. This value cannot contain UNICODE characters. The file contains the form (including sub-forms and frames) or media definition in text format as described in [Form, Sub-Form, Field, Frame, Table and Media Definitions](#section-FormAndMediaDefinitions). Only  one form or media definition can be defined in the file.
+            ///This is the full path and file name of the file to be loaded. This value cannot contain UNICODEcharacters. The file contains the form (including sub-forms and frames) or media definition in textformat as described in[Form, Sub-Form, Field, Frame, Table and Media Definitions](#printer.generalinformation.formandmediadefinitions).Only one form or media definition can be defined in the file.
             /// </summary>
             [DataMember(Name = "fileName")] 
             public string FileName { get; private set; }
             /// <summary>
-            ///Specifies if an existing form or media definition with the same name is to be replaced. If this flag is true then an existing form or media definition with the same name will be replaced, unless the command fails with an error, where the definition will remain unchanged. If this flag is false this command will fail with an error if the form or media definition already exists.
+            ///Specifies if an existing form or media definition with the same name is to be replaced. If this flagis true then an existing form or media definition with the same name will be replaced, unless thecommand fails with an error, where the definition will remain unchanged. If this flag is false thiscommand will fail with an error if the form or media definition already exists.
             /// </summary>
             [DataMember(Name = "overwrite")] 
             public bool? Overwrite { get; private set; }

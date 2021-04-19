@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * FieldWarningEvent_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -63,16 +63,7 @@ namespace XFS4IoT.Printer.Events
             [DataMember(Name = "fieldName")] 
             public string FieldName { get; private set; }
             /// <summary>
-            ///Specifies the type of failure as one of the following:**required**
-            ////  The specified field must be supplied by the application.**staticOverwrite**
-            ////  The specified field is static and thus cannot be overwritten by the application.**overflow**
-            ////  The value supplied for the specified fields is too long.**notFound**
-            ////  The specified field does not exist.**notRead**
-            ////  The specified field is not an input field.**notWrite**
-            ////  An attempt was made to write to an input field.**hwerror**
-            ////  The specified field uses special hardware (e.g. OCR, Low/High coercivity, etc) and an error occurred.**notSupported**
-            ////  The form field type is not supported with device.**graphic**
-            ////  The specified graphic image could not be printed.
+            ///Specifies the type of failure as one of the following:* ```required``` - The specified field must be supplied by the application.* ```staticOverwrite``` - The specified field is static and thus cannot be overwritten by the application.* ```overflow``` - The value supplied for the specified fields is too long.* ```notFound``` - The specified field does not exist.* ```notRead``` - The specified field is not an input field.* ```notWrite``` - An attempt was made to write to an input field.* ```hwerror``` - The specified field uses special hardware (e.g. OCR, Low/High coercivity, etc) and an error occurred.* ```notSupported``` - The form field type is not supported with device.* ```graphic``` - The specified graphic image could not be printed.
             /// </summary>
             [DataMember(Name = "failure")] 
             public FailureEnum? Failure { get; private set; }

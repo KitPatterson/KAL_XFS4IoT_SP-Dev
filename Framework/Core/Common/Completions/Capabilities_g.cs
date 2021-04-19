@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * Capabilities_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -141,18 +141,15 @@ namespace XFS4IoT.Common.Completions
                     /// </summary>
                     public class SoftwareClass 
                     {
-                        [DataMember(Name = "firmwareName")] 
-                        public string FirmwareName { get; private set; }
-                        [DataMember(Name = "firmwareVersion")] 
-                        public string FirmwareVersion { get; private set; }
-                        [DataMember(Name = "hardwareRevision")] 
-                        public string HardwareRevision { get; private set; }
+                        [DataMember(Name = "softwareName")] 
+                        public string SoftwareName { get; private set; }
+                        [DataMember(Name = "softwareVersion")] 
+                        public string SoftwareVersion { get; private set; }
 
-                        public SoftwareClass (string FirmwareName, string FirmwareVersion, string HardwareRevision)
+                        public SoftwareClass (string SoftwareName, string SoftwareVersion)
                         {
-                            this.FirmwareName = FirmwareName;
-                            this.FirmwareVersion = FirmwareVersion;
-                            this.HardwareRevision = HardwareRevision;
+                            this.SoftwareName = SoftwareName;
+                            this.SoftwareVersion = SoftwareVersion;
                         }
                     }
                     [DataMember(Name = "software")] 
@@ -442,7 +439,7 @@ namespace XFS4IoT.Common.Completions
                 [DataMember(Name = "chipProtocols")] 
                 public ChipProtocolsClass ChipProtocols { get; private set; }
                 [DataMember(Name = "maxCardCount")] 
-                public double? MaxCardCount { get; private set; }
+                public int? MaxCardCount { get; private set; }
                 public enum SecurityTypeEnum
                 {
                     NotSupported,
@@ -477,7 +474,7 @@ namespace XFS4IoT.Common.Completions
                 public bool? ReadWriteAccessFollowingEject { get; private set; }
                 
                 /// <summary>
-                ///The write capabilities, with respect to whether the device can write low coercivity (loco) and/or high coercivity (hico) magnetic stripes as a combination of the following:
+                ///The write capabilities, with respect to whether the device can write low coercivity (loco) and/or highcoercivity (hico) magnetic stripes as a combination of the following:
                 /// </summary>
                 public class WriteModeClass 
                 {
@@ -502,7 +499,7 @@ namespace XFS4IoT.Common.Completions
                 public WriteModeClass WriteMode { get; private set; }
                 
                 /// <summary>
-                ///The chip power management capabilities (in relation to the user or permanent chip controlled by the service), as a combination of the following:
+                ///The chip power management capabilities (in relation to the user or permanent chip controlled by theservice, as a combination of the following:
                 /// </summary>
                 public class ChipPowerClass 
                 {
@@ -566,7 +563,7 @@ namespace XFS4IoT.Common.Completions
                 [DataMember(Name = "numberParkingStations")] 
                 public int? NumberParkingStations { get; private set; }
 
-                public CardReaderClass (TypeEnum? Type, ReadTracksClass ReadTracks, WriteTracksClass WriteTracks, ChipProtocolsClass ChipProtocols, double? MaxCardCount, SecurityTypeEnum? SecurityType, PowerOnOptionEnum? PowerOnOption, PowerOffOptionEnum? PowerOffOption, bool? FluxSensorProgrammable, bool? ReadWriteAccessFollowingEject, WriteModeClass WriteMode, ChipPowerClass ChipPower, MemoryChipProtocolsClass MemoryChipProtocols, EjectPositionClass EjectPosition, int? NumberParkingStations)
+                public CardReaderClass (TypeEnum? Type, ReadTracksClass ReadTracks, WriteTracksClass WriteTracks, ChipProtocolsClass ChipProtocols, int? MaxCardCount, SecurityTypeEnum? SecurityType, PowerOnOptionEnum? PowerOnOption, PowerOffOptionEnum? PowerOffOption, bool? FluxSensorProgrammable, bool? ReadWriteAccessFollowingEject, WriteModeClass WriteMode, ChipPowerClass ChipPower, MemoryChipProtocolsClass MemoryChipProtocols, EjectPositionClass EjectPosition, int? NumberParkingStations)
                 {
                     this.Type = Type;
                     this.ReadTracks = ReadTracks;
@@ -1229,7 +1226,7 @@ namespace XFS4IoT.Common.Completions
                 public bool? SetPinblockDataRequired { get; private set; }
                 
                 /// <summary>
-                ///Array of attributes supported by the PinBlock command.
+                ///Array of attributes supported by the [Pinpad.GetPinblock](#pinpad.getpinblock) command.
                 /// </summary>
                 public class PinBlockAttributesClass 
                 {
@@ -1282,7 +1279,7 @@ namespace XFS4IoT.Common.Completions
                 /// <summary>
                 ///Specified capabilites of German specific protocol supports.
                 /// </summary>
-                public class CountrySpecificDeutscheKreditwirtschaftClass 
+                public class CountrySpecificDKClass 
                 {
                     [DataMember(Name = "protocolSupported")] 
                     public bool? ProtocolSupported { get; private set; }
@@ -1307,7 +1304,7 @@ namespace XFS4IoT.Common.Completions
                     [DataMember(Name = "derivationAlgorithms")] 
                     public DerivationAlgorithmsClass DerivationAlgorithms { get; private set; }
 
-                    public CountrySpecificDeutscheKreditwirtschaftClass (bool? ProtocolSupported, string HsmVendor, bool? HsmJournaling, DerivationAlgorithmsClass DerivationAlgorithms)
+                    public CountrySpecificDKClass (bool? ProtocolSupported, string HsmVendor, bool? HsmJournaling, DerivationAlgorithmsClass DerivationAlgorithms)
                     {
                         this.ProtocolSupported = ProtocolSupported;
                         this.HsmVendor = HsmVendor;
@@ -1315,8 +1312,8 @@ namespace XFS4IoT.Common.Completions
                         this.DerivationAlgorithms = DerivationAlgorithms;
                     }
                 }
-                [DataMember(Name = "countrySpecificDeutscheKreditwirtschaft")] 
-                public CountrySpecificDeutscheKreditwirtschaftClass CountrySpecificDeutscheKreditwirtschaft { get; private set; }
+                [DataMember(Name = "countrySpecificDK")] 
+                public CountrySpecificDKClass CountrySpecificDK { get; private set; }
                 
                 /// <summary>
                 ///Specified capabilites of Chinese specific PBOC3.0 protocol supports.
@@ -1350,7 +1347,7 @@ namespace XFS4IoT.Common.Completions
                 [DataMember(Name = "countrySpecificLuxemburg")] 
                 public CountrySpecificLuxemburgClass CountrySpecificLuxemburg { get; private set; }
 
-                public PinPadClass (PinFormatsClass PinFormats, PresentationAlgorithmsClass PresentationAlgorithms, DisplayClass Display, bool? IdConnect, ValidationAlgorithmsClass ValidationAlgorithms, bool? PinCanPersistAfterUse, bool? TypeCombined, bool? SetPinblockDataRequired, PinBlockAttributesClass PinBlockAttributes, CountrySpecificDeutscheKreditwirtschaftClass CountrySpecificDeutscheKreditwirtschaft, CountrySpecificChineseClass CountrySpecificChinese, CountrySpecificLuxemburgClass CountrySpecificLuxemburg)
+                public PinPadClass (PinFormatsClass PinFormats, PresentationAlgorithmsClass PresentationAlgorithms, DisplayClass Display, bool? IdConnect, ValidationAlgorithmsClass ValidationAlgorithms, bool? PinCanPersistAfterUse, bool? TypeCombined, bool? SetPinblockDataRequired, PinBlockAttributesClass PinBlockAttributes, CountrySpecificDKClass CountrySpecificDK, CountrySpecificChineseClass CountrySpecificChinese, CountrySpecificLuxemburgClass CountrySpecificLuxemburg)
                 {
                     this.PinFormats = PinFormats;
                     this.PresentationAlgorithms = PresentationAlgorithms;
@@ -1361,7 +1358,7 @@ namespace XFS4IoT.Common.Completions
                     this.TypeCombined = TypeCombined;
                     this.SetPinblockDataRequired = SetPinblockDataRequired;
                     this.PinBlockAttributes = PinBlockAttributes;
-                    this.CountrySpecificDeutscheKreditwirtschaft = CountrySpecificDeutscheKreditwirtschaft;
+                    this.CountrySpecificDK = CountrySpecificDK;
                     this.CountrySpecificChinese = CountrySpecificChinese;
                     this.CountrySpecificLuxemburg = CountrySpecificLuxemburg;
                 }
@@ -1450,7 +1447,7 @@ namespace XFS4IoT.Common.Completions
                 public EmvHashAlgorithmClass EmvHashAlgorithm { get; private set; }
                 
                 /// <summary>
-                ///Array of attributes supported by the CryptoData command.
+                ///Array of attributes supported by the [Crypto.CryptoData](#crypto.cryptodata) command.
                 /// </summary>
                 public class CryptoAttributesClass 
                 {
@@ -1503,7 +1500,7 @@ namespace XFS4IoT.Common.Completions
                 public CryptoAttributesClass CryptoAttributes { get; private set; }
                 
                 /// <summary>
-                ///Array of attributes supported by the GenerateAuthentication command.
+                ///Array of attributes supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
                 /// </summary>
                 public class AuthenticationAttributesClass 
                 {
@@ -1549,7 +1546,7 @@ namespace XFS4IoT.Common.Completions
                     public CryptoMethodEnum? CryptoMethod { get; private set; }
                     
                     /// <summary>
-                    ///For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used. If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
+                    ///For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used.If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
                     /// </summary>
                     public class HashAlgorithmClass 
                     {
@@ -1580,7 +1577,7 @@ namespace XFS4IoT.Common.Completions
                 public AuthenticationAttributesClass AuthenticationAttributes { get; private set; }
                 
                 /// <summary>
-                ///Array of attributes supported by the VerifyAuthentication command.
+                ///Array of attributes supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
                 /// </summary>
                 public class VerifyAttributesClass 
                 {
@@ -1626,7 +1623,7 @@ namespace XFS4IoT.Common.Completions
                     public CryptoMethodEnum? CryptoMethod { get; private set; }
                     
                     /// <summary>
-                    ///For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used. If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
+                    ///For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used.If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
                     /// </summary>
                     public class HashAlgorithmClass 
                     {
@@ -1677,7 +1674,7 @@ namespace XFS4IoT.Common.Completions
                 public int? KeyNum { get; private set; }
                 
                 /// <summary>
-                ///Specifies if key owner identification (in commands referenced as lpxIdent), which authorizes access to the encryption module, is required. A zero value is returned if the encryption module does not support this capability.
+                ///Specifies if key owner identification (in commands referenced as lpxIdent), which authorizes access to the encryption module, is required.  A zero value is returned if the encryption module does not support this capability.
                 /// </summary>
                 public class IdKeyClass 
                 {
@@ -1903,7 +1900,7 @@ namespace XFS4IoT.Common.Completions
                 public CertificateTypesClass CertificateTypes { get; private set; }
                 
                 /// <summary>
-                ///Specifying the options supported by the LoadCertificate command.
+                ///Specifying the options supported by the [KeyManagement.LoadCertificate](#keymanagement.loadcertificate) command.
                 /// </summary>
                 public class LoadCertOptionsClass 
                 {
@@ -1921,7 +1918,7 @@ namespace XFS4IoT.Common.Completions
                     public SignerEnum? Signer { get; private set; }
                     
                     /// <summary>
-                    ///Specifies the load options supported by the LoadCertificate command.
+                    ///Specifies the load options supported by the [KeyManagement.LoadCertificate](#keymanagement.loadcertificate) command.
                     /// </summary>
                     public class OptionClass 
                     {
@@ -2051,7 +2048,7 @@ namespace XFS4IoT.Common.Completions
                 public SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods { get; private set; }
                 
                 /// <summary>
-                ///Array of attributes supported by ImportKey command for the key to be loaded.
+                ///Array of attributes supported by [KeyManagement.ImportKey](#keymanagement.importkey) command for the key to be loaded.
                 /// </summary>
                 public class KeyAttributesClass 
                 {
@@ -2129,7 +2126,7 @@ namespace XFS4IoT.Common.Completions
                     public CryptoMethodEnum? CryptoMethod { get; private set; }
                     
                     /// <summary>
-                    ///For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used. If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
+                    ///For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used.If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
                     /// </summary>
                     public class HashAlgorithmClass 
                     {
@@ -2292,7 +2289,7 @@ namespace XFS4IoT.Common.Completions
                 public TypeEnum? Type { get; private set; }
                 
                 /// <summary>
-                ///Array specifies the resolutions supported by the physical display device. The resolution indicated in the first position is the default resolution and the device will be placed in this resolution when the Service Provider is initialized or reset through the reset command.
+                ///Array specifies the resolutions supported by the physical display device. (For the definition of Resolution see the command [TextTerminal.SetResolution](#textterminal.setresolution)). The resolution indicated in the first position is the default resolution and the device will be placed in this resolution when the Service Provider is initialized or reset through the [TextTerminal.Reset](#textterminal.reset) command.
                 /// </summary>
                 public class ResolutionsClass 
                 {
@@ -2338,7 +2335,7 @@ namespace XFS4IoT.Common.Completions
                 public CharSupportClass CharSupport { get; private set; }
                 
                 /// <summary>
-                ///Specifies which LEDs are available. The elements of this array are specified as a combination of the following flags and indicate all of the possible flash rates (type B) and colors (type C) that the LED is capable of handling.  If the LED only supports one color then no value of type C is returned.
+                ///Specifies which LEDs are available.The elements of this array are specified as a combination of the following flags and indicate all of the possible flash rates (type B) and colors (type C) that the LED is capable of handling. If the LED only supports one color then no value of type C is returned.
                 /// </summary>
                 public class LedsClass 
                 {
@@ -2436,7 +2433,7 @@ namespace XFS4IoT.Common.Completions
                 public TypeClass Type { get; private set; }
                 
                 /// <summary>
-                ///Specifies at which resolution(s) the physical device can print. Used by the application to select the level of print quality desired; does not imply any absolute level of resolution, only relative.
+                ///Specifies at which resolution(s) the physical device can print. Used by the application to select the levelof print quality desired; does not imply any absolute level of resolution, only relative.
                 /// </summary>
                 public class ResolutionClass 
                 {
@@ -2749,7 +2746,7 @@ namespace XFS4IoT.Common.Completions
                 public CodelineFormatClass CodelineFormat { get; private set; }
                 
                 /// <summary>
-                ///Specifies the source for the read image command supported by this device, as a combination of the following flags.
+                ///Specifies the source for the read image command supported by this device, as a combination of the followingflags.
                 /// </summary>
                 public class ImageSourceClass 
                 {
@@ -2803,7 +2800,7 @@ namespace XFS4IoT.Common.Completions
                 public CoercivityTypeClass CoercivityType { get; private set; }
                 
                 /// <summary>
-                ///<a name=\"printer-capability-controlpassbook\"></a>Specifies how the passbook can be controlled with the  [Printer.ControlPassbook](#command-Printer.ControlPassbook) command, as a combination of the following flags.
+                ///Specifies how the passbook can be controlled with the [Printer.ControlPassbook](#printer.controlpassbook)command, as a combination of the following flags.
                 /// </summary>
                 public class ControlPassbookClass 
                 {
@@ -4652,7 +4649,7 @@ namespace XFS4IoT.Common.Completions
                 public bool? ChipIO { get; private set; }
                 
                 /// <summary>
-                ///Specifies the chip card protocols that are supported by the Service Provider as a combination of the following:
+                ///Specifies the chip card protocols that are supported by the Service Provider as a combination of thefollowing:
                 /// </summary>
                 public class ChipProtocolClass 
                 {
@@ -4677,7 +4674,7 @@ namespace XFS4IoT.Common.Completions
                 public ChipProtocolClass ChipProtocol { get; private set; }
                 
                 /// <summary>
-                ///Specifies the character sets, in addition to single byte ASCII, that is supported by the Service ProviderA Service Provider can support ONLY ASCII forms or can support BOTH ASCII and UNICODE forms. A Service Provider cannot support UNICODE forms without also supporting ASCII forms.This field will be set to a combination of the following:
+                ///Specifies the character sets, in addition to single byte ASCII, that is supported by the Service ProviderA Service Provider can support ONLY ASCII forms or can support BOTH ASCII and UNICODE forms. A ServiceProvider cannot support UNICODE forms without also supporting ASCII forms.This field will be set to a combination of the following:
                 /// </summary>
                 public class CharSupportClass 
                 {
@@ -4696,7 +4693,7 @@ namespace XFS4IoT.Common.Completions
                 public CharSupportClass CharSupport { get; private set; }
                 
                 /// <summary>
-                ///Specifies whether the card embosser has a card embossing capability and/or a card printing capability. This field will be set to a combination of the following:
+                ///Specifies whether the card embosser has a card embossing capability and/or a card printing capability. Thisfield will be set to a combination of the following:
                 /// </summary>
                 public class TypeClass 
                 {
@@ -4737,7 +4734,7 @@ namespace XFS4IoT.Common.Completions
                 public bool? CanFilterSymbologies { get; private set; }
                 
                 /// <summary>
-                ///Specifies the barcode symbologies readable by the scanner. This will be omitted if the supported barcode symbologies can not be determined.
+                ///Specifies the barcode symbologies readable by the scanner. This will be omitted if the supported barcodesymbologies can not be determined.
                 /// </summary>
                 public class SymbologiesClass 
                 {
@@ -4932,8 +4929,265 @@ namespace XFS4IoT.Common.Completions
 
             }
 
+            /// <summary>
+            ///Capability information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
+            /// </summary>
+            public class BiometricClass
+            {
+                
+                /// <summary>
+                ///Specifies the type of biometric device as a combination.
+                /// </summary>
+                public class TypeClass 
+                {
+                    [DataMember(Name = "facialFeatures")] 
+                    public bool? FacialFeatures { get; private set; }
+                    [DataMember(Name = "voice")] 
+                    public bool? Voice { get; private set; }
+                    [DataMember(Name = "fingerprint")] 
+                    public bool? Fingerprint { get; private set; }
+                    [DataMember(Name = "fingerVein")] 
+                    public bool? FingerVein { get; private set; }
+                    [DataMember(Name = "iris")] 
+                    public bool? Iris { get; private set; }
+                    [DataMember(Name = "retina")] 
+                    public bool? Retina { get; private set; }
+                    [DataMember(Name = "handGeometry")] 
+                    public bool? HandGeometry { get; private set; }
+                    [DataMember(Name = "thermalFace")] 
+                    public bool? ThermalFace { get; private set; }
+                    [DataMember(Name = "thermalHand")] 
+                    public bool? ThermalHand { get; private set; }
+                    [DataMember(Name = "palmVein")] 
+                    public bool? PalmVein { get; private set; }
+                    [DataMember(Name = "signature")] 
+                    public bool? Signature { get; private set; }
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<InterfacesClass> Interfaces = null, CommonClass Common = null, CardReaderClass CardReader = null, CashAcceptorClass CashAcceptor = null, CashDispenserClass CashDispenser = null, CashManagementClass CashManagement = null, PinPadClass PinPad = null, CryptoClass Crypto = null, KeyManagementClass KeyManagement = null, KeyboardClass Keyboard = null, TextTerminalClass TextTerminal = null, PrinterClass Printer = null, SensorsAndIndicatorsClass SensorsAndIndicators = null, CardEmbosserClass CardEmbosser = null, BarcodeReaderClass BarcodeReader = null)
+                    public TypeClass (bool? FacialFeatures, bool? Voice, bool? Fingerprint, bool? FingerVein, bool? Iris, bool? Retina, bool? HandGeometry, bool? ThermalFace, bool? ThermalHand, bool? PalmVein, bool? Signature)
+                    {
+                        this.FacialFeatures = FacialFeatures;
+                        this.Voice = Voice;
+                        this.Fingerprint = Fingerprint;
+                        this.FingerVein = FingerVein;
+                        this.Iris = Iris;
+                        this.Retina = Retina;
+                        this.HandGeometry = HandGeometry;
+                        this.ThermalFace = ThermalFace;
+                        this.ThermalHand = ThermalHand;
+                        this.PalmVein = PalmVein;
+                        this.Signature = Signature;
+                    }
+                }
+                [DataMember(Name = "type")] 
+                public TypeClass Type { get; private set; }
+                [DataMember(Name = "compound")] 
+                public bool? Compound { get; private set; }
+                [DataMember(Name = "maxCapture")] 
+                public int? MaxCapture { get; private set; }
+                [DataMember(Name = "templateStorage")] 
+                public string TemplateStorage { get; private set; }
+                
+                /// <summary>
+                ///Specifies the supported biometric raw data and template data formats reported 
+                /// </summary>
+                public class DataFormatsClass 
+                {
+                    [DataMember(Name = "isoFid")] 
+                    public bool? IsoFid { get; private set; }
+                    [DataMember(Name = "isoFmd")] 
+                    public bool? IsoFmd { get; private set; }
+                    [DataMember(Name = "ansiFid")] 
+                    public bool? AnsiFid { get; private set; }
+                    [DataMember(Name = "ansiFmd")] 
+                    public bool? AnsiFmd { get; private set; }
+                    [DataMember(Name = "qso")] 
+                    public bool? Qso { get; private set; }
+                    [DataMember(Name = "wso")] 
+                    public bool? Wso { get; private set; }
+                    [DataMember(Name = "reservedRaw1")] 
+                    public bool? ReservedRaw1 { get; private set; }
+                    [DataMember(Name = "reservedTemplate1")] 
+                    public bool? ReservedTemplate1 { get; private set; }
+                    [DataMember(Name = "reservedRaw2")] 
+                    public bool? ReservedRaw2 { get; private set; }
+                    [DataMember(Name = "reservedTemplate2")] 
+                    public bool? ReservedTemplate2 { get; private set; }
+                    [DataMember(Name = "reservedRaw3")] 
+                    public bool? ReservedRaw3 { get; private set; }
+                    [DataMember(Name = "reservedTemplate3")] 
+                    public bool? ReservedTemplate3 { get; private set; }
+
+                    public DataFormatsClass (bool? IsoFid, bool? IsoFmd, bool? AnsiFid, bool? AnsiFmd, bool? Qso, bool? Wso, bool? ReservedRaw1, bool? ReservedTemplate1, bool? ReservedRaw2, bool? ReservedTemplate2, bool? ReservedRaw3, bool? ReservedTemplate3)
+                    {
+                        this.IsoFid = IsoFid;
+                        this.IsoFmd = IsoFmd;
+                        this.AnsiFid = AnsiFid;
+                        this.AnsiFmd = AnsiFmd;
+                        this.Qso = Qso;
+                        this.Wso = Wso;
+                        this.ReservedRaw1 = ReservedRaw1;
+                        this.ReservedTemplate1 = ReservedTemplate1;
+                        this.ReservedRaw2 = ReservedRaw2;
+                        this.ReservedTemplate2 = ReservedTemplate2;
+                        this.ReservedRaw3 = ReservedRaw3;
+                        this.ReservedTemplate3 = ReservedTemplate3;
+                    }
+                }
+                [DataMember(Name = "dataFormats")] 
+                public DataFormatsClass DataFormats { get; private set; }
+                
+                /// <summary>
+                ///Supported encryption algorithms or cryptNone if no encryption algorithms
+                /// </summary>
+                public class EncryptionalAlgorithmClass 
+                {
+                    [DataMember(Name = "ecb")] 
+                    public bool? Ecb { get; private set; }
+                    [DataMember(Name = "cbc")] 
+                    public bool? Cbc { get; private set; }
+                    [DataMember(Name = "cfb")] 
+                    public bool? Cfb { get; private set; }
+                    [DataMember(Name = "rsa")] 
+                    public bool? Rsa { get; private set; }
+
+                    public EncryptionalAlgorithmClass (bool? Ecb, bool? Cbc, bool? Cfb, bool? Rsa)
+                    {
+                        this.Ecb = Ecb;
+                        this.Cbc = Cbc;
+                        this.Cfb = Cfb;
+                        this.Rsa = Rsa;
+                    }
+                }
+                [DataMember(Name = "encryptionalAlgorithm")] 
+                public EncryptionalAlgorithmClass EncryptionalAlgorithm { get; private set; }
+                
+                /// <summary>
+                ///Indicates whether or not biometric template data can be stored securely or none if Biometric template data is not stored in the device
+                /// </summary>
+                public class StorageClass 
+                {
+                    [DataMember(Name = "secure")] 
+                    public bool? Secure { get; private set; }
+                    [DataMember(Name = "clear")] 
+                    public bool? Clear { get; private set; }
+
+                    public StorageClass (bool? Secure, bool? Clear)
+                    {
+                        this.Secure = Secure;
+                        this.Clear = Clear;
+                    }
+                }
+                [DataMember(Name = "storage")] 
+                public StorageClass Storage { get; private set; }
+                
+                /// <summary>
+                ///Specifies which data persistence modes can be set using the [Biometric.SetDataPersistence](#biometric.setdatapersistence) command. This applies specifically to the biometric data that has been captured using the [Biometric.Read](#biometric.read) command.A value of none indicates that persistence is entirely under device control and cannot be set.
+                /// </summary>
+                public class PersistenceModesClass 
+                {
+                    [DataMember(Name = "persist")] 
+                    public bool? Persist { get; private set; }
+                    [DataMember(Name = "clear")] 
+                    public bool? Clear { get; private set; }
+
+                    public PersistenceModesClass (bool? Persist, bool? Clear)
+                    {
+                        this.Persist = Persist;
+                        this.Clear = Clear;
+                    }
+                }
+                [DataMember(Name = "persistenceModes")] 
+                public PersistenceModesClass PersistenceModes { get; private set; }
+                public enum MatchSupportedEnum
+                {
+                    None,
+                    StoredMatch,
+                    CombinedMatch,
+                }
+                [DataMember(Name = "matchSupported")] 
+                public MatchSupportedEnum? MatchSupported { get; private set; }
+                
+                /// <summary>
+                ///Specifies the modes that the [Biometric.Read](#biometric.read) command.
+                /// </summary>
+                public class ScanModesClass 
+                {
+                    [DataMember(Name = "scan")] 
+                    public bool? Scan { get; private set; }
+                    [DataMember(Name = "match")] 
+                    public bool? Match { get; private set; }
+
+                    public ScanModesClass (bool? Scan, bool? Match)
+                    {
+                        this.Scan = Scan;
+                        this.Match = Match;
+                    }
+                }
+                [DataMember(Name = "scanModes")] 
+                public ScanModesClass ScanModes { get; private set; }
+                
+                /// <summary>
+                ///Specifies the type of match operations. A value of none indicates that matching is not supported
+                /// </summary>
+                public class CompareModesClass 
+                {
+                    [DataMember(Name = "verify")] 
+                    public bool? Verify { get; private set; }
+                    [DataMember(Name = "identity")] 
+                    public bool? Identity { get; private set; }
+
+                    public CompareModesClass (bool? Verify, bool? Identity)
+                    {
+                        this.Verify = Verify;
+                        this.Identity = Identity;
+                    }
+                }
+                [DataMember(Name = "compareModes")] 
+                public CompareModesClass CompareModes { get; private set; }
+                
+                /// <summary>
+                ///Specifies the type of data that can be cleared from storage using the [Biometric.Clear](#biometric.clear) or [Biometric.Reset](#biometric.reset) command as either none. 
+                /// </summary>
+                public class ClearDataClass 
+                {
+                    [DataMember(Name = "scannedData")] 
+                    public bool? ScannedData { get; private set; }
+                    [DataMember(Name = "importedData")] 
+                    public bool? ImportedData { get; private set; }
+                    [DataMember(Name = "setMatchedData")] 
+                    public bool? SetMatchedData { get; private set; }
+
+                    public ClearDataClass (bool? ScannedData, bool? ImportedData, bool? SetMatchedData)
+                    {
+                        this.ScannedData = ScannedData;
+                        this.ImportedData = ImportedData;
+                        this.SetMatchedData = SetMatchedData;
+                    }
+                }
+                [DataMember(Name = "clearData")] 
+                public ClearDataClass ClearData { get; private set; }
+
+                public BiometricClass (TypeClass Type, bool? Compound, int? MaxCapture, string TemplateStorage, DataFormatsClass DataFormats, EncryptionalAlgorithmClass EncryptionalAlgorithm, StorageClass Storage, PersistenceModesClass PersistenceModes, MatchSupportedEnum? MatchSupported, ScanModesClass ScanModes, CompareModesClass CompareModes, ClearDataClass ClearData)
+                {
+                    this.Type = Type;
+                    this.Compound = Compound;
+                    this.MaxCapture = MaxCapture;
+                    this.TemplateStorage = TemplateStorage;
+                    this.DataFormats = DataFormats;
+                    this.EncryptionalAlgorithm = EncryptionalAlgorithm;
+                    this.Storage = Storage;
+                    this.PersistenceModes = PersistenceModes;
+                    this.MatchSupported = MatchSupported;
+                    this.ScanModes = ScanModes;
+                    this.CompareModes = CompareModes;
+                    this.ClearData = ClearData;
+                }
+
+
+            }
+
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<InterfacesClass> Interfaces = null, CommonClass Common = null, CardReaderClass CardReader = null, CashAcceptorClass CashAcceptor = null, CashDispenserClass CashDispenser = null, CashManagementClass CashManagement = null, PinPadClass PinPad = null, CryptoClass Crypto = null, KeyManagementClass KeyManagement = null, KeyboardClass Keyboard = null, TextTerminalClass TextTerminal = null, PrinterClass Printer = null, SensorsAndIndicatorsClass SensorsAndIndicators = null, CardEmbosserClass CardEmbosser = null, BarcodeReaderClass BarcodeReader = null, BiometricClass Biometric = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 ErrorDescription.IsNotNullOrWhitespace($"Null or an empty value for {nameof(ErrorDescription)} in received {nameof(CapabilitiesCompletion.PayloadData)}");
@@ -4953,6 +5207,7 @@ namespace XFS4IoT.Common.Completions
                 this.SensorsAndIndicators = SensorsAndIndicators;
                 this.CardEmbosser = CardEmbosser;
                 this.BarcodeReader = BarcodeReader;
+                this.Biometric = Biometric;
             }
 
             /// <summary>
@@ -5030,6 +5285,11 @@ namespace XFS4IoT.Common.Completions
             /// </summary>
             [DataMember(Name = "barcodeReader")] 
             public BarcodeReaderClass BarcodeReader { get; private set; }
+            /// <summary>
+            ///Capability information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
+            /// </summary>
+            [DataMember(Name = "biometric")] 
+            public BiometricClass Biometric { get; private set; }
 
         }
     }

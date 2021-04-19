@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ReadRawData_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -73,7 +73,7 @@ namespace XFS4IoT.CardReader.Commands
             [DataMember(Name = "security")] 
             public bool? Security { get; private set; }
             /// <summary>
-            ///If the Flux Sensor is programmable it will be disabled in order to allow chip data to be read on cards which have no magnetic stripes.
+            ///If the Flux Sensor is programmable it will be disabled in order to allow chip data to be read on cardswhich have no magnetic stripes.
             /// </summary>
             [DataMember(Name = "fluxInactive")] 
             public bool? FluxInactive { get; private set; }
@@ -88,7 +88,7 @@ namespace XFS4IoT.CardReader.Commands
             [DataMember(Name = "memoryChip")] 
             public bool? MemoryChip { get; private set; }
             /// <summary>
-            ///Track 1 data is read from the magnetic stripe located on the front of the card. In some countries this track is known as JIS II track.
+            ///Track 1 data is read from the magnetic stripe located on the front of the card. In some countries thistrack is known as JIS II track.
             /// </summary>
             [DataMember(Name = "track1Front")] 
             public bool? Track1Front { get; private set; }
@@ -103,12 +103,12 @@ namespace XFS4IoT.CardReader.Commands
             [DataMember(Name = "backImage")] 
             public bool? BackImage { get; private set; }
             /// <summary>
-            ///Track 1 of Japanese cash transfer card will be read. In some countries this track is known as JIS I track 1 (8bits/char).
+            ///Track 1 of Japanese cash transfer card will be read. In some countries this track is known as JIS Itrack 1 (8bits/char).
             /// </summary>
             [DataMember(Name = "track1JIS")] 
             public bool? Track1JIS { get; private set; }
             /// <summary>
-            ///Track 3 of Japanese cash transfer card will be read. In some countries this track is known as JIS I track 1 (8bits/char).
+            ///Track 3 of Japanese cash transfer card will be read. In some countries this track is known as JIS Itrack 1 (8bits/char).
             /// </summary>
             [DataMember(Name = "track3JIS")] 
             public bool? Track3JIS { get; private set; }

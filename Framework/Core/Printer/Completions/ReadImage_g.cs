@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadImage_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -138,13 +138,7 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**shutterFail**
-            ////  Open or close of the shutter failed due to manipulation or hardware error.**mediaJammed**
-            ////  The media is jammed; operator intervention is required.**fileIOError**
-            ////  Directory does not exist or a File IO error occurred while storing the image to the hard disk.**lampInoperative**
-            ////  Imaging lamp is inoperative.**mediaSize**
-            ////  The media entered has an incorrect size and the media remains inside the device.**mediaRejected**
-            ////  The media was rejected during the insertion phase. The  [Printer.MediaRejectedEvent](#message-Printer.MediaRejectedEvent) event is posted with the details.  The device is still operational.
+            ///Specifies the error code if applicable. The following values are possible:* ```shutterFail``` - Open or close of the shutter failed due to manipulation or hardware error.* ```mediaJammed``` - The media is jammed; operator intervention is required.* ```fileIOError``` - Directory does not exist or a File IO error occurred while storing the image to  the hard disk.* ```lampInoperative``` - Imaging lamp is inoperative.* ```mediaSize``` - The media entered has an incorrect size and the media remains inside the device.* ```mediaRejected``` - The media was rejected during the insertion phase. The  [Printer.MediaRejectedEvent](#printer.mediarejectedevent) event is posted with the details. The  device is still operational.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

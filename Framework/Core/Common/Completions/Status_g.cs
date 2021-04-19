@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * Status_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/19/2021 3:05:28 PM
 \***********************************************************************************************/
 
 using System;
@@ -612,7 +612,7 @@ namespace XFS4IoT.Common.Completions
                 public int? DisplaySizeY { get; private set; }
                 
                 /// <summary>
-                ///Specifies array that specifies the state of each LED. Specifies the state of the na, off or a combination of the following flags consisting of one type B, and optionally one type C
+                ///Specifies array that specifies the state of each LED.Specifies the state of the na, off or a combination of the following flags consisting of one type B, and optionally one type C
                 /// </summary>
                 public class LedsClass 
                 {
@@ -694,13 +694,7 @@ namespace XFS4IoT.Common.Completions
                 public MediaEnum? Media { get; private set; }
                 
                 /// <summary>
-                ///Specifies the state of paper supplies as one of the following values:**notSupported**
-                ////  Capability not supported by the device.**unknown**
-                ////  Status cannot be determined with device in its current state.**full**
-                ////  The paper supply is full.**low**
-                ////  The paper supply is low.**out**
-                ////  The paper supply is empty.**jammed**
-                ////  The paper supply is jammed.
+                ///Specifies the state of paper supplies as one of the following values:* ```notSupported``` - Capability not supported by the device.* ```unknown``` - Status cannot be determined with device in its current state.* ```full``` - The paper supply is full.* ```low``` - The paper supply is low.* ```out``` - The paper supply is empty.* ```jammed``` - The paper supply is jammed.
                 /// </summary>
                 public class PaperClass 
                 {
@@ -844,10 +838,7 @@ namespace XFS4IoT.Common.Completions
                 public int? MediaOnStacker { get; private set; }
                 
                 /// <summary>
-                ///Specifies the type of paper loaded as one of the following:**unknown**
-                ////  No paper is loaded, reporting of this paper type is not supported or the paper type cannot be determined.**single**
-                ////  The paper can be printed on only one side.**dual**
-                ////  The paper can be printed on both sides.
+                ///Specifies the type of paper loaded as one of the following:* ```unknown``` - No paper is loaded, reporting of this paper type is not supported or the paper type cannot  be determined.* ```single``` - The paper can be printed on only one side.* ```dual``` - The paper can be printed on both sides.
                 /// </summary>
                 public class PaperTypeClass 
                 {
@@ -1041,8 +1032,57 @@ namespace XFS4IoT.Common.Completions
 
             }
 
+            /// <summary>
+            ///Status information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
+            /// </summary>
+            public class BiometricClass
+            {
+                public enum SubjectEnum
+                {
+                    Present,
+                    NotPresent,
+                    Unknown,
+                    NotSupported,
+                }
+                [DataMember(Name = "subject")] 
+                public SubjectEnum? Subject { get; private set; }
+                [DataMember(Name = "capture")] 
+                public bool? Capture { get; private set; }
+                
+                /// <summary>
+                ///Specifies the current data persistence mode. The data persistence mode controls how biometric data that has been captured using the [Biometric.Read](#biometric.read) command will be handled.
+                /// </summary>
+                public class DataPersistenceClass 
+                {
+                    [DataMember(Name = "persist")] 
+                    public bool? Persist { get; private set; }
+                    [DataMember(Name = "clear")] 
+                    public bool? Clear { get; private set; }
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, CommonClass Common = null, CardReaderClass CardReader = null, CashAcceptorClass CashAcceptor = null, CashDispenserClass CashDispenser = null, CashManagementClass CashManagement = null, KeyManagementClass KeyManagement = null, KeyboardClass Keyboard = null, TextTerminalClass TextTerminal = null, PrinterClass Printer = null, CardEmbosserClass CardEmbosser = null, BarcodeReaderClass BarcodeReader = null)
+                    public DataPersistenceClass (bool? Persist, bool? Clear)
+                    {
+                        this.Persist = Persist;
+                        this.Clear = Clear;
+                    }
+                }
+                [DataMember(Name = "dataPersistence")] 
+                public DataPersistenceClass DataPersistence { get; private set; }
+                [DataMember(Name = "remainingStorage")] 
+                public string RemainingStorage { get; private set; }
+
+                public BiometricClass (SubjectEnum? Subject, bool? Capture, DataPersistenceClass DataPersistence, string RemainingStorage)
+                {
+                    this.Subject = Subject;
+                    this.Capture = Capture;
+                    this.DataPersistence = DataPersistence;
+                    this.RemainingStorage = RemainingStorage;
+                }
+
+
+            }
+
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, CommonClass Common = null, CardReaderClass CardReader = null, CashAcceptorClass CashAcceptor = null, CashDispenserClass CashDispenser = null, CashManagementClass CashManagement = null, KeyManagementClass KeyManagement = null, KeyboardClass Keyboard = null, TextTerminalClass TextTerminal = null, PrinterClass Printer = null, CardEmbosserClass CardEmbosser = null, BarcodeReaderClass BarcodeReader = null, BiometricClass Biometric = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 ErrorDescription.IsNotNullOrWhitespace($"Null or an empty value for {nameof(ErrorDescription)} in received {nameof(StatusCompletion.PayloadData)}");
@@ -1058,6 +1098,7 @@ namespace XFS4IoT.Common.Completions
                 this.Printer = Printer;
                 this.CardEmbosser = CardEmbosser;
                 this.BarcodeReader = BarcodeReader;
+                this.Biometric = Biometric;
             }
 
             /// <summary>
@@ -1115,6 +1156,11 @@ namespace XFS4IoT.Common.Completions
             /// </summary>
             [DataMember(Name = "barcodeReader")] 
             public BarcodeReaderClass BarcodeReader { get; private set; }
+            /// <summary>
+            ///Status information for XFS4IoT services implementing the Biometrics interface. This will be omitted if the Biometrics interface is not supported.
+            /// </summary>
+            [DataMember(Name = "biometric")] 
+            public BiometricClass Biometric { get; private set; }
 
         }
     }
