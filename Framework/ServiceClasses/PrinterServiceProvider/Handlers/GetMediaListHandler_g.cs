@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetMediaListHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             GetMediaListCommand getMediaListCmd = command as GetMediaListCommand;
             getMediaListCmd.IsNotNull($"Invalid parameter in the GetMediaList Handle method. {nameof(getMediaListCmd)}");
+            
+            IGetMediaListEvents events = new GetMediaListEvents(Connection, getMediaListCmd.Headers.RequestId);
 
-            await HandleGetMediaList(Connection, getMediaListCmd, cancel);
+            var result = await HandleGetMediaList(events, getMediaListCmd, cancel);
+            await Connection.SendMessageAsync(new GetMediaListCompletion(getMediaListCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

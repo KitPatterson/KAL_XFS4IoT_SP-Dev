@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * GetTransactionStateHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Common
     public partial class GetTransactionStateHandler
     {
 
-        private Task HandleGetTransactionState(IConnection connection, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
+        private Task<GetTransactionStateCompletion.PayloadData> HandleGetTransactionState(IGetTransactionStateEvents events, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
         {
-            IGetTransactionStateEvents events = new GetTransactionStateEvents(connection, getTransactionState.Headers.RequestId);
             //ToDo: Implement HandleGetTransactionState for Common.
             
             #if DEBUG

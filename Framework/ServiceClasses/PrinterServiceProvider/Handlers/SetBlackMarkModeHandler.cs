@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * SetBlackMarkModeHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class SetBlackMarkModeHandler
     {
 
-        private Task HandleSetBlackMarkMode(IConnection connection, SetBlackMarkModeCommand setBlackMarkMode, CancellationToken cancel)
+        private Task<SetBlackMarkModeCompletion.PayloadData> HandleSetBlackMarkMode(ISetBlackMarkModeEvents events, SetBlackMarkModeCommand setBlackMarkMode, CancellationToken cancel)
         {
-            ISetBlackMarkModeEvents events = new SetBlackMarkModeEvents(connection, setBlackMarkMode.Headers.RequestId);
             //ToDo: Implement HandleSetBlackMarkMode for Printer.
             
             #if DEBUG

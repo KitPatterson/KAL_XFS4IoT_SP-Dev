@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ControlPassbookHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class ControlPassbookHandler
     {
 
-        private Task HandleControlPassbook(IConnection connection, ControlPassbookCommand controlPassbook, CancellationToken cancel)
+        private Task<ControlPassbookCompletion.PayloadData> HandleControlPassbook(IControlPassbookEvents events, ControlPassbookCommand controlPassbook, CancellationToken cancel)
         {
-            IControlPassbookEvents events = new ControlPassbookEvents(connection, controlPassbook.Headers.RequestId);
             //ToDo: Implement HandleControlPassbook for Printer.
             
             #if DEBUG

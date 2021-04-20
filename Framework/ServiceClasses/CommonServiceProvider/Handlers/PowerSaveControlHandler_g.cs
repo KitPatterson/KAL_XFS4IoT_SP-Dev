@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * PowerSaveControlHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Common
         {
             PowerSaveControlCommand powerSaveControlCmd = command as PowerSaveControlCommand;
             powerSaveControlCmd.IsNotNull($"Invalid parameter in the PowerSaveControl Handle method. {nameof(powerSaveControlCmd)}");
+            
+            IPowerSaveControlEvents events = new PowerSaveControlEvents(Connection, powerSaveControlCmd.Headers.RequestId);
 
-            await HandlePowerSaveControl(Connection, powerSaveControlCmd, cancel);
+            var result = await HandlePowerSaveControl(events, powerSaveControlCmd, cancel);
+            await Connection.SendMessageAsync(new PowerSaveControlCompletion(powerSaveControlCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

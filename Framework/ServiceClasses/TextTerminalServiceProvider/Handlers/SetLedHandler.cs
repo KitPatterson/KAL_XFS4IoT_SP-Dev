@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetLedHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class SetLedHandler
     {
 
-        private Task HandleSetLed(IConnection connection, SetLedCommand setLed, CancellationToken cancel)
+        private Task<SetLedCompletion.PayloadData> HandleSetLed(ISetLedEvents events, SetLedCommand setLed, CancellationToken cancel)
         {
-            ISetLedEvents events = new SetLedEvents(connection, setLed.Headers.RequestId);
             //ToDo: Implement HandleSetLed for TextTerminal.
             
             #if DEBUG

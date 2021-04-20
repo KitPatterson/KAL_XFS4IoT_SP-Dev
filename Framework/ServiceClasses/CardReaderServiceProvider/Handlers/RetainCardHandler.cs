@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * RetainCardHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.CardReader
     public partial class RetainCardHandler
     {
 
-        private Task HandleRetainCard(IConnection connection, RetainCardCommand retainCard, CancellationToken cancel)
+        private Task<RetainCardCompletion.PayloadData> HandleRetainCard(IRetainCardEvents events, RetainCardCommand retainCard, CancellationToken cancel)
         {
-            IRetainCardEvents events = new RetainCardEvents(connection, retainCard.Headers.RequestId);
             //ToDo: Implement HandleRetainCard for CardReader.
             
             #if DEBUG

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ClearScreenHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class ClearScreenHandler
     {
 
-        private Task HandleClearScreen(IConnection connection, ClearScreenCommand clearScreen, CancellationToken cancel)
+        private Task<ClearScreenCompletion.PayloadData> HandleClearScreen(IClearScreenEvents events, ClearScreenCommand clearScreen, CancellationToken cancel)
         {
-            IClearScreenEvents events = new ClearScreenEvents(connection, clearScreen.Headers.RequestId);
             //ToDo: Implement HandleClearScreen for TextTerminal.
             
             #if DEBUG

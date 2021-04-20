@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * CapabilitiesHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Common
         {
             CapabilitiesCommand capabilitiesCmd = command as CapabilitiesCommand;
             capabilitiesCmd.IsNotNull($"Invalid parameter in the Capabilities Handle method. {nameof(capabilitiesCmd)}");
+            
+            ICapabilitiesEvents events = new CapabilitiesEvents(Connection, capabilitiesCmd.Headers.RequestId);
 
-            await HandleCapabilities(Connection, capabilitiesCmd, cancel);
+            var result = await HandleCapabilities(events, capabilitiesCmd, cancel);
+            await Connection.SendMessageAsync(new CapabilitiesCompletion(capabilitiesCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ChipPowerHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.CardReader
     public partial class ChipPowerHandler
     {
 
-        private Task HandleChipPower(IConnection connection, ChipPowerCommand chipPower, CancellationToken cancel)
+        private Task<ChipPowerCompletion.PayloadData> HandleChipPower(IChipPowerEvents events, ChipPowerCommand chipPower, CancellationToken cancel)
         {
-            IChipPowerEvents events = new ChipPowerEvents(connection, chipPower.Headers.RequestId);
             //ToDo: Implement HandleChipPower for CardReader.
             
             #if DEBUG

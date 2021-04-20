@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ReadFormHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             ReadFormCommand readFormCmd = command as ReadFormCommand;
             readFormCmd.IsNotNull($"Invalid parameter in the ReadForm Handle method. {nameof(readFormCmd)}");
+            
+            IReadFormEvents events = new ReadFormEvents(Connection, readFormCmd.Headers.RequestId);
 
-            await HandleReadForm(Connection, readFormCmd, cancel);
+            var result = await HandleReadForm(events, readFormCmd, cancel);
+            await Connection.SendMessageAsync(new ReadFormCompletion(readFormCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessPerformTransactionHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             EMVClessPerformTransactionCommand eMVClessPerformTransactionCmd = command as EMVClessPerformTransactionCommand;
             eMVClessPerformTransactionCmd.IsNotNull($"Invalid parameter in the EMVClessPerformTransaction Handle method. {nameof(eMVClessPerformTransactionCmd)}");
+            
+            IEMVClessPerformTransactionEvents events = new EMVClessPerformTransactionEvents(Connection, eMVClessPerformTransactionCmd.Headers.RequestId);
 
-            await HandleEMVClessPerformTransaction(Connection, eMVClessPerformTransactionCmd, cancel);
+            var result = await HandleEMVClessPerformTransaction(events, eMVClessPerformTransactionCmd, cancel);
+            await Connection.SendMessageAsync(new EMVClessPerformTransactionCompletion(eMVClessPerformTransactionCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

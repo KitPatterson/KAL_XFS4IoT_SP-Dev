@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * DispensePaperHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             DispensePaperCommand dispensePaperCmd = command as DispensePaperCommand;
             dispensePaperCmd.IsNotNull($"Invalid parameter in the DispensePaper Handle method. {nameof(dispensePaperCmd)}");
+            
+            IDispensePaperEvents events = new DispensePaperEvents(Connection, dispensePaperCmd.Headers.RequestId);
 
-            await HandleDispensePaper(Connection, dispensePaperCmd, cancel);
+            var result = await HandleDispensePaper(events, dispensePaperCmd, cancel);
+            await Connection.SendMessageAsync(new DispensePaperCompletion(dispensePaperCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

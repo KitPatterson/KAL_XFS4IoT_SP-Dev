@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadFormHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class ReadFormHandler
     {
 
-        private Task HandleReadForm(IConnection connection, ReadFormCommand readForm, CancellationToken cancel)
+        private Task<ReadFormCompletion.PayloadData> HandleReadForm(IReadFormEvents events, ReadFormCommand readForm, CancellationToken cancel)
         {
-            IReadFormEvents events = new ReadFormEvents(connection, readForm.Headers.RequestId);
             //ToDo: Implement HandleReadForm for Printer.
             
             #if DEBUG

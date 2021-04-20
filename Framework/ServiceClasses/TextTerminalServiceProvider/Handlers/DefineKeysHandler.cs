@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * DefineKeysHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class DefineKeysHandler
     {
 
-        private Task HandleDefineKeys(IConnection connection, DefineKeysCommand defineKeys, CancellationToken cancel)
+        private Task<DefineKeysCompletion.PayloadData> HandleDefineKeys(IDefineKeysEvents events, DefineKeysCommand defineKeys, CancellationToken cancel)
         {
-            IDefineKeysEvents events = new DefineKeysEvents(connection, defineKeys.Headers.RequestId);
             //ToDo: Implement HandleDefineKeys for TextTerminal.
             
             #if DEBUG

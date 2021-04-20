@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ControlMediaHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class ControlMediaHandler
     {
 
-        private Task HandleControlMedia(IConnection connection, ControlMediaCommand controlMedia, CancellationToken cancel)
+        private Task<ControlMediaCompletion.PayloadData> HandleControlMedia(IControlMediaEvents events, ControlMediaCommand controlMedia, CancellationToken cancel)
         {
-            IControlMediaEvents events = new ControlMediaEvents(connection, controlMedia.Headers.RequestId);
             //ToDo: Implement HandleControlMedia for Printer.
             
             #if DEBUG

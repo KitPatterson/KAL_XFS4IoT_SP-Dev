@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetResolutionHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class SetResolutionHandler
     {
 
-        private Task HandleSetResolution(IConnection connection, SetResolutionCommand setResolution, CancellationToken cancel)
+        private Task<SetResolutionCompletion.PayloadData> HandleSetResolution(ISetResolutionEvents events, SetResolutionCommand setResolution, CancellationToken cancel)
         {
-            ISetResolutionEvents events = new SetResolutionEvents(connection, setResolution.Headers.RequestId);
             //ToDo: Implement HandleSetResolution for TextTerminal.
             
             #if DEBUG

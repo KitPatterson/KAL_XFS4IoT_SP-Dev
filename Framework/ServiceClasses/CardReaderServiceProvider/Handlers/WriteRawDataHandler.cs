@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * WriteRawDataHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.CardReader
     public partial class WriteRawDataHandler
     {
 
-        private Task HandleWriteRawData(IConnection connection, WriteRawDataCommand writeRawData, CancellationToken cancel)
+        private Task<WriteRawDataCompletion.PayloadData> HandleWriteRawData(IWriteRawDataEvents events, WriteRawDataCommand writeRawData, CancellationToken cancel)
         {
-            IWriteRawDataEvents events = new WriteRawDataEvents(connection, writeRawData.Headers.RequestId);
             //ToDo: Implement HandleWriteRawData for CardReader.
             
             #if DEBUG

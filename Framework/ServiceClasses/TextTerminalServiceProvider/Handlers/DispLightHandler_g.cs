@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * DispLightHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             DispLightCommand dispLightCmd = command as DispLightCommand;
             dispLightCmd.IsNotNull($"Invalid parameter in the DispLight Handle method. {nameof(dispLightCmd)}");
+            
+            IDispLightEvents events = new DispLightEvents(Connection, dispLightCmd.Headers.RequestId);
 
-            await HandleDispLight(Connection, dispLightCmd, cancel);
+            var result = await HandleDispLight(events, dispLightCmd, cancel);
+            await Connection.SendMessageAsync(new DispLightCompletion(dispLightCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

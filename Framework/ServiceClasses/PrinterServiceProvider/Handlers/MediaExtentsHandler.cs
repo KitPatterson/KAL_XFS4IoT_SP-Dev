@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * MediaExtentsHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class MediaExtentsHandler
     {
 
-        private Task HandleMediaExtents(IConnection connection, MediaExtentsCommand mediaExtents, CancellationToken cancel)
+        private Task<MediaExtentsCompletion.PayloadData> HandleMediaExtents(IMediaExtentsEvents events, MediaExtentsCommand mediaExtents, CancellationToken cancel)
         {
-            IMediaExtentsEvents events = new MediaExtentsEvents(connection, mediaExtents.Headers.RequestId);
             //ToDo: Implement HandleMediaExtents for Printer.
             
             #if DEBUG

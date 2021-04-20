@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ParkCardHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             ParkCardCommand parkCardCmd = command as ParkCardCommand;
             parkCardCmd.IsNotNull($"Invalid parameter in the ParkCard Handle method. {nameof(parkCardCmd)}");
+            
+            IParkCardEvents events = new ParkCardEvents(Connection, parkCardCmd.Headers.RequestId);
 
-            await HandleParkCard(Connection, parkCardCmd, cancel);
+            var result = await HandleParkCard(events, parkCardCmd, cancel);
+            await Connection.SendMessageAsync(new ParkCardCompletion(parkCardCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

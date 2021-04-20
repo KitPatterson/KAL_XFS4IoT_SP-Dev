@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * RetractMediaHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             RetractMediaCommand retractMediaCmd = command as RetractMediaCommand;
             retractMediaCmd.IsNotNull($"Invalid parameter in the RetractMedia Handle method. {nameof(retractMediaCmd)}");
+            
+            IRetractMediaEvents events = new RetractMediaEvents(Connection, retractMediaCmd.Headers.RequestId);
 
-            await HandleRetractMedia(Connection, retractMediaCmd, cancel);
+            var result = await HandleRetractMedia(events, retractMediaCmd, cancel);
+            await Connection.SendMessageAsync(new RetractMediaCompletion(retractMediaCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

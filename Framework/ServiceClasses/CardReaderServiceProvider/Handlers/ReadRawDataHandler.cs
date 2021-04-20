@@ -18,15 +18,13 @@ namespace XFS4IoTFramework.CardReader
     public partial class ReadRawDataHandler
     {
 
-        private async Task HandleReadRawData(IConnection connection, ReadRawDataCommand readRawData, CancellationToken cancel)
+        private async Task<ReadRawDataCompletion.PayloadData> HandleReadRawData(IReadRawDataEvents events, ReadRawDataCommand readRawData, CancellationToken cancel)
         {
-            IReadRawDataEvents events = new ReadRawDataEvents(connection, readRawData.Headers.RequestId);
-            
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ReadRawData()");
             var result = await Device.ReadRawData(events, readRawData.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ReadRawData() -> {result.CompletionCode}");
 
-            await connection.SendMessageAsync(new ReadRawDataCompletion(readRawData.Headers.RequestId, result));
+            return result;
         }
 
     }

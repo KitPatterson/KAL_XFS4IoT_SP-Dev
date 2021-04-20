@@ -22,15 +22,13 @@ namespace XFS4IoTFramework.Common
     public partial class CapabilitiesHandler
     {
 
-        private async Task HandleCapabilities(IConnection connection, CapabilitiesCommand capabilities, CancellationToken cancel)
+        private async Task<CapabilitiesCompletion.PayloadData> HandleCapabilities(ICapabilitiesEvents events, CapabilitiesCommand capabilities, CancellationToken cancel)
         {
-            ICapabilitiesEvents events = new CapabilitiesEvents(connection, capabilities.Headers.RequestId);
-
             Logger.Log(Constants.DeviceClass, "CommonDev.Capabilities()");
             var result = await Device.Capabilities(events, capabilities.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"CommonDev.Capabilities() -> {result.CompletionCode}");
 
-            await connection.SendMessageAsync(new CapabilitiesCompletion(capabilities.Headers.RequestId, result));
+            return result;
         }
 
     }

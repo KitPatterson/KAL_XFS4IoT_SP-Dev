@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryFieldHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class GetQueryFieldHandler
     {
 
-        private Task HandleGetQueryField(IConnection connection, GetQueryFieldCommand getQueryField, CancellationToken cancel)
+        private Task<GetQueryFieldCompletion.PayloadData> HandleGetQueryField(IGetQueryFieldEvents events, GetQueryFieldCommand getQueryField, CancellationToken cancel)
         {
-            IGetQueryFieldEvents events = new GetQueryFieldEvents(connection, getQueryField.Headers.RequestId);
             //ToDo: Implement HandleGetQueryField for Printer.
             
             #if DEBUG

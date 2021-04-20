@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetQueryFieldHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             GetQueryFieldCommand getQueryFieldCmd = command as GetQueryFieldCommand;
             getQueryFieldCmd.IsNotNull($"Invalid parameter in the GetQueryField Handle method. {nameof(getQueryFieldCmd)}");
+            
+            IGetQueryFieldEvents events = new GetQueryFieldEvents(Connection, getQueryFieldCmd.Headers.RequestId);
 
-            await HandleGetQueryField(Connection, getQueryFieldCmd, cancel);
+            var result = await HandleGetQueryField(events, getQueryFieldCmd, cancel);
+            await Connection.SendMessageAsync(new GetQueryFieldCompletion(getQueryFieldCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

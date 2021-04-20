@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetKeyDetailHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class GetKeyDetailHandler
     {
 
-        private Task HandleGetKeyDetail(IConnection connection, GetKeyDetailCommand getKeyDetail, CancellationToken cancel)
+        private Task<GetKeyDetailCompletion.PayloadData> HandleGetKeyDetail(IGetKeyDetailEvents events, GetKeyDetailCommand getKeyDetail, CancellationToken cancel)
         {
-            IGetKeyDetailEvents events = new GetKeyDetailEvents(connection, getKeyDetail.Headers.RequestId);
             //ToDo: Implement HandleGetKeyDetail for TextTerminal.
             
             #if DEBUG

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ReadHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             ReadCommand readCmd = command as ReadCommand;
             readCmd.IsNotNull($"Invalid parameter in the Read Handle method. {nameof(readCmd)}");
+            
+            IReadEvents events = new ReadEvents(Connection, readCmd.Headers.RequestId);
 
-            await HandleRead(Connection, readCmd, cancel);
+            var result = await HandleRead(events, readCmd, cancel);
+            await Connection.SendMessageAsync(new ReadCompletion(readCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

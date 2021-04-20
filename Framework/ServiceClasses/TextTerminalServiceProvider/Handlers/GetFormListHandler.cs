@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetFormListHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class GetFormListHandler
     {
 
-        private Task HandleGetFormList(IConnection connection, GetFormListCommand getFormList, CancellationToken cancel)
+        private Task<GetFormListCompletion.PayloadData> HandleGetFormList(IGetFormListEvents events, GetFormListCommand getFormList, CancellationToken cancel)
         {
-            IGetFormListEvents events = new GetFormListEvents(connection, getFormList.Headers.RequestId);
             //ToDo: Implement HandleGetFormList for TextTerminal.
             
             #if DEBUG

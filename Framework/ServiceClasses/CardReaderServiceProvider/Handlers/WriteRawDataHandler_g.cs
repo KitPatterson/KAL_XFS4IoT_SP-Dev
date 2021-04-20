@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * WriteRawDataHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             WriteRawDataCommand writeRawDataCmd = command as WriteRawDataCommand;
             writeRawDataCmd.IsNotNull($"Invalid parameter in the WriteRawData Handle method. {nameof(writeRawDataCmd)}");
+            
+            IWriteRawDataEvents events = new WriteRawDataEvents(Connection, writeRawDataCmd.Headers.RequestId);
 
-            await HandleWriteRawData(Connection, writeRawDataCmd, cancel);
+            var result = await HandleWriteRawData(events, writeRawDataCmd, cancel);
+            await Connection.SendMessageAsync(new WriteRawDataCompletion(writeRawDataCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

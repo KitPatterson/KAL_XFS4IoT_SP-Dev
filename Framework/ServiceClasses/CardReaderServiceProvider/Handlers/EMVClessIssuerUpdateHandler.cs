@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessIssuerUpdateHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.CardReader
     public partial class EMVClessIssuerUpdateHandler
     {
 
-        private Task HandleEMVClessIssuerUpdate(IConnection connection, EMVClessIssuerUpdateCommand eMVClessIssuerUpdate, CancellationToken cancel)
+        private Task<EMVClessIssuerUpdateCompletion.PayloadData> HandleEMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents events, EMVClessIssuerUpdateCommand eMVClessIssuerUpdate, CancellationToken cancel)
         {
-            IEMVClessIssuerUpdateEvents events = new EMVClessIssuerUpdateEvents(connection, eMVClessIssuerUpdate.Headers.RequestId);
             //ToDo: Implement HandleEMVClessIssuerUpdate for CardReader.
             
             #if DEBUG

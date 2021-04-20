@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * MediaExtentsHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             MediaExtentsCommand mediaExtentsCmd = command as MediaExtentsCommand;
             mediaExtentsCmd.IsNotNull($"Invalid parameter in the MediaExtents Handle method. {nameof(mediaExtentsCmd)}");
+            
+            IMediaExtentsEvents events = new MediaExtentsEvents(Connection, mediaExtentsCmd.Headers.RequestId);
 
-            await HandleMediaExtents(Connection, mediaExtentsCmd, cancel);
+            var result = await HandleMediaExtents(events, mediaExtentsCmd, cancel);
+            await Connection.SendMessageAsync(new MediaExtentsCompletion(mediaExtentsCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

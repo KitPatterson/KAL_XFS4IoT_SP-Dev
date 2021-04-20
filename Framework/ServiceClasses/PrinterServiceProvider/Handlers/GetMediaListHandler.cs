@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetMediaListHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class GetMediaListHandler
     {
 
-        private Task HandleGetMediaList(IConnection connection, GetMediaListCommand getMediaList, CancellationToken cancel)
+        private Task<GetMediaListCompletion.PayloadData> HandleGetMediaList(IGetMediaListEvents events, GetMediaListCommand getMediaList, CancellationToken cancel)
         {
-            IGetMediaListEvents events = new GetMediaListEvents(connection, getMediaList.Headers.RequestId);
             //ToDo: Implement HandleGetMediaList for Printer.
             
             #if DEBUG

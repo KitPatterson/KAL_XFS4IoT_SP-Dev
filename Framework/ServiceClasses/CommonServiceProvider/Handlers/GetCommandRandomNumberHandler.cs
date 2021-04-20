@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * GetCommandRandomNumberHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Common
     public partial class GetCommandRandomNumberHandler
     {
 
-        private Task HandleGetCommandRandomNumber(IConnection connection, GetCommandRandomNumberCommand getCommandRandomNumber, CancellationToken cancel)
+        private Task<GetCommandRandomNumberCompletion.PayloadData> HandleGetCommandRandomNumber(IGetCommandRandomNumberEvents events, GetCommandRandomNumberCommand getCommandRandomNumber, CancellationToken cancel)
         {
-            IGetCommandRandomNumberEvents events = new GetCommandRandomNumberEvents(connection, getCommandRandomNumber.Headers.RequestId);
             //ToDo: Implement HandleGetCommandRandomNumber for Common.
             
             #if DEBUG

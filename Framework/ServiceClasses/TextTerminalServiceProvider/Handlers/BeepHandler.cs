@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * BeepHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class BeepHandler
     {
 
-        private Task HandleBeep(IConnection connection, BeepCommand beep, CancellationToken cancel)
+        private Task<BeepCompletion.PayloadData> HandleBeep(IBeepEvents events, BeepCommand beep, CancellationToken cancel)
         {
-            IBeepEvents events = new BeepEvents(connection, beep.Headers.RequestId);
             //ToDo: Implement HandleBeep for TextTerminal.
             
             #if DEBUG

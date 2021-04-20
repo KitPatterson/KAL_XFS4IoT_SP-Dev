@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetLedHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             SetLedCommand setLedCmd = command as SetLedCommand;
             setLedCmd.IsNotNull($"Invalid parameter in the SetLed Handle method. {nameof(setLedCmd)}");
+            
+            ISetLedEvents events = new SetLedEvents(Connection, setLedCmd.Headers.RequestId);
 
-            await HandleSetLed(Connection, setLedCmd, cancel);
+            var result = await HandleSetLed(events, setLedCmd, cancel);
+            await Connection.SendMessageAsync(new SetLedCompletion(setLedCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

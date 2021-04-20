@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * SynchronizeCommandHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Common
         {
             SynchronizeCommandCommand synchronizeCommandCmd = command as SynchronizeCommandCommand;
             synchronizeCommandCmd.IsNotNull($"Invalid parameter in the SynchronizeCommand Handle method. {nameof(synchronizeCommandCmd)}");
+            
+            ISynchronizeCommandEvents events = new SynchronizeCommandEvents(Connection, synchronizeCommandCmd.Headers.RequestId);
 
-            await HandleSynchronizeCommand(Connection, synchronizeCommandCmd, cancel);
+            var result = await HandleSynchronizeCommand(events, synchronizeCommandCmd, cancel);
+            await Connection.SendMessageAsync(new SynchronizeCommandCompletion(synchronizeCommandCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

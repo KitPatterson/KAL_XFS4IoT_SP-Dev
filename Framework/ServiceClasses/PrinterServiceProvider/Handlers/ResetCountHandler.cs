@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ResetCountHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class ResetCountHandler
     {
 
-        private Task HandleResetCount(IConnection connection, ResetCountCommand resetCount, CancellationToken cancel)
+        private Task<ResetCountCompletion.PayloadData> HandleResetCount(IResetCountEvents events, ResetCountCommand resetCount, CancellationToken cancel)
         {
-            IResetCountEvents events = new ResetCountEvents(connection, resetCount.Headers.RequestId);
             //ToDo: Implement HandleResetCount for Printer.
             
             #if DEBUG

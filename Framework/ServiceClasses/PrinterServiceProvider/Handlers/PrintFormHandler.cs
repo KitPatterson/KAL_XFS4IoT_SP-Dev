@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * PrintFormHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class PrintFormHandler
     {
 
-        private Task HandlePrintForm(IConnection connection, PrintFormCommand printForm, CancellationToken cancel)
+        private Task<PrintFormCompletion.PayloadData> HandlePrintForm(IPrintFormEvents events, PrintFormCommand printForm, CancellationToken cancel)
         {
-            IPrintFormEvents events = new PrintFormEvents(connection, printForm.Headers.RequestId);
             //ToDo: Implement HandlePrintForm for Printer.
             
             #if DEBUG

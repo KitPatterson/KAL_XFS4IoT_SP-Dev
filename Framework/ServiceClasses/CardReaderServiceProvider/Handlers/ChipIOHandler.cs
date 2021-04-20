@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ChipIOHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.CardReader
     public partial class ChipIOHandler
     {
 
-        private Task HandleChipIO(IConnection connection, ChipIOCommand chipIO, CancellationToken cancel)
+        private Task<ChipIOCompletion.PayloadData> HandleChipIO(IChipIOEvents events, ChipIOCommand chipIO, CancellationToken cancel)
         {
-            IChipIOEvents events = new ChipIOEvents(connection, chipIO.Headers.RequestId);
             //ToDo: Implement HandleChipIO for CardReader.
             
             #if DEBUG

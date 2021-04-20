@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ResetCountHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             ResetCountCommand resetCountCmd = command as ResetCountCommand;
             resetCountCmd.IsNotNull($"Invalid parameter in the ResetCount Handle method. {nameof(resetCountCmd)}");
+            
+            IResetCountEvents events = new ResetCountEvents(Connection, resetCountCmd.Headers.RequestId);
 
-            await HandleResetCount(Connection, resetCountCmd, cancel);
+            var result = await HandleResetCount(events, resetCountCmd, cancel);
+            await Connection.SendMessageAsync(new ResetCountCompletion(resetCountCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetResolutionHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             SetResolutionCommand setResolutionCmd = command as SetResolutionCommand;
             setResolutionCmd.IsNotNull($"Invalid parameter in the SetResolution Handle method. {nameof(setResolutionCmd)}");
+            
+            ISetResolutionEvents events = new SetResolutionEvents(Connection, setResolutionCmd.Headers.RequestId);
 
-            await HandleSetResolution(Connection, setResolutionCmd, cancel);
+            var result = await HandleSetResolution(events, setResolutionCmd, cancel);
+            await Connection.SendMessageAsync(new SetResolutionCompletion(setResolutionCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

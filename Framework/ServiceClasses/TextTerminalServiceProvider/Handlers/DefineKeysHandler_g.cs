@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * DefineKeysHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             DefineKeysCommand defineKeysCmd = command as DefineKeysCommand;
             defineKeysCmd.IsNotNull($"Invalid parameter in the DefineKeys Handle method. {nameof(defineKeysCmd)}");
+            
+            IDefineKeysEvents events = new DefineKeysEvents(Connection, defineKeysCmd.Headers.RequestId);
 
-            await HandleDefineKeys(Connection, defineKeysCmd, cancel);
+            var result = await HandleDefineKeys(events, defineKeysCmd, cancel);
+            await Connection.SendMessageAsync(new DefineKeysCompletion(defineKeysCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

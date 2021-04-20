@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetCodelineMappingHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             GetCodelineMappingCommand getCodelineMappingCmd = command as GetCodelineMappingCommand;
             getCodelineMappingCmd.IsNotNull($"Invalid parameter in the GetCodelineMapping Handle method. {nameof(getCodelineMappingCmd)}");
+            
+            IGetCodelineMappingEvents events = new GetCodelineMappingEvents(Connection, getCodelineMappingCmd.Headers.RequestId);
 
-            await HandleGetCodelineMapping(Connection, getCodelineMappingCmd, cancel);
+            var result = await HandleGetCodelineMapping(events, getCodelineMappingCmd, cancel);
+            await Connection.SendMessageAsync(new GetCodelineMappingCompletion(getCodelineMappingCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessQueryApplicationsHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             EMVClessQueryApplicationsCommand eMVClessQueryApplicationsCmd = command as EMVClessQueryApplicationsCommand;
             eMVClessQueryApplicationsCmd.IsNotNull($"Invalid parameter in the EMVClessQueryApplications Handle method. {nameof(eMVClessQueryApplicationsCmd)}");
+            
+            IEMVClessQueryApplicationsEvents events = new EMVClessQueryApplicationsEvents(Connection, eMVClessQueryApplicationsCmd.Headers.RequestId);
 
-            await HandleEMVClessQueryApplications(Connection, eMVClessQueryApplicationsCmd, cancel);
+            var result = await HandleEMVClessQueryApplications(events, eMVClessQueryApplicationsCmd, cancel);
+            await Connection.SendMessageAsync(new EMVClessQueryApplicationsCompletion(eMVClessQueryApplicationsCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

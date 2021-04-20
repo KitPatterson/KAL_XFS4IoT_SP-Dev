@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * QueryIFMIdentifierHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             QueryIFMIdentifierCommand queryIFMIdentifierCmd = command as QueryIFMIdentifierCommand;
             queryIFMIdentifierCmd.IsNotNull($"Invalid parameter in the QueryIFMIdentifier Handle method. {nameof(queryIFMIdentifierCmd)}");
+            
+            IQueryIFMIdentifierEvents events = new QueryIFMIdentifierEvents(Connection, queryIFMIdentifierCmd.Headers.RequestId);
 
-            await HandleQueryIFMIdentifier(Connection, queryIFMIdentifierCmd, cancel);
+            var result = await HandleQueryIFMIdentifier(events, queryIFMIdentifierCmd, cancel);
+            await Connection.SendMessageAsync(new QueryIFMIdentifierCompletion(queryIFMIdentifierCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

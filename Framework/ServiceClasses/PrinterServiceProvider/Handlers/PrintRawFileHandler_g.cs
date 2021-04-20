@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * PrintRawFileHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             PrintRawFileCommand printRawFileCmd = command as PrintRawFileCommand;
             printRawFileCmd.IsNotNull($"Invalid parameter in the PrintRawFile Handle method. {nameof(printRawFileCmd)}");
+            
+            IPrintRawFileEvents events = new PrintRawFileEvents(Connection, printRawFileCmd.Headers.RequestId);
 
-            await HandlePrintRawFile(Connection, printRawFileCmd, cancel);
+            var result = await HandlePrintRawFile(events, printRawFileCmd, cancel);
+            await Connection.SendMessageAsync(new PrintRawFileCompletion(printRawFileCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

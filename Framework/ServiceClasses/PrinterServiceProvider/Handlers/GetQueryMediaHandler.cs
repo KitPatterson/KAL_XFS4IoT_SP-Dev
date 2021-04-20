@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryMediaHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class GetQueryMediaHandler
     {
 
-        private Task HandleGetQueryMedia(IConnection connection, GetQueryMediaCommand getQueryMedia, CancellationToken cancel)
+        private Task<GetQueryMediaCompletion.PayloadData> HandleGetQueryMedia(IGetQueryMediaEvents events, GetQueryMediaCommand getQueryMedia, CancellationToken cancel)
         {
-            IGetQueryMediaEvents events = new GetQueryMediaEvents(connection, getQueryMedia.Headers.RequestId);
             //ToDo: Implement HandleGetQueryMedia for Printer.
             
             #if DEBUG

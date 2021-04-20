@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LoadDefinitionHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class LoadDefinitionHandler
     {
 
-        private Task HandleLoadDefinition(IConnection connection, LoadDefinitionCommand loadDefinition, CancellationToken cancel)
+        private Task<LoadDefinitionCompletion.PayloadData> HandleLoadDefinition(ILoadDefinitionEvents events, LoadDefinitionCommand loadDefinition, CancellationToken cancel)
         {
-            ILoadDefinitionEvents events = new LoadDefinitionEvents(connection, loadDefinition.Headers.RequestId);
             //ToDo: Implement HandleLoadDefinition for Printer.
             
             #if DEBUG

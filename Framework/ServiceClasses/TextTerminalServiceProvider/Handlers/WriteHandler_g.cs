@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * WriteHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             WriteCommand writeCmd = command as WriteCommand;
             writeCmd.IsNotNull($"Invalid parameter in the Write Handle method. {nameof(writeCmd)}");
+            
+            IWriteEvents events = new WriteEvents(Connection, writeCmd.Headers.RequestId);
 
-            await HandleWrite(Connection, writeCmd, cancel);
+            var result = await HandleWrite(events, writeCmd, cancel);
+            await Connection.SendMessageAsync(new WriteCompletion(writeCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

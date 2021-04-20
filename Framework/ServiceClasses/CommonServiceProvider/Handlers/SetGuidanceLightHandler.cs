@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * SetGuidanceLightHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Common
     public partial class SetGuidanceLightHandler
     {
 
-        private Task HandleSetGuidanceLight(IConnection connection, SetGuidanceLightCommand setGuidanceLight, CancellationToken cancel)
+        private Task<SetGuidanceLightCompletion.PayloadData> HandleSetGuidanceLight(ISetGuidanceLightEvents events, SetGuidanceLightCommand setGuidanceLight, CancellationToken cancel)
         {
-            ISetGuidanceLightEvents events = new SetGuidanceLightEvents(connection, setGuidanceLight.Headers.RequestId);
             //ToDo: Implement HandleSetGuidanceLight for Common.
             
             #if DEBUG

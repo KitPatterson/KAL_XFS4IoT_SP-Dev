@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EjectCardHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             EjectCardCommand ejectCardCmd = command as EjectCardCommand;
             ejectCardCmd.IsNotNull($"Invalid parameter in the EjectCard Handle method. {nameof(ejectCardCmd)}");
+            
+            IEjectCardEvents events = new EjectCardEvents(Connection, ejectCardCmd.Headers.RequestId);
 
-            await HandleEjectCard(Connection, ejectCardCmd, cancel);
+            var result = await HandleEjectCard(events, ejectCardCmd, cancel);
+            await Connection.SendMessageAsync(new EjectCardCompletion(ejectCardCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LoadDefinitionHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             LoadDefinitionCommand loadDefinitionCmd = command as LoadDefinitionCommand;
             loadDefinitionCmd.IsNotNull($"Invalid parameter in the LoadDefinition Handle method. {nameof(loadDefinitionCmd)}");
+            
+            ILoadDefinitionEvents events = new LoadDefinitionEvents(Connection, loadDefinitionCmd.Headers.RequestId);
 
-            await HandleLoadDefinition(Connection, loadDefinitionCmd, cancel);
+            var result = await HandleLoadDefinition(events, loadDefinitionCmd, cancel);
+            await Connection.SendMessageAsync(new LoadDefinitionCompletion(loadDefinitionCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

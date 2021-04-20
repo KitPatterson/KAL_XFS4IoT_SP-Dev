@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessConfigureHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             EMVClessConfigureCommand eMVClessConfigureCmd = command as EMVClessConfigureCommand;
             eMVClessConfigureCmd.IsNotNull($"Invalid parameter in the EMVClessConfigure Handle method. {nameof(eMVClessConfigureCmd)}");
+            
+            IEMVClessConfigureEvents events = new EMVClessConfigureEvents(Connection, eMVClessConfigureCmd.Headers.RequestId);
 
-            await HandleEMVClessConfigure(Connection, eMVClessConfigureCmd, cancel);
+            var result = await HandleEMVClessConfigure(events, eMVClessConfigureCmd, cancel);
+            await Connection.SendMessageAsync(new EMVClessConfigureCompletion(eMVClessConfigureCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

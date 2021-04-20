@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetCodelineMappingHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class GetCodelineMappingHandler
     {
 
-        private Task HandleGetCodelineMapping(IConnection connection, GetCodelineMappingCommand getCodelineMapping, CancellationToken cancel)
+        private Task<GetCodelineMappingCompletion.PayloadData> HandleGetCodelineMapping(IGetCodelineMappingEvents events, GetCodelineMappingCommand getCodelineMapping, CancellationToken cancel)
         {
-            IGetCodelineMappingEvents events = new GetCodelineMappingEvents(connection, getCodelineMapping.Headers.RequestId);
             //ToDo: Implement HandleGetCodelineMapping for Printer.
             
             #if DEBUG

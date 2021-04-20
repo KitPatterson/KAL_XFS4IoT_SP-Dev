@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * PrintFormHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             PrintFormCommand printFormCmd = command as PrintFormCommand;
             printFormCmd.IsNotNull($"Invalid parameter in the PrintForm Handle method. {nameof(printFormCmd)}");
+            
+            IPrintFormEvents events = new PrintFormEvents(Connection, printFormCmd.Headers.RequestId);
 
-            await HandlePrintForm(Connection, printFormCmd, cancel);
+            var result = await HandlePrintForm(events, printFormCmd, cancel);
+            await Connection.SendMessageAsync(new PrintFormCompletion(printFormCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

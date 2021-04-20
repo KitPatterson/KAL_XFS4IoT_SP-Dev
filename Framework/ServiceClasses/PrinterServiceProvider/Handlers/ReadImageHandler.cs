@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadImageHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class ReadImageHandler
     {
 
-        private Task HandleReadImage(IConnection connection, ReadImageCommand readImage, CancellationToken cancel)
+        private Task<ReadImageCompletion.PayloadData> HandleReadImage(IReadImageEvents events, ReadImageCommand readImage, CancellationToken cancel)
         {
-            IReadImageEvents events = new ReadImageEvents(connection, readImage.Headers.RequestId);
             //ToDo: Implement HandleReadImage for Printer.
             
             #if DEBUG

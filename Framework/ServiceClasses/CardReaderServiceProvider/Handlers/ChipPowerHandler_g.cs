@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ChipPowerHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             ChipPowerCommand chipPowerCmd = command as ChipPowerCommand;
             chipPowerCmd.IsNotNull($"Invalid parameter in the ChipPower Handle method. {nameof(chipPowerCmd)}");
+            
+            IChipPowerEvents events = new ChipPowerEvents(Connection, chipPowerCmd.Headers.RequestId);
 
-            await HandleChipPower(Connection, chipPowerCmd, cancel);
+            var result = await HandleChipPower(events, chipPowerCmd, cancel);
+            await Connection.SendMessageAsync(new ChipPowerCompletion(chipPowerCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

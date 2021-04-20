@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * DispLightHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class DispLightHandler
     {
 
-        private Task HandleDispLight(IConnection connection, DispLightCommand dispLight, CancellationToken cancel)
+        private Task<DispLightCompletion.PayloadData> HandleDispLight(IDispLightEvents events, DispLightCommand dispLight, CancellationToken cancel)
         {
-            IDispLightEvents events = new DispLightEvents(connection, dispLight.Headers.RequestId);
             //ToDo: Implement HandleDispLight for TextTerminal.
             
             #if DEBUG

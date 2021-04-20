@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * SetKeyHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.CardReader
         {
             SetKeyCommand setKeyCmd = command as SetKeyCommand;
             setKeyCmd.IsNotNull($"Invalid parameter in the SetKey Handle method. {nameof(setKeyCmd)}");
+            
+            ISetKeyEvents events = new SetKeyEvents(Connection, setKeyCmd.Headers.RequestId);
 
-            await HandleSetKey(Connection, setKeyCmd, cancel);
+            var result = await HandleSetKey(events, setKeyCmd, cancel);
+            await Connection.SendMessageAsync(new SetKeyCompletion(setKeyCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

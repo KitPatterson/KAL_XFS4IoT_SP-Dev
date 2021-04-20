@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * SynchronizeCommandHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Common
     public partial class SynchronizeCommandHandler
     {
 
-        private Task HandleSynchronizeCommand(IConnection connection, SynchronizeCommandCommand synchronizeCommand, CancellationToken cancel)
+        private Task<SynchronizeCommandCompletion.PayloadData> HandleSynchronizeCommand(ISynchronizeCommandEvents events, SynchronizeCommandCommand synchronizeCommand, CancellationToken cancel)
         {
-            ISynchronizeCommandEvents events = new SynchronizeCommandEvents(connection, synchronizeCommand.Headers.RequestId);
             //ToDo: Implement HandleSynchronizeCommand for Common.
             
             #if DEBUG

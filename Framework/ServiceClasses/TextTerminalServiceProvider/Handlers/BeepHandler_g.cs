@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * BeepHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.TextTerminal
         {
             BeepCommand beepCmd = command as BeepCommand;
             beepCmd.IsNotNull($"Invalid parameter in the Beep Handle method. {nameof(beepCmd)}");
+            
+            IBeepEvents events = new BeepEvents(Connection, beepCmd.Headers.RequestId);
 
-            await HandleBeep(Connection, beepCmd, cancel);
+            var result = await HandleBeep(events, beepCmd, cancel);
+            await Connection.SendMessageAsync(new BeepCompletion(beepCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

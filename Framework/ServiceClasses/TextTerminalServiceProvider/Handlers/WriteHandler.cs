@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * WriteHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.TextTerminal
     public partial class WriteHandler
     {
 
-        private Task HandleWrite(IConnection connection, WriteCommand write, CancellationToken cancel)
+        private Task<WriteCompletion.PayloadData> HandleWrite(IWriteEvents events, WriteCommand write, CancellationToken cancel)
         {
-            IWriteEvents events = new WriteEvents(connection, write.Headers.RequestId);
             //ToDo: Implement HandleWrite for TextTerminal.
             
             #if DEBUG

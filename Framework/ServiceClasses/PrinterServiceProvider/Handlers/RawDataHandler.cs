@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * RawDataHandler.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -22,9 +22,8 @@ namespace XFS4IoTFramework.Printer
     public partial class RawDataHandler
     {
 
-        private Task HandleRawData(IConnection connection, RawDataCommand rawData, CancellationToken cancel)
+        private Task<RawDataCompletion.PayloadData> HandleRawData(IRawDataEvents events, RawDataCommand rawData, CancellationToken cancel)
         {
-            IRawDataEvents events = new RawDataEvents(connection, rawData.Headers.RequestId);
             //ToDo: Implement HandleRawData for Printer.
             
             #if DEBUG

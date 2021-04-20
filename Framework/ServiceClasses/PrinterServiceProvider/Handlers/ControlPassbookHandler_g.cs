@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ControlPassbookHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             ControlPassbookCommand controlPassbookCmd = command as ControlPassbookCommand;
             controlPassbookCmd.IsNotNull($"Invalid parameter in the ControlPassbook Handle method. {nameof(controlPassbookCmd)}");
+            
+            IControlPassbookEvents events = new ControlPassbookEvents(Connection, controlPassbookCmd.Headers.RequestId);
 
-            await HandleControlPassbook(Connection, controlPassbookCmd, cancel);
+            var result = await HandleControlPassbook(events, controlPassbookCmd, cancel);
+            await Connection.SendMessageAsync(new ControlPassbookCompletion(controlPassbookCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

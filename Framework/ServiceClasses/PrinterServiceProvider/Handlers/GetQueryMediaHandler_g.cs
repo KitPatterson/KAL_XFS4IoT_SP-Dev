@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryMediaHandler_g.cs uses automatically generated parts. 
- * created at 4/19/2021 7:48:19 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 
@@ -37,8 +37,11 @@ namespace XFS4IoTFramework.Printer
         {
             GetQueryMediaCommand getQueryMediaCmd = command as GetQueryMediaCommand;
             getQueryMediaCmd.IsNotNull($"Invalid parameter in the GetQueryMedia Handle method. {nameof(getQueryMediaCmd)}");
+            
+            IGetQueryMediaEvents events = new GetQueryMediaEvents(Connection, getQueryMediaCmd.Headers.RequestId);
 
-            await HandleGetQueryMedia(Connection, getQueryMediaCmd, cancel);
+            var result = await HandleGetQueryMedia(events, getQueryMediaCmd, cancel);
+            await Connection.SendMessageAsync(new GetQueryMediaCompletion(getQueryMediaCmd.Headers.RequestId, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)

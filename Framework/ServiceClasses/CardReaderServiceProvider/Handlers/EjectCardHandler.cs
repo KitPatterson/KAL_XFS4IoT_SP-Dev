@@ -18,17 +18,13 @@ namespace XFS4IoTFramework.CardReader
     public partial class EjectCardHandler
     {
 
-        private async Task HandleEjectCard(IConnection connection, EjectCardCommand ejectCard, CancellationToken cancel)
+        private async Task<EjectCardCompletion.PayloadData> HandleEjectCard(IEjectCardEvents events, EjectCardCommand ejectCard, CancellationToken cancel)
         {
-            IEjectCardEvents events = new EjectCardEvents(connection, ejectCard.Headers.RequestId);
-
             Logger.Log(Constants.DeviceClass, "CardReaderDev.EjectCard()");
             var result = await Device.EjectCard(events, ejectCard.Payload, cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.EjectCard() -> {result.CompletionCode}");
 
-            await connection.SendMessageAsync(new EjectCardCompletion(ejectCard.Headers.RequestId, result));
-
-            await Device.WaitForCardTaken(events, cancel);
+            return result;
         }
 
     }
