@@ -33,7 +33,7 @@ namespace XFS4IoTServer
         /// <param name="Logger">To use for all logging</param>
         /// <param name="CommandDispatcher">For dispatching incomming command messages</param>
         public ServicePublisher(ILogger Logger)
-            : base(typeof(ServicePublisher), Logger)
+            : base(new[] { XFSConstants.ServiceClass.Publisher }, Logger)
         {
             Logger.IsNotNull($"Invalid parameter received in the {nameof(ServicePublisher)} constructor. {nameof(Logger)}");
 
@@ -128,5 +128,6 @@ namespace XFS4IoTServer
     internal static class Constants
     {
         public const string Component = "Server";
+        public const string Framework = "Framework";
     }
 }

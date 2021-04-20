@@ -24,7 +24,7 @@ namespace Server
                 var EndpointDetails = Publisher.EndpointDetails;
 
                 var simCardReaderDevice = new KAL.XFS4IoTSP.CardReader.Simulator.SimulatedCardReader(Logger);
-                Publisher.Add(new XFS4IoTCardReader.CardReaderServiceProvider(EndpointDetails, simCardReaderDevice, Logger));
+                Publisher.Add(new ServiceProvider(EndpointDetails, "SimCardReader", new[] { XFSConstants.ServiceClass.Common, XFSConstants.ServiceClass.CardReader }, simCardReaderDevice, Logger));
 
                 ///TODO adding other device classes
                 await Publisher.RunAsync();

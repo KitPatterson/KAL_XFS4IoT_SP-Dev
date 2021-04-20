@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * Reset_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -42,10 +42,12 @@ namespace XFS4IoT.CardReader.Commands
             }
 
             /// <summary>
-            ///Specifies the action to be performed on any user card found within the ID card unit as one of the following:**eject**
-            ////Eject any card found.**retain**
-            ////Retain any card found.**noAction**
-            ////No action should be performed on any card found.
+            /// Specifies the action to be performed on any user card found within the ID card unit as one of the
+            /// following:
+            /// 
+            /// * ```eject``` - Eject any card found.
+            /// * ```retain``` - Retain any card found.
+            /// * ```noAction``` - No action should be performed on any card found.
             /// </summary>
             [DataMember(Name = "resetIn")] 
             public ResetInEnum? ResetIn { get; private set; }

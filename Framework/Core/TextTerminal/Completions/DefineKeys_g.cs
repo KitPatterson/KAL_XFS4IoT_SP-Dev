@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * DefineKeys_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -43,7 +43,11 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:\"keyInvalid\": At least one of the specified keys is invalid.\"keyNotSupported\": At least one of the specified keys is not supported by the Service Provider.\"noActiveKeys\": There are no active keys specified.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```keyInvalid``` - At least one of the specified keys is invalid.
+            /// * ```keyNotSupported``` - At least one of the specified keys is not supported by the Service Provider.
+            /// * ```noActiveKeys``` - There are no active keys specified.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

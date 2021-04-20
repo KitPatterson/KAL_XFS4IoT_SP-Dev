@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ReadForm_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -46,12 +46,19 @@ namespace XFS4IoT.TextTerminal.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:\"formNotFound\": The specified form definition cannot be found.\"formInvalid\": The specified form definition is invalid.\"fieldSpecFailure\": The syntax of the lpszFields member is invalid.\"keyCanceled\": The read operation was terminated by pressing the <CANCEL> key.\"fieldError\": An error occurred while processing a field.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// * ```formNotFound``` - The specified form definition cannot be found.
+            /// * ```formInvalid``` - The specified form definition is invalid.
+            /// * ```fieldSpecFailure``` - The syntax of the lpszFields member is invalid.
+            /// * ```keyCanceled``` - The read operation was terminated by pressing the <CANCEL> key.
+            /// * ```fieldError``` - An error occurred while processing a field.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
             /// <summary>
-            ///Specifies \"<fieldName>=<fieldValue>\" string. e.g. Field1=123. The <fieldValue> stands for a string containing all the printable characters (numeric and alphanumeric) read from the text terminal unit key pad for this field.
+            /// Specifies \"<fieldName>=<fieldValue>\" string. e.g. Field1=123. The <fieldValue> 
+            /// stands for a string containing all the printable characters (numeric and alphanumeric) 
+            /// read from the text terminal unit key pad for this field.
             /// </summary>
             [DataMember(Name = "fields")] 
             public List<string> Fields{ get; private set; }

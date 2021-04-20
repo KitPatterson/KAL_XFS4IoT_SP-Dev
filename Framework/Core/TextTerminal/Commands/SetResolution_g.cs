@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetResolution_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,7 @@ namespace XFS4IoT.TextTerminal.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///Specifies the horizontal size of the display of the text terminal unit.
+            /// Specifies the horizontal size of the display of the text terminal unit.
             /// </summary>
             public class ResolutionClass
             {
@@ -54,7 +54,7 @@ namespace XFS4IoT.TextTerminal.Commands
             }
 
             /// <summary>
-            ///Specifies the horizontal size of the display of the text terminal unit.
+            /// Specifies the horizontal size of the display of the text terminal unit.
             /// </summary>
             [DataMember(Name = "resolution")] 
             public object Resolution { get; private set; }

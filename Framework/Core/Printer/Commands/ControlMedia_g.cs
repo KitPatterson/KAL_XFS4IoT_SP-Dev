@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ControlMedia_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -28,7 +28,17 @@ namespace XFS4IoT.Printer.Commands
         public sealed class PayloadData : MessagePayload
         {
             /// <summary>
-            ///Specifies the manner in which the media should be handled, as a combination of the following flags:It is not possible to combine the flags eject, retract, park, expel and ejectToTransport with each other otherwise the command completes with errInvalidData.It is not possible to combine the flag clearBuffer with any other flags, otherwise the command completes with *errInvalidData*.An application should be aware that the sequence of the actions is not guaranteed if more than one flag is specified in this parameter.
+            /// Specifies the manner in which the media should be handled, as a combination of the following flags:
+            /// 
+            /// It is not possible to combine the flags eject, retract, park, expel and ejectToTransport with each
+            /// other otherwise the command completes with errInvalidData.
+            /// 
+            /// It is not possible to combine the flag
+            /// [clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) with any other flags,
+            /// otherwise the command completes with *invalidData*.
+            /// 
+            /// An application should be aware that the sequence of the actions is not guaranteed if more than one
+            /// flag is specified in this parameter.
             /// </summary>
             public class MediaControlClass
             {
@@ -102,7 +112,17 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///Specifies the manner in which the media should be handled, as a combination of the following flags:It is not possible to combine the flags eject, retract, park, expel and ejectToTransport with each other otherwise the command completes with errInvalidData.It is not possible to combine the flag clearBuffer with any other flags, otherwise the command completes with *errInvalidData*.An application should be aware that the sequence of the actions is not guaranteed if more than one flag is specified in this parameter.
+            /// Specifies the manner in which the media should be handled, as a combination of the following flags:
+            /// 
+            /// It is not possible to combine the flags eject, retract, park, expel and ejectToTransport with each
+            /// other otherwise the command completes with errInvalidData.
+            /// 
+            /// It is not possible to combine the flag
+            /// [clearBuffer](#printer.controlmedia.command.properties.mediacontrol.clearbuffer) with any other flags,
+            /// otherwise the command completes with *invalidData*.
+            /// 
+            /// An application should be aware that the sequence of the actions is not guaranteed if more than one
+            /// flag is specified in this parameter.
             /// </summary>
             [DataMember(Name = "mediaControl")] 
             public object MediaControl { get; private set; }

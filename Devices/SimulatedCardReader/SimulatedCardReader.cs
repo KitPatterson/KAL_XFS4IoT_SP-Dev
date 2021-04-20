@@ -7,7 +7,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CardReader;
 using XFS4IoT;
 using XFS4IoTFramework.CardReader;
 using XFS4IoTFramework.Common;
@@ -19,7 +18,7 @@ using XFS4IoT.CardReader.Completions;
 
 namespace KAL.XFS4IoTSP.CardReader.Simulator
 {
-    public class SimulatedCardReader : ICardReaderDevice
+    public class SimulatedCardReader : ICardReaderDevice, ICommonDevice
     {
         public SimulatedCardReader(ILogger Logger)
         {
@@ -28,12 +27,12 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
         }
 
 
-        public async Task<ReadRawDataCompletion.PayloadData> ReadRawData(ICardReaderConnection connection, 
-                                                                                       ReadRawDataCommand.PayloadData payload,
-                                                                                       CancellationToken cancellation)
+        public async Task<ReadRawDataCompletion.PayloadData> ReadRawData(IReadRawDataEvents connection, 
+                                                                         ReadRawDataCommand.PayloadData payload,
+                                                                         CancellationToken cancellation)
         {
             await Task.Delay(2000, cancellation);
-            connection.MediaInsertedEvent();
+            await connection.MediaInsertedEvent();
 
             await Task.Delay(1000, cancellation);
 
@@ -48,25 +47,13 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
 
         public void Enable() { }
 
-        public Task<FormListCompletion.PayloadData> FormList(ICardReaderConnection connection,
-                                                                           FormListCommand.PayloadData payload, 
-                                                                           CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<QueryFormCompletion.PayloadData> QueryForm(ICardReaderConnection connection, 
-                                                                             QueryFormCommand.PayloadData payload, 
-                                                                             CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<QueryIFMIdentifierCompletion.PayloadData> QueryIFMIdentifier(ICardReaderConnection connection, 
+        public Task<QueryIFMIdentifierCompletion.PayloadData> QueryIFMIdentifier(IQueryIFMIdentifierEvents connection, 
                                                                                  QueryIFMIdentifierCommand.PayloadData payload,
                                                                                  CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<EMVClessQueryApplicationsCompletion.PayloadData> EMVClessQueryApplications(ICardReaderConnection connection, 
+        public Task<EMVClessQueryApplicationsCompletion.PayloadData> EMVClessQueryApplications(IEMVClessQueryApplicationsEvents connection, 
                                                                                                EMVClessQueryApplicationsCommand.PayloadData payload,
                                                                                                CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ReadTrackCompletion.PayloadData> ReadTrack(ICardReaderConnection connection, 
-                                                               ReadTrackCommand.PayloadData payload,
-                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<WriteTrackCompletion.PayloadData> WriteTrack(ICardReaderConnection connection, 
-                                                                 WriteTrackCommand.PayloadData payload,
-                                                                 CancellationToken cancellation) => throw new System.NotImplementedException();
-        public async Task<EjectCardCompletion.PayloadData> EjectCard(ICardReaderConnection connection,
+        public async Task<EjectCardCompletion.PayloadData> EjectCard(IEjectCardEvents connection,
                                                                      EjectCardCommand.PayloadData payload,
                                                                      CancellationToken cancellation)
         {
@@ -78,46 +65,43 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                                                        "ok");
         }
 
-        public Task<RetainCardCompletion.PayloadData> RetainCard(ICardReaderConnection connection,
+        public Task<RetainCardCompletion.PayloadData> RetainCard(IRetainCardEvents connection,
                                                                  RetainCardCommand.PayloadData payload,
                                                                  CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ResetCountCompletion.PayloadData> ResetCount(ICardReaderConnection connection, 
+        public Task<ResetCountCompletion.PayloadData> ResetCount(IResetCountEvents connection, 
                                                                  ResetCountCommand.PayloadData payload,
                                                                  CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<SetKeyCompletion.PayloadData> SetKey(ICardReaderConnection connection,
+        public Task<SetKeyCompletion.PayloadData> SetKey(ISetKeyEvents connection,
                                                          SetKeyCommand.PayloadData payload,
                                                          CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<WriteRawDataCompletion.PayloadData> WriteRawData(ICardReaderConnection connection,
+        public Task<WriteRawDataCompletion.PayloadData> WriteRawData(IWriteRawDataEvents connection,
                                                                      WriteRawDataCommand.PayloadData payload,
                                                                      CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ChipIOCompletion.PayloadData> ChipIO(ICardReaderConnection connection,
+        public Task<ChipIOCompletion.PayloadData> ChipIO(IChipIOEvents connection,
                                                          ChipIOCommand.PayloadData payload,
                                                          CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ResetCompletion.PayloadData> Reset(ICardReaderConnection connection,
+        public Task<ResetCompletion.PayloadData> Reset(IResetEvents connection,
                                                        ResetCommand.PayloadData payload,
                                                        CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ChipPowerCompletion.PayloadData> ChipPower(ICardReaderConnection connection,
+        public Task<ChipPowerCompletion.PayloadData> ChipPower(IChipPowerEvents connection,
                                                                ChipPowerCommand.PayloadData payload,
                                                                CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ParseDataCompletion.PayloadData> ParseData(ICardReaderConnection connection,
-                                                               ParseDataCommand.PayloadData payload,
-                                                               CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<ParkCardCompletion.PayloadData> ParkCard(ICardReaderConnection connection,
+        public Task<ParkCardCompletion.PayloadData> ParkCard(IParkCardEvents connection,
                                                              ParkCardCommand.PayloadData payload,
                                                              CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<EMVClessConfigureCompletion.PayloadData> EMVClessConfigure(ICardReaderConnection connection,
+        public Task<EMVClessConfigureCompletion.PayloadData> EMVClessConfigure(IEMVClessConfigureEvents connection,
                                                                                EMVClessConfigureCommand.PayloadData payload,
                                                                                CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<EMVClessPerformTransactionCompletion.PayloadData> EMVClessPerformTransaction(ICardReaderConnection connection,
+        public Task<EMVClessPerformTransactionCompletion.PayloadData> EMVClessPerformTransaction(IEMVClessPerformTransactionEvents connection,
                                                                                                  EMVClessPerformTransactionCommand.PayloadData payload,
                                                                                                   CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<EMVClessIssuerUpdateCompletion.PayloadData> EMVClessIssuerUpdate(ICardReaderConnection connection,
+        public Task<EMVClessIssuerUpdateCompletion.PayloadData> EMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents connection,
                                                                                      EMVClessIssuerUpdateCommand.PayloadData payload,
                                                                                      CancellationToken cancellation) => throw new System.NotImplementedException();
         
 
         
-        public Task<StatusCompletion.PayloadData> Status(ICommonConnection connection,
+        public Task<StatusCompletion.PayloadData> Status(IStatusEvents connection,
                                                                    StatusCommand.PayloadData payload,
                                                                    CancellationToken cancellation)
         {
@@ -150,7 +134,7 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                                                                     cardReader));
         }
 
-        public Task<CapabilitiesCompletion.PayloadData> Capabilities(ICommonConnection connection, 
+        public Task<CapabilitiesCompletion.PayloadData> Capabilities(ICapabilitiesEvents connection, 
                                                                      CapabilitiesCommand.PayloadData payload,
                                                                      CancellationToken cancellation)
         {
@@ -172,7 +156,6 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                     "1.0"),
                     new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass.SoftwareClass(
                     "XFS4 SP",
-                    "1.0",
                     "1.0")),
                 new CapabilitiesCompletion.PayloadData.CommonClass.VendorModeIformationClass(
                     true,
@@ -226,30 +209,34 @@ namespace KAL.XFS4IoTSP.CardReader.Simulator
                                                                           cardReader));
         }
 
-        public Task<SetGuidanceLightCompletion.PayloadData> SetGuidanceLight(ICommonConnection connection,
+        public Task<SetGuidanceLightCompletion.PayloadData> SetGuidanceLight(ISetGuidanceLightEvents connection,
                                                                              SetGuidanceLightCommand.PayloadData payload,
                                                                              CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<PowerSaveControlCompletion.PayloadData> PowerSaveControl(ICommonConnection connection,
+        public Task<PowerSaveControlCompletion.PayloadData> PowerSaveControl(IPowerSaveControlEvents connection,
                                                                              PowerSaveControlCommand.PayloadData payload,
                                                                              CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(ICommonConnection connection,
+        public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(ISynchronizeCommandEvents connection,
                                                                                  SynchronizeCommandCommand.PayloadData payload,
                                                                                  CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(ICommonConnection connection,
+        public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(ISetTransactionStateEvents connection,
                                                                                    SetTransactionStateCommand.PayloadData payload,
                                                                                    CancellationToken cancellation) => throw new System.NotImplementedException();
-        public Task<GetTransactionStateCompletion.PayloadData> GetTransactionState(ICommonConnection connection,
+        public Task<GetTransactionStateCompletion.PayloadData> GetTransactionState(IGetTransactionStateEvents connection,
                                                                                    GetTransactionStateCommand.PayloadData payload,
                                                                                    CancellationToken cancellation) => throw new System.NotImplementedException();
 
-        public async Task WaitForCardTaken(ICardReaderConnection connection, CancellationToken cancellation)
+        public async Task WaitForCardTaken(ICardReaderEvents connection, CancellationToken cancellation)
         {
             await Task.Delay(1000, cancellation);
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
 
-            connection.MediaRemovedEvent();
+            await connection.MediaRemovedEvent();
         }
+
+        public Task<GetCommandRandomNumberCompletion.PayloadData> GetCommandRandomNumber(IGetCommandRandomNumberEvents events,
+                                                                                         GetCommandRandomNumberCommand.PayloadData payload,
+                                                                                         CancellationToken cancellation) => throw new System.NotImplementedException();
 
         public ILogger Logger { get; }
 

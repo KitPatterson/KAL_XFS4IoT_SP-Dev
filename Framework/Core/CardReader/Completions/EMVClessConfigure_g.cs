@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessConfigure_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -43,10 +43,17 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**invalidTerminalData**
-            ////Input data *terminalData* was invalid. Contactless chip card reader could not be configured successfully.**invalidAidData**
-            ////Input data *aidData* was invalid. Contactless chip card reader could not be configured successfully.**invalidKeyData**
-            ////Input data *keyData* was invalid. Contactless chip card reader could not be configured successfully.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```invalidTerminalData``` - Input data
+            ///   [terminalData](#cardreader.emvclessconfigure.command.properties.terminaldata) was invalid.
+            ///   Contactless chip card reader could not be configured successfully.
+            /// * ```invalidAidData``` - Input data
+            ///   [aidData](#cardreader.emvclessconfigure.command.properties.aiddata) was invalid. Contactless chip
+            ///   card reader could not be configured successfully.
+            /// * ```invalidKeyData``` - Input data
+            ///   [keyData](#cardreader.emvclessconfigure.command.properties.keydata) was invalid. Contactless chip
+            ///   card reader could not be configured successfully.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }

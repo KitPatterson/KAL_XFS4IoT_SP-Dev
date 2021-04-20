@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetMediaList_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -36,7 +36,7 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///The list of media names.
+            /// The list of media names.
             /// </summary>
             [DataMember(Name = "mediaList")] 
             public List<string> MediaList{ get; private set; }

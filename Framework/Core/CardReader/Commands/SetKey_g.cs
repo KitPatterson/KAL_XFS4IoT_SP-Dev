@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * SetKey_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -35,7 +35,8 @@ namespace XFS4IoT.CardReader.Commands
             }
 
             /// <summary>
-            ///Contains the Base64 encoded payment containing the CIM86 DES key. This key is supplied by the vendor of the CIM86 module.
+            /// Contains the Base64 encoded payment containing the CIM86 DES key. This key is supplied by the vendor
+            /// of the CIM86 module.
             /// </summary>
             [DataMember(Name = "keyValue")] 
             public string KeyValue { get; private set; }

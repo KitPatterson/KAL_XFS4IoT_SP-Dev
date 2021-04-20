@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * TrackDetectedEvent_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -42,27 +42,27 @@ namespace XFS4IoT.CardReader.Events
             }
 
             /// <summary>
-            ///The card reader has track 1.
+            /// The card reader has track 1.
             /// </summary>
             [DataMember(Name = "track1")] 
             public bool? Track1 { get; private set; }
             /// <summary>
-            ///The card reader has track 2.
+            /// The card reader has track 2.
             /// </summary>
             [DataMember(Name = "track2")] 
             public bool? Track2 { get; private set; }
             /// <summary>
-            ///The card reader has track 3.
+            /// The card reader has track 3.
             /// </summary>
             [DataMember(Name = "track3")] 
             public bool? Track3 { get; private set; }
             /// <summary>
-            ///The card reader has the Swedish watermark track.
+            /// The card reader has the Swedish watermark track.
             /// </summary>
             [DataMember(Name = "watermark")] 
             public bool? Watermark { get; private set; }
             /// <summary>
-            ///The card reader has front track 1.
+            /// The card reader has front track 1.
             /// </summary>
             [DataMember(Name = "frontTrack1")] 
             public bool? FrontTrack1 { get; private set; }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryMedia_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -35,7 +35,7 @@ namespace XFS4IoT.Printer.Commands
             }
 
             /// <summary>
-            ///The media name for which to retrieve details.
+            /// The media name for which to retrieve details.
             /// </summary>
             [DataMember(Name = "mediaName")] 
             public string MediaName { get; private set; }

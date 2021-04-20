@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * NoMediaEvent_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -38,7 +38,11 @@ namespace XFS4IoT.Printer.Events
             }
 
             /// <summary>
-            ///The user prompt from the form definition. This will be omitted if either a form does not define a value for the user prompt or the event is being generated as the result of a command that does not use forms.The application may use the this in any manner it sees fit, for example it might display the string to the operator, along with a message that the media should be inserted.
+            /// The user prompt from the form definition. This will be omitted if either a form does not define a value
+            /// for the user prompt or the event is being generated as the result of a command that does not use forms.
+            /// 
+            /// The application may use the this in any manner it sees fit, for example it might display the string to the
+            /// operator, along with a message that the media should be inserted.
             /// </summary>
             [DataMember(Name = "userPrompt")] 
             public string UserPrompt { get; private set; }

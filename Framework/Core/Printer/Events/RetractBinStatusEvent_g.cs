@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * RetractBinStatusEvent_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,14 +45,15 @@ namespace XFS4IoT.Printer.Events
             }
 
             /// <summary>
-            ///Number of the retract bin for which the status has changed.
+            /// Number of the retract bin for which the status has changed.
             /// </summary>
             [DataMember(Name = "binNumber")] 
             public int? BinNumber { get; private set; }
             /// <summary>
-            ///Specifies the current state of the retract bin as one of the following values:**inserted**
-            ////  The retract bin has been inserted.**removed**
-            ////  The retract bin has been removed.
+            /// Specifies the current state of the retract bin as one of the following values:
+            /// 
+            /// * ```inserted``` - The retract bin has been inserted.
+            /// * ```removed``` - The retract bin has been removed.
             /// </summary>
             [DataMember(Name = "state")] 
             public StateEnum? State { get; private set; }

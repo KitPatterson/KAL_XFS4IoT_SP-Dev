@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\Framework\Core\Core.csproj" />
     <ProjectReference Include="..\..\Framework\Server\Server.csproj" />
     <ProjectReference Include="..\..\Framework\ServiceClasses\CardReaderServiceProvider\CardReaderServiceProvider.csproj" />
+    <ProjectReference Include="..\..\Framework\ServiceClasses\CommonServiceProvider\CommonServiceProvider.csproj" />
   </ItemGroup>
 
 </Project>

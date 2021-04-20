@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * QueryIFMIdentifier_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -45,16 +45,17 @@ namespace XFS4IoT.CardReader.Completions
             }
 
             /// <summary>
-            ///Specifies the IFM authority that issued the IFM identifier:**emv**
-            ////The Level 1 Type Approval IFM identifier assigned by EMVCo.**europay**
-            ////The Level 1 Type Approval IFM identifier assigned by Europay.**visa**
-            ////The Level 1 Type Approval IFM identifier assigned by VISA.**giecb**
-            ////The IFM identifier assigned by GIE Cartes Bancaires.
+            /// Specifies the IFM authority that issued the IFM identifier:
+            /// 
+            /// * ```emv``` - The Level 1 Type Approval IFM identifier assigned by EMVCo.
+            /// * ```europay``` - The Level 1 Type Approval IFM identifier assigned by Europay.
+            /// * ```visa``` - The Level 1 Type Approval IFM identifier assigned by VISA.
+            /// * ```giecb``` - The IFM identifier assigned by GIE Cartes Bancaires.
             /// </summary>
             [DataMember(Name = "ifmAuthority")] 
             public IfmAuthorityEnum? IfmAuthority { get; private set; }
             /// <summary>
-            ///The IFM Identifier of the chip card reader (or IFM) as assigned by the specified authority.
+            /// The IFM Identifier of the chip card reader (or IFM) as assigned by the specified authority.
             /// </summary>
             [DataMember(Name = "ifmIdentifier")] 
             public string IfmIdentifier { get; private set; }

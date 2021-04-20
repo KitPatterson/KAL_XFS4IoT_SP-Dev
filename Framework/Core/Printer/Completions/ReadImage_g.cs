@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadImage_g.cs uses automatically generated parts. 
- * created at 3/18/2021 2:05:35 PM
+ * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
 using System;
@@ -37,13 +37,13 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///The status and data for each of the requested images.
+            /// The status and data for each of the requested images.
             /// </summary>
             public class ImagesClass
             {
                 
                 /// <summary>
-                ///The front image status and data.
+                /// The front image status and data.
                 /// </summary>
                 public class FrontClass 
                 {
@@ -68,7 +68,7 @@ namespace XFS4IoT.Printer.Completions
                 public FrontClass Front { get; private set; }
                 
                 /// <summary>
-                ///The back image status and data.
+                /// The back image status and data.
                 /// </summary>
                 public class BackClass 
                 {
@@ -93,7 +93,7 @@ namespace XFS4IoT.Printer.Completions
                 public BackClass Back { get; private set; }
                 
                 /// <summary>
-                ///The codeline status and data.
+                /// The codeline status and data.
                 /// </summary>
                 public class CodelineClass 
                 {
@@ -138,18 +138,22 @@ namespace XFS4IoT.Printer.Completions
             }
 
             /// <summary>
-            ///Specifies the error code if applicable. The following values are possible:**shutterFail**
-            ////  Open or close of the shutter failed due to manipulation or hardware error.**mediaJammed**
-            ////  The media is jammed; operator intervention is required.**fileIOError**
-            ////  Directory does not exist or a File IO error occurred while storing the image to the hard disk.**lampInoperative**
-            ////  Imaging lamp is inoperative.**mediaSize**
-            ////  The media entered has an incorrect size and the media remains inside the device.**mediaRejected**
-            ////  The media was rejected during the insertion phase. The  [Printer.MediaRejectedEvent](#message-Printer.MediaRejectedEvent) event is posted with the details.  The device is still operational.
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```shutterFail``` - Open or close of the shutter failed due to manipulation or hardware error.
+            /// * ```mediaJammed``` - The media is jammed; operator intervention is required.
+            /// * ```fileIOError``` - Directory does not exist or a File IO error occurred while storing the image to
+            ///   the hard disk.
+            /// * ```lampInoperative``` - Imaging lamp is inoperative.
+            /// * ```mediaSize``` - The media entered has an incorrect size and the media remains inside the device.
+            /// * ```mediaRejected``` - The media was rejected during the insertion phase. The
+            ///   [Printer.MediaRejectedEvent](#printer.mediarejectedevent) event is posted with the details. The
+            ///   device is still operational.
             /// </summary>
             [DataMember(Name = "errorCode")] 
             public ErrorCodeEnum? ErrorCode { get; private set; }
             /// <summary>
-            ///The status and data for each of the requested images.
+            /// The status and data for each of the requested images.
             /// </summary>
             [DataMember(Name = "images")] 
             public ImagesClass Images { get; private set; }
