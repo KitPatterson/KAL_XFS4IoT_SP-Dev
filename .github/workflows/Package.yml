@@ -1,0 +1,43 @@
+name: CreateRelease
+
+on:
+  create:
+    tags:
+    - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - name: Restore Dependencies
+      run: dotnet restore Framework
+
+    - name: Build 
+      run: dotnet build Framework --no-restore
+    
+    - name: Run Tests
+      run: dotnet test Framework --no-build --verbosity normal
+    
+    - name: Create release
+      run: |
+        set -x  
+        version=${GITHUB_REF##*/}
+        number=${version:1}
+        
+        dotnet pack Framework -p:PackageVersion=$number -o nuget --no-build
+
+        assets=()
+        for asset in ./nuget/*.nupkg; do
+          assets+=("-a" "$asset")
+        done
+        hub release create -p "${assets[@]}" -m "$version" "$version"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
