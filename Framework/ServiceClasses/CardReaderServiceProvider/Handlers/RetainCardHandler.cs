@@ -8,12 +8,9 @@
  * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
-
-using System;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
@@ -21,16 +18,42 @@ namespace XFS4IoTFramework.CardReader
 {
     public partial class RetainCardHandler
     {
-
-        private Task<RetainCardCompletion.PayloadData> HandleRetainCard(IRetainCardEvents events, RetainCardCommand retainCard, CancellationToken cancel)
+        /// <summary>
+        /// WriteCardDataResult
+        /// Return result of writing data to the card tracks
+        /// </summary>
+        public sealed class CaptureCardResult : BaseResult
         {
-            //ToDo: Implement HandleRetainCard for CardReader.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleRetainCard for CardReader is not implemented in RetainCardHandler.cs");
-            #else
-                #error HandleRetainCard for CardReader is not implemented in RetainCardHandler.cs
-            #endif
+            public CaptureCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                     RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                     string ErrorDescription = null,
+                                     int? Count = null,
+                                     RetainCardCompletion.PayloadData.PositionEnum? Position = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+                this.Count = Count;
+                this.Position = Position;
+            }
+
+            public RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+
+            public int? Count { get; private set; }
+
+            public RetainCardCompletion.PayloadData.PositionEnum? Position { get; private set;  }
+        }
+
+        private async Task<RetainCardCompletion.PayloadData> HandleRetainCard(IRetainCardEvents events, RetainCardCommand retainCard, CancellationToken cancel)
+        {
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.CaptureCard()");
+            var result = await Device.CaptureCard(events);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.CaptureCard() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new RetainCardCompletion.PayloadData(result.CompletionCode,
+                                                        result.ErrorDescription,
+                                                        result.ErrorCode,
+                                                        result.Count,
+                                                        result.Position);
         }
 
     }

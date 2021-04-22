@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulatedCardReader", "SimulatedCardReader\SimulatedCardReader.csproj", "{F653AE61-23B3-473B-950D-60B7E1FC0E0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardReaderSample", "SimulatedCardReader\CardReaderSample.csproj", "{F653AE61-23B3-473B-950D-60B7E1FC0E0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulatedServerHost", "SimulatedServerHost\SimulatedServerHost.csproj", "{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerHostSample", "SimulatedServerHost\ServerHostSample.csproj", "{6FAB1C7E-7249-4CDD-ACE7-9650406A1249}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Framework\Core\Core.csproj", "{510E1A4A-266D-4441-B9C3-EDFE9E132C0D}"
 EndProject

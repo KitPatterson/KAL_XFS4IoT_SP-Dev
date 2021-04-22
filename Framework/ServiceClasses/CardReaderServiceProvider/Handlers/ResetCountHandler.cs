@@ -8,12 +8,9 @@
  * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
-
-using System;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
@@ -21,17 +18,25 @@ namespace XFS4IoTFramework.CardReader
 {
     public partial class ResetCountHandler
     {
-
-        private Task<ResetCountCompletion.PayloadData> HandleResetCount(IResetCountEvents events, ResetCountCommand resetCount, CancellationToken cancel)
+        /// <summary>
+        /// ResetCountResult
+        /// Return result of resetting retain bin counters
+        /// </summary>
+        public sealed class ResetCountResult : BaseResult
         {
-            //ToDo: Implement HandleResetCount for CardReader.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleResetCount for CardReader is not implemented in ResetCountHandler.cs");
-            #else
-                #error HandleResetCount for CardReader is not implemented in ResetCountHandler.cs
-            #endif
+            public ResetCountResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                   string ErrorDescription = null)
+                : base(CompletionCode, ErrorDescription)
+            { }
         }
 
+        private async Task<ResetCountCompletion.PayloadData> HandleResetCount(IResetCountEvents events, ResetCountCommand resetCount, CancellationToken cancel)
+        {
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.ResetCount()");
+            var result = await Device.ResetCount();
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ResetCount() -> {result.CompletionCode}");
+
+            return new ResetCountCompletion.PayloadData(result.CompletionCode, result.ErrorDescription);
+        }
     }
 }

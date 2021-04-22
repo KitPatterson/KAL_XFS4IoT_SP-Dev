@@ -10,10 +10,10 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
@@ -21,16 +21,59 @@ namespace XFS4IoTFramework.CardReader
 {
     public partial class SetKeyHandler
     {
-
-        private Task<SetKeyCompletion.PayloadData> HandleSetKey(ISetKeyEvents events, SetKeyCommand setKey, CancellationToken cancel)
+        /// <summary>
+        /// SetKeyRequest
+        /// Provide key information to be loaded into the module.
+        /// </summary>
+        public sealed class SetKeyRequest
         {
-            //ToDo: Implement HandleSetKey for CardReader.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleSetKey for CardReader is not implemented in SetKeyHandler.cs");
-            #else
-                #error HandleSetKey for CardReader is not implemented in SetKeyHandler.cs
-            #endif
+            /// <summary>
+            /// SetKeyRequest
+            /// </summary>
+            /// <param name="KeyValue">Key value to be loaded into CIM86 module</param>
+            public SetKeyRequest(List<byte> KeyValue = null)
+            {
+                this.KeyValue = KeyValue;
+            }
+
+            public List<byte> KeyValue { get; private set; }
+        }
+
+        /// <summary>
+        /// SetKeyResult
+        /// Return result of loading key value into the module.
+        /// </summary>
+        public sealed class SetKeyResult : BaseResult
+        {
+            public SetKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                string ErrorDescription = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
+            public SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+        }
+
+        private async Task<SetKeyCompletion.PayloadData> HandleSetKey(ISetKeyEvents events, SetKeyCommand setKey, CancellationToken cancel)
+        {
+            if (string.IsNullOrEmpty(setKey.Payload.KeyValue))
+            {
+                return new SetKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                        "No key data supplied.",
+                                                        SetKeyCompletion.PayloadData.ErrorCodeEnum.InvalidKey);
+            }
+
+            List<byte> keyValue = new(Convert.FromBase64String(setKey.Payload.KeyValue));
+
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.SetKey()");
+            var result = await Device.SetKey(new SetKeyRequest(keyValue));
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.SetKey() -> {result.CompletionCode}");
+
+            return new SetKeyCompletion.PayloadData(result.CompletionCode,
+                                                    result.ErrorDescription,
+                                                    result.ErrorCode);
         }
 
     }

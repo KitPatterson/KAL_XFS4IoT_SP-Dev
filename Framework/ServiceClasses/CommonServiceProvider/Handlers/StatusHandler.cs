@@ -25,11 +25,10 @@ namespace XFS4IoTFramework.Common
         private async Task<StatusCompletion.PayloadData> HandleStatus(IStatusEvents events, StatusCommand status, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CommonDev.Status()");
-            var result = await Device.Status(events, status.Payload, cancel);
+            var result = await Device.Status();
             Logger.Log(Constants.DeviceClass, $"CommonDev.Status() -> {result.CompletionCode}");
 
             return result;
         }
-
     }
 }

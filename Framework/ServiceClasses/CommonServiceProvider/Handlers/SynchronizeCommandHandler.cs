@@ -22,16 +22,13 @@ namespace XFS4IoTFramework.Common
     public partial class SynchronizeCommandHandler
     {
 
-        private Task<SynchronizeCommandCompletion.PayloadData> HandleSynchronizeCommand(ISynchronizeCommandEvents events, SynchronizeCommandCommand synchronizeCommand, CancellationToken cancel)
+        private async Task<SynchronizeCommandCompletion.PayloadData> HandleSynchronizeCommand(ISynchronizeCommandEvents events, SynchronizeCommandCommand synchronizeCommand, CancellationToken cancel)
         {
-            //ToDo: Implement HandleSynchronizeCommand for Common.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleSynchronizeCommand for Common is not implemented in SynchronizeCommandHandler.cs");
-            #else
-                #error HandleSynchronizeCommand for Common is not implemented in SynchronizeCommandHandler.cs
-            #endif
-        }
+            Logger.Log(Constants.DeviceClass, "CommonDev.SynchronizeCommand()");
+            var result = await Device.SynchronizeCommand(synchronizeCommand.Payload);
+            Logger.Log(Constants.DeviceClass, $"CommonDev.SynchronizeCommand() -> {result.CompletionCode}");
 
+            return result;
+        }
     }
 }

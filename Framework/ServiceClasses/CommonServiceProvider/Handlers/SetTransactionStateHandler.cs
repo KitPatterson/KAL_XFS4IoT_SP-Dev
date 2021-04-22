@@ -22,16 +22,13 @@ namespace XFS4IoTFramework.Common
     public partial class SetTransactionStateHandler
     {
 
-        private Task<SetTransactionStateCompletion.PayloadData> HandleSetTransactionState(ISetTransactionStateEvents events, SetTransactionStateCommand setTransactionState, CancellationToken cancel)
+        private async Task<SetTransactionStateCompletion.PayloadData> HandleSetTransactionState(ISetTransactionStateEvents events, SetTransactionStateCommand setTransactionState, CancellationToken cancel)
         {
-            //ToDo: Implement HandleSetTransactionState for Common.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleSetTransactionState for Common is not implemented in SetTransactionStateHandler.cs");
-            #else
-                #error HandleSetTransactionState for Common is not implemented in SetTransactionStateHandler.cs
-            #endif
-        }
+            Logger.Log(Constants.DeviceClass, "CommonDev.SetTransactionState()");
+            var result = await Device.SetTransactionState(setTransactionState.Payload);
+            Logger.Log(Constants.DeviceClass, $"CommonDev.SetTransactionState() -> {result.CompletionCode}");
 
+            return result;
+        }
     }
 }
