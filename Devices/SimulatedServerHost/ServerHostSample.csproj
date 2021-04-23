@@ -10,7 +10,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0-windows</TargetFramework>
-        <AssemblyName>XFS4IoT.SP.SimulatedServerHost</AssemblyName>
+        <AssemblyName>XFS4IoT.SP.ServerHostSample</AssemblyName>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SimulatedCardReader\SimulatedCardReader.csproj" />
+      <ProjectReference Include="..\SimulatedCardReader\CardReaderSample.csproj" />
     </ItemGroup>
 
     <ItemGroup>

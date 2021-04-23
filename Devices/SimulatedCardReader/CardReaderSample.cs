@@ -16,13 +16,13 @@ using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
-namespace KAL.XFS4IoTSP.CardReader.Simulator
+namespace KAL.XFS4IoTSP.CardReader.Sample
 {
-    public class SimulatedCardReader : ICardReaderDevice, ICommonDevice
+    public class CardReaderSample : ICardReaderDevice, ICommonDevice
     {
-        public SimulatedCardReader(ILogger Logger)
+        public CardReaderSample(ILogger Logger)
         {
-            Logger.IsNotNull($"Invalid parameter received in the {nameof(SimulatedCardReader)} constructor. {nameof(Logger)}");
+            Logger.IsNotNull($"Invalid parameter received in the {nameof(CardReaderSample)} constructor. {nameof(Logger)}");
             this.Logger = Logger;
         }
 

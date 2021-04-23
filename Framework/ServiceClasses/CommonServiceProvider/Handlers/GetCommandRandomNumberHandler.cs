@@ -12,8 +12,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Completions;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
 
@@ -21,16 +20,40 @@ namespace XFS4IoTFramework.Common
 {
     public partial class GetCommandRandomNumberHandler
     {
-
-        private Task<GetCommandRandomNumberCompletion.PayloadData> HandleGetCommandRandomNumber(IGetCommandRandomNumberEvents events, GetCommandRandomNumberCommand getCommandRandomNumber, CancellationToken cancel)
+        /// <summary>
+        /// GetCommandRandomNumberResult
+        /// Return authorisation token for a command
+        /// </summary>
+        public sealed class GetCommandRandomNumberResult : BaseResult
         {
-            //ToDo: Implement HandleGetCommandRandomNumber for Common.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleGetCommandRandomNumber for Common is not implemented in GetCommandRandomNumberHandler.cs");
-            #else
-                #error HandleGetCommandRandomNumber for Common is not implemented in GetCommandRandomNumberHandler.cs
-            #endif
+            public GetCommandRandomNumberResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                                string ErrorDescription = null,
+                                                string CommandRandomNumber = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.CommandRandomNumber = CommandRandomNumber;
+            }
+
+            /// <summary>
+            /// A nonce that should be included in the authorisation token in a command used to provide 
+            /// end to end protection.
+            /// 
+            /// The nonce will be given as HEX (upper case.)
+            /// </summary>
+            public string CommandRandomNumber { get; private set; }
+        }
+
+        private async Task<GetCommandRandomNumberCompletion.PayloadData> HandleGetCommandRandomNumber(IGetCommandRandomNumberEvents events, GetCommandRandomNumberCommand getCommandRandomNumber, CancellationToken cancel)
+        {
+            Logger.Log(Constants.DeviceClass, "CommonDev.GetCommandRandomNumber()");
+            var result = await Device.GetCommandRandomNumber();
+            Logger.Log(Constants.DeviceClass, $"CommonDev.GetCommandRandomNumber() -> {result.CompletionCode}");
+
+            /// TODO: validate returned token
+
+            return new GetCommandRandomNumberCompletion.PayloadData(result.CompletionCode,
+                                                                    result.ErrorDescription,
+                                                                    result.CommandRandomNumber);
         }
 
     }

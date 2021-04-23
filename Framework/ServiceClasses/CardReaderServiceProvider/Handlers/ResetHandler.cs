@@ -12,8 +12,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
@@ -21,16 +20,50 @@ namespace XFS4IoTFramework.CardReader
 {
     public partial class ResetHandler
     {
-
-        private Task<ResetCompletion.PayloadData> HandleReset(IResetEvents events, ResetCommand reset, CancellationToken cancel)
+        /// <summary>
+        /// ResetDeviceRequest
+        /// Provide reset action information
+        /// </summary>
+        public sealed class ResetDeviceRequest
         {
-            //ToDo: Implement HandleReset for CardReader.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleReset for CardReader is not implemented in ResetHandler.cs");
-            #else
-                #error HandleReset for CardReader is not implemented in ResetHandler.cs
-            #endif
+            /// <summary>
+            /// ResetDeviceRequest
+            /// </summary>
+            /// <param name="CardAction">Card action could be eject, capture or no move. if this value is set to null, the default action to be used.</param>
+            public ResetDeviceRequest(ResetCommand.PayloadData.ResetInEnum? CardAction)
+            {
+                this.CardAction = CardAction;
+            }
+
+            public ResetCommand.PayloadData.ResetInEnum? CardAction { get; private set; }
+        }
+
+        /// <summary>
+        /// ResetDeviceResult
+        /// Return result of mechanical reset operation
+        /// </summary>
+        public sealed class ResetDeviceResult : BaseResult
+        {
+            public ResetDeviceResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                     ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                     string ErrorDescription = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
+            public ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+        }
+
+        private async Task<ResetCompletion.PayloadData> HandleReset(IResetEvents events, ResetCommand reset, CancellationToken cancel)
+        {
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.ResetDevice()");
+            var result = await Device.ResetDevice(events, new ResetDeviceRequest(reset.Payload.ResetIn));
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ResetDevice() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new ResetCompletion.PayloadData(result.CompletionCode,
+                                                   result.ErrorDescription,
+                                                   result.ErrorCode);
         }
 
     }

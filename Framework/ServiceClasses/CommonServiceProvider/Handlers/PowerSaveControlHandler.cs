@@ -22,16 +22,13 @@ namespace XFS4IoTFramework.Common
     public partial class PowerSaveControlHandler
     {
 
-        private Task<PowerSaveControlCompletion.PayloadData> HandlePowerSaveControl(IPowerSaveControlEvents events, PowerSaveControlCommand powerSaveControl, CancellationToken cancel)
+        private async Task<PowerSaveControlCompletion.PayloadData> HandlePowerSaveControl(IPowerSaveControlEvents events, PowerSaveControlCommand powerSaveControl, CancellationToken cancel)
         {
-            //ToDo: Implement HandlePowerSaveControl for Common.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandlePowerSaveControl for Common is not implemented in PowerSaveControlHandler.cs");
-            #else
-                #error HandlePowerSaveControl for Common is not implemented in PowerSaveControlHandler.cs
-            #endif
-        }
+            Logger.Log(Constants.DeviceClass, "CommonDev.PowerSaveControl()");
+            var result = await Device.PowerSaveControl(powerSaveControl.Payload);
+            Logger.Log(Constants.DeviceClass, $"CommonDev.PowerSaveControl() -> {result.CompletionCode}");
 
+            return result;
+        }
     }
 }

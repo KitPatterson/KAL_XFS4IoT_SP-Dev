@@ -24,10 +24,11 @@ namespace XFS4IoTFramework.Common
 
         private Task<SetGuidanceLightCompletion.PayloadData> HandleSetGuidanceLight(ISetGuidanceLightEvents events, SetGuidanceLightCommand setGuidanceLight, CancellationToken cancel)
         {
-            //ToDo: Implement HandleSetGuidanceLight for Common.
+            //NOTE: GuideLights doesn't support in common interface. All guidelight control is done by the SIU
+            //This command exists in the XFS4IoT common interface spec for the April 2021 preview
             
             #if DEBUG
-                throw new NotImplementedException("HandleSetGuidanceLight for Common is not implemented in SetGuidanceLightHandler.cs");
+                throw new NotImplementedException("SetGuidanceLight is obsolete in the common interface.");
             #else
                 #error HandleSetGuidanceLight for Common is not implemented in SetGuidanceLightHandler.cs
             #endif

@@ -10,9 +10,10 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
+using XFS4IoT.Completions;
 using XFS4IoTServer;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
@@ -21,17 +22,13 @@ namespace XFS4IoTFramework.Common
 {
     public partial class GetTransactionStateHandler
     {
-
-        private Task<GetTransactionStateCompletion.PayloadData> HandleGetTransactionState(IGetTransactionStateEvents events, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
+        private async Task<GetTransactionStateCompletion.PayloadData> HandleGetTransactionState(IGetTransactionStateEvents events, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
         {
-            //ToDo: Implement HandleGetTransactionState for Common.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleGetTransactionState for Common is not implemented in GetTransactionStateHandler.cs");
-            #else
-                #error HandleGetTransactionState for Common is not implemented in GetTransactionStateHandler.cs
-            #endif
-        }
+            Logger.Log(Constants.DeviceClass, "CommonDev.GetTransactionState()");
+            var result = await Device.GetTransactionState();
+            Logger.Log(Constants.DeviceClass, $"CommonDev.GetTransactionState() -> {result.CompletionCode}");
 
+            return result;
+        }
     }
 }

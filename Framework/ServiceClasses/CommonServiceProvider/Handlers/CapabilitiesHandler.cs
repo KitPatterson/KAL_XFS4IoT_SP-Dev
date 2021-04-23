@@ -25,11 +25,10 @@ namespace XFS4IoTFramework.Common
         private async Task<CapabilitiesCompletion.PayloadData> HandleCapabilities(ICapabilitiesEvents events, CapabilitiesCommand capabilities, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CommonDev.Capabilities()");
-            var result = await Device.Capabilities(events, capabilities.Payload, cancel);
+            var result = await Device.Capabilities();
             Logger.Log(Constants.DeviceClass, $"CommonDev.Capabilities() -> {result.CompletionCode}");
 
             return result;
         }
-
     }
 }
