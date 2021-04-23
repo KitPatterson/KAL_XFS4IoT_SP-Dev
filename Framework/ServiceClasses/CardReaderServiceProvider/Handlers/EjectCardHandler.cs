@@ -8,6 +8,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -38,7 +39,7 @@ namespace XFS4IoTFramework.CardReader
         /// EjectCardResult
         /// Return result of ejecting/returning card
         /// </summary>
-        public sealed class EjectCardResult : BaseResult
+        public sealed class EjectCardResult : DeviceResult
         {
             public EjectCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                    EjectCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,

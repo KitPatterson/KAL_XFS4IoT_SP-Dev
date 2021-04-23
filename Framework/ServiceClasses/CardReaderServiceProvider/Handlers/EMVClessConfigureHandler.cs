@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -167,7 +168,7 @@ namespace XFS4IoTFramework.CardReader
         /// EMVClessConfigureResult
         /// Return result of terminal configuration setup.
         /// </summary>
-        public sealed class EMVClessConfigureResult : BaseResult
+        public sealed class EMVClessConfigureResult : DeviceResult
         {
             public EMVClessConfigureResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                            EMVClessConfigureCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,

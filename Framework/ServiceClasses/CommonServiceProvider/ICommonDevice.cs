@@ -16,23 +16,6 @@ using XFS4IoT.Completions;
 // KAL specific implementation of common. 
 namespace XFS4IoTFramework.Common
 {
-    /// <summary>
-    /// Base class for the result of an operation processed by the device specific class
-    /// </summary>
-    public class BaseResult
-    {
-        public BaseResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                          string ErrorDescription = null)
-        {
-            this.CompletionCode = CompletionCode;
-            this.ErrorDescription = ErrorDescription;
-        }
-
-        public MessagePayload.CompletionCodeEnum CompletionCode;
-
-        public string ErrorDescription = null;
-    }
-
     public interface ICommonDevice : IDevice
     {
 

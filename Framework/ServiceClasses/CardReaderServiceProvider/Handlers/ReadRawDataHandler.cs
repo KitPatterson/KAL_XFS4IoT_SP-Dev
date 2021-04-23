@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using XFS4IoTServer;
 using XFS4IoT;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
@@ -46,7 +47,7 @@ namespace XFS4IoTFramework.CardReader
         /// AcceptCardResult
         /// Return result of accepting card, the card data must be cached until ReadCardData method gets called if the firmware command has capability to read card data and accept card
         /// </summary>
-        public sealed class AcceptCardResult : BaseResult
+        public sealed class AcceptCardResult : DeviceResult
         {
             public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                     ReadRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
@@ -101,7 +102,7 @@ namespace XFS4IoTFramework.CardReader
         /// AcceptCardResult
         /// Return result of accepting card, the card data must be cached until ReadCardData method gets called if the firmware command has capability to read card data and accept card
         /// </summary>
-        public sealed class ReadCardDataResult : BaseResult
+        public sealed class ReadCardDataResult : DeviceResult
         {
             /// <summary>
             /// Contains the data read from track 2.

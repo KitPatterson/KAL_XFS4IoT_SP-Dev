@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -43,7 +44,7 @@ namespace XFS4IoTFramework.CardReader
         /// SetKeyResult
         /// Return result of loading key value into the module.
         /// </summary>
-        public sealed class SetKeyResult : BaseResult
+        public sealed class SetKeyResult : DeviceResult
         {
             public SetKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                 SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,

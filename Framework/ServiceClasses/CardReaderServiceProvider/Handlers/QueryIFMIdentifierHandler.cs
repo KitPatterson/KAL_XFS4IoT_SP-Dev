@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -44,7 +45,7 @@ namespace XFS4IoTFramework.CardReader
         /// QueryIFMIdentifierResult
         /// Return information for IFM identifiers
         /// </summary>
-        public sealed class QueryIFMIdentifierResult : BaseResult
+        public sealed class QueryIFMIdentifierResult : DeviceResult
         {
             public QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                             string ErrorDescription = null,

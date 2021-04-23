@@ -12,6 +12,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -43,7 +44,7 @@ namespace XFS4IoTFramework.CardReader
         /// ChipPowerResult
         /// Return result of power action to the chip.
         /// </summary>
-        public sealed class ChipPowerResult : BaseResult
+        public sealed class ChipPowerResult : DeviceResult
         {
             public ChipPowerResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                    ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,

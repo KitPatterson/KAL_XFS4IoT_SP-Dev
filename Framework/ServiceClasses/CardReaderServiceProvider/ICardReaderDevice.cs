@@ -18,23 +18,6 @@ using XFS4IoT.Completions;
 namespace XFS4IoTFramework.CardReader
 {
     /// <summary>
-    /// Base class for the result of an operation processed by the device specific class
-    /// </summary>
-    public class BaseResult
-    {
-        public BaseResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                          string ErrorDescription = null)
-        {
-            this.CompletionCode = CompletionCode;
-            this.ErrorDescription = ErrorDescription;
-        }
-
-        public MessagePayload.CompletionCodeEnum CompletionCode;
-
-        public string ErrorDescription = null;
-    }
-
-    /// <summary>
     /// Interface defnition for the device specific class
     /// </summary>
     public interface ICardReaderDevice : IDevice

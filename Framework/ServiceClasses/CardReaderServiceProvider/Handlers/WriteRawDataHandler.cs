@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -24,7 +25,7 @@ namespace XFS4IoTFramework.CardReader
         /// AcceptCardResult
         /// Accept card to write card tracks so that no card data to be read
         /// </summary>
-        public sealed class AcceptCardResult : BaseResult
+        public sealed class AcceptCardResult : DeviceResult
         {
             public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                     WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
@@ -80,7 +81,7 @@ namespace XFS4IoTFramework.CardReader
         /// WriteCardDataResult
         /// Return result of writing data to the card tracks
         /// </summary>
-        public sealed class WriteCardDataResult : BaseResult
+        public sealed class WriteCardDataResult : DeviceResult
         {
             public WriteCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                        WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,

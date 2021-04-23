@@ -12,6 +12,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
@@ -47,7 +48,7 @@ namespace XFS4IoTFramework.CardReader
         /// ParkCardResult
         /// Return result of moving a card to the parking station.
         /// </summary>
-        public sealed class ParkCardResult : BaseResult
+        public sealed class ParkCardResult : DeviceResult
         {
             public ParkCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                      ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,

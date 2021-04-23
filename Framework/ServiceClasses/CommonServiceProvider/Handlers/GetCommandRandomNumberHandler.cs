@@ -12,6 +12,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
@@ -24,7 +25,7 @@ namespace XFS4IoTFramework.Common
         /// GetCommandRandomNumberResult
         /// Return authorisation token for a command
         /// </summary>
-        public sealed class GetCommandRandomNumberResult : BaseResult
+        public sealed class GetCommandRandomNumberResult : DeviceResult
         {
             public GetCommandRandomNumberResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                                 string ErrorDescription = null,
