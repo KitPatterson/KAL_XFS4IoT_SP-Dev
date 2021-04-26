@@ -60,6 +60,14 @@ namespace XFS4IoTFramework.CardReader
                 this.TransactionResult = TransactionResult;
             }
 
+            public EMVClessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                              EMVClessTransactionDataOutput TransactionResult = null)
+                : base(CompletionCode, null)
+            {
+                this.ErrorCode = null;
+                this.TransactionResult = TransactionResult;
+            }
+
             public EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
             public EMVClessTransactionDataOutput TransactionResult { get; private set; }
         }

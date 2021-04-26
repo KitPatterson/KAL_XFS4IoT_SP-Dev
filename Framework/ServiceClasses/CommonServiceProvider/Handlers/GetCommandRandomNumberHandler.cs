@@ -35,6 +35,13 @@ namespace XFS4IoTFramework.Common
                 this.CommandRandomNumber = CommandRandomNumber;
             }
 
+            public GetCommandRandomNumberResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                                string CommandRandomNumber = null)
+                : base(CompletionCode, null)
+            {
+                this.CommandRandomNumber = CommandRandomNumber;
+            }
+
             /// <summary>
             /// A nonce that should be included in the authorisation token in a command used to provide 
             /// end to end protection.

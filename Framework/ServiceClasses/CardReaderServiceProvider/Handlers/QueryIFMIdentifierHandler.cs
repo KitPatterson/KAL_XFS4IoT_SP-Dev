@@ -55,6 +55,13 @@ namespace XFS4IoTFramework.CardReader
                 this.IFMIdentifiers = IFMIdentifiers;
             }
 
+            public QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                            List<IFMIdentifierInfo> IFMIdentifiers = null)
+                : base(CompletionCode, null)
+            {
+                this.IFMIdentifiers = IFMIdentifiers;
+            }
+
             public List<IFMIdentifierInfo> IFMIdentifiers;
         }
 

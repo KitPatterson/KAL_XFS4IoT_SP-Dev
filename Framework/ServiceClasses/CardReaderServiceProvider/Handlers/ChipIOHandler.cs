@@ -64,13 +64,25 @@ namespace XFS4IoTFramework.CardReader
         {
             public ChipIOResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                 ChipIOCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                string ErrorDescription = null)
+                                string ErrorDescription = null,
+                                List<byte> ChipData = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+                this.ChipData = ChipData;
+            }
+
+            public ChipIOResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                List<byte> ChipData = null)
+                : base(CompletionCode, null)
+            {
+                this.ErrorCode = null;
+                this.ChipData = ChipData;
             }
 
             public ChipIOCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+
+            public List<byte> ChipData { get; private set; }
         }
 
         private async Task<ChipIOCompletion.PayloadData> HandleChipIO(IChipIOEvents events, ChipIOCommand chipIO, CancellationToken cancel)
@@ -108,7 +120,9 @@ namespace XFS4IoTFramework.CardReader
 
             return new ChipIOCompletion.PayloadData(result.CompletionCode,
                                                     result.ErrorDescription,
-                                                    result.ErrorCode);
+                                                    result.ErrorCode,
+                                                    chipIO.Payload.ChipProtocol,
+                                                    result.ChipData == null ? null : Convert.ToBase64String(result.ChipData.ToArray()));
         }
 
     }

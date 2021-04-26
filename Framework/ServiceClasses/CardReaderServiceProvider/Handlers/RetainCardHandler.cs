@@ -37,6 +37,16 @@ namespace XFS4IoTFramework.CardReader
                 this.Position = Position;
             }
 
+            public CaptureCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                     int? Count = null,
+                                     RetainCardCompletion.PayloadData.PositionEnum? Position = null)
+               : base(CompletionCode, null)
+            {
+                this.ErrorCode = null;
+                this.Count = Count;
+                this.Position = Position;
+            }
+
             public RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
 
             public int? Count { get; private set; }

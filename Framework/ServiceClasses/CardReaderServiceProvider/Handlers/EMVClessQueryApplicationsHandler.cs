@@ -60,6 +60,13 @@ namespace XFS4IoTFramework.CardReader
                 this.EMVApplications = EMVApplications;
             }
 
+            public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                             List<EMVApplication> EMVApplications = null)
+                : base(CompletionCode, null)
+            {
+                this.EMVApplications = EMVApplications;
+            }
+
             /// <summary>
             /// List of EMV applications and kernels information
             /// </summary>
