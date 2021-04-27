@@ -1,9 +1,12 @@
 name: CreateRelease
 
 on:
-  push:
-    tags:
-    - 'v[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version Number (0.0.1 Format)'
+        required: true
+        default: '0.0.1'
 
 jobs:
   build:
@@ -28,16 +31,14 @@ jobs:
     
     - name: Create release
       run: |
-        set -x  
-        version=${GITHUB_REF##*/}
-        number=${version:1}
+        set -x
         
-        dotnet pack Framework -p:PackageVersion=$number -o nuget --no-build
+        dotnet pack Framework -p:PackageVersion=${{ github.event.inputs.version }} -o nuget --no-build
 
         assets=()
         for asset in ./nuget/*.nupkg; do
           assets+=("-a" "$asset")
         done
-        hub release create -p "${assets[@]}" -m "$version" "$version"
+        hub release create -p "${assets[@]}" -m "v${{ github.event.inputs.version }}" "v${{ github.event.inputs.version }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
