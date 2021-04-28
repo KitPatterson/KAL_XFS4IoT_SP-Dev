@@ -124,7 +124,9 @@ namespace XFS4IoTFramework.CardReader
             }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCard()");
-            var acceptCardResult = await Device.AcceptCard(events, writeRawData.Payload.Timeout, cancel);
+            var acceptCardResult = await Device.AcceptCard(events,
+                                                           writeRawData.Payload.Timeout,
+                                                           cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCard() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
 
             if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
@@ -136,7 +138,9 @@ namespace XFS4IoTFramework.CardReader
             }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.WriteCardData()");
-            var writeCardDataResult = await Device.WriteCardData(events, new WriteCardDataRequest(dataToWrite));
+            var writeCardDataResult = await Device.WriteCardData(events,
+                                                                 new WriteCardDataRequest(dataToWrite),
+                                                                 cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.WriteCardData() -> {writeCardDataResult.CompletionCode}, {writeCardDataResult.ErrorCode}");
 
             return new WriteRawDataCompletion.PayloadData(writeCardDataResult.CompletionCode,

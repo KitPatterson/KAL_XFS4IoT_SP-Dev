@@ -59,7 +59,9 @@ namespace XFS4IoTFramework.CardReader
         private async Task<ResetCompletion.PayloadData> HandleReset(IResetEvents events, ResetCommand reset, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ResetDevice()");
-            var result = await Device.ResetDevice(events, new ResetDeviceRequest(reset.Payload.ResetIn));
+            var result = await Device.ResetDevice(events,
+                                                  new ResetDeviceRequest(reset.Payload.ResetIn),
+                                                  cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ResetDevice() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new ResetCompletion.PayloadData(result.CompletionCode,

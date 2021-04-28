@@ -69,7 +69,8 @@ namespace XFS4IoTFramework.CardReader
             List<byte> keyValue = new(Convert.FromBase64String(setKey.Payload.KeyValue));
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.SetKey()");
-            var result = await Device.SetCIM86Key(new SetCIM86KeyRequest(keyValue));
+            var result = await Device.SetCIM86Key(new SetCIM86KeyRequest(keyValue),
+                                                  cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.SetKey() -> {result.CompletionCode}");
 
             return new SetKeyCompletion.PayloadData(result.CompletionCode,

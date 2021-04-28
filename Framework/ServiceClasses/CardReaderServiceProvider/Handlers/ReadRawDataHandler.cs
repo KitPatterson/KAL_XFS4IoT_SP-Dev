@@ -287,7 +287,9 @@ namespace XFS4IoTFramework.CardReader
                 fluxInactive = (bool)readRawData.Payload.FluxInactive;
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCard()");
-            var acceptCardResult = await Device.AcceptCard(events, new AcceptCardToReadRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout), cancel);
+            var acceptCardResult = await Device.AcceptCard(events,
+                                                           new AcceptCardToReadRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
+                                                           cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCard() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
 
             if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
@@ -301,7 +303,9 @@ namespace XFS4IoTFramework.CardReader
 
             // Card is accepted now and in the device, try to read card data now
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ReadCardData()");
-            var readCardDataResult = await Device.ReadCardData(events, new ReadCardDataRequest(dataTypes));
+            var readCardDataResult = await Device.ReadCardData(events,
+                                                               new ReadCardDataRequest(dataTypes),
+                                                               cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ReadCardData() -> {readCardDataResult.CompletionCode}, {readCardDataResult.ErrorCode}");
 
             if (readCardDataResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||

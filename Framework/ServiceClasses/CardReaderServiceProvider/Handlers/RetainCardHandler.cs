@@ -57,7 +57,8 @@ namespace XFS4IoTFramework.CardReader
         private async Task<RetainCardCompletion.PayloadData> HandleRetainCard(IRetainCardEvents events, RetainCardCommand retainCard, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.CaptureCard()");
-            var result = await Device.CaptureCard(events);
+            var result = await Device.CaptureCard(events,
+                                                  cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.CaptureCard() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new RetainCardCompletion.PayloadData(result.CompletionCode,

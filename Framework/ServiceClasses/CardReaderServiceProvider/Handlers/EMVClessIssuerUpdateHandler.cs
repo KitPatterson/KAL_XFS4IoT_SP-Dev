@@ -76,8 +76,8 @@ namespace XFS4IoTFramework.CardReader
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessIssuerUpdate()");
             var result = await Device.EMVContactlessIssuerUpdate(events,
-                                                           new EMVContactlessIssuerUpdateRequest(string.IsNullOrEmpty(eMVClessIssuerUpdate.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessIssuerUpdate.Payload.Data)), eMVClessIssuerUpdate.Payload.Timeout),
-                                                           cancel);
+                                                                 new EMVContactlessIssuerUpdateRequest(string.IsNullOrEmpty(eMVClessIssuerUpdate.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessIssuerUpdate.Payload.Data)), eMVClessIssuerUpdate.Payload.Timeout),
+                                                                 cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessIssuerUpdate() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success &&

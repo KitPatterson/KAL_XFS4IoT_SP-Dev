@@ -55,7 +55,8 @@ namespace XFS4IoTFramework.CardReader
         private async Task<EjectCardCompletion.PayloadData> HandleEjectCard(IEjectCardEvents events, EjectCardCommand ejectCard, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.EjectCard()");
-            var result = await Device.EjectCard(new EjectCardRequest(ejectCard.Payload.EjectPosition));
+            var result = await Device.EjectCard(new EjectCardRequest(ejectCard.Payload.EjectPosition),
+                                                cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.EjectCard() -> {result.CompletionCode}");
 
             return new EjectCardCompletion.PayloadData(result.CompletionCode,

@@ -70,7 +70,8 @@ namespace XFS4IoTFramework.CardReader
             }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ParkCard()");
-            var result = await Device.ParkCard(new ParkCardRequest(parkCard.Payload.Direction, parkCard.Payload.ParkingStation));
+            var result = await Device.ParkCard(new ParkCardRequest(parkCard.Payload.Direction, parkCard.Payload.ParkingStation),
+                                               cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ParkCard() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new ParkCardCompletion.PayloadData(result.CompletionCode,

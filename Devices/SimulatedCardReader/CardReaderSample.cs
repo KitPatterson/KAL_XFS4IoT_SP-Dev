@@ -79,7 +79,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// In this case, if the deviceis not able to pick the strongest signal, errorCardCollision will be returned.
         /// </summary>
         public Task<ReadCardDataResult> ReadCardData(IReadRawDataEvents events,
-                                                     ReadCardDataRequest dataToRead)
+                                                     ReadCardDataRequest dataToRead,
+                                                     CancellationToken cancellation)
         {
             MessagePayload.CompletionCodeEnum completionCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
@@ -130,38 +131,10 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
         /// </summary>
         public Task<WriteCardDataResult> WriteCardData(IWriteRawDataEvents events,
-                                                       WriteCardDataRequest dataToWrite)
+                                                       WriteCardDataRequest dataToWrite,
+                                                       CancellationToken cancellation)
         {
             return Task.FromResult(new WriteCardDataResult(MessagePayload.CompletionCodeEnum.Success));
-        }
-
-        /// <summary>
-        /// This command is used to retrieve the complete list of registration authority Interface Module (IFM) identifiers.
-        /// The primary registration authority is EMVCo but other organizations are also supported for historical or localcountry requirements.
-        /// New registration authorities may be added in the future so applications should be able to handle the return of new(as yet undefined) IFM identifiers.
-        /// </summary>
-        public Task<QueryIFMIdentifierResult> QueryIFMIdentifier()
-        {
-            return Task.FromResult((new QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum.Success, 
-                                                                 new List<IFMIdentifierInfo>() 
-                                                                 {
-                                                                   new IFMIdentifierInfo(XFS4IoT.CardReader.Completions.QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum.Emv, new List<byte>() { 0x1, 0x2, 0x3, 0x4 } )
-                                                                 })));
-        }
-
-        /// <summary>
-        /// This command is used to retrieve the supported payment system applications available within an intelligentcontactless card unit. 
-        /// The payment system application can either be identified by an AID or by the AID incombination with a Kernel Identifier. 
-        /// The Kernel Identifier has been introduced by the EMVCo specifications; seeReference [3].
-        /// </summary>
-        public Task<QueryEMVApplicationResult> EMVContactlessQueryApplications()
-        {
-            List<EMVApplication> AIDList = new() 
-            { 
-                new EMVApplication(Encoding.UTF8.GetBytes("A0000000031010").ToList(), null),
-                new EMVApplication(Encoding.UTF8.GetBytes("A0000000041010").ToList(), null)
-            };
-            return Task.FromResult(new QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum.Success, AIDList));
         }
 
         /// <summary>
@@ -171,7 +144,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For latched dip readers, this command causes the card to be unlatched (if not already unlatched), enablingremoval.
         /// After successful completion of this command, a CardReader.MediaRemovedEvent is generated to inform the application when the card is taken.
         /// </summary>
-        public async Task<EjectCardResult> EjectCard(EjectCardRequest ejectCardInfo)
+        public async Task<EjectCardResult> EjectCard(EjectCardRequest ejectCardInfo,
+                                                     CancellationToken cancellation)
         {
             await Task.Delay(1000);
 
@@ -191,7 +165,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, the cardCollision error code will be returned.
         /// </summary>
-        public Task<ChipIOResult> ChipIO(ChipIORequest dataToSend)
+        public Task<ChipIOResult> ChipIO(ChipIORequest dataToSend,
+                                         CancellationToken cancellation)
         {
             List<byte> chipData = new() { 0x90, 0x00 };
             return Task.FromResult(new ChipIOResult(MessagePayload.CompletionCodeEnum.Success, chipData));
@@ -207,7 +182,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// If the device is a permanent chip card unit, this command will power-off the chip.For devices with parking station capability there will be one MediaInsertedEvent for each card found.
         /// </summary>
         public async Task<ResetDeviceResult> ResetDevice(IResetEvents events,
-                                                         ResetDeviceRequest cardAction)
+                                                         ResetDeviceRequest cardAction,
+                                                         CancellationToken cancellation)
         {
             await Task.Delay(1000);
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
@@ -219,7 +195,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// This command handles the power actions that can be done on the chip.For user chips, this command is only used after the chip has been contacted for the first time using the[CardReader.ReadRawData](#cardreader.readrawdata) command. For contactless user chips, this command may be used todeactivate the contactless card communication.For permanently connected chip cards, this command is the only way to control the chip power.
         /// </summary>
         public Task<ChipPowerResult> ChipPower(IChipPowerEvents events,
-                                               ChipPowerRequest action)
+                                               ChipPowerRequest action,
+                                               CancellationToken cancellation)
         {
             return Task.FromResult(new ChipPowerResult(MessagePayload.CompletionCodeEnum.Success));
         }
@@ -232,7 +209,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// After moving a card to a parking station, another card can be inserted and read by calling, e.g.,CardReader.ReadRawData.
         /// Cards in parking stations will not be affected by any CardReader commands until they are removed from the parkingstation using this command, except for the CardReader.Reset command, which will move thecards in the parking stations as specified in its input as part of the reset action if possible.
         /// </summary>
-        public Task<ParkCardResult> ParkCard(ParkCardRequest parkCardInfo)
+        public Task<ParkCardResult> ParkCard(ParkCardRequest parkCardInfo,
+                                             CancellationToken cancellation)
         {
             return Task.FromResult(new ParkCardResult(MessagePayload.CompletionCodeEnum.Success));
         }
@@ -244,7 +222,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// It may be calledonce on application start up or when any of the configuration parameters require to be changed. 
         /// The configurationset by this command is persistent.This command should be called with a complete list of acceptable payment system applications as any previous configurations will be replaced.
         /// </summary>
-        public Task<EMVContactlessConfigureResult> EMVContactlessConfigure(EMVContactlessConfigureRequest terminalConfig)
+        public Task<EMVContactlessConfigureResult> EMVContactlessConfigure(EMVContactlessConfigureRequest terminalConfig,
+                                                                           CancellationToken cancellation)
         {
             return Task.FromResult(new EMVContactlessConfigureResult(MessagePayload.CompletionCodeEnum.Success));
         }
@@ -337,7 +316,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The ID card unit sends a CardReader.RetainBinThresholdEvent if the storage capacity of the retainbin is reached.
         /// If the storage capacity has already been reached, and the command cannot be executed, an error isreturned and the card remains in its present position.
         /// </summary>
-        public async Task<CaptureCardResult> CaptureCard(IRetainCardEvents events)
+        public async Task<CaptureCardResult> CaptureCard(IRetainCardEvents events,
+                                                         CancellationToken cancellation)
         {
             await Task.Delay(1000);
             await events.MediaRetainedEvent();
@@ -352,7 +332,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The function is possible formotor-driven card readers only.
         /// The number of cards retained is controlled by the service.
         /// </summary>
-        public Task<ResetCountResult> ResetBinCount()
+        public Task<ResetCountResult> ResetBinCount(CancellationToken cancellation)
         {
             CapturedCount = 0;
             return Task.FromResult(new ResetCountResult(MessagePayload.CompletionCodeEnum.Success));
@@ -362,13 +342,43 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// This command is used for setting the DES key that is necessary for operating a CIM86 module.
         /// The command must beexecuted before the first read command is issued to the card reader.
         /// </summary>
-        public Task<SetCIM86KeyResult> SetCIM86Key(SetCIM86KeyRequest keyInfo)
+        public Task<SetCIM86KeyResult> SetCIM86Key(SetCIM86KeyRequest keyInfo,
+                                                   CancellationToken cancellation)
         {
             return Task.FromResult(new SetCIM86KeyResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
+        /// <summary>
+        /// This command is used to retrieve the complete list of registration authority Interface Module (IFM) identifiers.
+        /// The primary registration authority is EMVCo but other organizations are also supported for historical or localcountry requirements.
+        /// New registration authorities may be added in the future so applications should be able to handle the return of new(as yet undefined) IFM identifiers.
+        /// </summary>
+        public Task<QueryIFMIdentifierResult> QueryIFMIdentifier()
+        {
+            return Task.FromResult((new QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum.Success,
+                                                                 new List<IFMIdentifierInfo>()
+                                                                 {
+                                                                   new IFMIdentifierInfo(XFS4IoT.CardReader.Completions.QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum.Emv, new List<byte>() { 0x1, 0x2, 0x3, 0x4 } )
+                                                                 })));
+        }
+
+        /// <summary>
+        /// This command is used to retrieve the supported payment system applications available within an intelligentcontactless card unit. 
+        /// The payment system application can either be identified by an AID or by the AID incombination with a Kernel Identifier. 
+        /// The Kernel Identifier has been introduced by the EMVCo specifications; seeReference [3].
+        /// </summary>
+        public Task<QueryEMVApplicationResult> EMVContactlessQueryApplications()
+        {
+            List<EMVApplication> AIDList = new()
+            {
+                new EMVApplication(Encoding.UTF8.GetBytes("A0000000031010").ToList(), null),
+                new EMVApplication(Encoding.UTF8.GetBytes("A0000000041010").ToList(), null)
+            };
+            return Task.FromResult(new QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum.Success, AIDList));
+        }
+
         /// COMMON interface
-        
+
         public Task<StatusCompletion.PayloadData> Status()
         {
             StatusCompletion.PayloadData.CommonClass common = new(

@@ -66,7 +66,9 @@ namespace XFS4IoTFramework.CardReader
             }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ChipIO()");
-            var result = await Device.ChipPower(events, new ChipPowerRequest((ChipPowerCommand.PayloadData.ChipPowerEnum)chipPower.Payload.ChipPower));
+            var result = await Device.ChipPower(events,
+                                                new ChipPowerRequest((ChipPowerCommand.PayloadData.ChipPowerEnum)chipPower.Payload.ChipPower),
+                                                cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ChipIO() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new ChipPowerCompletion.PayloadData(result.CompletionCode,

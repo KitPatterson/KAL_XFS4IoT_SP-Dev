@@ -24,7 +24,7 @@ namespace XFS4IoTFramework.CardReader
     public sealed class ResetCountResult : DeviceResult
     {
         public ResetCountResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               string ErrorDescription = null)
+                                string ErrorDescription = null)
             : base(CompletionCode, ErrorDescription)
         { }
     }
@@ -34,7 +34,7 @@ namespace XFS4IoTFramework.CardReader
         private async Task<ResetCountCompletion.PayloadData> HandleResetCount(IResetCountEvents events, ResetCountCommand resetCount, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ResetCount()");
-            var result = await Device.ResetBinCount();
+            var result = await Device.ResetBinCount(cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ResetCount() -> {result.CompletionCode}");
 
             return new ResetCountCompletion.PayloadData(result.CompletionCode, result.ErrorDescription);
