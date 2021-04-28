@@ -114,10 +114,10 @@ namespace XFS4IoTFramework.CardReader
 
             List<byte> chipData = new(Convert.FromBase64String(chipIO.Payload.ChipData));
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.ChipIO()");
-            var result = await Device.ChipIO(new ChipIORequest((ChipIORequest.ChipProtocolEnum)chipProtocol, chipData),
-                                             cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ChipIO() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.ChipIOAsync()");
+            var result = await Device.ChipIOAsync(new ChipIORequest((ChipIORequest.ChipProtocolEnum)chipProtocol, chipData),
+                                                  cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ChipIOAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new ChipIOCompletion.PayloadData(result.CompletionCode,
                                                     result.ErrorDescription,

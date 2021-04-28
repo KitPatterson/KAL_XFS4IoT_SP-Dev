@@ -73,10 +73,10 @@ namespace XFS4IoTFramework.CardReader
 
     public partial class EMVClessQueryApplicationsHandler
     {
-        private async Task<EMVClessQueryApplicationsCompletion.PayloadData> HandleEMVClessQueryApplications(IEMVClessQueryApplicationsEvents events, EMVClessQueryApplicationsCommand eMVClessQueryApplications, CancellationToken cancel)
+        private Task<EMVClessQueryApplicationsCompletion.PayloadData> HandleEMVClessQueryApplications(IEMVClessQueryApplicationsEvents events, EMVClessQueryApplicationsCommand eMVClessQueryApplications, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessQueryApplications()");
-            var result = await Device.EMVContactlessQueryApplications();
+            var result = Device.EMVContactlessQueryApplications();
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessQueryApplications() -> {result.CompletionCode}");
 
             List<EMVClessQueryApplicationsCompletion.PayloadData.AppDataClass> appData = new();
@@ -88,9 +88,9 @@ namespace XFS4IoTFramework.CardReader
                                                                                              app.KernelIdentifier.Count == 0 ? null : Convert.ToBase64String(app.KernelIdentifier.ToArray())));
             }
 
-            return new EMVClessQueryApplicationsCompletion.PayloadData(result.CompletionCode,
-                                                                       result.ErrorDescription,
-                                                                       appData);
+            return Task.FromResult(new EMVClessQueryApplicationsCompletion.PayloadData(result.CompletionCode,
+                                                                                       result.ErrorDescription,
+                                                                                       appData));
         }
     }
 }

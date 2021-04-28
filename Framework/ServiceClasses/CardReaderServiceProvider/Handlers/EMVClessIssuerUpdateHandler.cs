@@ -74,11 +74,11 @@ namespace XFS4IoTFramework.CardReader
     {
         private async Task<EMVClessIssuerUpdateCompletion.PayloadData> HandleEMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents events, EMVClessIssuerUpdateCommand eMVClessIssuerUpdate, CancellationToken cancel)
         {
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessIssuerUpdate()");
-            var result = await Device.EMVContactlessIssuerUpdate(events,
-                                                                 new EMVContactlessIssuerUpdateRequest(string.IsNullOrEmpty(eMVClessIssuerUpdate.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessIssuerUpdate.Payload.Data)), eMVClessIssuerUpdate.Payload.Timeout),
-                                                                 cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessIssuerUpdate() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessIssuerUpdateAsync()");
+            var result = await Device.EMVContactlessIssuerUpdateAsync(events,
+                                                                      new EMVContactlessIssuerUpdateRequest(string.IsNullOrEmpty(eMVClessIssuerUpdate.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessIssuerUpdate.Payload.Data)), eMVClessIssuerUpdate.Payload.Timeout),
+                                                                      cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessIssuerUpdateAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success &&
                 result.TransactionResult is not null)

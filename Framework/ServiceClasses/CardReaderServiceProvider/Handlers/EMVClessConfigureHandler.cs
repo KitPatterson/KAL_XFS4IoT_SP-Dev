@@ -236,13 +236,13 @@ namespace XFS4IoTFramework.CardReader
                                                  null));
             }
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessConfigure()");
-            var result = await Device.EMVContactlessConfigure(new EMVContactlessConfigureRequest(string.IsNullOrEmpty(eMVClessConfigure.Payload.TerminalData) ? null : new List<byte>(Convert.FromBase64String(eMVClessConfigure.Payload.TerminalData)), 
-                                                              AIDs, 
-                                                              PublicKeys),
-                                                              cancel);
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessConfigureAsync()");
+            var result = await Device.EMVContactlessConfigureAsync(new EMVContactlessConfigureRequest(string.IsNullOrEmpty(eMVClessConfigure.Payload.TerminalData) ? null : new List<byte>(Convert.FromBase64String(eMVClessConfigure.Payload.TerminalData)), 
+                                                                   AIDs, 
+                                                                   PublicKeys),
+                                                                   cancel);
 
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessConfigure() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessConfigureAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new EMVClessConfigureCompletion.PayloadData(result.CompletionCode,
                                                                result.ErrorDescription,

@@ -286,11 +286,11 @@ namespace XFS4IoTFramework.CardReader
             if (readRawData.Payload.FluxInactive is not null)
                 fluxInactive = (bool)readRawData.Payload.FluxInactive;
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCard()");
-            var acceptCardResult = await Device.AcceptCard(events,
-                                                           new AcceptCardToReadRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
-                                                           cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCard() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCardAsync()");
+            var acceptCardResult = await Device.AcceptCardAsync(events,
+                                                                new AcceptCardToReadRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
+                                                                cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
 
             if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
                 acceptCardResult.ErrorCode is not null ||
@@ -302,11 +302,11 @@ namespace XFS4IoTFramework.CardReader
             }
 
             // Card is accepted now and in the device, try to read card data now
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.ReadCardData()");
-            var readCardDataResult = await Device.ReadCardData(events,
-                                                               new ReadCardDataRequest(dataTypes),
-                                                               cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ReadCardData() -> {readCardDataResult.CompletionCode}, {readCardDataResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.ReadCardDataAsync()");
+            var readCardDataResult = await Device.ReadCardDataAsync(events,
+                                                                    new ReadCardDataRequest(dataTypes),
+                                                                    cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ReadCardDataAsync() -> {readCardDataResult.CompletionCode}, {readCardDataResult.ErrorCode}");
 
             if (readCardDataResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
                 readCardDataResult.ErrorCode is not null)

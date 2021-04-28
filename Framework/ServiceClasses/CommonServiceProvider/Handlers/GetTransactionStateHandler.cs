@@ -22,13 +22,13 @@ namespace XFS4IoTFramework.Common
 {
     public partial class GetTransactionStateHandler
     {
-        private async Task<GetTransactionStateCompletion.PayloadData> HandleGetTransactionState(IGetTransactionStateEvents events, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
+        private Task<GetTransactionStateCompletion.PayloadData> HandleGetTransactionState(IGetTransactionStateEvents events, GetTransactionStateCommand getTransactionState, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CommonDev.GetTransactionState()");
-            var result = await Device.GetTransactionState();
+            var result = Device.GetTransactionState();
             Logger.Log(Constants.DeviceClass, $"CommonDev.GetTransactionState() -> {result.CompletionCode}");
 
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

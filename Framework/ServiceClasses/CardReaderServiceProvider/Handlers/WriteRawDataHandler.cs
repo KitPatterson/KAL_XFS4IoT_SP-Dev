@@ -123,11 +123,11 @@ namespace XFS4IoTFramework.CardReader
                                  new WriteCardDataRequest.CardData(writeData, data.WriteMethod));
             }
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCard()");
-            var acceptCardResult = await Device.AcceptCard(events,
-                                                           writeRawData.Payload.Timeout,
-                                                           cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCard() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCardAsync()");
+            var acceptCardResult = await Device.AcceptCardAsync(events,
+                                                                writeRawData.Payload.Timeout,
+                                                                cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
 
             if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
                 acceptCardResult.ErrorCode is not null)
@@ -137,11 +137,11 @@ namespace XFS4IoTFramework.CardReader
                                                               acceptCardResult.ErrorCode);
             }
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.WriteCardData()");
-            var writeCardDataResult = await Device.WriteCardData(events,
-                                                                 new WriteCardDataRequest(dataToWrite),
-                                                                 cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.WriteCardData() -> {writeCardDataResult.CompletionCode}, {writeCardDataResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.WriteCardDataAsync()");
+            var writeCardDataResult = await Device.WriteCardDataAsync(events,
+                                                                      new WriteCardDataRequest(dataToWrite),
+                                                                      cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.WriteCardDataAsync() -> {writeCardDataResult.CompletionCode}, {writeCardDataResult.ErrorCode}");
 
             return new WriteRawDataCompletion.PayloadData(writeCardDataResult.CompletionCode,
                                                           writeCardDataResult.ErrorDescription,
