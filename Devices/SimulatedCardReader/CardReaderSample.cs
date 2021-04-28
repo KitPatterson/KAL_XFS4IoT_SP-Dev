@@ -58,13 +58,15 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             return new AcceptCardToReadResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
-        public Task<AcceptCardToWriteResult> AcceptCardAsync(IWriteRawDataEvents events,
+        public async Task<AcceptCardToWriteResult> AcceptCardAsync(IWriteRawDataEvents events,
                                                              int timeout,
                                                              CancellationToken cancellation)
         {
+            await Task.Delay(100, cancellation);
+
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return Task.FromResult(new AcceptCardToWriteResult(MessagePayload.CompletionCodeEnum.Success));
+            return new AcceptCardToWriteResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -78,10 +80,12 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, errorCardCollision will be returned.
         /// </summary>
-        public Task<ReadCardDataResult> ReadCardDataAsync(IReadRawDataEvents events,
-                                                          ReadCardDataRequest dataToRead,
-                                                          CancellationToken cancellation)
+        public async Task<ReadCardDataResult> ReadCardDataAsync(IReadRawDataEvents events,
+                                                                ReadCardDataRequest dataToRead,
+                                                                CancellationToken cancellation)
         {
+            await Task.Delay(1000, cancellation);
+
             MessagePayload.CompletionCodeEnum completionCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
             Dictionary<ReadCardDataRequest.CardDataTypesEnum, ReadCardDataResult.CardData> readData = new();
@@ -118,9 +122,9 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 completionCode = MessagePayload.CompletionCodeEnum.Success;
             }
             
-            return Task.FromResult(new ReadCardDataResult(completionCode,
-                                                          readData,
-                                                          chipATR));
+            return new ReadCardDataResult(completionCode,
+                                          readData,
+                                          chipATR);
         }
 
         /// <summary>
@@ -130,11 +134,13 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// This procedure is followed by data verification.
         /// If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
         /// </summary>
-        public Task<WriteCardDataResult> WriteCardDataAsync(IWriteRawDataEvents events,
-                                                            WriteCardDataRequest dataToWrite,
-                                                            CancellationToken cancellation)
+        public async Task<WriteCardDataResult> WriteCardDataAsync(IWriteRawDataEvents events,
+                                                                  WriteCardDataRequest dataToWrite,
+                                                                  CancellationToken cancellation)
         {
-            return Task.FromResult(new WriteCardDataResult(MessagePayload.CompletionCodeEnum.Success));
+            await Task.Delay(1000, cancellation);
+
+            return new WriteCardDataResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -147,7 +153,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         public async Task<EjectCardResult> EjectCardAsync(EjectCardRequest ejectCardInfo,
                                                           CancellationToken cancellation)
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, cancellation);
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Entering;
 
@@ -165,11 +171,13 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, the cardCollision error code will be returned.
         /// </summary>
-        public Task<ChipIOResult> ChipIOAsync(ChipIORequest dataToSend,
-                                              CancellationToken cancellation)
+        public async Task<ChipIOResult> ChipIOAsync(ChipIORequest dataToSend,
+                                                    CancellationToken cancellation)
         {
+            await Task.Delay(1000, cancellation);
+
             List<byte> chipData = new() { 0x90, 0x00 };
-            return Task.FromResult(new ChipIOResult(MessagePayload.CompletionCodeEnum.Success, chipData));
+            return new ChipIOResult(MessagePayload.CompletionCodeEnum.Success, chipData);
         }
 
         /// <summary>
@@ -185,7 +193,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                                                               ResetDeviceRequest cardAction,
                                                               CancellationToken cancellation)
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, cancellation);
+
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
 
             return new ResetDeviceResult(MessagePayload.CompletionCodeEnum.Success);
@@ -194,11 +203,12 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// <summary>
         /// This command handles the power actions that can be done on the chip.For user chips, this command is only used after the chip has been contacted for the first time using the[CardReader.ReadRawData](#cardreader.readrawdata) command. For contactless user chips, this command may be used todeactivate the contactless card communication.For permanently connected chip cards, this command is the only way to control the chip power.
         /// </summary>
-        public Task<ChipPowerResult> ChipPowerAsync(IChipPowerEvents events,
-                                                    ChipPowerRequest action,
-                                                    CancellationToken cancellation)
+        public async Task<ChipPowerResult> ChipPowerAsync(IChipPowerEvents events,
+                                                          ChipPowerRequest action,
+                                                          CancellationToken cancellation)
         {
-            return Task.FromResult(new ChipPowerResult(MessagePayload.CompletionCodeEnum.Success));
+            await Task.Delay(1000, cancellation);
+            return new ChipPowerResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -209,10 +219,11 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// After moving a card to a parking station, another card can be inserted and read by calling, e.g.,CardReader.ReadRawData.
         /// Cards in parking stations will not be affected by any CardReader commands until they are removed from the parkingstation using this command, except for the CardReader.Reset command, which will move thecards in the parking stations as specified in its input as part of the reset action if possible.
         /// </summary>
-        public Task<ParkCardResult> ParkCardAsync(ParkCardRequest parkCardInfo,
+        public async Task<ParkCardResult> ParkCardAsync(ParkCardRequest parkCardInfo,
                                                   CancellationToken cancellation)
         {
-            return Task.FromResult(new ParkCardResult(MessagePayload.CompletionCodeEnum.Success));
+            await Task.Delay(1000, cancellation);
+            return new ParkCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -222,10 +233,10 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// It may be calledonce on application start up or when any of the configuration parameters require to be changed. 
         /// The configurationset by this command is persistent.This command should be called with a complete list of acceptable payment system applications as any previous configurations will be replaced.
         /// </summary>
-        public Task<EMVContactlessConfigureResult> EMVContactlessConfigureAsync(EMVContactlessConfigureRequest terminalConfig,
-                                                                                CancellationToken cancellation)
+        public async Task<EMVContactlessConfigureResult> EMVContactlessConfigureAsync(EMVContactlessConfigureRequest terminalConfig, CancellationToken cancellation)
         {
-            return Task.FromResult(new EMVContactlessConfigureResult(MessagePayload.CompletionCodeEnum.Success));
+            await Task.Delay(1000, cancellation);
+            return new EMVContactlessConfigureResult(MessagePayload.CompletionCodeEnum.Success) ;
         }
 
         /// <summary>
@@ -245,8 +256,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                                                                                                         CancellationToken cancellation)
         {
             await events.EMVClessReadStatusEvent(new EMVClessReadStatusEvent.PayloadData(100, EMVClessReadStatusEvent.PayloadData.StatusEnum.ReadyToRead, 0, EMVClessReadStatusEvent.PayloadData.ValueQualifierEnum.Amount));
-            
-            await Task.Delay(2000);
+
+            await Task.Delay(1000, cancellation);
 
             EMVContactlessTransactionDataOutput txnOutput = new(EMVContactlessTransactionDataOutput.TxOutcomeEnum.Approve,
                                                                 EMVContactlessTransactionDataOutput.CardholderActionEnum.None,
@@ -287,7 +298,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                                                                                             EMVContactlessIssuerUpdateRequest transactionData,
                                                                                             CancellationToken cancellation)
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, cancellation);
 
             EMVContactlessTransactionDataOutput txnOutput = new (EMVContactlessTransactionDataOutput.TxOutcomeEnum.Approve,
                                                                  EMVContactlessTransactionDataOutput.CardholderActionEnum.None, 
@@ -319,7 +330,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         public async Task<CaptureCardResult> CaptureCardAsync(IRetainCardEvents events,
                                                               CancellationToken cancellation)
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, cancellation);
+
             await events.MediaRetainedEvent();
 
             return new CaptureCardResult(MessagePayload.CompletionCodeEnum.Success,
@@ -334,6 +346,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// </summary>
         public Task<ResetCountResult> ResetBinCountAsync(CancellationToken cancellation)
         {
+            // The device doesn't need to talk to the device and return captured count immediately works as a sync
             CapturedCount = 0;
             return Task.FromResult(new ResetCountResult(MessagePayload.CompletionCodeEnum.Success));
         }
@@ -342,10 +355,11 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// This command is used for setting the DES key that is necessary for operating a CIM86 module.
         /// The command must beexecuted before the first read command is issued to the card reader.
         /// </summary>
-        public Task<SetCIM86KeyResult> SetCIM86KeyAsync(SetCIM86KeyRequest keyInfo,
+        public async Task<SetCIM86KeyResult> SetCIM86KeyAsync(SetCIM86KeyRequest keyInfo,
                                                         CancellationToken cancellation)
         {
-            return Task.FromResult(new SetCIM86KeyResult(MessagePayload.CompletionCodeEnum.Success));
+            await Task.Delay(1000, cancellation);
+            return new SetCIM86KeyResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
