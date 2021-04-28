@@ -19,48 +19,48 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public partial class ParkCardHandler
+    /// <summary>
+    /// ParkCardRequest
+    /// Provide parking card information
+    /// </summary>
+    public sealed class ParkCardRequest
     {
         /// <summary>
         /// ParkCardRequest
-        /// Provide parking card information
+        /// Location is provided in this object where the card to be moved in the parking station.
         /// </summary>
-        public sealed class ParkCardRequest
+        /// <param name="PowerAction">Specifies which way to move the card. if this value is null, default action to be used.</param>
+        /// <param name="ParkingStation">Specifies which which parking station should be used. if the value is null, default location to be used.</param>
+        public ParkCardRequest(ParkCardCommand.PayloadData.DirectionEnum? PowerAction, int? ParkingStation)
         {
-            /// <summary>
-            /// ParkCardRequest
-            /// Location is provided in this object where the card to be moved in the parking station.
-            /// </summary>
-            /// <param name="PowerAction">Specifies which way to move the card. if this value is null, default action to be used.</param>
-            /// <param name="ParkingStation">Specifies which which parking station should be used. if the value is null, default location to be used.</param>
-            public ParkCardRequest(ParkCardCommand.PayloadData.DirectionEnum? PowerAction, int? ParkingStation)
-            {
-                this.PowerAction = PowerAction;
-                this.ParkingStation = ParkingStation;
-            }
-
-            public ParkCardCommand.PayloadData.DirectionEnum? PowerAction { get; private set; }
-
-            public int? ParkingStation { get; private set; }
+            this.PowerAction = PowerAction;
+            this.ParkingStation = ParkingStation;
         }
 
-        /// <summary>
-        /// ParkCardResult
-        /// Return result of moving a card to the parking station.
-        /// </summary>
-        public sealed class ParkCardResult : DeviceResult
-        {
-            public ParkCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                     ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                     string ErrorDescription = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-            }
+        public ParkCardCommand.PayloadData.DirectionEnum? PowerAction { get; private set; }
 
-            public ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+        public int? ParkingStation { get; private set; }
+    }
+
+    /// <summary>
+    /// ParkCardResult
+    /// Return result of moving a card to the parking station.
+    /// </summary>
+    public sealed class ParkCardResult : DeviceResult
+    {
+        public ParkCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                 ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                 string ErrorDescription = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
         }
 
+        public ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    }
+
+    public partial class ParkCardHandler
+    {
         private async Task<ParkCardCompletion.PayloadData> HandleParkCard(IParkCardEvents events, ParkCardCommand parkCard, CancellationToken cancel)
         {
             if (parkCard.Payload.Direction is null)

@@ -19,44 +19,44 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public partial class ChipPowerHandler
+    /// <summary>
+    /// ChipPowerRequest
+    /// Provide chip power action
+    /// </summary>
+    public sealed class ChipPowerRequest
     {
         /// <summary>
         /// ChipPowerRequest
-        /// Provide chip power action
+        /// Handles the power actions that can be done on the chip.
         /// </summary>
-        public sealed class ChipPowerRequest
+        /// <param name="Action">Chip power action could be cold, warm or off</param>
+        public ChipPowerRequest(ChipPowerCommand.PayloadData.ChipPowerEnum Action)
         {
-            /// <summary>
-            /// ChipPowerRequest
-            /// Handles the power actions that can be done on the chip.
-            /// </summary>
-            /// <param name="Action">Chip power action could be cold, warm or off</param>
-            public ChipPowerRequest(ChipPowerCommand.PayloadData.ChipPowerEnum Action)
-            {
-                this.Action = Action;
-            }
-
-            public ChipPowerCommand.PayloadData.ChipPowerEnum Action { get; private set; }
+            this.Action = Action;
         }
 
-        /// <summary>
-        /// ChipPowerResult
-        /// Return result of power action to the chip.
-        /// </summary>
-        public sealed class ChipPowerResult : DeviceResult
-        {
-            public ChipPowerResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                   ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                   string ErrorDescription = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-            }
+        public ChipPowerCommand.PayloadData.ChipPowerEnum Action { get; private set; }
+    }
 
-            public ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    /// <summary>
+    /// ChipPowerResult
+    /// Return result of power action to the chip.
+    /// </summary>
+    public sealed class ChipPowerResult : DeviceResult
+    {
+        public ChipPowerResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                               ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                               string ErrorDescription = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
         }
 
+        public ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    }
+
+    public partial class ChipPowerHandler
+    {
         private async Task<ChipPowerCompletion.PayloadData> HandleChipPower(IChipPowerEvents events, ChipPowerCommand chipPower, CancellationToken cancel)
         {
             if (chipPower.Payload.ChipPower is null)

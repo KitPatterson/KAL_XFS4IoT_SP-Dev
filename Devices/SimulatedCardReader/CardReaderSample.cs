@@ -45,9 +45,9 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// If no card has been inserted, and for all other categories of card readers, the card unit waits for the period of time specified in the call for a card to be either inserted or pulled through.
         /// The InsertCardEvent will be generated when there is no card in the cardreader and the device is ready to accept a card.
         /// </summary>
-        public async Task<ReadRawDataHandler.AcceptCardResult> AcceptCard(IReadRawDataEvents events,
-                                                                          ReadRawDataHandler.AcceptCardRequest acceptCardInfo,
-                                                                          CancellationToken cancellation)
+        public async Task<AcceptCardToReadResult> AcceptCard(IReadRawDataEvents events,
+                                                             AcceptCardToReadRequest acceptCardInfo,
+                                                             CancellationToken cancellation)
         {
             await Task.Delay(2000, cancellation);
             await events.MediaInsertedEvent();
@@ -55,16 +55,16 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
             await Task.Delay(1000, cancellation);
 
-            return new ReadRawDataHandler.AcceptCardResult(MessagePayload.CompletionCodeEnum.Success);
+            return new AcceptCardToReadResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
-        public Task<WriteRawDataHandler.AcceptCardResult> AcceptCard(IWriteRawDataEvents events,
-                                                                           int timeout,
-                                                                           CancellationToken cancellation)
+        public Task<AcceptCardToWriteResult> AcceptCard(IWriteRawDataEvents events,
+                                                        int timeout,
+                                                        CancellationToken cancellation)
         {
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return Task.FromResult(new WriteRawDataHandler.AcceptCardResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new AcceptCardToWriteResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// <summary>
@@ -78,46 +78,48 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, errorCardCollision will be returned.
         /// </summary>
-        public Task<ReadRawDataHandler.ReadCardDataResult> ReadCardData(IReadRawDataEvents events,
-                                                                        ReadRawDataHandler.ReadCardDataRequest dataToRead)
+        public Task<ReadCardDataResult> ReadCardData(IReadRawDataEvents events,
+                                                     ReadCardDataRequest dataToRead)
         {
             MessagePayload.CompletionCodeEnum completionCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            Dictionary<ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum, ReadRawDataHandler.ReadCardDataResult.CardData> readData = new();
-            List<ReadRawDataHandler.ReadCardDataResult.CardData> chipATR = new(); 
+            Dictionary<ReadCardDataRequest.CardDataTypesEnum, ReadCardDataResult.CardData> readData = new();
+            List<ReadCardDataResult.CardData> chipATR = new(); 
             
-            if ((dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track1) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track1||
-                (dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track2) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track2||
-                (dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track3) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track3 ||
-                (dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Chip) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Chip)
+            if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track1) == ReadCardDataRequest.CardDataTypesEnum.Track1||
+                (dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track2) == ReadCardDataRequest.CardDataTypesEnum.Track2||
+                (dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track3) == ReadCardDataRequest.CardDataTypesEnum.Track3 ||
+                (dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Chip) == ReadCardDataRequest.CardDataTypesEnum.Chip)
             {
-                if ((dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track1) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track1)
+                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track1) == ReadCardDataRequest.CardDataTypesEnum.Track1)
                 {
-                    readData.Add(ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track1, 
-                                 new ReadRawDataHandler.ReadCardDataResult.CardData(ReadRawDataHandler.ReadCardDataResult.CardData.DataStatusEnum.Ok, 
+                    readData.Add(ReadCardDataRequest.CardDataTypesEnum.Track1, 
+                                 new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok, 
                                  Encoding.UTF8.GetBytes("B1234567890123456^SMITH/JOHN.MR^020945852301200589800568000000").ToList()));
                 }
-                if ((dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track2) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track2)
+                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track2) == ReadCardDataRequest.CardDataTypesEnum.Track2)
                 {
-                    readData.Add(ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track2,
-                                 new ReadRawDataHandler.ReadCardDataResult.CardData(ReadRawDataHandler.ReadCardDataResult.CardData.DataStatusEnum.Ok,
+                    readData.Add(ReadCardDataRequest.CardDataTypesEnum.Track2,
+                                 new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok,
                                  Encoding.UTF8.GetBytes("1234567890123456=0209458523012005898").ToList()));
                 }
-                if ((dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track3) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track3)
+                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track3) == ReadCardDataRequest.CardDataTypesEnum.Track3)
                 {
-                    readData.Add(ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Track3,
-                                 new ReadRawDataHandler.ReadCardDataResult.CardData(ReadRawDataHandler.ReadCardDataResult.CardData.DataStatusEnum.Ok,
+                    readData.Add(ReadCardDataRequest.CardDataTypesEnum.Track3,
+                                 new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok,
                                  Encoding.UTF8.GetBytes("011234567890123456==000667788903609640040000006200013010000020000098120209105123==00568000999999").ToList()));
                 }
-                if ((dataToRead.DataToRead & ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Chip) == ReadRawDataHandler.ReadCardDataRequest.CardDataTypesEnum.Chip)
+                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Chip) == ReadCardDataRequest.CardDataTypesEnum.Chip)
                 {
-                    chipATR.Add(new ReadRawDataHandler.ReadCardDataResult.CardData(ReadRawDataHandler.ReadCardDataResult.CardData.DataStatusEnum.Ok,
+                    chipATR.Add(new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok,
                                 new List<byte>() { 0x3b, 0x2a, 0x00, 0x80, 0x65, 0xa2, 0x1, 0x2, 0x1, 0x31, 0x72, 0xd6, 0x43 }));
                 }
                 completionCode = MessagePayload.CompletionCodeEnum.Success;
             }
             
-            return Task.FromResult(new ReadRawDataHandler.ReadCardDataResult(completionCode, readData, chipATR));
+            return Task.FromResult(new ReadCardDataResult(completionCode,
+                                                          readData,
+                                                          chipATR));
         }
 
         /// <summary>
@@ -127,10 +129,10 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// This procedure is followed by data verification.
         /// If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
         /// </summary>
-        public Task<WriteRawDataHandler.WriteCardDataResult> WriteCardData(IWriteRawDataEvents events,
-                                                                                 WriteRawDataHandler.WriteCardDataRequest dataToWrite)
+        public Task<WriteCardDataResult> WriteCardData(IWriteRawDataEvents events,
+                                                       WriteCardDataRequest dataToWrite)
         {
-            return Task.FromResult(new WriteRawDataHandler.WriteCardDataResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new WriteCardDataResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// <summary>
@@ -138,13 +140,13 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The primary registration authority is EMVCo but other organizations are also supported for historical or localcountry requirements.
         /// New registration authorities may be added in the future so applications should be able to handle the return of new(as yet undefined) IFM identifiers.
         /// </summary>
-        public Task<QueryIFMIdentifierHandler.QueryIFMIdentifierResult> QueryIFMIdentifier()
+        public Task<QueryIFMIdentifierResult> QueryIFMIdentifier()
         {
-            return Task.FromResult((new QueryIFMIdentifierHandler.QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum.Success, 
-                                                                                           new List<QueryIFMIdentifierHandler.IFMIdentifierInfo>() 
-                                                                                           {
-                                                                                             new QueryIFMIdentifierHandler.IFMIdentifierInfo(XFS4IoT.CardReader.Completions.QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum.Emv, new List<byte>() { 0x1, 0x2, 0x3, 0x4 } )
-                                                                                           })));
+            return Task.FromResult((new QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum.Success, 
+                                                                 new List<IFMIdentifierInfo>() 
+                                                                 {
+                                                                   new IFMIdentifierInfo(XFS4IoT.CardReader.Completions.QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum.Emv, new List<byte>() { 0x1, 0x2, 0x3, 0x4 } )
+                                                                 })));
         }
 
         /// <summary>
@@ -152,14 +154,14 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The payment system application can either be identified by an AID or by the AID incombination with a Kernel Identifier. 
         /// The Kernel Identifier has been introduced by the EMVCo specifications; seeReference [3].
         /// </summary>
-        public Task<EMVClessQueryApplicationsHandler.QueryEMVApplicationResult> EMVClessQueryApplications()
+        public Task<QueryEMVApplicationResult> EMVContactlessQueryApplications()
         {
-            List<EMVClessQueryApplicationsHandler.EMVApplication> AIDList = new() 
+            List<EMVApplication> AIDList = new() 
             { 
-                new EMVClessQueryApplicationsHandler.EMVApplication(Encoding.UTF8.GetBytes("A0000000031010").ToList(), null),
-                new EMVClessQueryApplicationsHandler.EMVApplication(Encoding.UTF8.GetBytes("A0000000041010").ToList(), null)
+                new EMVApplication(Encoding.UTF8.GetBytes("A0000000031010").ToList(), null),
+                new EMVApplication(Encoding.UTF8.GetBytes("A0000000041010").ToList(), null)
             };
-            return Task.FromResult(new EMVClessQueryApplicationsHandler.QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum.Success, AIDList));
+            return Task.FromResult(new QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum.Success, AIDList));
         }
 
         /// <summary>
@@ -169,13 +171,13 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For latched dip readers, this command causes the card to be unlatched (if not already unlatched), enablingremoval.
         /// After successful completion of this command, a CardReader.MediaRemovedEvent is generated to inform the application when the card is taken.
         /// </summary>
-        public async Task<EjectCardHandler.EjectCardResult> EjectCard(EjectCardHandler.EjectCardRequest ejectCardInfo)
+        public async Task<EjectCardResult> EjectCard(EjectCardRequest ejectCardInfo)
         {
             await Task.Delay(1000);
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Entering;
 
-            return new EjectCardHandler.EjectCardResult(MessagePayload.CompletionCodeEnum.Success);
+            return new EjectCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -189,10 +191,10 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, the cardCollision error code will be returned.
         /// </summary>
-        public Task<ChipIOHandler.ChipIOResult> ChipIO(ChipIOHandler.ChipIORequest dataToSend)
+        public Task<ChipIOResult> ChipIO(ChipIORequest dataToSend)
         {
-            List<byte> chipData = new List<byte> { 0x90, 0x00 };
-            return Task.FromResult(new ChipIOHandler.ChipIOResult(MessagePayload.CompletionCodeEnum.Success, chipData));
+            List<byte> chipData = new() { 0x90, 0x00 };
+            return Task.FromResult(new ChipIOResult(MessagePayload.CompletionCodeEnum.Success, chipData));
         }
 
         /// <summary>
@@ -204,22 +206,22 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// If no action is specified the user card will not be moved even if this means that the devicecannot be recovered.
         /// If the device is a permanent chip card unit, this command will power-off the chip.For devices with parking station capability there will be one MediaInsertedEvent for each card found.
         /// </summary>
-        public async Task<ResetHandler.ResetDeviceResult> ResetDevice(IResetEvents events,
-                                                                      ResetHandler.ResetDeviceRequest cardAction)
+        public async Task<ResetDeviceResult> ResetDevice(IResetEvents events,
+                                                         ResetDeviceRequest cardAction)
         {
             await Task.Delay(1000);
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
 
-            return new ResetHandler.ResetDeviceResult(MessagePayload.CompletionCodeEnum.Success);
+            return new ResetDeviceResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
         /// This command handles the power actions that can be done on the chip.For user chips, this command is only used after the chip has been contacted for the first time using the[CardReader.ReadRawData](#cardreader.readrawdata) command. For contactless user chips, this command may be used todeactivate the contactless card communication.For permanently connected chip cards, this command is the only way to control the chip power.
         /// </summary>
-        public Task<ChipPowerHandler.ChipPowerResult> ChipPower(IChipPowerEvents events,
-                                                                ChipPowerHandler.ChipPowerRequest action)
+        public Task<ChipPowerResult> ChipPower(IChipPowerEvents events,
+                                               ChipPowerRequest action)
         {
-            return Task.FromResult(new ChipPowerHandler.ChipPowerResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new ChipPowerResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// <summary>
@@ -230,9 +232,9 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// After moving a card to a parking station, another card can be inserted and read by calling, e.g.,CardReader.ReadRawData.
         /// Cards in parking stations will not be affected by any CardReader commands until they are removed from the parkingstation using this command, except for the CardReader.Reset command, which will move thecards in the parking stations as specified in its input as part of the reset action if possible.
         /// </summary>
-        public Task<ParkCardHandler.ParkCardResult> ParkCard(ParkCardHandler.ParkCardRequest parkCardInfo)
+        public Task<ParkCardResult> ParkCard(ParkCardRequest parkCardInfo)
         {
-            return Task.FromResult(new ParkCardHandler.ParkCardResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new ParkCardResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// <summary>
@@ -242,9 +244,9 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// It may be calledonce on application start up or when any of the configuration parameters require to be changed. 
         /// The configurationset by this command is persistent.This command should be called with a complete list of acceptable payment system applications as any previous configurations will be replaced.
         /// </summary>
-        public Task<EMVClessConfigureHandler.EMVClessConfigureResult> EMVClessConfigure(EMVClessConfigureHandler.EMVClessConfigureRequest terminalConfig)
+        public Task<EMVContactlessConfigureResult> EMVContactlessConfigure(EMVContactlessConfigureRequest terminalConfig)
         {
-            return Task.FromResult(new EMVClessConfigureHandler.EMVClessConfigureResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new EMVContactlessConfigureResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// <summary>
@@ -259,40 +261,40 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For intelligent contactless card readers, any in-built audio/visual feedback such as Beep/LEDs, need to becontrolled directly by the reader. 
         /// These indications should be implemented based on the EMVCo and payment system'sspecifications.
         /// </summary>
-        public async Task<EMVClessPerformTransactionHandler.EMVClessPerformTransactionResult> EMVClessPerformTransaction(IEMVClessPerformTransactionEvents events,
-                                                                                                                         EMVClessPerformTransactionHandler.EMVClessPerformTransactionRequest transactionData,
-                                                                                                                         CancellationToken cancellation)
+        public async Task<EMVContactlessPerformTransactionResult> EMVContactlessPerformTransaction(IEMVClessPerformTransactionEvents events,
+                                                                                                   EMVContactlessPerformTransactionRequest transactionData,
+                                                                                                   CancellationToken cancellation)
         {
             await events.EMVClessReadStatusEvent(new EMVClessReadStatusEvent.PayloadData(100, EMVClessReadStatusEvent.PayloadData.StatusEnum.ReadyToRead, 0, EMVClessReadStatusEvent.PayloadData.ValueQualifierEnum.Amount));
             
             await Task.Delay(2000);
 
-            EMVClessTransactionDataOutput txnOutput = new(EMVClessTransactionDataOutput.TxOutcomeEnum.Approve,
-                                                           EMVClessTransactionDataOutput.CardholderActionEnum.None,
-                                                           new List<byte>() { 0x9c, 0x1, 0x0, 0x9f, 0x26, 0x08, 0x47, 0x9c, 0x4f, 0x7e, 0xc8, 0x52, 0xd1, 0x6, 0x9f, 0x34, 0x03, 0x1e, 0x00, 0x00 },
-                                                           new EMVClessTransactionDataOutput.EMVClessOutcome(EMVClessTransactionDataOutput.EMVClessOutcome.CvmEnum.OnlinePIN,
-                                                                                                             EMVClessTransactionDataOutput.EMVClessOutcome.AlternateInterfaceEnum.Contact,
-                                                                                                             false,
-                                                                                                             new EMVClessTransactionDataOutput.EMVClessOutcome.EMVClessUI(3,
-                                                                                                                                                                          EMVClessTransactionDataOutput.EMVClessOutcome.EMVClessUI.StatusEnum.CardReadOk,
-                                                                                                                                                                          0,
-                                                                                                                                                                          EMVClessTransactionDataOutput.EMVClessOutcome.EMVClessUI.ValueQualifierEnum.NotApplicable,
-                                                                                                                                                                          "0",
-                                                                                                                                                                          "EUR",
-                                                                                                                                                                          "EN"),
-                                                                                                             null,
-                                                                                                             0,
-                                                                                                             0,
-                                                                                                             new List<byte>() { }));
+            EMVContactlessTransactionDataOutput txnOutput = new(EMVContactlessTransactionDataOutput.TxOutcomeEnum.Approve,
+                                                                EMVContactlessTransactionDataOutput.CardholderActionEnum.None,
+                                                                new List<byte>() { 0x9c, 0x1, 0x0, 0x9f, 0x26, 0x08, 0x47, 0x9c, 0x4f, 0x7e, 0xc8, 0x52, 0xd1, 0x6, 0x9f, 0x34, 0x03, 0x1e, 0x00, 0x00 },
+                                                                new EMVContactlessTransactionDataOutput.EMVContactlessOutcome(EMVContactlessTransactionDataOutput.EMVContactlessOutcome.CvmEnum.OnlinePIN,
+                                                                                                                              EMVContactlessTransactionDataOutput.EMVContactlessOutcome.AlternateInterfaceEnum.Contact,
+                                                                                                                              false,
+                                                                                                                              new EMVContactlessTransactionDataOutput.EMVContactlessOutcome.EMVContactlessUI(3,
+                                                                                                                                                                                                             EMVContactlessTransactionDataOutput.EMVContactlessOutcome.EMVContactlessUI.StatusEnum.CardReadOk,
+                                                                                                                                                                                                             0,
+                                                                                                                                                                                                             EMVContactlessTransactionDataOutput.EMVContactlessOutcome.EMVContactlessUI.ValueQualifierEnum.NotApplicable,
+                                                                                                                                                                                                             "0",
+                                                                                                                                                                                                             "EUR",
+                                                                                                                                                                                                             "EN"),
+                                                                                                                              null,
+                                                                                                                              0,
+                                                                                                                              0,
+                                                                                                                              new List<byte>() { }));
 
-            return new EMVClessPerformTransactionHandler.EMVClessPerformTransactionResult(MessagePayload.CompletionCodeEnum.Success, 
-                                                                                          new() 
-                                                                                          { 
-                                                                                              { 
-                                                                                                  EMVClessPerformTransactionHandler.EMVClessPerformTransactionResult.DataSourceTypeEnum.Chip, 
-                                                                                                  txnOutput 
-                                                                                              } 
-                                                                                          });
+            return new EMVContactlessPerformTransactionResult(MessagePayload.CompletionCodeEnum.Success, 
+                                                              new() 
+                                                              { 
+                                                                  { 
+                                                                      EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Chip, 
+                                                                      txnOutput 
+                                                                  } 
+                                                              });
         }
 
         /// <summary>
@@ -302,31 +304,31 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The command enables the contactless card reader and waits for the customer to re-tap their card.
         /// The contactless chip card reader waits for the period of time specified in the command all for a card to be tapped.
         /// </summary>
-        public async Task<EMVClessIssuerUpdateHandler.EMVClessIssuerUpdateResult> EMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents events,
-                                                                                                       EMVClessIssuerUpdateHandler.EMVClessIssuerUpdateRequest transactionData,
-                                                                                                       CancellationToken cancellation)
+        public async Task<EMVContactlessIssuerUpdateResult> EMVContactlessIssuerUpdate(IEMVClessIssuerUpdateEvents events,
+                                                                                       EMVContactlessIssuerUpdateRequest transactionData,
+                                                                                       CancellationToken cancellation)
         {
             await Task.Delay(1000);
 
-            EMVClessTransactionDataOutput txnOutput = new (EMVClessTransactionDataOutput.TxOutcomeEnum.Approve, 
-                                                           EMVClessTransactionDataOutput.CardholderActionEnum.None, 
-                                                           new List<byte>() { 0x9c, 0x1, 0x0, 0x9f, 0x26, 0x08, 0x47, 0x9c, 0x4f, 0x7e, 0xc8, 0x52, 0xd1, 0x6, 0x9f, 0x34, 0x03, 0x1e, 0x00, 0x00}, 
-                                                           new EMVClessTransactionDataOutput.EMVClessOutcome(EMVClessTransactionDataOutput.EMVClessOutcome.CvmEnum.OnlinePIN, 
-                                                                                                             EMVClessTransactionDataOutput.EMVClessOutcome.AlternateInterfaceEnum.Contact, 
-                                                                                                             false, 
-                                                                                                             new EMVClessTransactionDataOutput.EMVClessOutcome.EMVClessUI(3, 
-                                                                                                                                                                          EMVClessTransactionDataOutput.EMVClessOutcome.EMVClessUI.StatusEnum.CardReadOk, 
-                                                                                                                                                                          0, 
-                                                                                                                                                                          EMVClessTransactionDataOutput.EMVClessOutcome.EMVClessUI.ValueQualifierEnum.NotApplicable, 
-                                                                                                                                                                          "0", 
-                                                                                                                                                                          "EUR", 
-                                                                                                                                                                          "EN"), 
-                                                                                                             null, 
-                                                                                                             0, 
-                                                                                                             0, 
-                                                                                                             new List<byte>() { }));
+            EMVContactlessTransactionDataOutput txnOutput = new (EMVContactlessTransactionDataOutput.TxOutcomeEnum.Approve,
+                                                                 EMVContactlessTransactionDataOutput.CardholderActionEnum.None, 
+                                                                 new List<byte>() { 0x9c, 0x1, 0x0, 0x9f, 0x26, 0x08, 0x47, 0x9c, 0x4f, 0x7e, 0xc8, 0x52, 0xd1, 0x6, 0x9f, 0x34, 0x03, 0x1e, 0x00, 0x00}, 
+                                                                 new EMVContactlessTransactionDataOutput.EMVContactlessOutcome(EMVContactlessTransactionDataOutput.EMVContactlessOutcome.CvmEnum.OnlinePIN,
+                                                                                                                               EMVContactlessTransactionDataOutput.EMVContactlessOutcome.AlternateInterfaceEnum.Contact, 
+                                                                                                                               false, 
+                                                                                                                               new EMVContactlessTransactionDataOutput.EMVContactlessOutcome.EMVContactlessUI(3,
+                                                                                                                                                                                                              EMVContactlessTransactionDataOutput.EMVContactlessOutcome.EMVContactlessUI.StatusEnum.CardReadOk, 
+                                                                                                                                                                                                              0,
+                                                                                                                                                                                                              EMVContactlessTransactionDataOutput.EMVContactlessOutcome.EMVContactlessUI.ValueQualifierEnum.NotApplicable, 
+                                                                                                                                                                                                              "0", 
+                                                                                                                                                                                                              "EUR", 
+                                                                                                                                                                                                              "EN"), 
+                                                                                                                               null, 
+                                                                                                                               0, 
+                                                                                                                               0, 
+                                                                                                                               new List<byte>() { }));
 
-            return new EMVClessIssuerUpdateHandler.EMVClessIssuerUpdateResult(MessagePayload.CompletionCodeEnum.Success, txnOutput);
+            return new EMVContactlessIssuerUpdateResult(MessagePayload.CompletionCodeEnum.Success, txnOutput);
         }
 
         /// <summary>
@@ -335,12 +337,14 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The ID card unit sends a CardReader.RetainBinThresholdEvent if the storage capacity of the retainbin is reached.
         /// If the storage capacity has already been reached, and the command cannot be executed, an error isreturned and the card remains in its present position.
         /// </summary>
-        public async Task<RetainCardHandler.CaptureCardResult> CaptureCard(IRetainCardEvents events)
+        public async Task<CaptureCardResult> CaptureCard(IRetainCardEvents events)
         {
             await Task.Delay(1000);
             await events.MediaRetainedEvent();
 
-            return new RetainCardHandler.CaptureCardResult(MessagePayload.CompletionCodeEnum.Success, CapturedCount++, XFS4IoT.CardReader.Completions.RetainCardCompletion.PayloadData.PositionEnum.Present);
+            return new CaptureCardResult(MessagePayload.CompletionCodeEnum.Success,
+                                         CapturedCount++,
+                                         XFS4IoT.CardReader.Completions.RetainCardCompletion.PayloadData.PositionEnum.Present);
         }
 
         /// <summary>
@@ -348,19 +352,19 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// The function is possible formotor-driven card readers only.
         /// The number of cards retained is controlled by the service.
         /// </summary>
-        public Task<ResetCountHandler.ResetCountResult> ResetCount()
+        public Task<ResetCountResult> ResetBinCount()
         {
             CapturedCount = 0;
-            return Task.FromResult(new ResetCountHandler.ResetCountResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new ResetCountResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// <summary>
         /// This command is used for setting the DES key that is necessary for operating a CIM86 module.
         /// The command must beexecuted before the first read command is issued to the card reader.
         /// </summary>
-        public Task<SetKeyHandler.SetKeyResult> SetKey(SetKeyHandler.SetKeyRequest keyInfo)
+        public Task<SetCIM86KeyResult> SetCIM86Key(SetCIM86KeyRequest keyInfo)
         {
-            return Task.FromResult(new SetKeyHandler.SetKeyResult(MessagePayload.CompletionCodeEnum.Success));
+            return Task.FromResult(new SetCIM86KeyResult(MessagePayload.CompletionCodeEnum.Success));
         }
 
         /// COMMON interface
@@ -421,14 +425,10 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                     true,
                     new List<string>() 
                     { 
-                        "ReadRawData", 
-                        "EjectCard" 
+                        "CardReader.ReadRawData",
+                        "CardReader.EjectCard"
                     }),
-                new List<string>() 
-                { 
-                    "MediaInsertedEvent", 
-                    "MediaRemovedEvent" 
-                },
+                new List<string>(),
                 guideLights,
                 false,
                 false,

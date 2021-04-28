@@ -23,7 +23,7 @@ namespace XFS4IoTFramework.CardReader
     /// Contains the chip returned data formatted in as track 2. This value is set after the contactless
     /// transaction has been completed with mag-stripe mode.
     /// </summary>
-    public class EMVClessTransactionDataOutput
+    public class EMVContactlessTransactionDataOutput
     {
         public enum TxOutcomeEnum
         {
@@ -55,7 +55,7 @@ namespace XFS4IoTFramework.CardReader
         /// The Entry Point Outcome specified in EMVCo Specifications for Contactless Payment Systems (Book A and B).
         /// This can be omitted for contactless chip card readers that do not follow EMVCo Entry Point Specifications.
         /// </summary>
-        public class EMVClessOutcome
+        public class EMVContactlessOutcome
         {
             public enum CvmEnum
             {
@@ -84,7 +84,7 @@ namespace XFS4IoTFramework.CardReader
             /// to EMVCo Contactless Specifications for Payment Systems Book A, Section 6.2 for details of the data
             /// within this object.
             /// </summary>
-            public class EMVClessUI
+            public class EMVContactlessUI
             {
                 public int MessageId { get; private set; }
                 public enum StatusEnum
@@ -115,7 +115,13 @@ namespace XFS4IoTFramework.CardReader
 
                 public string LanguagePreferenceData { get; private set; }
 
-                public EMVClessUI(int MessageId, StatusEnum Status, int HoldTime, ValueQualifierEnum ValueQualifier, string Value, string CurrencyCode, string LanguagePreferenceData)
+                public EMVContactlessUI(int MessageId,
+                                        StatusEnum Status,
+                                        int HoldTime,
+                                        ValueQualifierEnum ValueQualifier,
+                                        string Value,
+                                        string CurrencyCode,
+                                        string LanguagePreferenceData)
                 {
                     this.MessageId = MessageId;
                     this.Status = Status;
@@ -127,9 +133,9 @@ namespace XFS4IoTFramework.CardReader
                 }
             }
 
-            public EMVClessUI UiOutcome { get; private set; }
+            public EMVContactlessUI UiOutcome { get; private set; }
 
-            public EMVClessUI UiRestart { get; private set; }
+            public EMVContactlessUI UiRestart { get; private set; }
 
             public int FieldOffHoldTime { get; private set; }
 
@@ -137,14 +143,14 @@ namespace XFS4IoTFramework.CardReader
 
             public List<byte> DiscretionaryData { get; private set; }
 
-            public EMVClessOutcome(CvmEnum Cvm,
-                                   AlternateInterfaceEnum AlternateInterface,
-                                   bool Receipt,
-                                   EMVClessUI UiOutcome,
-                                   EMVClessUI UiRestart,
-                                   int FieldOffHoldTime,
-                                   int CardRemovalTimeout,
-                                   List<byte> DiscretionaryData)
+            public EMVContactlessOutcome(CvmEnum Cvm,
+                                         AlternateInterfaceEnum AlternateInterface,
+                                         bool Receipt,
+                                         EMVContactlessUI UiOutcome,
+                                         EMVContactlessUI UiRestart,
+                                         int FieldOffHoldTime,
+                                         int CardRemovalTimeout,
+                                         List<byte> DiscretionaryData)
             {
                 this.Cvm = Cvm;
                 this.AlternateInterface = AlternateInterface;
@@ -157,12 +163,12 @@ namespace XFS4IoTFramework.CardReader
             }
         }
 
-        public EMVClessOutcome ClessOutcome { get; private set; }
+        public EMVContactlessOutcome ClessOutcome { get; private set; }
 
-        public EMVClessTransactionDataOutput(TxOutcomeEnum TxOutcome,
-                                             CardholderActionEnum CardholderAction,
-                                             List<byte> DataRead,
-                                             EMVClessOutcome ClessOutcome)
+        public EMVContactlessTransactionDataOutput(TxOutcomeEnum TxOutcome,
+                                                   CardholderActionEnum CardholderAction,
+                                                   List<byte> DataRead,
+                                                   EMVContactlessOutcome ClessOutcome)
         {
             this.TxOutcome = TxOutcome;
             this.CardholderAction = CardholderAction;
@@ -171,74 +177,74 @@ namespace XFS4IoTFramework.CardReader
         }
     }
 
-    public partial class EMVClessPerformTransactionHandler
+    /// <summary>
+    /// EMVContactlessPerformTransactionRequest
+    /// Provide an information to perform EMV transaction
+    /// </summary>
+    public sealed class EMVContactlessPerformTransactionRequest
     {
         /// <summary>
         /// EMVClessPerformTransactionRequest
-        /// Provide an information to perform EMV transaction
         /// </summary>
-        public sealed class EMVClessPerformTransactionRequest
+        /// <param name="TerminalData"></param>
+        /// <param name="Timeout"></param>
+        public EMVContactlessPerformTransactionRequest(List<byte> TerminalData, int Timeout)
         {
-            /// <summary>
-            /// EMVClessPerformTransactionRequest
-            /// </summary>
-            /// <param name="TerminalData"></param>
-            /// <param name="Timeout"></param>
-            public EMVClessPerformTransactionRequest(List<byte> TerminalData, int Timeout)
-            {
-                this.TerminalData = TerminalData;
-                this.Timeout = Timeout;
-            }
-
-            public List<byte> TerminalData { get; private set; }
-            public int Timeout { get; private set; }
+            this.TerminalData = TerminalData;
+            this.Timeout = Timeout;
         }
 
-        /// <summary>
-        /// EMVClessPerformTransactionResult
-        /// Return result of EMV transaction
-        /// </summary>
-        public sealed class EMVClessPerformTransactionResult : DeviceResult
+        public List<byte> TerminalData { get; private set; }
+        public int Timeout { get; private set; }
+    }
+
+    /// <summary>
+    /// EMVContactlessPerformTransactionResult
+    /// Return result of EMV transaction
+    /// </summary>
+    public sealed class EMVContactlessPerformTransactionResult : DeviceResult
+    {
+
+        public EMVContactlessPerformTransactionResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                                      EMVClessPerformTransactionCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                                      string ErrorDescription = null,
+                                                      Dictionary<DataSourceTypeEnum, EMVContactlessTransactionDataOutput> TransactionResults = null)
+            : base(CompletionCode, ErrorDescription)
         {
-
-            public EMVClessPerformTransactionResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                                    EMVClessPerformTransactionCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                                    string ErrorDescription = null,
-                                                    Dictionary<DataSourceTypeEnum, EMVClessTransactionDataOutput> TransactionResults = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.TransactionResults = TransactionResults;
-            }
-
-            public EMVClessPerformTransactionResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                                    Dictionary<DataSourceTypeEnum, EMVClessTransactionDataOutput> TransactionResults = null)
-               : base(CompletionCode, null)
-            {
-                this.ErrorCode = null;
-                this.TransactionResults = TransactionResults;
-            }
-
-            public EMVClessPerformTransactionCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
-
-            public enum DataSourceTypeEnum
-            {
-                Track1,
-                Track2,
-                Track3,
-                Chip,
-            }
-
-            public Dictionary<DataSourceTypeEnum, EMVClessTransactionDataOutput> TransactionResults { get; private set; }
+            this.ErrorCode = ErrorCode;
+            this.TransactionResults = TransactionResults;
         }
 
+        public EMVContactlessPerformTransactionResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                                      Dictionary<DataSourceTypeEnum, EMVContactlessTransactionDataOutput> TransactionResults = null)
+           : base(CompletionCode, null)
+        {
+            this.ErrorCode = null;
+            this.TransactionResults = TransactionResults;
+        }
+
+        public EMVClessPerformTransactionCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+
+        public enum DataSourceTypeEnum
+        {
+            Track1,
+            Track2,
+            Track3,
+            Chip,
+        }
+
+        public Dictionary<DataSourceTypeEnum, EMVContactlessTransactionDataOutput> TransactionResults { get; private set; }
+    }
+
+    public partial class EMVClessPerformTransactionHandler
+    {
         private async Task<EMVClessPerformTransactionCompletion.PayloadData> HandleEMVClessPerformTransaction(IEMVClessPerformTransactionEvents events, EMVClessPerformTransactionCommand eMVClessPerformTransaction, CancellationToken cancel)
         {
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVClessPerformTransaction()");
-            var result = await Device.EMVClessPerformTransaction(events, 
-                                                                 new EMVClessPerformTransactionRequest(string.IsNullOrEmpty(eMVClessPerformTransaction.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessPerformTransaction.Payload.Data)), eMVClessPerformTransaction.Payload.Timeout), 
-                                                                 cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVClessPerformTransaction() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessPerformTransaction()");
+            var result = await Device.EMVContactlessPerformTransaction(events, 
+                                                                       new EMVContactlessPerformTransactionRequest(string.IsNullOrEmpty(eMVClessPerformTransaction.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessPerformTransaction.Payload.Data)), eMVClessPerformTransaction.Payload.Timeout), 
+                                                                       cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessPerformTransaction() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success &&
                 result.TransactionResults is not null &&
@@ -249,10 +255,10 @@ namespace XFS4IoTFramework.CardReader
                 EMVClessPerformTransactionCompletion.PayloadData.Track2Class Track2 = null;
                 EMVClessPerformTransactionCompletion.PayloadData.Track3Class Track3 = null;
 
-                if (result.TransactionResults.ContainsKey(EMVClessPerformTransactionResult.DataSourceTypeEnum.Track1) &&
-                    result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Track1] is not null)
+                if (result.TransactionResults.ContainsKey(EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track1) &&
+                    result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track1] is not null)
                 {
-                    var track1Result = result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Track1];
+                    var track1Result = result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track1];
                     // Build transaction output data
                     Track1 = new((EMVClessPerformTransactionCompletion.PayloadData.Track1Class.TxOutcomeEnum)track1Result.TxOutcome,
                                  (EMVClessPerformTransactionCompletion.PayloadData.Track1Class.CardholderActionEnum)track1Result.CardholderAction,
@@ -279,10 +285,10 @@ namespace XFS4IoTFramework.CardReader
                                                                                                                     track1Result.ClessOutcome.DiscretionaryData.Count == 0 ? null : Convert.ToBase64String(track1Result.ClessOutcome.DiscretionaryData.ToArray())));
                 }
 
-                if (result.TransactionResults.ContainsKey(EMVClessPerformTransactionResult.DataSourceTypeEnum.Track2) &&
-                    result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Track2] is not null)
+                if (result.TransactionResults.ContainsKey(EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track2) &&
+                    result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track2] is not null)
                 {
-                    var track2Result = result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Track2];
+                    var track2Result = result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track2];
                     // Build transaction output data
                     Track2 = new((EMVClessPerformTransactionCompletion.PayloadData.Track2Class.TxOutcomeEnum)track2Result.TxOutcome,
                                  (EMVClessPerformTransactionCompletion.PayloadData.Track2Class.CardholderActionEnum)track2Result.CardholderAction,
@@ -309,10 +315,10 @@ namespace XFS4IoTFramework.CardReader
                                                                                                                     track2Result.ClessOutcome.DiscretionaryData.Count == 0 ? null : Convert.ToBase64String(track2Result.ClessOutcome.DiscretionaryData.ToArray())));
                 }
 
-                if (result.TransactionResults.ContainsKey(EMVClessPerformTransactionResult.DataSourceTypeEnum.Track3) &&
-                    result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Track3] is not null)
+                if (result.TransactionResults.ContainsKey(EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track3) &&
+                    result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track3] is not null)
                 {
-                    var track3Result = result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Track3];
+                    var track3Result = result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Track3];
                     // Build transaction output data
                     Track3 = new((EMVClessPerformTransactionCompletion.PayloadData.Track3Class.TxOutcomeEnum)track3Result.TxOutcome,
                                  (EMVClessPerformTransactionCompletion.PayloadData.Track3Class.CardholderActionEnum)track3Result.CardholderAction,
@@ -339,10 +345,10 @@ namespace XFS4IoTFramework.CardReader
                                                                                                                     track3Result.ClessOutcome.DiscretionaryData.Count == 0 ? null : Convert.ToBase64String(track3Result.ClessOutcome.DiscretionaryData.ToArray())));
                 }
 
-                if (result.TransactionResults.ContainsKey(EMVClessPerformTransactionResult.DataSourceTypeEnum.Chip) &&
-                    result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Chip] is not null)
+                if (result.TransactionResults.ContainsKey(EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Chip) &&
+                    result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Chip] is not null)
                 {
-                    var chipResult = result.TransactionResults[EMVClessPerformTransactionResult.DataSourceTypeEnum.Chip];
+                    var chipResult = result.TransactionResults[EMVContactlessPerformTransactionResult.DataSourceTypeEnum.Chip];
                     // Build transaction output data
                     Chip = new((EMVClessPerformTransactionCompletion.PayloadData.ChipClass.TxOutcomeEnum)chipResult.TxOutcome,
                                (EMVClessPerformTransactionCompletion.PayloadData.ChipClass.CardholderActionEnum)chipResult.CardholderAction,

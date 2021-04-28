@@ -19,82 +19,81 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public partial class WriteRawDataHandler
+    /// <summary>
+    /// AcceptCardToWriteResult
+    /// Accept card to write card tracks so that no card data to be read
+    /// </summary>
+    public sealed class AcceptCardToWriteResult : DeviceResult
+    {
+        public AcceptCardToWriteResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                       WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                       string ErrorDescription = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
+        }
+
+        public WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode;
+    }
+
+    /// <summary>
+    /// WriteCardDataRequest
+    /// Information contains to perform operation for writing card data after the card is successfully inserted in write position
+    /// </summary>
+    public sealed class WriteCardDataRequest
     {
         /// <summary>
-        /// AcceptCardResult
-        /// Accept card to write card tracks so that no card data to be read
+        /// Contains the data to write tracks with method
         /// </summary>
-        public sealed class AcceptCardResult : DeviceResult
+        public class CardData
         {
-            public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                    WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                    string ErrorDescription = null) 
-                : base(CompletionCode, ErrorDescription)
+            /// <summary>
+            /// CardDataToWrite
+            /// </summary>
+            /// <param name="Data">Data to write to the track</param>
+            /// <param name="WriteMethod">The coercivity to write data</param>
+            public CardData(List<byte> Data = null,
+                            WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum? WriteMethod = null)
             {
-                this.ErrorCode = ErrorCode;
+                this.Data = Data;
+                this.WriteMethod = WriteMethod;
             }
 
-            public WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode;
+            public WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum? WriteMethod { get; private set; }
+            public List<byte> Data { get; private set; }
         }
 
         /// <summary>
         /// WriteCardDataRequest
-        /// Information contains to perform operation for writing card data after the card is successfully inserted in write position
         /// </summary>
-        public sealed class WriteCardDataRequest
+        /// <param name="DataToWrite">Card data to write with destination. i.e. track1, 2 or 3</param>
+        public WriteCardDataRequest(Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, CardData> DataToWrite)
         {
-            /// <summary>
-            /// Contains the data to write tracks with method
-            /// </summary>
-            public class CardData
-            {
-                /// <summary>
-                /// CardDataToWrite
-                /// </summary>
-                /// <param name="Data">Data to write to the track</param>
-                /// <param name="WriteMethod">The coercivity to write data</param>
-                public CardData(List<byte> Data = null,
-                                WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum? WriteMethod  = null)
-                {
-                    this.Data = Data;
-                    this.WriteMethod = WriteMethod;
-                }
-
-                public WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum? WriteMethod { get; private set; }
-                public List<byte> Data { get; private set; }
-            }
-
-            /// <summary>
-            /// WriteCardDataRequest
-            /// </summary>
-            /// <param name="DataToWrite">Card data to write with destination. i.e. track1, 2 or 3</param>
-            public WriteCardDataRequest(Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, CardData> DataToWrite)
-            {
-                this.DataToWrite = DataToWrite;
-            }
-
-            public Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, CardData> DataToWrite { get; private set; }
+            this.DataToWrite = DataToWrite;
         }
 
-        /// <summary>
-        /// WriteCardDataResult
-        /// Return result of writing data to the card tracks
-        /// </summary>
-        public sealed class WriteCardDataResult : DeviceResult
-        {
-            public WriteCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                       WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                       string ErrorDescription = null) 
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-            }
+        public Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, CardData> DataToWrite { get; private set; }
+    }
 
-            public WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    /// <summary>
+    /// WriteCardDataResult
+    /// Return result of writing data to the card tracks
+    /// </summary>
+    public sealed class WriteCardDataResult : DeviceResult
+    {
+        public WriteCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                   WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                   string ErrorDescription = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
         }
 
+        public WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    }
 
+    public partial class WriteRawDataHandler
+    {
         private async Task<WriteRawDataCompletion.PayloadData> HandleWriteRawData(IWriteRawDataEvents events, WriteRawDataCommand writeRawData, CancellationToken cancel)
         {
             Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, WriteCardDataRequest.CardData> dataToWrite = new Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, WriteCardDataRequest.CardData>();

@@ -19,52 +19,52 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
+    /// <summary>
+    /// IFMIdentifierInfo
+    /// Provide IFM identifier information
+    /// </summary>
+    public sealed class IFMIdentifierInfo
+    {
+        public IFMIdentifierInfo(QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum IFMAuthority,
+                                 List<byte> IFMIdentifier)
+        {
+            this.IFMAuthority = IFMAuthority;
+            this.IFMIdentifier = IFMIdentifier;
+        }
+
+        public QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum IFMAuthority { get; private set; }
+        /// <summary>
+        /// The IFM Identifier of the chip card reader (or IFM) as assigned by the specified authority.
+        /// </summary>
+        public List<byte> IFMIdentifier { get; private set; }
+    }
+
+    /// <summary>
+    /// QueryIFMIdentifierResult
+    /// Return information for IFM identifiers
+    /// </summary>
+    public sealed class QueryIFMIdentifierResult : DeviceResult
+    {
+        public QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                        string ErrorDescription = null,
+                                        List<IFMIdentifierInfo> IFMIdentifiers = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.IFMIdentifiers = IFMIdentifiers;
+        }
+
+        public QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                        List<IFMIdentifierInfo> IFMIdentifiers = null)
+            : base(CompletionCode, null)
+        {
+            this.IFMIdentifiers = IFMIdentifiers;
+        }
+
+        public List<IFMIdentifierInfo> IFMIdentifiers;
+    }
+
     public partial class QueryIFMIdentifierHandler
     {
-        /// <summary>
-        /// IFMIdentifierInfo
-        /// Provide IFM identifier information
-        /// </summary>
-        public sealed class IFMIdentifierInfo
-        {
-            public IFMIdentifierInfo(QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum IFMAuthority,
-                                     List<byte> IFMIdentifier)
-            {
-                this.IFMAuthority = IFMAuthority;
-                this.IFMIdentifier = IFMIdentifier;
-            }
-
-            public QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum IFMAuthority { get; private set; }
-            /// <summary>
-            /// The IFM Identifier of the chip card reader (or IFM) as assigned by the specified authority.
-            /// </summary>
-            public List<byte> IFMIdentifier { get; private set; }
-        }
-
-        /// <summary>
-        /// QueryIFMIdentifierResult
-        /// Return information for IFM identifiers
-        /// </summary>
-        public sealed class QueryIFMIdentifierResult : DeviceResult
-        {
-            public QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                            string ErrorDescription = null,
-                                            List<IFMIdentifierInfo> IFMIdentifiers = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.IFMIdentifiers = IFMIdentifiers;
-            }
-
-            public QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                            List<IFMIdentifierInfo> IFMIdentifiers = null)
-                : base(CompletionCode, null)
-            {
-                this.IFMIdentifiers = IFMIdentifiers;
-            }
-
-            public List<IFMIdentifierInfo> IFMIdentifiers;
-        }
-
         private async Task<QueryIFMIdentifierCompletion.PayloadData> HandleQueryIFMIdentifier(IQueryIFMIdentifierEvents events, QueryIFMIdentifierCommand queryIFMIdentifier, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CardReaderDev.QueryIFMIdentifier()");

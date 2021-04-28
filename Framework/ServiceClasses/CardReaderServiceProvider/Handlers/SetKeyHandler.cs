@@ -20,43 +20,43 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public partial class SetKeyHandler
+    /// <summary>
+    /// SetKeyRequest
+    /// Provide key information to be loaded into the module.
+    /// </summary>
+    public sealed class SetCIM86KeyRequest
     {
         /// <summary>
         /// SetKeyRequest
-        /// Provide key information to be loaded into the module.
         /// </summary>
-        public sealed class SetKeyRequest
+        /// <param name="KeyValue">Key value to be loaded into CIM86 module</param>
+        public SetCIM86KeyRequest(List<byte> KeyValue = null)
         {
-            /// <summary>
-            /// SetKeyRequest
-            /// </summary>
-            /// <param name="KeyValue">Key value to be loaded into CIM86 module</param>
-            public SetKeyRequest(List<byte> KeyValue = null)
-            {
-                this.KeyValue = KeyValue;
-            }
-
-            public List<byte> KeyValue { get; private set; }
+            this.KeyValue = KeyValue;
         }
 
-        /// <summary>
-        /// SetKeyResult
-        /// Return result of loading key value into the module.
-        /// </summary>
-        public sealed class SetKeyResult : DeviceResult
-        {
-            public SetKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                string ErrorDescription = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-            }
+        public List<byte> KeyValue { get; private set; }
+    }
 
-            public SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    /// <summary>
+    /// SetKeyResult
+    /// Return result of loading key value into the module.
+    /// </summary>
+    public sealed class SetCIM86KeyResult : DeviceResult
+    {
+        public SetCIM86KeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                 SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                 string ErrorDescription = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
         }
 
+        public SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+    }
+
+    public partial class SetKeyHandler
+    {
         private async Task<SetKeyCompletion.PayloadData> HandleSetKey(ISetKeyEvents events, SetKeyCommand setKey, CancellationToken cancel)
         {
             if (string.IsNullOrEmpty(setKey.Payload.KeyValue))
@@ -69,7 +69,7 @@ namespace XFS4IoTFramework.CardReader
             List<byte> keyValue = new(Convert.FromBase64String(setKey.Payload.KeyValue));
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.SetKey()");
-            var result = await Device.SetKey(new SetKeyRequest(keyValue));
+            var result = await Device.SetCIM86Key(new SetCIM86KeyRequest(keyValue));
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.SetKey() -> {result.CompletionCode}");
 
             return new SetKeyCompletion.PayloadData(result.CompletionCode,

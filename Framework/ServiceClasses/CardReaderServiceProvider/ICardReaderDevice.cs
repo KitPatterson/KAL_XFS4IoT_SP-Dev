@@ -27,14 +27,14 @@ namespace XFS4IoTFramework.CardReader
         /// The primary registration authority is EMVCo but other organizations are also supported for historical or localcountry requirements.
         /// New registration authorities may be added in the future so applications should be able to handle the return of new(as yet undefined) IFM identifiers.
         /// </summary>
-        Task<QueryIFMIdentifierHandler.QueryIFMIdentifierResult> QueryIFMIdentifier();
+        Task<QueryIFMIdentifierResult> QueryIFMIdentifier();
 
         /// <summary>
         /// This command is used to retrieve the supported payment system applications available within an intelligentcontactless card unit. 
         /// The payment system application can either be identified by an AID or by the AID incombination with a Kernel Identifier. 
         /// The Kernel Identifier has been introduced by the EMVCo specifications; seeReference [3].
         /// </summary>
-        Task<EMVClessQueryApplicationsHandler.QueryEMVApplicationResult> EMVClessQueryApplications();
+        Task<QueryEMVApplicationResult> EMVContactlessQueryApplications();
 
         /// <summary>
         /// This command is only applicable to motor driven card readers and latched dip card readers.
@@ -43,7 +43,7 @@ namespace XFS4IoTFramework.CardReader
         /// For latched dip readers, this command causes the card to be unlatched (if not already unlatched), enablingremoval.
         /// After successful completion of this command, a CardReader.MediaRemovedEvent is generated to inform the application when the card is taken.
         /// </summary>
-        Task<EjectCardHandler.EjectCardResult> EjectCard(EjectCardHandler.EjectCardRequest ejectCardInfo);
+        Task<EjectCardResult> EjectCard(EjectCardRequest ejectCardInfo);
 
         /// <summary>
         /// The card is removed from its present position (card inserted into device, card entering, unknown position) and stored in the retain bin;
@@ -51,20 +51,20 @@ namespace XFS4IoTFramework.CardReader
         /// The ID card unit sends a CardReader.RetainBinThresholdEvent if the storage capacity of the retainbin is reached.
         /// If the storage capacity has already been reached, and the command cannot be executed, an error isreturned and the card remains in its present position.
         /// </summary>
-        Task<RetainCardHandler.CaptureCardResult> CaptureCard(IRetainCardEvents events);
+        Task<CaptureCardResult> CaptureCard(IRetainCardEvents events);
 
         /// <summary>
         /// This function resets the present value for number of cards retained to zero.
         /// The function is possible formotor-driven card readers only.
         /// The number of cards retained is controlled by the service.
         /// </summary>
-        Task<ResetCountHandler.ResetCountResult> ResetCount();
+        Task<ResetCountResult> ResetBinCount();
 
         /// <summary>
         /// This command is used for setting the DES key that is necessary for operating a CIM86 module.
         /// The command must beexecuted before the first read command is issued to the card reader.
         /// </summary>
-        Task<SetKeyHandler.SetKeyResult> SetKey(SetKeyHandler.SetKeyRequest keyInfo);
+        Task<SetCIM86KeyResult> SetCIM86Key(SetCIM86KeyRequest keyInfo);
 
         /// <summary>
         /// For motor driven card readers, the card unit checks whether a card has been inserted. 
@@ -75,13 +75,13 @@ namespace XFS4IoTFramework.CardReader
         /// If no card has been inserted, and for all other categories of card readers, the card unit waits for the period of time specified in the call for a card to be either inserted or pulled through.
         /// The InsertCardEvent will be generated when there is no card in the cardreader and the device is ready to accept a card.
         /// </summary>
-        Task<ReadRawDataHandler.AcceptCardResult> AcceptCard(IReadRawDataEvents events,
-                                                             ReadRawDataHandler.AcceptCardRequest acceptCardInfo,
-                                                             CancellationToken cancellation);
+        Task<AcceptCardToReadResult> AcceptCard(IReadRawDataEvents events,
+                                                AcceptCardToReadRequest acceptCardInfo,
+                                                CancellationToken cancellation);
 
-        Task<WriteRawDataHandler.AcceptCardResult> AcceptCard(IWriteRawDataEvents events,
-                                                              int timeout,
-                                                              CancellationToken cancellation);
+        Task<AcceptCardToWriteResult> AcceptCard(IWriteRawDataEvents events,
+                                                 int timeout,
+                                                 CancellationToken cancellation);
 
         /// <summary>
         /// Read alltracks specified.
@@ -94,8 +94,8 @@ namespace XFS4IoTFramework.CardReader
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, errorCardCollision will be returned.
         /// </summary>
-        Task<ReadRawDataHandler.ReadCardDataResult> ReadCardData(IReadRawDataEvents events,
-                                                                 ReadRawDataHandler.ReadCardDataRequest dataToRead);
+        Task<ReadCardDataResult> ReadCardData(IReadRawDataEvents events,
+                                              ReadCardDataRequest dataToRead);
 
         /// <summary>
         /// The device is ready to accept a card.
@@ -104,8 +104,8 @@ namespace XFS4IoTFramework.CardReader
         /// This procedure is followed by data verification.
         /// If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
         /// </summary>
-        Task<WriteRawDataHandler.WriteCardDataResult> WriteCardData(IWriteRawDataEvents events,
-                                                                    WriteRawDataHandler.WriteCardDataRequest dataToWrite);
+        Task<WriteCardDataResult> WriteCardData(IWriteRawDataEvents events,
+                                                WriteCardDataRequest dataToWrite);
 
         /// <summary>
         /// This command is used to communicate with the chip.
@@ -118,7 +118,7 @@ namespace XFS4IoTFramework.CardReader
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, the cardCollision error code will be returned.
         /// </summary>
-        Task<ChipIOHandler.ChipIOResult> ChipIO(ChipIOHandler.ChipIORequest dataToSend);
+        Task<ChipIOResult> ChipIO(ChipIORequest dataToSend);
 
         /// <summary>
         /// This command is used by the application to perform a hardware reset which will attempt to return the card readerdevice to a known good state.
@@ -129,14 +129,14 @@ namespace XFS4IoTFramework.CardReader
         /// If no action is specified the user card will not be moved even if this means that the devicecannot be recovered.
         /// If the device is a permanent chip card unit, this command will power-off the chip.For devices with parking station capability there will be one MediaInsertedEvent for each card found.
         /// </summary>
-        Task<ResetHandler.ResetDeviceResult> ResetDevice(IResetEvents events,
-                                                         ResetHandler.ResetDeviceRequest cardAction);
+        Task<ResetDeviceResult> ResetDevice(IResetEvents events,
+                                            ResetDeviceRequest cardAction);
 
         /// <summary>
         /// This command handles the power actions that can be done on the chip.For user chips, this command is only used after the chip has been contacted for the first time using the[CardReader.ReadRawData](#cardreader.readrawdata) command. For contactless user chips, this command may be used todeactivate the contactless card communication.For permanently connected chip cards, this command is the only way to control the chip power.
         /// </summary>
-        Task<ChipPowerHandler.ChipPowerResult> ChipPower(IChipPowerEvents events, 
-                                                         ChipPowerHandler.ChipPowerRequest action);
+        Task<ChipPowerResult> ChipPower(IChipPowerEvents events, 
+                                        ChipPowerRequest action);
 
         /// <summary>
         /// This command is used to move a card that is present in the reader to a parking station.
@@ -146,7 +146,7 @@ namespace XFS4IoTFramework.CardReader
         /// After moving a card to a parking station, another card can be inserted and read by calling, e.g.,CardReader.ReadRawData.
         /// Cards in parking stations will not be affected by any CardReader commands until they are removed from the parkingstation using this command, except for the CardReader.Reset command, which will move thecards in the parking stations as specified in its input as part of the reset action if possible.
         /// </summary>
-        Task<ParkCardHandler.ParkCardResult> ParkCard(ParkCardHandler.ParkCardRequest parkCardInfo);
+        Task<ParkCardResult> ParkCard(ParkCardRequest parkCardInfo);
 
         /// <summary>
         /// This command is used to configure an intelligent contactless card reader before performing a contactlesstransaction.
@@ -155,7 +155,7 @@ namespace XFS4IoTFramework.CardReader
         /// It may be calledonce on application start up or when any of the configuration parameters require to be changed. 
         /// The configurationset by this command is persistent.This command should be called with a complete list of acceptable payment system applications as any previous configurations will be replaced.
         /// </summary>
-        Task<EMVClessConfigureHandler.EMVClessConfigureResult> EMVClessConfigure(EMVClessConfigureHandler.EMVClessConfigureRequest terminalConfig);
+        Task<EMVContactlessConfigureResult> EMVContactlessConfigure(EMVContactlessConfigureRequest terminalConfig);
 
         /// <summary>
         /// This command is used to enable an intelligent contactless card reader.
@@ -169,9 +169,9 @@ namespace XFS4IoTFramework.CardReader
         /// For intelligent contactless card readers, any in-built audio/visual feedback such as Beep/LEDs, need to becontrolled directly by the reader. 
         /// These indications should be implemented based on the EMVCo and payment system'sspecifications.
         /// </summary>
-        Task<EMVClessPerformTransactionHandler.EMVClessPerformTransactionResult> EMVClessPerformTransaction(IEMVClessPerformTransactionEvents events, 
-                                                                                                            EMVClessPerformTransactionHandler.EMVClessPerformTransactionRequest transactionData, 
-                                                                                                            CancellationToken cancellation);
+        Task<EMVContactlessPerformTransactionResult> EMVContactlessPerformTransaction(IEMVClessPerformTransactionEvents events, 
+                                                                                      EMVContactlessPerformTransactionRequest transactionData, 
+                                                                                      CancellationToken cancellation);
 
         /// <summary>
         /// This command performs the post authorization processing on payment systems contactless cards.
@@ -180,9 +180,9 @@ namespace XFS4IoTFramework.CardReader
         /// The command enables the contactless card reader and waits for the customer to re-tap their card.
         /// The contactless chip card reader waits for the period of time specified in the command all for a card to be tapped.
         /// </summary>
-        Task<EMVClessIssuerUpdateHandler.EMVClessIssuerUpdateResult> EMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents events,
-                                                                                          EMVClessIssuerUpdateHandler.EMVClessIssuerUpdateRequest transactionData, 
-                                                                                          CancellationToken cancellation);
+        Task<EMVContactlessIssuerUpdateResult> EMVContactlessIssuerUpdate(IEMVClessIssuerUpdateEvents events,
+                                                                          EMVContactlessIssuerUpdateRequest transactionData,
+                                                                          CancellationToken cancellation);
 
     }
 }
