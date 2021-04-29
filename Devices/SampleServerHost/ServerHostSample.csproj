@@ -9,7 +9,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net5.0-windows7.0</TargetFramework>
         <AssemblyName>XFS4IoT.SP.ServerHostSample</AssemblyName>
     </PropertyGroup>
 
@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SimulatedCardReader\CardReaderSample.csproj" />
+      <ProjectReference Include="..\SampleCardReader\CardReaderSample.csproj" />
     </ItemGroup>
 
     <ItemGroup>
