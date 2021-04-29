@@ -5256,8 +5256,6 @@ namespace XFS4IoT.Common.Completions
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<InterfacesClass> Interfaces = null, CommonClass Common = null, CardReaderClass CardReader = null, CashAcceptorClass CashAcceptor = null, CashDispenserClass CashDispenser = null, CashManagementClass CashManagement = null, PinPadClass PinPad = null, CryptoClass Crypto = null, KeyManagementClass KeyManagement = null, KeyboardClass Keyboard = null, TextTerminalClass TextTerminal = null, PrinterClass Printer = null, SensorsAndIndicatorsClass SensorsAndIndicators = null, CardEmbosserClass CardEmbosser = null, BarcodeReaderClass BarcodeReader = null, BiometricClass Biometric = null)
                 : base(CompletionCode, ErrorDescription)
             {
-                ErrorDescription.IsNotNullOrWhitespace($"Null or an empty value for {nameof(ErrorDescription)} in received {nameof(CapabilitiesCompletion.PayloadData)}");
-
                 this.Interfaces = Interfaces;
                 this.Common = Common;
                 this.CardReader = CardReader;

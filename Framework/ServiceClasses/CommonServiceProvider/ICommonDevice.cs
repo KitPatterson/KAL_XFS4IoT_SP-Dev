@@ -22,12 +22,12 @@ namespace XFS4IoTFramework.Common
         /// <summary>
         /// This command is used to obtain the overall status of any XFS4IoT service. The status includes common status information and can include zero or more interface specific status objects, depending on the implemented interfaces of the service. It may also return vendor-specific status information.
         /// </summary>
-        Task<XFS4IoT.Common.Completions.StatusCompletion.PayloadData> Status();
+        XFS4IoT.Common.Completions.StatusCompletion.PayloadData Status();
 
         /// <summary>
         /// This command retrieves the capabilities of the device. It may also return vendor specific capability information.
         /// </summary>
-        Task<XFS4IoT.Common.Completions.CapabilitiesCompletion.PayloadData> Capabilities();
+        XFS4IoT.Common.Completions.CapabilitiesCompletion.PayloadData Capabilities();
 
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace XFS4IoTFramework.Common
         /// <summary>
         /// This command can be used to get the transaction state.
         /// </summary>
-        Task<XFS4IoT.Common.Completions.GetTransactionStateCompletion.PayloadData> GetTransactionState();
+        XFS4IoT.Common.Completions.GetTransactionStateCompletion.PayloadData GetTransactionState();
 
         /// <summary>
         /// Get a nonce to be included in an Authorisation Token for a command that will be used to ensure end to end security.The hardware will overwrite any existing stored Command nonce with this new value. The value will be stored for future authentication. Any Authorisation Token received will be compared with this stored nonce and if the Token doesn't contain the same nonce it will be considered invalid and rejected, causing the command that contains that Authentication Token to fail.The nonce must match the algorithm used. For example, HMAC means the nonce must be 128 bit/16 bytes.

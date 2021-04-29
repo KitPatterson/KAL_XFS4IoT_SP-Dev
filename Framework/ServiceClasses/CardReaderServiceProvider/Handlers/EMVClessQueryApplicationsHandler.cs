@@ -20,64 +20,64 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
+    /// <summary>
+    /// EMVApplication
+    /// Provide chip application and kernel identifier supported
+    /// </summary>
+    public sealed class EMVApplication
+    {
+        public EMVApplication(List<byte> ApplicationIdentifier,
+                              List<byte> KernelIdentifier)
+        {
+            this.ApplicationIdentifier = ApplicationIdentifier;
+            this.KernelIdentifier = KernelIdentifier;
+        }
+
+        /// <summary>
+        /// Chip application identifier
+        /// </summary>
+        public List<byte> ApplicationIdentifier { get; private set; }
+        /// <summary>
+        /// The kernel identifier certified
+        /// </summary>
+        public List<byte> KernelIdentifier { get; private set; }
+    }
+
+    /// <summary>
+    /// QueryEMVApplicationResult
+    /// Return information for supported EMV applications by the device
+    /// </summary>
+    public sealed class QueryEMVApplicationResult : DeviceResult
+    {
+        public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                         ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                         string ErrorDescription = null,
+                                         List<EMVApplication> EMVApplications = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.EMVApplications = EMVApplications;
+        }
+
+        public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                         List<EMVApplication> EMVApplications = null)
+            : base(CompletionCode, null)
+        {
+            this.EMVApplications = EMVApplications;
+        }
+
+        /// <summary>
+        /// List of EMV applications and kernels information
+        /// </summary>
+        public List<EMVApplication> EMVApplications { get; private set; }
+    }
+
     public partial class EMVClessQueryApplicationsHandler
     {
-        /// <summary>
-        /// EMVApplication
-        /// Provide chip application and kernel identifier supported
-        /// </summary>
-        public sealed class EMVApplication
+        private Task<EMVClessQueryApplicationsCompletion.PayloadData> HandleEMVClessQueryApplications(IEMVClessQueryApplicationsEvents events, EMVClessQueryApplicationsCommand eMVClessQueryApplications, CancellationToken cancel)
         {
-            public EMVApplication(List<byte> ApplicationIdentifier,
-                                  List<byte> KernelIdentifier)
-            {
-                this.ApplicationIdentifier = ApplicationIdentifier;
-                this.KernelIdentifier = KernelIdentifier;
-            }
-
-            /// <summary>
-            /// Chip application identifier
-            /// </summary>
-            public List<byte> ApplicationIdentifier { get; private set; }
-            /// <summary>
-            /// The kernel identifier certified
-            /// </summary>
-            public List<byte> KernelIdentifier { get; private set; }
-        }
-
-        /// <summary>
-        /// QueryEMVApplicationResult
-        /// Return information for supported EMV applications by the device
-        /// </summary>
-        public sealed class QueryEMVApplicationResult : DeviceResult
-        {
-            public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                            ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                            string ErrorDescription = null,
-                                            List<EMVApplication> EMVApplications = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.EMVApplications = EMVApplications;
-            }
-
-            public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                             List<EMVApplication> EMVApplications = null)
-                : base(CompletionCode, null)
-            {
-                this.EMVApplications = EMVApplications;
-            }
-
-            /// <summary>
-            /// List of EMV applications and kernels information
-            /// </summary>
-            public List<EMVApplication> EMVApplications { get; private set; }
-        }
-
-        private async Task<EMVClessQueryApplicationsCompletion.PayloadData> HandleEMVClessQueryApplications(IEMVClessQueryApplicationsEvents events, EMVClessQueryApplicationsCommand eMVClessQueryApplications, CancellationToken cancel)
-        {
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVClessQueryApplications()");
-            var result = await Device.EMVClessQueryApplications();
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVClessQueryApplications() -> {result.CompletionCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessQueryApplications()");
+            var result = Device.EMVContactlessQueryApplications();
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessQueryApplications() -> {result.CompletionCode}");
 
             List<EMVClessQueryApplicationsCompletion.PayloadData.AppDataClass> appData = new();
             foreach (EMVApplication app in result.EMVApplications)
@@ -88,9 +88,9 @@ namespace XFS4IoTFramework.CardReader
                                                                                              app.KernelIdentifier.Count == 0 ? null : Convert.ToBase64String(app.KernelIdentifier.ToArray())));
             }
 
-            return new EMVClessQueryApplicationsCompletion.PayloadData(result.CompletionCode,
-                                                                       result.ErrorDescription,
-                                                                       appData);
+            return Task.FromResult(new EMVClessQueryApplicationsCompletion.PayloadData(result.CompletionCode,
+                                                                                       result.ErrorDescription,
+                                                                                       appData));
         }
     }
 }

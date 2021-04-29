@@ -20,71 +20,75 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public partial class EMVClessIssuerUpdateHandler
+    /// <summary>
+    /// EMVContactlessIssuerUpdateRequest
+    /// Provide an information to perform EMV transaction
+    /// </summary>
+    public sealed class EMVContactlessIssuerUpdateRequest
     {
         /// <summary>
         /// EMVClessIssuerUpdateRequest
-        /// Provide an information to perform EMV transaction
         /// </summary>
-        public sealed class EMVClessIssuerUpdateRequest
+        /// <param name="TerminalData"></param>
+        /// <param name="Timeout"></param>
+        public EMVContactlessIssuerUpdateRequest(List<byte> TerminalData, int Timeout)
         {
-            /// <summary>
-            /// EMVClessIssuerUpdateRequest
-            /// </summary>
-            /// <param name="TerminalData"></param>
-            /// <param name="Timeout"></param>
-            public EMVClessIssuerUpdateRequest(List<byte> TerminalData, int Timeout)
-            {
-                this.TerminalData = TerminalData;
-                this.Timeout = Timeout;
-            }
-
-            public List<byte> TerminalData { get; private set; }
-            public int Timeout { get; private set; }
+            this.TerminalData = TerminalData;
+            this.Timeout = Timeout;
         }
+
+        public List<byte> TerminalData { get; private set; }
+        public int Timeout { get; private set; }
+    }
+
+    /// <summary>
+    /// EMVContactlessIssuerUpdateResult
+    /// Return result of EMV transaction
+    /// </summary>
+    public sealed class EMVContactlessIssuerUpdateResult : DeviceResult
+    {
+
+        public EMVContactlessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                                EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                                                string ErrorDescription = null,
+                                                EMVContactlessTransactionDataOutput TransactionResult = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
+            this.TransactionResult = TransactionResult;
+        }
+
+        public EMVContactlessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                                EMVContactlessTransactionDataOutput TransactionResult = null)
+            : base(CompletionCode, null)
+        {
+            this.ErrorCode = null;
+            this.TransactionResult = TransactionResult;
+        }
+
+        public EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
 
         /// <summary>
-        /// EMVClessIssuerUpdateResult
-        /// Return result of EMV transaction
+        /// Result of the contactless transaction
         /// </summary>
-        public sealed class EMVClessIssuerUpdateResult : DeviceResult
-        {
+        public EMVContactlessTransactionDataOutput TransactionResult { get; private set; }
+    }
 
-            public EMVClessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                              EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                              string ErrorDescription = null,
-                                              EMVClessTransactionDataOutput TransactionResult = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.TransactionResult = TransactionResult;
-            }
-
-            public EMVClessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                              EMVClessTransactionDataOutput TransactionResult = null)
-                : base(CompletionCode, null)
-            {
-                this.ErrorCode = null;
-                this.TransactionResult = TransactionResult;
-            }
-
-            public EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
-            public EMVClessTransactionDataOutput TransactionResult { get; private set; }
-        }
-
+    public partial class EMVClessIssuerUpdateHandler
+    {
         private async Task<EMVClessIssuerUpdateCompletion.PayloadData> HandleEMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents events, EMVClessIssuerUpdateCommand eMVClessIssuerUpdate, CancellationToken cancel)
         {
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVClessIssuerUpdate()");
-            var result = await Device.EMVClessIssuerUpdate(events,
-                                                           new EMVClessIssuerUpdateRequest(string.IsNullOrEmpty(eMVClessIssuerUpdate.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessIssuerUpdate.Payload.Data)), eMVClessIssuerUpdate.Payload.Timeout),
-                                                           cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVClessIssuerUpdate() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.EMVContactlessIssuerUpdateAsync()");
+            var result = await Device.EMVContactlessIssuerUpdateAsync(events,
+                                                                      new EMVContactlessIssuerUpdateRequest(string.IsNullOrEmpty(eMVClessIssuerUpdate.Payload.Data) ? null : new List<byte>(Convert.FromBase64String(eMVClessIssuerUpdate.Payload.Data)), eMVClessIssuerUpdate.Payload.Timeout),
+                                                                      cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.EMVContactlessIssuerUpdateAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success &&
                 result.TransactionResult is not null)
             {
                 // Build transaction output data
-                EMVClessIssuerUpdateCompletion.PayloadData.ChipClass chip = new ((EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.TxOutcomeEnum)result.TransactionResult.TxOutcome,
+                EMVClessIssuerUpdateCompletion.PayloadData.ChipClass chip = new ((EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.TxOutcomeEnum)result.TransactionResult.TransactionOutcome,
                                                                                  (EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.CardholderActionEnum)result.TransactionResult.CardholderAction,
                                                                                  result.TransactionResult.DataRead.Count == 0 ? null : Convert.ToBase64String(result.TransactionResult.DataRead.ToArray()),
                                                                                  new EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.ClessOutcomeClass((EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.ClessOutcomeClass.CvmEnum)result.TransactionResult.ClessOutcome.Cvm,
