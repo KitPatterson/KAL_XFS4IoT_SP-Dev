@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LoadDefinitionHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:07
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Printer
         public LoadDefinitionHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(LoadDefinitionHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<PrinterServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(LoadDefinitionHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<IPrinterDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            LoadDefinitionCommand loadDefinitionCmd = command as LoadDefinitionCommand;
-            loadDefinitionCmd.IsNotNull($"Invalid parameter in the LoadDefinition Handle method. {nameof(loadDefinitionCmd)}");
+            var loadDefinitionCmd = command.IsA<LoadDefinitionCommand>($"Invalid parameter in the LoadDefinition Handle method. {nameof(LoadDefinitionCommand)}");
             
             ILoadDefinitionEvents events = new LoadDefinitionEvents(Connection, loadDefinitionCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            LoadDefinitionCommand loadDefinitioncommand = command as LoadDefinitionCommand;
+            var loadDefinitioncommand = command.IsA<LoadDefinitionCommand>();
 
             LoadDefinitionCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Printer
                 _ => LoadDefinitionCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            LoadDefinitionCompletion response = new LoadDefinitionCompletion(loadDefinitioncommand.Headers.RequestId, new LoadDefinitionCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new LoadDefinitionCompletion(loadDefinitioncommand.Headers.RequestId, new LoadDefinitionCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public IPrinterDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private IPrinterDevice Device { get; }
+        private PrinterServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

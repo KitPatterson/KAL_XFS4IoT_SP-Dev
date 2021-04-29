@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * RetainBinThresholdEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:14
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.CardReader.Events
 
     [DataContract]
     [Event(Name = "CardReader.RetainBinThresholdEvent")]
-    public sealed class RetainBinThresholdEvent : Event<RetainBinThresholdEvent.PayloadData>
+    public sealed class RetainBinThresholdEvent : UnsolicitedEvent<RetainBinThresholdEvent.PayloadData>
     {
 
-        public RetainBinThresholdEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public RetainBinThresholdEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ParkCardHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.CardReader
         public ParkCardHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ParkCardHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CardReaderServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ParkCardHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICardReaderDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            ParkCardCommand parkCardCmd = command as ParkCardCommand;
-            parkCardCmd.IsNotNull($"Invalid parameter in the ParkCard Handle method. {nameof(parkCardCmd)}");
+            var parkCardCmd = command.IsA<ParkCardCommand>($"Invalid parameter in the ParkCard Handle method. {nameof(ParkCardCommand)}");
             
             IParkCardEvents events = new ParkCardEvents(Connection, parkCardCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            ParkCardCommand parkCardcommand = command as ParkCardCommand;
+            var parkCardcommand = command.IsA<ParkCardCommand>();
 
             ParkCardCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.CardReader
                 _ => ParkCardCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            ParkCardCompletion response = new ParkCardCompletion(parkCardcommand.Headers.RequestId, new ParkCardCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new ParkCardCompletion(parkCardcommand.Headers.RequestId, new ParkCardCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICardReaderDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICardReaderDevice Device { get; }
+        private CardReaderServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

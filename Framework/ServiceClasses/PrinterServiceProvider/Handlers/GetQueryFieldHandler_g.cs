@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryFieldHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:07
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Printer
         public GetQueryFieldHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(GetQueryFieldHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<PrinterServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(GetQueryFieldHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<IPrinterDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            GetQueryFieldCommand getQueryFieldCmd = command as GetQueryFieldCommand;
-            getQueryFieldCmd.IsNotNull($"Invalid parameter in the GetQueryField Handle method. {nameof(getQueryFieldCmd)}");
+            var getQueryFieldCmd = command.IsA<GetQueryFieldCommand>($"Invalid parameter in the GetQueryField Handle method. {nameof(GetQueryFieldCommand)}");
             
             IGetQueryFieldEvents events = new GetQueryFieldEvents(Connection, getQueryFieldCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            GetQueryFieldCommand getQueryFieldcommand = command as GetQueryFieldCommand;
+            var getQueryFieldcommand = command.IsA<GetQueryFieldCommand>();
 
             GetQueryFieldCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Printer
                 _ => GetQueryFieldCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            GetQueryFieldCompletion response = new GetQueryFieldCompletion(getQueryFieldcommand.Headers.RequestId, new GetQueryFieldCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new GetQueryFieldCompletion(getQueryFieldcommand.Headers.RequestId, new GetQueryFieldCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public IPrinterDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private IPrinterDevice Device { get; }
+        private PrinterServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

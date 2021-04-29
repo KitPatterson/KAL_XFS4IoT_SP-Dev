@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * DevicePositionEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Common.Events
 
     [DataContract]
     [Event(Name = "Common.DevicePositionEvent")]
-    public sealed class DevicePositionEvent : Event<DevicePositionEvent.PayloadData>
+    public sealed class DevicePositionEvent : UnsolicitedEvent<DevicePositionEvent.PayloadData>
     {
 
-        public DevicePositionEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public DevicePositionEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * SetTransactionStateHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Common
         public SetTransactionStateHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(SetTransactionStateHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CommonServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(SetTransactionStateHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICommonDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Common
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            SetTransactionStateCommand setTransactionStateCmd = command as SetTransactionStateCommand;
-            setTransactionStateCmd.IsNotNull($"Invalid parameter in the SetTransactionState Handle method. {nameof(setTransactionStateCmd)}");
+            var setTransactionStateCmd = command.IsA<SetTransactionStateCommand>($"Invalid parameter in the SetTransactionState Handle method. {nameof(SetTransactionStateCommand)}");
             
             ISetTransactionStateEvents events = new SetTransactionStateEvents(Connection, setTransactionStateCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Common
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            SetTransactionStateCommand setTransactionStatecommand = command as SetTransactionStateCommand;
+            var setTransactionStatecommand = command.IsA<SetTransactionStateCommand>();
 
             SetTransactionStateCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Common
                 _ => SetTransactionStateCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            SetTransactionStateCompletion response = new SetTransactionStateCompletion(setTransactionStatecommand.Headers.RequestId, new SetTransactionStateCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SetTransactionStateCompletion(setTransactionStatecommand.Headers.RequestId, new SetTransactionStateCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICommonDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICommonDevice Device { get; }
+        private CommonServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

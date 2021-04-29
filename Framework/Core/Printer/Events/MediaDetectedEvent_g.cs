@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * MediaDetectedEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Printer.Events
 
     [DataContract]
     [Event(Name = "Printer.MediaDetectedEvent")]
-    public sealed class MediaDetectedEvent : Event<MediaDetectedEvent.PayloadData>
+    public sealed class MediaDetectedEvent : UnsolicitedEvent<MediaDetectedEvent.PayloadData>
     {
 
-        public MediaDetectedEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public MediaDetectedEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

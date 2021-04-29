@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ReadFormHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:05
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.TextTerminal
         public ReadFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ReadFormHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<TextTerminalServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ReadFormHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ITextTerminalDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            ReadFormCommand readFormCmd = command as ReadFormCommand;
-            readFormCmd.IsNotNull($"Invalid parameter in the ReadForm Handle method. {nameof(readFormCmd)}");
+            var readFormCmd = command.IsA<ReadFormCommand>($"Invalid parameter in the ReadForm Handle method. {nameof(ReadFormCommand)}");
             
             IReadFormEvents events = new ReadFormEvents(Connection, readFormCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            ReadFormCommand readFormcommand = command as ReadFormCommand;
+            var readFormcommand = command.IsA<ReadFormCommand>();
 
             ReadFormCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.TextTerminal
                 _ => ReadFormCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            ReadFormCompletion response = new ReadFormCompletion(readFormcommand.Headers.RequestId, new ReadFormCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new ReadFormCompletion(readFormcommand.Headers.RequestId, new ReadFormCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ITextTerminalDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ITextTerminalDevice Device { get; }
+        private TextTerminalServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * InkThresholdEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Printer.Events
 
     [DataContract]
     [Event(Name = "Printer.InkThresholdEvent")]
-    public sealed class InkThresholdEvent : Event<InkThresholdEvent.PayloadData>
+    public sealed class InkThresholdEvent : UnsolicitedEvent<InkThresholdEvent.PayloadData>
     {
 
-        public InkThresholdEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public InkThresholdEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

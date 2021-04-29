@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * SupplyReplenishHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:07
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Printer
         public SupplyReplenishHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(SupplyReplenishHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<PrinterServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(SupplyReplenishHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<IPrinterDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            SupplyReplenishCommand supplyReplenishCmd = command as SupplyReplenishCommand;
-            supplyReplenishCmd.IsNotNull($"Invalid parameter in the SupplyReplenish Handle method. {nameof(supplyReplenishCmd)}");
+            var supplyReplenishCmd = command.IsA<SupplyReplenishCommand>($"Invalid parameter in the SupplyReplenish Handle method. {nameof(SupplyReplenishCommand)}");
             
             ISupplyReplenishEvents events = new SupplyReplenishEvents(Connection, supplyReplenishCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            SupplyReplenishCommand supplyReplenishcommand = command as SupplyReplenishCommand;
+            var supplyReplenishcommand = command.IsA<SupplyReplenishCommand>();
 
             SupplyReplenishCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Printer
                 _ => SupplyReplenishCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            SupplyReplenishCompletion response = new SupplyReplenishCompletion(supplyReplenishcommand.Headers.RequestId, new SupplyReplenishCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SupplyReplenishCompletion(supplyReplenishcommand.Headers.RequestId, new SupplyReplenishCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public IPrinterDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private IPrinterDevice Device { get; }
+        private PrinterServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

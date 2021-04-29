@@ -5,17 +5,16 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * CommonEvents_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
 using XFS4IoT;
 using XFS4IoTServer;
-using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.Common
 {
-    internal class CommonEvents : ICommonEvents
+    internal abstract class CommonEvents
     {
         protected readonly IConnection connection;
         protected readonly string requestId;
@@ -26,10 +25,6 @@ namespace XFS4IoTFramework.Common
             Contracts.IsNotNullOrWhitespace(requestId, $"Unexpected request ID is received. {requestId}");
             this.requestId = requestId;
         }
-
-        public async Task PowerSaveChangeEvent(XFS4IoT.Common.Events.PowerSaveChangeEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.Common.Events.PowerSaveChangeEvent(requestId, Payload));
-
-        public async Task DevicePositionEvent(XFS4IoT.Common.Events.DevicePositionEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.Common.Events.DevicePositionEvent(requestId, Payload));
 
     }
 }

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * StatusHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Common
         public StatusHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(StatusHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CommonServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(StatusHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICommonDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Common
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            StatusCommand statusCmd = command as StatusCommand;
-            statusCmd.IsNotNull($"Invalid parameter in the Status Handle method. {nameof(statusCmd)}");
+            var statusCmd = command.IsA<StatusCommand>($"Invalid parameter in the Status Handle method. {nameof(StatusCommand)}");
             
             IStatusEvents events = new StatusEvents(Connection, statusCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Common
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            StatusCommand statuscommand = command as StatusCommand;
+            var statuscommand = command.IsA<StatusCommand>();
 
             StatusCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Common
                 _ => StatusCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            StatusCompletion response = new StatusCompletion(statuscommand.Headers.RequestId, new StatusCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new StatusCompletion(statuscommand.Headers.RequestId, new StatusCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICommonDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICommonDevice Device { get; }
+        private CommonServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

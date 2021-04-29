@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ControlPassbookHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:07
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Printer
         public ControlPassbookHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ControlPassbookHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<PrinterServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ControlPassbookHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<IPrinterDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            ControlPassbookCommand controlPassbookCmd = command as ControlPassbookCommand;
-            controlPassbookCmd.IsNotNull($"Invalid parameter in the ControlPassbook Handle method. {nameof(controlPassbookCmd)}");
+            var controlPassbookCmd = command.IsA<ControlPassbookCommand>($"Invalid parameter in the ControlPassbook Handle method. {nameof(ControlPassbookCommand)}");
             
             IControlPassbookEvents events = new ControlPassbookEvents(Connection, controlPassbookCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            ControlPassbookCommand controlPassbookcommand = command as ControlPassbookCommand;
+            var controlPassbookcommand = command.IsA<ControlPassbookCommand>();
 
             ControlPassbookCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Printer
                 _ => ControlPassbookCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            ControlPassbookCompletion response = new ControlPassbookCompletion(controlPassbookcommand.Headers.RequestId, new ControlPassbookCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new ControlPassbookCompletion(controlPassbookcommand.Headers.RequestId, new ControlPassbookCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public IPrinterDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private IPrinterDevice Device { get; }
+        private PrinterServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

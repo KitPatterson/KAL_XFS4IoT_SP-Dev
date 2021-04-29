@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * CardActionEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:14
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.CardReader.Events
 
     [DataContract]
     [Event(Name = "CardReader.CardActionEvent")]
-    public sealed class CardActionEvent : Event<CardActionEvent.PayloadData>
+    public sealed class CardActionEvent : UnsolicitedEvent<CardActionEvent.PayloadData>
     {
 
-        public CardActionEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public CardActionEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ReadRawData_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -479,8 +479,6 @@ namespace XFS4IoT.CardReader.Completions
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, Track1Class Track1 = null, Track2Class Track2 = null, Track3Class Track3 = null, List<ChipClass> Chip = null, SecurityClass Security = null, WatermarkClass Watermark = null, MemoryChipClass MemoryChip = null, Track1FrontClass Track1Front = null, FrontImageClass FrontImage = null, BackImageClass BackImage = null, Track1JISClass Track1JIS = null, Track3JISClass Track3JIS = null, DdiClass Ddi = null)
                 : base(CompletionCode, ErrorDescription)
             {
-                ErrorDescription.IsNotNullOrWhitespace($"Null or an empty value for {nameof(ErrorDescription)} in received {nameof(ReadRawDataCompletion.PayloadData)}");
-
                 this.ErrorCode = ErrorCode;
                 this.Track1 = Track1;
                 this.Track2 = Track2;

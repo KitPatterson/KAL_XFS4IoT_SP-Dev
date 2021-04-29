@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public interface IRetainCardEvents : ICardReaderEvents
+    public interface IRetainCardEvents
     {
 
         Task MediaRetainedEvent();

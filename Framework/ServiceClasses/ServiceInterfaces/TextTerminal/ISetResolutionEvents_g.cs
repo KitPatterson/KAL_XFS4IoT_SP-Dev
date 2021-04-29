@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ISetResolutionEvents_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 16:49:17
 \***********************************************************************************************/
 
 
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.TextTerminal
 {
-    public interface ISetResolutionEvents : ITextTerminalEvents
+    public interface ISetResolutionEvents
     {
 
     }

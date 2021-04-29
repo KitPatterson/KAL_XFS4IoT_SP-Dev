@@ -16,6 +16,7 @@ using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
 using XFS4IoT.CardReader.Events;
 using XFS4IoT.Completions;
+using XFS4IoTServer;
 
 namespace KAL.XFS4IoTSP.CardReader.Sample
 {
@@ -406,7 +407,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 0,
                 StatusCompletion.PayloadData.CommonClass.AntiFraudModuleEnum.Ok);
 
-            StatusCompletion.PayloadData.CardReaderClass cardReader = new StatusCompletion.PayloadData.CardReaderClass(
+            StatusCompletion.PayloadData.CardReaderClass cardReader = new(
                 MediaStatus,
                 StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok,
                 StatusCompletion.PayloadData.CardReaderClass.SecurityEnum.NotSupported,
@@ -544,5 +545,6 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         private int CapturedCount = 0;
 
         private ILogger Logger { get; }
+        public IServiceProvider SetServiceProvider { get; set; }
     }
 }

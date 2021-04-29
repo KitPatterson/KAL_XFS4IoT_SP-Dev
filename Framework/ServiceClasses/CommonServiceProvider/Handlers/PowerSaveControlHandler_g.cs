@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * PowerSaveControlHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Common
         public PowerSaveControlHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(PowerSaveControlHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CommonServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(PowerSaveControlHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICommonDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Common
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            PowerSaveControlCommand powerSaveControlCmd = command as PowerSaveControlCommand;
-            powerSaveControlCmd.IsNotNull($"Invalid parameter in the PowerSaveControl Handle method. {nameof(powerSaveControlCmd)}");
+            var powerSaveControlCmd = command.IsA<PowerSaveControlCommand>($"Invalid parameter in the PowerSaveControl Handle method. {nameof(PowerSaveControlCommand)}");
             
             IPowerSaveControlEvents events = new PowerSaveControlEvents(Connection, powerSaveControlCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Common
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            PowerSaveControlCommand powerSaveControlcommand = command as PowerSaveControlCommand;
+            var powerSaveControlcommand = command.IsA<PowerSaveControlCommand>();
 
             PowerSaveControlCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Common
                 _ => PowerSaveControlCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            PowerSaveControlCompletion response = new PowerSaveControlCompletion(powerSaveControlcommand.Headers.RequestId, new PowerSaveControlCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new PowerSaveControlCompletion(powerSaveControlcommand.Headers.RequestId, new PowerSaveControlCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICommonDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICommonDevice Device { get; }
+        private CommonServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

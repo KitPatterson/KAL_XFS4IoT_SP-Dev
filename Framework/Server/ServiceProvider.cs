@@ -22,6 +22,7 @@ namespace XFS4IoTServer
             Device.IsNotNull($"The device interface is an invalid. {nameof(Device)}");
 
             this.Device = Device;
+            this.logger = Logger.IsNotNull();
             this.Name = ServiceName;
 
             (Uri, WSUri) = EndpointDetails.ServiceUri(ServiceName);
@@ -38,11 +39,24 @@ namespace XFS4IoTServer
 
         public string Name { get; internal set; }
         private readonly XFS4IoTServer.EndPoint EndPoint;
+        private readonly ILogger logger;
 
         private MessageDecoder CommandDecoder { get; } = new MessageDecoder(MessageDecoder.AutoPopulateType.Command);
         public Uri Uri { get; }
         public Uri WSUri { get; }
 
         public IDevice Device { get; internal set; }
+
+        protected async Task BroadcastEvent(object payload)
+        {
+            logger.Log(nameof(ServiceProvider), $"Broadcasting unsolicited event");
+
+            // Create all the send tasks at once so that we can send in parallel. 
+            var sendTasks = from connection in EndPoint.Connections
+                            select connection.SendMessageAsync(payload);
+            await Task.WhenAll(sendTasks.ToArray());
+
+            logger.Log(nameof(ServiceProvider), $"Finished broadcasting unsolicited event");
+        }
     }
 }

@@ -14,14 +14,12 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public interface ICardReaderEvents
+    public interface ICardReaderUnsolicitedEvents
     {
-
         Task MediaRemovedEvent();
 
         Task RetainBinThresholdEvent(XFS4IoT.CardReader.Events.RetainBinThresholdEvent.PayloadData Payload);
 
         Task CardActionEvent(XFS4IoT.CardReader.Events.CardActionEvent.PayloadData Payload);
-
     }
 }

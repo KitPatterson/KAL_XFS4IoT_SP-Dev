@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * FieldWarningEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.TextTerminal.Events
 
     [DataContract]
     [Event(Name = "TextTerminal.FieldWarningEvent")]
-    public sealed class FieldWarningEvent : Event<MessagePayloadBase>
+    public sealed class FieldWarningEvent : UnsolicitedEvent<MessagePayloadBase>
     {
 
-        public FieldWarningEvent(string RequestId)
-            : base(RequestId)
+        public FieldWarningEvent()
+            : base()
         { }
 
     }

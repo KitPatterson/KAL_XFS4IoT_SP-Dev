@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * RetractBinStatusEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Printer.Events
 
     [DataContract]
     [Event(Name = "Printer.RetractBinStatusEvent")]
-    public sealed class RetractBinStatusEvent : Event<RetractBinStatusEvent.PayloadData>
+    public sealed class RetractBinStatusEvent : UnsolicitedEvent<RetractBinStatusEvent.PayloadData>
     {
 
-        public RetractBinStatusEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public RetractBinStatusEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 
