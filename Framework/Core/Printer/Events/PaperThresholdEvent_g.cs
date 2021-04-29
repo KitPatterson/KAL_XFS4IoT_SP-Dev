@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * PaperThresholdEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Printer.Events
 
     [DataContract]
     [Event(Name = "Printer.PaperThresholdEvent")]
-    public sealed class PaperThresholdEvent : Event<PaperThresholdEvent.PayloadData>
+    public sealed class PaperThresholdEvent : UnsolicitedEvent<PaperThresholdEvent.PayloadData>
     {
 
-        public PaperThresholdEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public PaperThresholdEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

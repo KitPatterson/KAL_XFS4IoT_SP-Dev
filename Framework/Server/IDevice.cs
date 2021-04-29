@@ -14,5 +14,6 @@ namespace XFS4IoTServer
 {
     public interface IDevice
     {
+        public IServiceProvider SetServiceProvider { get;  set; }
     }
 }

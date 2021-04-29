@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * ICapabilitiesEvents_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.Common
 {
-    public interface ICapabilitiesEvents : ICommonEvents
+    public interface ICapabilitiesEvents
     {
 
     }

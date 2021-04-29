@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * ResetCountHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.CardReader
         public ResetCountHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ResetCountHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CardReaderServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ResetCountHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICardReaderDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            ResetCountCommand resetCountCmd = command as ResetCountCommand;
-            resetCountCmd.IsNotNull($"Invalid parameter in the ResetCount Handle method. {nameof(resetCountCmd)}");
+            var resetCountCmd = command.IsA<ResetCountCommand>($"Invalid parameter in the ResetCount Handle method. {nameof(ResetCountCommand)}");
             
             IResetCountEvents events = new ResetCountEvents(Connection, resetCountCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            ResetCountCommand resetCountcommand = command as ResetCountCommand;
+            var resetCountcommand = command.IsA<ResetCountCommand>();
 
             ResetCountCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.CardReader
                 _ => ResetCountCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            ResetCountCompletion response = new ResetCountCompletion(resetCountcommand.Headers.RequestId, new ResetCountCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new ResetCountCompletion(resetCountcommand.Headers.RequestId, new ResetCountCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICardReaderDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICardReaderDevice Device { get; }
+        private CardReaderServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

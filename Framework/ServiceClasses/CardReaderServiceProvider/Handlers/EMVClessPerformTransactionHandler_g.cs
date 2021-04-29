@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * EMVClessPerformTransactionHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.CardReader
         public EMVClessPerformTransactionHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(EMVClessPerformTransactionHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CardReaderServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(EMVClessPerformTransactionHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICardReaderDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            EMVClessPerformTransactionCommand eMVClessPerformTransactionCmd = command as EMVClessPerformTransactionCommand;
-            eMVClessPerformTransactionCmd.IsNotNull($"Invalid parameter in the EMVClessPerformTransaction Handle method. {nameof(eMVClessPerformTransactionCmd)}");
+            var eMVClessPerformTransactionCmd = command.IsA<EMVClessPerformTransactionCommand>($"Invalid parameter in the EMVClessPerformTransaction Handle method. {nameof(EMVClessPerformTransactionCommand)}");
             
             IEMVClessPerformTransactionEvents events = new EMVClessPerformTransactionEvents(Connection, eMVClessPerformTransactionCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            EMVClessPerformTransactionCommand eMVClessPerformTransactioncommand = command as EMVClessPerformTransactionCommand;
+            var eMVClessPerformTransactioncommand = command.IsA<EMVClessPerformTransactionCommand>();
 
             EMVClessPerformTransactionCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.CardReader
                 _ => EMVClessPerformTransactionCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            EMVClessPerformTransactionCompletion response = new EMVClessPerformTransactionCompletion(eMVClessPerformTransactioncommand.Headers.RequestId, new EMVClessPerformTransactionCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new EMVClessPerformTransactionCompletion(eMVClessPerformTransactioncommand.Headers.RequestId, new EMVClessPerformTransactionCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICardReaderDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICardReaderDevice Device { get; }
+        private CardReaderServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

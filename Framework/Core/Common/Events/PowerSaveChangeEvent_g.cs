@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
  * PowerSaveChangeEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Common.Events
 
     [DataContract]
     [Event(Name = "Common.PowerSaveChangeEvent")]
-    public sealed class PowerSaveChangeEvent : Event<PowerSaveChangeEvent.PayloadData>
+    public sealed class PowerSaveChangeEvent : UnsolicitedEvent<PowerSaveChangeEvent.PayloadData>
     {
 
-        public PowerSaveChangeEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public PowerSaveChangeEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

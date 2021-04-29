@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * QueryIFMIdentifierHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:04
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.CardReader
         public QueryIFMIdentifierHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(QueryIFMIdentifierHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<CardReaderServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(QueryIFMIdentifierHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ICardReaderDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            QueryIFMIdentifierCommand queryIFMIdentifierCmd = command as QueryIFMIdentifierCommand;
-            queryIFMIdentifierCmd.IsNotNull($"Invalid parameter in the QueryIFMIdentifier Handle method. {nameof(queryIFMIdentifierCmd)}");
+            var queryIFMIdentifierCmd = command.IsA<QueryIFMIdentifierCommand>($"Invalid parameter in the QueryIFMIdentifier Handle method. {nameof(QueryIFMIdentifierCommand)}");
             
             IQueryIFMIdentifierEvents events = new QueryIFMIdentifierEvents(Connection, queryIFMIdentifierCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.CardReader
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            QueryIFMIdentifierCommand queryIFMIdentifiercommand = command as QueryIFMIdentifierCommand;
+            var queryIFMIdentifiercommand = command.IsA<QueryIFMIdentifierCommand>();
 
             QueryIFMIdentifierCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.CardReader
                 _ => QueryIFMIdentifierCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            QueryIFMIdentifierCompletion response = new QueryIFMIdentifierCompletion(queryIFMIdentifiercommand.Headers.RequestId, new QueryIFMIdentifierCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new QueryIFMIdentifierCompletion(queryIFMIdentifiercommand.Headers.RequestId, new QueryIFMIdentifierCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ICardReaderDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ICardReaderDevice Device { get; }
+        private CardReaderServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

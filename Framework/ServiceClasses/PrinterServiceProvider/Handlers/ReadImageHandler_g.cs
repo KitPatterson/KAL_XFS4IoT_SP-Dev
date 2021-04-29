@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * ReadImageHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:07
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Printer
         public ReadImageHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ReadImageHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<PrinterServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ReadImageHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<IPrinterDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            ReadImageCommand readImageCmd = command as ReadImageCommand;
-            readImageCmd.IsNotNull($"Invalid parameter in the ReadImage Handle method. {nameof(readImageCmd)}");
+            var readImageCmd = command.IsA<ReadImageCommand>($"Invalid parameter in the ReadImage Handle method. {nameof(ReadImageCommand)}");
             
             IReadImageEvents events = new ReadImageEvents(Connection, readImageCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            ReadImageCommand readImagecommand = command as ReadImageCommand;
+            var readImagecommand = command.IsA<ReadImageCommand>();
 
             ReadImageCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Printer
                 _ => ReadImageCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            ReadImageCompletion response = new ReadImageCompletion(readImagecommand.Headers.RequestId, new ReadImageCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new ReadImageCompletion(readImagecommand.Headers.RequestId, new ReadImageCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public IPrinterDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private IPrinterDevice Device { get; }
+        private PrinterServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

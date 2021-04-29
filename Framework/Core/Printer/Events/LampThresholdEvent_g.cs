@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * LampThresholdEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.Printer.Events
 
     [DataContract]
     [Event(Name = "Printer.LampThresholdEvent")]
-    public sealed class LampThresholdEvent : Event<LampThresholdEvent.PayloadData>
+    public sealed class LampThresholdEvent : UnsolicitedEvent<LampThresholdEvent.PayloadData>
     {
 
-        public LampThresholdEvent(string RequestId, PayloadData Payload)
-            : base(RequestId, Payload)
+        public LampThresholdEvent(PayloadData Payload)
+            : base(Payload)
         { }
 
 

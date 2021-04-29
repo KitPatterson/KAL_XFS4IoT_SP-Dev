@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public interface IEMVClessIssuerUpdateEvents : ICardReaderEvents
+    public interface IEMVClessIssuerUpdateEvents 
     {
 
         Task EMVClessReadStatusEvent(XFS4IoT.CardReader.Events.EMVClessReadStatusEvent.PayloadData Payload);

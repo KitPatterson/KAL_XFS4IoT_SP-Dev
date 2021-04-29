@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * GetQueryMedia_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:15
 \***********************************************************************************************/
 
 using System;
@@ -92,8 +92,6 @@ namespace XFS4IoT.Printer.Completions
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, MediaTypeEnum? MediaType = null, BaseEnum? Base = null, int? UnitX = null, int? UnitY = null, int? SizeWidth = null, int? SizeHeight = null, int? PageCount = null, int? LineCount = null, int? PrintAreaX = null, int? PrintAreaY = null, int? PrintAreaWidth = null, int? PrintAreaHeight = null, int? RestrictedAreaX = null, int? RestrictedAreaY = null, int? RestrictedAreaWidth = null, int? RestrictedAreaHeight = null, int? Stagger = null, FoldTypeEnum? FoldType = null, PaperSourcesClass PaperSources = null)
                 : base(CompletionCode, ErrorDescription)
             {
-                ErrorDescription.IsNotNullOrWhitespace($"Null or an empty value for {nameof(ErrorDescription)} in received {nameof(GetQueryMediaCompletion.PayloadData)}");
-
                 this.ErrorCode = ErrorCode;
                 this.MediaType = MediaType;
                 this.Base = Base;

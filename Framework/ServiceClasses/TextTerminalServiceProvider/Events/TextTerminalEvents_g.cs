@@ -5,17 +5,16 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * TextTerminalEvents_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:06
 \***********************************************************************************************/
 
 
 using XFS4IoT;
 using XFS4IoTServer;
-using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.TextTerminal
 {
-    internal class TextTerminalEvents : ITextTerminalEvents
+    internal abstract class TextTerminalEvents
     {
         protected readonly IConnection connection;
         protected readonly string requestId;
@@ -26,12 +25,6 @@ namespace XFS4IoTFramework.TextTerminal
             Contracts.IsNotNullOrWhitespace(requestId, $"Unexpected request ID is received. {requestId}");
             this.requestId = requestId;
         }
-
-        public async Task FieldErrorEvent(XFS4IoT.TextTerminal.Events.FieldErrorEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.FieldErrorEvent(requestId, Payload));
-
-        public async Task FieldWarningEvent() => await connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.FieldWarningEvent(requestId));
-
-        public async Task KeyEvent(XFS4IoT.TextTerminal.Events.KeyEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.TextTerminal.Events.KeyEvent(requestId, Payload));
 
     }
 }

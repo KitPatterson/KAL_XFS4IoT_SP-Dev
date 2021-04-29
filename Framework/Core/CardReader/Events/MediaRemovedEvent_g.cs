@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
  * MediaRemovedEvent_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 01:20:14
 \***********************************************************************************************/
 
 using System;
@@ -18,11 +18,11 @@ namespace XFS4IoT.CardReader.Events
 
     [DataContract]
     [Event(Name = "CardReader.MediaRemovedEvent")]
-    public sealed class MediaRemovedEvent : Event<MessagePayloadBase>
+    public sealed class MediaRemovedEvent : UnsolicitedEvent<MessagePayloadBase>
     {
 
-        public MediaRemovedEvent(string RequestId)
-            : base(RequestId)
+        public MediaRemovedEvent()
+            : base()
         { }
 
     }

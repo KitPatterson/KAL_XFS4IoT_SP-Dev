@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
  * PrintFormHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:07
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.Printer
         public PrintFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(PrintFormHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<PrinterServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(PrintFormHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<IPrinterDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            PrintFormCommand printFormCmd = command as PrintFormCommand;
-            printFormCmd.IsNotNull($"Invalid parameter in the PrintForm Handle method. {nameof(printFormCmd)}");
+            var printFormCmd = command.IsA<PrintFormCommand>($"Invalid parameter in the PrintForm Handle method. {nameof(PrintFormCommand)}");
             
             IPrintFormEvents events = new PrintFormEvents(Connection, printFormCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.Printer
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            PrintFormCommand printFormcommand = command as PrintFormCommand;
+            var printFormcommand = command.IsA<PrintFormCommand>();
 
             PrintFormCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.Printer
                 _ => PrintFormCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            PrintFormCompletion response = new PrintFormCompletion(printFormcommand.Headers.RequestId, new PrintFormCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new PrintFormCompletion(printFormcommand.Headers.RequestId, new PrintFormCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public IPrinterDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private IPrinterDevice Device { get; }
+        private PrinterServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

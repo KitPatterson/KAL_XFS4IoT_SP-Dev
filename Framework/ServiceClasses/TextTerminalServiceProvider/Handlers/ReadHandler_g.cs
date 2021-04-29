@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * ReadHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:05
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.TextTerminal
         public ReadHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ReadHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<TextTerminalServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ReadHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ITextTerminalDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            ReadCommand readCmd = command as ReadCommand;
-            readCmd.IsNotNull($"Invalid parameter in the Read Handle method. {nameof(readCmd)}");
+            var readCmd = command.IsA<ReadCommand>($"Invalid parameter in the Read Handle method. {nameof(ReadCommand)}");
             
             IReadEvents events = new ReadEvents(Connection, readCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            ReadCommand readcommand = command as ReadCommand;
+            var readcommand = command.IsA<ReadCommand>();
 
             ReadCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.TextTerminal
                 _ => ReadCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            ReadCompletion response = new ReadCompletion(readcommand.Headers.RequestId, new ReadCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new ReadCompletion(readcommand.Headers.RequestId, new ReadCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ITextTerminalDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ITextTerminalDevice Device { get; }
+        private TextTerminalServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

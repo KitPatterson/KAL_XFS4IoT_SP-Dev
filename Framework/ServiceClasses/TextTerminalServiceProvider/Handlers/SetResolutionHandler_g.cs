@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * SetResolutionHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:05
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.TextTerminal
         public SetResolutionHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(SetResolutionHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<TextTerminalServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(SetResolutionHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ITextTerminalDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            SetResolutionCommand setResolutionCmd = command as SetResolutionCommand;
-            setResolutionCmd.IsNotNull($"Invalid parameter in the SetResolution Handle method. {nameof(setResolutionCmd)}");
+            var setResolutionCmd = command.IsA<SetResolutionCommand>($"Invalid parameter in the SetResolution Handle method. {nameof(SetResolutionCommand)}");
             
             ISetResolutionEvents events = new SetResolutionEvents(Connection, setResolutionCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            SetResolutionCommand setResolutioncommand = command as SetResolutionCommand;
+            var setResolutioncommand = command.IsA<SetResolutionCommand>();
 
             SetResolutionCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.TextTerminal
                 _ => SetResolutionCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            SetResolutionCompletion response = new SetResolutionCompletion(setResolutioncommand.Headers.RequestId, new SetResolutionCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SetResolutionCompletion(setResolutioncommand.Headers.RequestId, new SetResolutionCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ITextTerminalDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ITextTerminalDevice Device { get; }
+        private TextTerminalServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

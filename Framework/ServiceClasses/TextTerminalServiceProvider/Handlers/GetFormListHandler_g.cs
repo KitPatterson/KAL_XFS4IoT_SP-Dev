@@ -5,7 +5,7 @@
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
  * GetFormListHandler_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * created at 29/04/2021 00:49:05
 \***********************************************************************************************/
 
 
@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.TextTerminal
         public GetFormListHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(GetFormListHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<ServiceProvider>();
+            Provider = Dispatcher.IsA<TextTerminalServiceClass>();
 
             Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(GetFormListHandler)} constructor. {nameof(Provider.Device)}");
             Device = Provider.Device.IsA<ITextTerminalDevice>();
@@ -35,8 +35,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
-            GetFormListCommand getFormListCmd = command as GetFormListCommand;
-            getFormListCmd.IsNotNull($"Invalid parameter in the GetFormList Handle method. {nameof(getFormListCmd)}");
+            var getFormListCmd = command.IsA<GetFormListCommand>($"Invalid parameter in the GetFormList Handle method. {nameof(GetFormListCommand)}");
             
             IGetFormListEvents events = new GetFormListEvents(Connection, getFormListCmd.Headers.RequestId);
 
@@ -46,7 +45,7 @@ namespace XFS4IoTFramework.TextTerminal
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
-            GetFormListCommand getFormListcommand = command as GetFormListCommand;
+            var getFormListcommand = command.IsA<GetFormListCommand>();
 
             GetFormListCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -55,13 +54,13 @@ namespace XFS4IoTFramework.TextTerminal
                 _ => GetFormListCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            GetFormListCompletion response = new GetFormListCompletion(getFormListcommand.Headers.RequestId, new GetFormListCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new GetFormListCompletion(getFormListcommand.Headers.RequestId, new GetFormListCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }
 
-        public ITextTerminalDevice Device { get; }
-        public ServiceProvider Provider { get; }
+        private ITextTerminalDevice Device { get; }
+        private TextTerminalServiceClass Provider { get; }
         private ILogger Logger { get; }
     }
 

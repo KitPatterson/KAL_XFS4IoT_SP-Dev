@@ -59,6 +59,10 @@ namespace XFS4IoTFramework.CardReader
                                                      cancel);
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.EjectCardAsync() -> {result.CompletionCode}");
 
+            // Todo: This is just an example of how unsolicited events are fired. 
+            // this is not a correct event to fire in this context.
+            await Provider.MediaRemovedEvent();
+
             return new EjectCardCompletion.PayloadData(result.CompletionCode,
                                                        result.ErrorDescription,
                                                        result.ErrorCode);

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public interface ISetKeyEvents : ICardReaderEvents
+    public interface ISetKeyEvents
     {
 
     }
