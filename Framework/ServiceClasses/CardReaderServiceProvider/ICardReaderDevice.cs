@@ -23,39 +23,6 @@ namespace XFS4IoTFramework.CardReader
     public interface ICardReaderDevice : IDevice
     {
         /// <summary>
-        /// This command is only applicable to motor driven card readers and latched dip card readers.
-        /// For motorized card readers the default operation is that the card is driven to the exit slot from where the usercan remove it.
-        /// The card remains in position for withdrawal until either it is taken or another command is issuedthat moves the card.
-        /// For latched dip readers, this command causes the card to be unlatched (if not already unlatched), enablingremoval.
-        /// After successful completion of this command, a CardReader.MediaRemovedEvent is generated to inform the application when the card is taken.
-        /// </summary>
-        Task<EjectCardResult> EjectCardAsync(EjectCardRequest ejectCardInfo, 
-                                             CancellationToken cancellation);
-
-        /// <summary>
-        /// The card is removed from its present position (card inserted into device, card entering, unknown position) and stored in the retain bin;
-        /// applicable to motor-driven card readers only.
-        /// The ID card unit sends a CardReader.RetainBinThresholdEvent if the storage capacity of the retainbin is reached.
-        /// If the storage capacity has already been reached, and the command cannot be executed, an error isreturned and the card remains in its present position.
-        /// </summary>
-        Task<CaptureCardResult> CaptureCardAsync(IRetainCardEvents events, 
-                                                 CancellationToken cancellation);
-
-        /// <summary>
-        /// This function resets the present value for number of cards retained to zero.
-        /// The function is possible formotor-driven card readers only.
-        /// The number of cards retained is controlled by the service.
-        /// </summary>
-        Task<ResetCountResult> ResetBinCountAsync(CancellationToken cancellation);
-
-        /// <summary>
-        /// This command is used for setting the DES key that is necessary for operating a CIM86 module.
-        /// The command must beexecuted before the first read command is issued to the card reader.
-        /// </summary>
-        Task<SetCIM86KeyResult> SetCIM86KeyAsync(SetCIM86KeyRequest keyInfo,
-                                                 CancellationToken cancellation);
-
-        /// <summary>
         /// For motor driven card readers, the card unit checks whether a card has been inserted. 
         /// All specified tracks are read immediately if the device can read with the low level accept command and store read data in the device specific class and set data on the ReadCardData method call.
         /// If reading the chip is requested, the chip will be contacted and reset and the ATR (AnswerTo Reset) data will be read. 
@@ -64,13 +31,9 @@ namespace XFS4IoTFramework.CardReader
         /// If no card has been inserted, and for all other categories of card readers, the card unit waits for the period of time specified in the call for a card to be either inserted or pulled through.
         /// The InsertCardEvent will be generated when there is no card in the cardreader and the device is ready to accept a card.
         /// </summary>
-        Task<AcceptAndReadCardResult> AcceptAndReadCardAsync(IReadRawDataEvents events,
-                                                             AcceptAndReadCardRequest acceptCardInfo,
-                                                             CancellationToken cancellation);
-
-        Task<AcceptAndWriteCardResult> AcceptAndWriteCardAsync(IWriteRawDataEvents events,
-                                                               int timeout,
-                                                               CancellationToken cancellation);
+        Task<AcceptCardResult> AcceptCardAsync(IAcceptCardEvents events,
+                                               AcceptCardRequest acceptCardInfo,
+                                               CancellationToken cancellation);
 
         /// <summary>
         /// Read alltracks specified.
@@ -99,6 +62,25 @@ namespace XFS4IoTFramework.CardReader
                                              CancellationToken cancellation);
 
         /// <summary>
+        /// This command is only applicable to motor driven card readers and latched dip card readers.
+        /// For motorized card readers the default operation is that the card is driven to the exit slot from where the usercan remove it.
+        /// The card remains in position for withdrawal until either it is taken or another command is issuedthat moves the card.
+        /// For latched dip readers, this command causes the card to be unlatched (if not already unlatched), enablingremoval.
+        /// After successful completion of this command, a CardReader.MediaRemovedEvent is generated to inform the application when the card is taken.
+        /// </summary>
+        Task<EjectCardResult> EjectCardAsync(EjectCardRequest ejectCardInfo, 
+                                             CancellationToken cancellation);
+
+        /// <summary>
+        /// The card is removed from its present position (card inserted into device, card entering, unknown position) and stored in the retain bin;
+        /// applicable to motor-driven card readers only.
+        /// The ID card unit sends a CardReader.RetainBinThresholdEvent if the storage capacity of the retainbin is reached.
+        /// If the storage capacity has already been reached, and the command cannot be executed, an error isreturned and the card remains in its present position.
+        /// </summary>
+        Task<CaptureCardResult> CaptureCardAsync(IRetainCardEvents events, 
+                                                 CancellationToken cancellation);
+
+        /// <summary>
         /// This command is used to communicate with the chip.
         /// Transparent data is sent from the application to the chip andthe response of the chip is returned transparently to the application.
         /// The identification information e.g. ATR of the chip must be obtained before issuing this command. 
@@ -123,6 +105,20 @@ namespace XFS4IoTFramework.CardReader
         /// </summary>
         Task<ResetDeviceResult> ResetDeviceAsync(IResetEvents events,
                                                  ResetDeviceRequest cardAction,
+                                                 CancellationToken cancellation);
+
+        /// <summary>
+        /// This function resets the present value for number of cards retained to zero.
+        /// The function is possible formotor-driven card readers only.
+        /// The number of cards retained is controlled by the service.
+        /// </summary>
+        Task<ResetCountResult> ResetBinCountAsync(CancellationToken cancellation);
+
+        /// <summary>
+        /// This command is used for setting the DES key that is necessary for operating a CIM86 module.
+        /// The command must beexecuted before the first read command is issued to the card reader.
+        /// </summary>
+        Task<SetCIM86KeyResult> SetCIM86KeyAsync(SetCIM86KeyRequest keyInfo,
                                                  CancellationToken cancellation);
 
         /// <summary>

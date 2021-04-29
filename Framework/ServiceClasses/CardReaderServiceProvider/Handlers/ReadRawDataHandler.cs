@@ -17,10 +17,10 @@ using XFS4IoT.CardReader.Completions;
 namespace XFS4IoTFramework.CardReader
 {
     /// <summary>
-    /// AcceptAndReadCardRequest
+    /// AcceptCardRequest
     /// Information contains to perform operation for accepting card and read card data if the device can read data while accepting card
     /// </summary>
-    public sealed class AcceptAndReadCardRequest
+    public sealed class AcceptCardRequest
     {
         /// <summary>
         /// AcceptAndReadCardRequest
@@ -29,9 +29,9 @@ namespace XFS4IoTFramework.CardReader
         /// <param name="DataToRead">The data type to be read in bitmap flags</param>
         /// <param name="FluxInactive">If this value is true, the flux senstor to be inactive, otherwise active</param>
         /// <param name="Timeout">Timeout on waiting a card is inserted</param>
-        public AcceptAndReadCardRequest(ReadCardRequest.CardDataTypesEnum DataToRead,
-                                        bool FluxInactive,
-                                        int Timeout)
+        public AcceptCardRequest(ReadCardRequest.CardDataTypesEnum DataToRead,
+                                 bool FluxInactive,
+                                 int Timeout)
         {
             this.DataToRead = DataToRead;
             this.FluxInactive = FluxInactive;
@@ -52,20 +52,34 @@ namespace XFS4IoTFramework.CardReader
     }
 
     /// <summary>
-    /// AcceptAndReadCardResult
+    /// AcceptCardResult
     /// Return result of accepting card, the card data must be cached until ReadCardData method gets called if the firmware command has capability to read card data and accept card
     /// </summary>
-    public sealed class AcceptAndReadCardResult : DeviceResult
+    public sealed class AcceptCardResult : DeviceResult
     {
-        public AcceptAndReadCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                      ReadRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                      string ErrorDescription = null)
+        public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                ErrorCodeEnum? ErrorCode = null,
+                                string ErrorDescription = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
         }
 
-        public ReadRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+        public enum ErrorCodeEnum
+        {
+            MediaJam,
+            ShutterFail, 
+            NoMedia, 
+            InvalidMedia, 
+            CardTooShort, 
+            CardTooLong
+        }
+
+        /// <summary>
+        /// Specifies the error code on accepting card. if there are colision for the contactless card or security card read failure, 
+        /// error code must be returned by the following ReadCardAsync method and this method should return success.
+        /// </summary>
+        public ErrorCodeEnum? ErrorCode { get; private set; }
     }
 
     /// <summary>
@@ -289,19 +303,34 @@ namespace XFS4IoTFramework.CardReader
             if (readRawData.Payload.FluxInactive is not null)
                 fluxInactive = (bool)readRawData.Payload.FluxInactive;
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptAndReadCardAsync()");
-            var acceptCardResult = await Device.AcceptAndReadCardAsync(events,
-                                                                       new AcceptAndReadCardRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
-                                                                       cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptAndReadCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCardAsync()");
+
+            IAcceptCardEvents newEvents = new AcceptCardEvents((ReadRawDataEvents)events);
+            newEvents.IsNotNull($"Invalid event reference. {nameof(AcceptCardEvents)}");
+
+            var acceptCardResult = await Device.AcceptCardAsync(newEvents,
+                                                                new AcceptCardRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
+                                                                cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
 
             if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
-                acceptCardResult.ErrorCode is not null ||
                 dataTypes == ReadCardRequest.CardDataTypesEnum.NoDataRead)
             {
-                return new ReadRawDataCompletion.PayloadData(acceptCardResult.CompletionCode, 
-                                                             acceptCardResult.ErrorDescription, 
-                                                             acceptCardResult.ErrorCode);
+                // Map to XFS erro code
+                ReadRawDataCompletion.PayloadData.ErrorCodeEnum? errorCode = acceptCardResult.ErrorCode switch
+                {
+                    AcceptCardResult.ErrorCodeEnum.MediaJam => ReadRawDataCompletion.PayloadData.ErrorCodeEnum.MediaJam,
+                    AcceptCardResult.ErrorCodeEnum.ShutterFail => ReadRawDataCompletion.PayloadData.ErrorCodeEnum.ShutterFail,
+                    AcceptCardResult.ErrorCodeEnum.NoMedia => ReadRawDataCompletion.PayloadData.ErrorCodeEnum.NoMedia,
+                    AcceptCardResult.ErrorCodeEnum.InvalidMedia => ReadRawDataCompletion.PayloadData.ErrorCodeEnum.InvalidMedia,
+                    AcceptCardResult.ErrorCodeEnum.CardTooShort => ReadRawDataCompletion.PayloadData.ErrorCodeEnum.CardTooShort,
+                    AcceptCardResult.ErrorCodeEnum.CardTooLong => ReadRawDataCompletion.PayloadData.ErrorCodeEnum.CardTooLong,
+                    _ => null
+                };
+
+                return new ReadRawDataCompletion.PayloadData(acceptCardResult.CompletionCode,
+                                                             acceptCardResult.ErrorDescription,
+                                                             errorCode);
             }
 
             // Card is accepted now and in the device, try to read card data now

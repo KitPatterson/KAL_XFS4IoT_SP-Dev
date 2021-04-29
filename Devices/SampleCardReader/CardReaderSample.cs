@@ -45,28 +45,19 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// If no card has been inserted, and for all other categories of card readers, the card unit waits for the period of time specified in the call for a card to be either inserted or pulled through.
         /// The InsertCardEvent will be generated when there is no card in the cardreader and the device is ready to accept a card.
         /// </summary>
-        public async Task<AcceptAndReadCardResult> AcceptAndReadCardAsync(IReadRawDataEvents events,
-                                                                          AcceptAndReadCardRequest acceptCardInfo,
-                                                                          CancellationToken cancellation)
+        public async Task<AcceptCardResult> AcceptCardAsync(IAcceptCardEvents events,
+                                                            AcceptCardRequest acceptCardInfo,
+                                                            CancellationToken cancellation)
         {
-            await Task.Delay(2000, cancellation);
-            await events.MediaInsertedEvent();
-
-            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
-            await Task.Delay(1000, cancellation);
-
-            return new AcceptAndReadCardResult(MessagePayload.CompletionCodeEnum.Success);
-        }
-
-        public async Task<AcceptAndWriteCardResult> AcceptAndWriteCardAsync(IWriteRawDataEvents events,
-                                                                            int timeout,
-                                                                            CancellationToken cancellation)
-        {
-            await Task.Delay(100, cancellation);
+            if (acceptCardInfo.DataToRead != ReadCardRequest.CardDataTypesEnum.NoDataRead)
+            {
+                await Task.Delay(2000, cancellation);
+                await events.MediaInsertedEvent();
+            }
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return new AcceptAndWriteCardResult(MessagePayload.CompletionCodeEnum.Success);
+            return new AcceptCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
