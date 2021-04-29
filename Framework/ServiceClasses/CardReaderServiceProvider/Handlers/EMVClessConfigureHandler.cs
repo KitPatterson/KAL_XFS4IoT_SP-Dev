@@ -33,8 +33,7 @@ namespace XFS4IoTFramework.CardReader
 
         /// <summary>
         /// The application identifier to be accepted by the contactless chip card reader. The
-        /// [CardReader.EMVClessQueryApplications](#cardreader.emvclessqueryapplications) command will
-        /// return the list of supported application identifiers.
+        /// CardReader.EMVClessQueryApplications command will return the list of supported application identifiers.
         /// </summary>
         public List<byte> AID { get; private set; }
 
@@ -125,7 +124,7 @@ namespace XFS4IoTFramework.CardReader
     public sealed class EMVContactlessConfigureRequest
     {
         /// <summary>
-        /// EMVClessConfigureRequest
+        /// EMVContactlessConfigureRequest
         /// </summary>
         /// <param name="TerminalData">Terminal configuration data formatted in TLV.</param>
         /// <param name="AIDs">List of AIDs</param>
@@ -138,10 +137,10 @@ namespace XFS4IoTFramework.CardReader
         }
 
         /// <summary>
-        /// Base64 encoded representation of the BER-TLV formatted data for the terminal e.g. Terminal Type,
+        /// The BER-TLV formatted data for the terminal e.g. Terminal Type,
         /// Transaction Category Code, Merchant Name & Location etc. Any terminal based data elements referenced
         /// in the Payment Systems Specifications or EMVCo Contactless Payment Systems Specifications Books may be
-        /// included (see References [2] to [14] section for more details).
+        /// included.
         /// </summary>
         public List<byte> TerminalData { get; private set; }
 
@@ -151,7 +150,7 @@ namespace XFS4IoTFramework.CardReader
         /// contactless readers may use only the AID.
         /// 
         /// Each AID-Transaction Type or each AID-Kernel-Transaction Type combination will have its own unique set
-        /// of configuration data. See References [2] and [3] for more details.
+        /// of configuration data. 
         /// </summary>
         public List<AIDInfo> AIDs { get; private set; }
 

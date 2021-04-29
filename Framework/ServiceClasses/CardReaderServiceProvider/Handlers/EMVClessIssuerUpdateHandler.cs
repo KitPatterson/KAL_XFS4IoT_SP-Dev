@@ -67,6 +67,10 @@ namespace XFS4IoTFramework.CardReader
         }
 
         public EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
+
+        /// <summary>
+        /// Result of the contactless transaction
+        /// </summary>
         public EMVContactlessTransactionDataOutput TransactionResult { get; private set; }
     }
 
@@ -84,7 +88,7 @@ namespace XFS4IoTFramework.CardReader
                 result.TransactionResult is not null)
             {
                 // Build transaction output data
-                EMVClessIssuerUpdateCompletion.PayloadData.ChipClass chip = new ((EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.TxOutcomeEnum)result.TransactionResult.TxOutcome,
+                EMVClessIssuerUpdateCompletion.PayloadData.ChipClass chip = new ((EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.TxOutcomeEnum)result.TransactionResult.TransactionOutcome,
                                                                                  (EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.CardholderActionEnum)result.TransactionResult.CardholderAction,
                                                                                  result.TransactionResult.DataRead.Count == 0 ? null : Convert.ToBase64String(result.TransactionResult.DataRead.ToArray()),
                                                                                  new EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.ClessOutcomeClass((EMVClessIssuerUpdateCompletion.PayloadData.ChipClass.ClessOutcomeClass.CvmEnum)result.TransactionResult.ClessOutcome.Cvm,

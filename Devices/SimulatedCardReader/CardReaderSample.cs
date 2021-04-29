@@ -45,9 +45,9 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// If no card has been inserted, and for all other categories of card readers, the card unit waits for the period of time specified in the call for a card to be either inserted or pulled through.
         /// The InsertCardEvent will be generated when there is no card in the cardreader and the device is ready to accept a card.
         /// </summary>
-        public async Task<AcceptCardToReadResult> AcceptCardAsync(IReadRawDataEvents events,
-                                                                  AcceptCardToReadRequest acceptCardInfo,
-                                                                  CancellationToken cancellation)
+        public async Task<AcceptAndReadCardResult> AcceptAndReadCardAsync(IReadRawDataEvents events,
+                                                                          AcceptAndReadCardRequest acceptCardInfo,
+                                                                          CancellationToken cancellation)
         {
             await Task.Delay(2000, cancellation);
             await events.MediaInsertedEvent();
@@ -55,18 +55,18 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
             await Task.Delay(1000, cancellation);
 
-            return new AcceptCardToReadResult(MessagePayload.CompletionCodeEnum.Success);
+            return new AcceptAndReadCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
-        public async Task<AcceptCardToWriteResult> AcceptCardAsync(IWriteRawDataEvents events,
-                                                             int timeout,
-                                                             CancellationToken cancellation)
+        public async Task<AcceptAndWriteCardResult> AcceptAndWriteCardAsync(IWriteRawDataEvents events,
+                                                                            int timeout,
+                                                                            CancellationToken cancellation)
         {
             await Task.Delay(100, cancellation);
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return new AcceptCardToWriteResult(MessagePayload.CompletionCodeEnum.Success);
+            return new AcceptAndWriteCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -80,51 +80,51 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, errorCardCollision will be returned.
         /// </summary>
-        public async Task<ReadCardDataResult> ReadCardDataAsync(IReadRawDataEvents events,
-                                                                ReadCardDataRequest dataToRead,
-                                                                CancellationToken cancellation)
+        public async Task<ReadCardResult> ReadCardAsync(IReadRawDataEvents events,
+                                                        ReadCardRequest dataToRead,
+                                                        CancellationToken cancellation)
         {
             await Task.Delay(1000, cancellation);
 
             MessagePayload.CompletionCodeEnum completionCode = MessagePayload.CompletionCodeEnum.InvalidData;
 
-            Dictionary<ReadCardDataRequest.CardDataTypesEnum, ReadCardDataResult.CardData> readData = new();
-            List<ReadCardDataResult.CardData> chipATR = new(); 
+            Dictionary<ReadCardRequest.CardDataTypesEnum, ReadCardResult.CardData> readData = new();
+            List<ReadCardResult.CardData> chipATR = new(); 
             
-            if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track1) == ReadCardDataRequest.CardDataTypesEnum.Track1||
-                (dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track2) == ReadCardDataRequest.CardDataTypesEnum.Track2||
-                (dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track3) == ReadCardDataRequest.CardDataTypesEnum.Track3 ||
-                (dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Chip) == ReadCardDataRequest.CardDataTypesEnum.Chip)
+            if ((dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Track1) == ReadCardRequest.CardDataTypesEnum.Track1||
+                (dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Track2) == ReadCardRequest.CardDataTypesEnum.Track2||
+                (dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Track3) == ReadCardRequest.CardDataTypesEnum.Track3 ||
+                (dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Chip) == ReadCardRequest.CardDataTypesEnum.Chip)
             {
-                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track1) == ReadCardDataRequest.CardDataTypesEnum.Track1)
+                if ((dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Track1) == ReadCardRequest.CardDataTypesEnum.Track1)
                 {
-                    readData.Add(ReadCardDataRequest.CardDataTypesEnum.Track1, 
-                                 new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok, 
+                    readData.Add(ReadCardRequest.CardDataTypesEnum.Track1, 
+                                 new ReadCardResult.CardData(ReadCardResult.CardData.DataStatusEnum.Ok, 
                                  Encoding.UTF8.GetBytes("B1234567890123456^SMITH/JOHN.MR^020945852301200589800568000000").ToList()));
                 }
-                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track2) == ReadCardDataRequest.CardDataTypesEnum.Track2)
+                if ((dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Track2) == ReadCardRequest.CardDataTypesEnum.Track2)
                 {
-                    readData.Add(ReadCardDataRequest.CardDataTypesEnum.Track2,
-                                 new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok,
+                    readData.Add(ReadCardRequest.CardDataTypesEnum.Track2,
+                                 new ReadCardResult.CardData(ReadCardResult.CardData.DataStatusEnum.Ok,
                                  Encoding.UTF8.GetBytes("1234567890123456=0209458523012005898").ToList()));
                 }
-                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Track3) == ReadCardDataRequest.CardDataTypesEnum.Track3)
+                if ((dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Track3) == ReadCardRequest.CardDataTypesEnum.Track3)
                 {
-                    readData.Add(ReadCardDataRequest.CardDataTypesEnum.Track3,
-                                 new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok,
+                    readData.Add(ReadCardRequest.CardDataTypesEnum.Track3,
+                                 new ReadCardResult.CardData(ReadCardResult.CardData.DataStatusEnum.Ok,
                                  Encoding.UTF8.GetBytes("011234567890123456==000667788903609640040000006200013010000020000098120209105123==00568000999999").ToList()));
                 }
-                if ((dataToRead.DataToRead & ReadCardDataRequest.CardDataTypesEnum.Chip) == ReadCardDataRequest.CardDataTypesEnum.Chip)
+                if ((dataToRead.DataToRead & ReadCardRequest.CardDataTypesEnum.Chip) == ReadCardRequest.CardDataTypesEnum.Chip)
                 {
-                    chipATR.Add(new ReadCardDataResult.CardData(ReadCardDataResult.CardData.DataStatusEnum.Ok,
+                    chipATR.Add(new ReadCardResult.CardData(ReadCardResult.CardData.DataStatusEnum.Ok,
                                 new List<byte>() { 0x3b, 0x2a, 0x00, 0x80, 0x65, 0xa2, 0x1, 0x2, 0x1, 0x31, 0x72, 0xd6, 0x43 }));
                 }
                 completionCode = MessagePayload.CompletionCodeEnum.Success;
             }
             
-            return new ReadCardDataResult(completionCode,
-                                          readData,
-                                          chipATR);
+            return new ReadCardResult(completionCode,
+                                      readData,
+                                      chipATR);
         }
 
         /// <summary>
@@ -134,13 +134,13 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// This procedure is followed by data verification.
         /// If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
         /// </summary>
-        public async Task<WriteCardDataResult> WriteCardDataAsync(IWriteRawDataEvents events,
-                                                                  WriteCardDataRequest dataToWrite,
-                                                                  CancellationToken cancellation)
+        public async Task<WriteCardResult> WriteCardAsync(IWriteRawDataEvents events,
+                                                          WriteCardRequest dataToWrite,
+                                                          CancellationToken cancellation)
         {
             await Task.Delay(1000, cancellation);
 
-            return new WriteCardDataResult(MessagePayload.CompletionCodeEnum.Success);
+            return new WriteCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
 
             await Task.Delay(1000, cancellation);
 
-            EMVContactlessTransactionDataOutput txnOutput = new(EMVContactlessTransactionDataOutput.TxOutcomeEnum.Approve,
+            EMVContactlessTransactionDataOutput txnOutput = new(EMVContactlessTransactionDataOutput.TransactionOutcomeEnum.Approve,
                                                                 EMVContactlessTransactionDataOutput.CardholderActionEnum.None,
                                                                 new List<byte>() { 0x9c, 0x1, 0x0, 0x9f, 0x26, 0x08, 0x47, 0x9c, 0x4f, 0x7e, 0xc8, 0x52, 0xd1, 0x6, 0x9f, 0x34, 0x03, 0x1e, 0x00, 0x00 },
                                                                 new EMVContactlessTransactionDataOutput.EMVContactlessOutcome(EMVContactlessTransactionDataOutput.EMVContactlessOutcome.CvmEnum.OnlinePIN,
@@ -300,7 +300,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             await Task.Delay(1000, cancellation);
 
-            EMVContactlessTransactionDataOutput txnOutput = new (EMVContactlessTransactionDataOutput.TxOutcomeEnum.Approve,
+            EMVContactlessTransactionDataOutput txnOutput = new (EMVContactlessTransactionDataOutput.TransactionOutcomeEnum.Approve,
                                                                  EMVContactlessTransactionDataOutput.CardholderActionEnum.None, 
                                                                  new List<byte>() { 0x9c, 0x1, 0x0, 0x9f, 0x26, 0x08, 0x47, 0x9c, 0x4f, 0x7e, 0xc8, 0x52, 0xd1, 0x6, 0x9f, 0x34, 0x03, 0x1e, 0x00, 0x00}, 
                                                                  new EMVContactlessTransactionDataOutput.EMVContactlessOutcome(EMVContactlessTransactionDataOutput.EMVContactlessOutcome.CvmEnum.OnlinePIN,

@@ -17,39 +17,47 @@ using XFS4IoT.CardReader.Completions;
 namespace XFS4IoTFramework.CardReader
 {
     /// <summary>
-    /// AcceptCardToReadRequest
+    /// AcceptAndReadCardRequest
     /// Information contains to perform operation for accepting card and read card data if the device can read data while accepting card
     /// </summary>
-    public sealed class AcceptCardToReadRequest
+    public sealed class AcceptAndReadCardRequest
     {
         /// <summary>
-        /// AcceptCardRequest
+        /// AcceptAndReadCardRequest
         /// Card Data types to be read after card is accepted if the device has a capability to accept and read data
         /// </summary>
         /// <param name="DataToRead">The data type to be read in bitmap flags</param>
         /// <param name="FluxInactive">If this value is true, the flux senstor to be inactive, otherwise active</param>
         /// <param name="Timeout">Timeout on waiting a card is inserted</param>
-        public AcceptCardToReadRequest(ReadCardDataRequest.CardDataTypesEnum DataToRead,
-                                       bool FluxInactive,
-                                       int Timeout)
+        public AcceptAndReadCardRequest(ReadCardRequest.CardDataTypesEnum DataToRead,
+                                        bool FluxInactive,
+                                        int Timeout)
         {
             this.DataToRead = DataToRead;
             this.FluxInactive = FluxInactive;
             this.Timeout = Timeout;
         }
 
-        public ReadCardDataRequest.CardDataTypesEnum DataToRead { get; private set; }
+        public ReadCardRequest.CardDataTypesEnum DataToRead { get; private set; }
+
+        /// <summary>
+        /// Enable flux sensor or not
+        /// </summary>
         public bool FluxInactive { get; private set; }
+
+        /// <summary>
+        /// Timeout for waiting card insertion
+        /// </summary>
         public int Timeout { get; private set; }
     }
 
     /// <summary>
-    /// AcceptCardToReadResult
+    /// AcceptAndReadCardResult
     /// Return result of accepting card, the card data must be cached until ReadCardData method gets called if the firmware command has capability to read card data and accept card
     /// </summary>
-    public sealed class AcceptCardToReadResult : DeviceResult
+    public sealed class AcceptAndReadCardResult : DeviceResult
     {
-        public AcceptCardToReadResult(MessagePayload.CompletionCodeEnum CompletionCode,
+        public AcceptAndReadCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                       ReadRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                       string ErrorDescription = null)
             : base(CompletionCode, ErrorDescription)
@@ -61,10 +69,10 @@ namespace XFS4IoTFramework.CardReader
     }
 
     /// <summary>
-    /// ReadCardDataRequest
+    /// ReadCardRequest
     /// Information contains to perform operation for reading card after the card is successfully inserted in read position
     /// </summary>
-    public sealed class ReadCardDataRequest
+    public sealed class ReadCardRequest
     {
         [Flags]
         public enum CardDataTypesEnum
@@ -86,11 +94,11 @@ namespace XFS4IoTFramework.CardReader
         }
 
         /// <summary>
-        /// AcceptCardRequest
+        /// ReadCardRequest
         /// Card Data types to be read after card is accepted
         /// </summary>
         /// <param name="DataToRead">Data type to be read in bitmap flags</param>
-        public ReadCardDataRequest(CardDataTypesEnum DataToRead)
+        public ReadCardRequest(CardDataTypesEnum DataToRead)
         {
             this.DataToRead = DataToRead;
         }
@@ -99,10 +107,10 @@ namespace XFS4IoTFramework.CardReader
     }
 
     /// <summary>
-    /// AcceptCardResult
+    /// ReadCardResult
     /// Return result of accepting card, the card data must be cached until ReadCardData method gets called if the firmware command has capability to read card data and accept card
     /// </summary>
-    public sealed class ReadCardDataResult : DeviceResult
+    public sealed class ReadCardResult : DeviceResult
     {
         /// <summary>
         /// Contains the data read from track 2.
@@ -125,20 +133,8 @@ namespace XFS4IoTFramework.CardReader
             /// Store card data read by the device class
             /// </summary>
             /// <param name="DataStatus">Status of reading the card data</param>
-            /// <param name="MemcoryChipDataStatus">Status of reading the memory chip data</param>
-            /// <param name="SecutiryDataStatus">Status of reading the security data</param>
             /// <param name="Data">Read binary data</param>
             public CardData(DataStatusEnum? DataStatus = null,
-                            ReadRawDataCompletion.PayloadData.MemoryChipClass.DataEnum? MemcoryChipDataStatus = null,
-                            ReadRawDataCompletion.PayloadData.SecurityClass.DataEnum? SecutiryDataStatus = null,
-                            List<byte> Data = null)
-            {
-                this.DataStatus = DataStatus;
-                this.MemcoryChipDataStatus = MemcoryChipDataStatus;
-                this.SecutiryDataStatus = SecutiryDataStatus;
-                this.Data = Data;
-            }
-            public CardData(DataStatusEnum? DataStatus = null,
                             List<byte> Data = null)
             {
                 this.DataStatus = DataStatus;
@@ -146,21 +142,27 @@ namespace XFS4IoTFramework.CardReader
                 this.SecutiryDataStatus = null;
                 this.Data = Data;
             }
-            public CardData(ReadRawDataCompletion.PayloadData.MemoryChipClass.DataEnum? MemcoryChipDataStatus = null,
-                            List<byte> Data = null)
+
+            /// <param name="DataStatus">Status of reading the card data</param>
+            /// <param name="MemcoryChipDataStatus">Status of reading the memory chip data</param>
+            public CardData(DataStatusEnum? DataStatus = null, 
+                            ReadRawDataCompletion.PayloadData.MemoryChipClass.DataEnum? MemcoryChipDataStatus = null)
             {
-                this.DataStatus = null;
+                this.DataStatus = DataStatus;
                 this.MemcoryChipDataStatus = MemcoryChipDataStatus;
                 this.SecutiryDataStatus = null;
-                this.Data = Data;
+                this.Data = null;
             }
-            public CardData(ReadRawDataCompletion.PayloadData.SecurityClass.DataEnum? SecutiryDataStatus = null,
-                            List<byte> Data = null)
+
+            /// <param name="DataStatus">Status of reading the card data</param>
+            /// <param name="SecutiryDataStatus">Status of reading the security data</param>
+            public CardData(DataStatusEnum? DataStatus = null, 
+                            ReadRawDataCompletion.PayloadData.SecurityClass.DataEnum? SecutiryDataStatus = null)
             {
-                this.DataStatus = null;
+                this.DataStatus = DataStatus;
                 this.MemcoryChipDataStatus = null;
                 this.SecutiryDataStatus = SecutiryDataStatus;
-                this.Data = Data;
+                this.Data = null;
             }
 
             /// <summary>
@@ -186,43 +188,44 @@ namespace XFS4IoTFramework.CardReader
         }
 
         /// <summary>
-        /// 
+        /// ReadCardResult
+        /// Result of card data read.
         /// </summary>
         /// <param name="CompletionCode">Generic completion codes</param>
         /// <param name="ErrorCode">Command specific error codes</param>
         /// <param name="ErrorDescription">Details of error description</param>
         /// <param name="DataRead">Card data read in binary</param>
         /// <param name="ChipATRRead">Read chip ATR received</param>
-        public ReadCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                  ReadRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                  string ErrorDescription = null,
-                                  Dictionary<ReadCardDataRequest.CardDataTypesEnum, CardData> DataRead = null,
-                                  List<CardData> ChipATRRead = null)
+        public ReadCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                              ReadRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
+                              string ErrorDescription = null,
+                              Dictionary<ReadCardRequest.CardDataTypesEnum, CardData> DataRead = null,
+                              List<CardData> ChipATRRead = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
             this.DataRead = DataRead;
             this.ChipATRRead = ChipATRRead;
         }
-        public ReadCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                  Dictionary<ReadCardDataRequest.CardDataTypesEnum, CardData> DataRead = null,
-                                  List<CardData> ChipATRRead = null)
+        public ReadCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                              Dictionary<ReadCardRequest.CardDataTypesEnum, CardData> DataRead = null,
+                              List<CardData> ChipATRRead = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
             this.DataRead = DataRead;
             this.ChipATRRead = ChipATRRead;
         }
-        public ReadCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                  Dictionary<ReadCardDataRequest.CardDataTypesEnum, CardData> DataRead = null)
+        public ReadCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                              Dictionary<ReadCardRequest.CardDataTypesEnum, CardData> DataRead = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
             this.DataRead = DataRead;
             this.ChipATRRead = null;
         }
-        public ReadCardDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                  List<CardData> ChipATRRead = null)
+        public ReadCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                              List<CardData> ChipATRRead = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
@@ -240,7 +243,7 @@ namespace XFS4IoTFramework.CardReader
         /// ReadData
         /// All read card data to be stored except chip ATR
         /// </summary>
-        public Dictionary<ReadCardDataRequest.CardDataTypesEnum, CardData> DataRead { get; private set; }
+        public Dictionary<ReadCardRequest.CardDataTypesEnum, CardData> DataRead { get; private set; }
 
         /// <summary>
         /// Contains the ATR data read from the chip. For contactless chip card readers, multiple identification
@@ -253,48 +256,48 @@ namespace XFS4IoTFramework.CardReader
     {
         private async Task<ReadRawDataCompletion.PayloadData> HandleReadRawData(IReadRawDataEvents events, ReadRawDataCommand readRawData, CancellationToken cancel)
         {
-            ReadCardDataRequest.CardDataTypesEnum dataTypes = ReadCardDataRequest.CardDataTypesEnum.NoDataRead;
+            ReadCardRequest.CardDataTypesEnum dataTypes = ReadCardRequest.CardDataTypesEnum.NoDataRead;
 
             if (readRawData.Payload.Track1 is not null && (bool)readRawData.Payload.Track1)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Track1;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Track1;
             if (readRawData.Payload.Track2 is not null && (bool)readRawData.Payload.Track2)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Track2;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Track2;
             if (readRawData.Payload.Track3 is not null && (bool)readRawData.Payload.Track3)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Track3;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Track3;
             if (readRawData.Payload.Chip is not null && (bool)readRawData.Payload.Chip)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Chip;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Chip;
             if (readRawData.Payload.Security is not null && (bool)readRawData.Payload.Security)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Security;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Security;
             if (readRawData.Payload.MemoryChip is not null && (bool)readRawData.Payload.MemoryChip)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.MemoryChip;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.MemoryChip;
             if (readRawData.Payload.Track1Front is not null && (bool)readRawData.Payload.Track1Front)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Track1Front;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Track1Front;
             if (readRawData.Payload.FrontImage is not null && (bool)readRawData.Payload.FrontImage)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.FrontImage;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.FrontImage;
             if (readRawData.Payload.BackImage is not null && (bool)readRawData.Payload.BackImage)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.BackImage;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.BackImage;
             if (readRawData.Payload.Track1JIS is not null && (bool)readRawData.Payload.Track1JIS)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Track1JIS;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Track1JIS;
             if (readRawData.Payload.Track3JIS is not null && (bool)readRawData.Payload.Track3JIS)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Track3JIS;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Track3JIS;
             if (readRawData.Payload.Ddi is not null && (bool)readRawData.Payload.Ddi)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Ddi;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Ddi;
             if (readRawData.Payload.Watermark is not null && (bool)readRawData.Payload.Watermark)
-                dataTypes |= ReadCardDataRequest.CardDataTypesEnum.Watermark;
+                dataTypes |= ReadCardRequest.CardDataTypesEnum.Watermark;
 
             bool fluxInactive = readRawData.Payload.FluxInactive ?? true;
             if (readRawData.Payload.FluxInactive is not null)
                 fluxInactive = (bool)readRawData.Payload.FluxInactive;
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCardAsync()");
-            var acceptCardResult = await Device.AcceptCardAsync(events,
-                                                                new AcceptCardToReadRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
-                                                                cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptAndReadCardAsync()");
+            var acceptCardResult = await Device.AcceptAndReadCardAsync(events,
+                                                                       new AcceptAndReadCardRequest(dataTypes, fluxInactive, readRawData.Payload.Timeout),
+                                                                       cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptAndReadCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
 
             if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
                 acceptCardResult.ErrorCode is not null ||
-                dataTypes == ReadCardDataRequest.CardDataTypesEnum.NoDataRead)
+                dataTypes == ReadCardRequest.CardDataTypesEnum.NoDataRead)
             {
                 return new ReadRawDataCompletion.PayloadData(acceptCardResult.CompletionCode, 
                                                              acceptCardResult.ErrorDescription, 
@@ -302,11 +305,11 @@ namespace XFS4IoTFramework.CardReader
             }
 
             // Card is accepted now and in the device, try to read card data now
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.ReadCardDataAsync()");
-            var readCardDataResult = await Device.ReadCardDataAsync(events,
-                                                                    new ReadCardDataRequest(dataTypes),
-                                                                    cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ReadCardDataAsync() -> {readCardDataResult.CompletionCode}, {readCardDataResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.ReadCardAsync()");
+            var readCardDataResult = await Device.ReadCardAsync(events,
+                                                                new ReadCardRequest(dataTypes),
+                                                                cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.ReadCardAsync() -> {readCardDataResult.CompletionCode}, {readCardDataResult.ErrorCode}");
 
             if (readCardDataResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
                 readCardDataResult.ErrorCode is not null)
@@ -330,120 +333,120 @@ namespace XFS4IoTFramework.CardReader
             ReadRawDataCompletion.PayloadData.SecurityClass security = null;
             ReadRawDataCompletion.PayloadData.MemoryChipClass memoryChip = null;
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Track1))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Track1))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Track1).IsTrue("Ttrack1 data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1].DataStatus, "Unexpected track1 data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1].Data?.ToArray();
-                track1 = new ReadRawDataCompletion.PayloadData.Track1Class((ReadRawDataCompletion.PayloadData.Track1Class.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Track1).IsTrue("Ttrack1 data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1].DataStatus, "Unexpected track1 data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1].Data?.ToArray();
+                track1 = new ReadRawDataCompletion.PayloadData.Track1Class((ReadRawDataCompletion.PayloadData.Track1Class.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1].DataStatus,
                                                                            (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Track2))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Track2))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Track2).IsTrue("Track2 data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track2].DataStatus, "Unexpected track2 data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track2].Data?.ToArray();
-                track2 = new ReadRawDataCompletion.PayloadData.Track2Class((ReadRawDataCompletion.PayloadData.Track2Class.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track2].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Track2).IsTrue("Track2 data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track2].DataStatus, "Unexpected track2 data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track2].Data?.ToArray();
+                track2 = new ReadRawDataCompletion.PayloadData.Track2Class((ReadRawDataCompletion.PayloadData.Track2Class.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track2].DataStatus,
                                                                            (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Track3))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Track3))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Track3).IsTrue("Track3 data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track3].DataStatus, "Unexpected track3 data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track3].Data?.ToArray();
-                track3 = new ReadRawDataCompletion.PayloadData.Track3Class((ReadRawDataCompletion.PayloadData.Track3Class.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track3].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Track3).IsTrue("Track3 data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track3].DataStatus, "Unexpected track3 data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track3].Data?.ToArray();
+                track3 = new ReadRawDataCompletion.PayloadData.Track3Class((ReadRawDataCompletion.PayloadData.Track3Class.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track3].DataStatus,
                                                                            (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Watermark))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Watermark))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Watermark).IsTrue("Watermark data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Watermark].DataStatus, "Unexpected watermak data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Watermark].Data?.ToArray();
-                watermark = new ReadRawDataCompletion.PayloadData.WatermarkClass((ReadRawDataCompletion.PayloadData.WatermarkClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Watermark].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Watermark).IsTrue("Watermark data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Watermark].DataStatus, "Unexpected watermak data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Watermark].Data?.ToArray();
+                watermark = new ReadRawDataCompletion.PayloadData.WatermarkClass((ReadRawDataCompletion.PayloadData.WatermarkClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Watermark].DataStatus,
                                                                                  (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Track1Front))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Track1Front))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Track1Front).IsTrue("Track1Front data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1Front].DataStatus, "Unexpected track1 front data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1Front].Data?.ToArray();
-                track1Front = new ReadRawDataCompletion.PayloadData.Track1FrontClass((ReadRawDataCompletion.PayloadData.Track1FrontClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1Front].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Track1Front).IsTrue("Track1Front data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1Front].DataStatus, "Unexpected track1 front data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1Front].Data?.ToArray();
+                track1Front = new ReadRawDataCompletion.PayloadData.Track1FrontClass((ReadRawDataCompletion.PayloadData.Track1FrontClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1Front].DataStatus,
                                                                            (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.FrontImage))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.FrontImage))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.FrontImage).IsTrue("FrontImage data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.FrontImage].DataStatus, "Unexpected front image data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.FrontImage].Data?.ToArray();
-                frontImage = new ReadRawDataCompletion.PayloadData.FrontImageClass((ReadRawDataCompletion.PayloadData.FrontImageClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.FrontImage].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.FrontImage).IsTrue("FrontImage data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.FrontImage].DataStatus, "Unexpected front image data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.FrontImage].Data?.ToArray();
+                frontImage = new ReadRawDataCompletion.PayloadData.FrontImageClass((ReadRawDataCompletion.PayloadData.FrontImageClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.FrontImage].DataStatus,
                                                                                    (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : string.Empty);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.BackImage))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.BackImage))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.BackImage).IsTrue("BackImage data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.BackImage].DataStatus, "Unexpected back image data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.BackImage].Data?.ToArray();
-                backImage = new ReadRawDataCompletion.PayloadData.BackImageClass((ReadRawDataCompletion.PayloadData.BackImageClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.BackImage].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.BackImage).IsTrue("BackImage data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.BackImage].DataStatus, "Unexpected back image data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.BackImage].Data?.ToArray();
+                backImage = new ReadRawDataCompletion.PayloadData.BackImageClass((ReadRawDataCompletion.PayloadData.BackImageClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.BackImage].DataStatus,
                                                                               (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Track1JIS))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Track1JIS))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Track1JIS).IsTrue("Track1JIS data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1JIS].DataStatus, "Unexpected track JIS1 data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1JIS].Data?.ToArray();
-                track1JIS = new ReadRawDataCompletion.PayloadData.Track1JISClass((ReadRawDataCompletion.PayloadData.Track1JISClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track1JIS].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Track1JIS).IsTrue("Track1JIS data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1JIS].DataStatus, "Unexpected track JIS1 data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1JIS].Data?.ToArray();
+                track1JIS = new ReadRawDataCompletion.PayloadData.Track1JISClass((ReadRawDataCompletion.PayloadData.Track1JISClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track1JIS].DataStatus,
                                                                                   (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Track3JIS))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Track3JIS))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Track3JIS).IsTrue("Track3JIS data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track3JIS].DataStatus, "Unexpected track JIS3 data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track3JIS].Data?.ToArray();
-                track3JIS = new ReadRawDataCompletion.PayloadData.Track3JISClass((ReadRawDataCompletion.PayloadData.Track3JISClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Track3JIS].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Track3JIS).IsTrue("Track3JIS data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track3JIS].DataStatus, "Unexpected track JIS3 data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track3JIS].Data?.ToArray();
+                track3JIS = new ReadRawDataCompletion.PayloadData.Track3JISClass((ReadRawDataCompletion.PayloadData.Track3JISClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Track3JIS].DataStatus,
                                                                                  (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Ddi))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Ddi))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Ddi).IsTrue("DDI data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Ddi].DataStatus, "Unexpected DDI data status is set by the device class. DataStatus field should not be null.");
-                byte[] data = readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Ddi].Data?.ToArray();
-                ddi = new ReadRawDataCompletion.PayloadData.DdiClass((ReadRawDataCompletion.PayloadData.DdiClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Ddi].DataStatus,
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Ddi).IsTrue("DDI data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Ddi].DataStatus, "Unexpected DDI data status is set by the device class. DataStatus field should not be null.");
+                byte[] data = readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Ddi].Data?.ToArray();
+                ddi = new ReadRawDataCompletion.PayloadData.DdiClass((ReadRawDataCompletion.PayloadData.DdiClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Ddi].DataStatus,
                                                                      (data is not null && data.Length > 0) ? Convert.ToBase64String(data) : null);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Security))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Security))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.Security).IsTrue("Security data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Security].DataStatus, "Unexpected security data status is set by the device class. DataStatus field should not be null.");
-                security = new ReadRawDataCompletion.PayloadData.SecurityClass((ReadRawDataCompletion.PayloadData.SecurityClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Security].DataStatus,
-                                                                               readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.Security].SecutiryDataStatus);
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.Security).IsTrue("Security data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Security].DataStatus, "Unexpected security data status is set by the device class. DataStatus field should not be null.");
+                security = new ReadRawDataCompletion.PayloadData.SecurityClass((ReadRawDataCompletion.PayloadData.SecurityClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Security].DataStatus,
+                                                                               readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.Security].SecutiryDataStatus);
             }
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.MemoryChip))
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.MemoryChip))
             {
-                readCardDataResult.DataRead.ContainsKey(ReadCardDataRequest.CardDataTypesEnum.MemoryChip).IsTrue("MemoryChip data is not set by the device class.");
-                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.MemoryChip].DataStatus, "Unexpected memocy chip data status is set by the device class. DataStatus field should not be null.");
-                memoryChip = new ReadRawDataCompletion.PayloadData.MemoryChipClass((ReadRawDataCompletion.PayloadData.MemoryChipClass.StatusEnum)readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.MemoryChip].DataStatus,
-                                                                                   readCardDataResult.DataRead[ReadCardDataRequest.CardDataTypesEnum.MemoryChip].MemcoryChipDataStatus);
+                readCardDataResult.DataRead.ContainsKey(ReadCardRequest.CardDataTypesEnum.MemoryChip).IsTrue("MemoryChip data is not set by the device class.");
+                Contracts.IsNotNull(readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.MemoryChip].DataStatus, "Unexpected memocy chip data status is set by the device class. DataStatus field should not be null.");
+                memoryChip = new ReadRawDataCompletion.PayloadData.MemoryChipClass((ReadRawDataCompletion.PayloadData.MemoryChipClass.StatusEnum)readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.MemoryChip].DataStatus,
+                                                                                   readCardDataResult.DataRead[ReadCardRequest.CardDataTypesEnum.MemoryChip].MemcoryChipDataStatus);
             }
 
             List<ReadRawDataCompletion.PayloadData.ChipClass> chip = null;
 
-            if (dataTypes.HasFlag(ReadCardDataRequest.CardDataTypesEnum.Chip) &&
+            if (dataTypes.HasFlag(ReadCardRequest.CardDataTypesEnum.Chip) &&
                 readCardDataResult.ChipATRRead is not null && 
                 readCardDataResult.ChipATRRead.Count > 0)
             {
                 chip = new List<ReadRawDataCompletion.PayloadData.ChipClass>();
-                foreach (ReadCardDataResult.CardData atr in readCardDataResult.ChipATRRead)
+                foreach (ReadCardResult.CardData atr in readCardDataResult.ChipATRRead)
                 {
                     Contracts.IsNotNull(atr.DataStatus, "Unexpected chip data status is set by the device class. DataStatus field should not be null.");
                     byte[] data = atr.Data?.ToArray();

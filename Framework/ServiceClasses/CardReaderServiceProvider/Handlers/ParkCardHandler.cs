@@ -29,7 +29,9 @@ namespace XFS4IoTFramework.CardReader
         /// ParkCardRequest
         /// Location is provided in this object where the card to be moved in the parking station.
         /// </summary>
-        /// <param name="PowerAction">Specifies which way to move the card. if this value is null, default action to be used.</param>
+        /// <param name="PowerAction">Specifies which way to move the card. if this value is null, default action to be used. 
+        /// In - move card from transport to parking station
+        /// Out - move card from parking station to the transport.</param>
         /// <param name="ParkingStation">Specifies which which parking station should be used. if the value is null, default location to be used.</param>
         public ParkCardRequest(ParkCardCommand.PayloadData.DirectionEnum? PowerAction, int? ParkingStation)
         {

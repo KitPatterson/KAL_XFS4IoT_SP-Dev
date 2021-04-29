@@ -64,13 +64,13 @@ namespace XFS4IoTFramework.CardReader
         /// If no card has been inserted, and for all other categories of card readers, the card unit waits for the period of time specified in the call for a card to be either inserted or pulled through.
         /// The InsertCardEvent will be generated when there is no card in the cardreader and the device is ready to accept a card.
         /// </summary>
-        Task<AcceptCardToReadResult> AcceptCardAsync(IReadRawDataEvents events,
-                                                     AcceptCardToReadRequest acceptCardInfo,
-                                                     CancellationToken cancellation);
+        Task<AcceptAndReadCardResult> AcceptAndReadCardAsync(IReadRawDataEvents events,
+                                                             AcceptAndReadCardRequest acceptCardInfo,
+                                                             CancellationToken cancellation);
 
-        Task<AcceptCardToWriteResult> AcceptCardAsync(IWriteRawDataEvents events,
-                                                      int timeout,
-                                                      CancellationToken cancellation);
+        Task<AcceptAndWriteCardResult> AcceptAndWriteCardAsync(IWriteRawDataEvents events,
+                                                               int timeout,
+                                                               CancellationToken cancellation);
 
         /// <summary>
         /// Read alltracks specified.
@@ -83,9 +83,9 @@ namespace XFS4IoTFramework.CardReader
         /// For contactless chip card readers a collision of two or more card signals may happen. 
         /// In this case, if the deviceis not able to pick the strongest signal, errorCardCollision will be returned.
         /// </summary>
-        Task<ReadCardDataResult> ReadCardDataAsync(IReadRawDataEvents events,
-                                                   ReadCardDataRequest dataToRead,
-                                                   CancellationToken cancellation);
+        Task<ReadCardResult> ReadCardAsync(IReadRawDataEvents events,
+                                           ReadCardRequest dataToRead,
+                                           CancellationToken cancellation);
 
         /// <summary>
         /// The device is ready to accept a card.
@@ -94,9 +94,9 @@ namespace XFS4IoTFramework.CardReader
         /// This procedure is followed by data verification.
         /// If power fails during a write the outcome of the operation will be vendor specific, there is no guarantee that thewrite will have succeeded.
         /// </summary>
-        Task<WriteCardDataResult> WriteCardDataAsync(IWriteRawDataEvents events,
-                                                     WriteCardDataRequest dataToWrite,
-                                                     CancellationToken cancellation);
+        Task<WriteCardResult> WriteCardAsync(IWriteRawDataEvents events,
+                                             WriteCardRequest dataToWrite,
+                                             CancellationToken cancellation);
 
         /// <summary>
         /// This command is used to communicate with the chip.
