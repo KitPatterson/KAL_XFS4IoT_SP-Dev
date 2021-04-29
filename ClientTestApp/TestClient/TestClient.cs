@@ -15,6 +15,7 @@ using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
+using XFS4IoT.CardReader.Events;
 using System.Runtime.InteropServices;
 
 namespace TestClient
@@ -26,22 +27,31 @@ namespace TestClient
         {
             try
             {
-                Logger.WriteLine("Running test XFS4IoT application... hit enter key to process service discovery.");
-
-                Console.ReadLine();
+                Logger.WriteLine("Running test XFS4IoT application.");
 
                 await DoServiceDiscovery();
 
-                Logger.WriteLine("XFS4IoT SPs Connected. hit enter key to accept card.");
-
-                Console.ReadLine();
+                Logger.WriteLine("XFS4IoT SPs Connected. Doing accept card");
 
                 await DoAcceptCard();
                 Logger.WriteLine($"Done");
 
                 // Start listening for messages from the server in the background to handle messages in an async
                 // way. 
-                //await connection.ListenAsync();
+
+                while( true )
+                {
+                    switch (await cardReader.ReceiveMessageAsync())
+                    {
+                        case MediaRemovedEvent removed :
+                            Logger.WriteLine($"{nameof(MediaRemovedEvent)}: {removed.Serialise()}");
+                            break;
+                        //CardReader.MediaRemovedEvent:
+                        default:
+                            Logger.WriteLine("*** Unknown message received.");
+                            break;
+                    }
+                }
             }
             catch (WebSocketException e)
             {
@@ -120,22 +130,37 @@ namespace TestClient
             return new Uri(service);
         }
 
+        private static XFS4IoTClient.ClientConnection cardReader;
 
         private static async Task DoAcceptCard()
         {
             // Create the connection object. This doesn't start anything...  
-            var cardReader = new XFS4IoTClient.ClientConnection(
+            cardReader = new XFS4IoTClient.ClientConnection(
                     EndPoint: CardReaderUri ?? throw new NullReferenceException()
                     );
 
             // Open the actual network connection
-            cardReader.ConnectAsync().Wait(1000);
+            cardReader.ConnectAsync().Wait(10_000);
 
             Logger.WriteLine($"Sending {nameof(ReadRawDataCommand)} command");
 
             //MessageBox((IntPtr)0, "Send CardReader ReadRawData command to read chip card", "XFS4IoT Test Client", 0);
             // Create a new command and send it to the device
-            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(), new ReadRawDataCommand.PayloadData(60000, true, true, true, true, true, true, true, true, true, true, true, true, true, true));
+            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(), new ReadRawDataCommand.PayloadData(60_000,
+                                                                                                               Track1: true,
+                                                                                                               Track2: true,
+                                                                                                               Track3: true,
+                                                                                                               Chip: true,
+                                                                                                               Security: false,
+                                                                                                               FluxInactive: false,
+                                                                                                               Watermark: false,
+                                                                                                               MemoryChip: false,
+                                                                                                               Track1Front: false,
+                                                                                                               FrontImage: false,
+                                                                                                               BackImage: false,
+                                                                                                               Track1JIS: false,
+                                                                                                               Track3JIS: false,
+                                                                                                               Ddi: false));
             await cardReader.SendCommandAsync(command);
 
             // Wait for a response from the device. 
