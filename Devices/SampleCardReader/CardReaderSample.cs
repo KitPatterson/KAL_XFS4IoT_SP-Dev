@@ -528,7 +528,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(SynchronizeCommandCommand.PayloadData payload) => throw new System.NotImplementedException();
         public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(SetTransactionStateCommand.PayloadData payload) => throw new System.NotImplementedException();
         public GetTransactionStateCompletion.PayloadData GetTransactionState() => throw new System.NotImplementedException();
-        public Task<GetCommandRandomNumberHandler.GetCommandRandomNumberResult> GetCommandRandomNumber() => throw new System.NotImplementedException();
+        public Task<GetCommandRandomNumberResult> GetCommandRandomNumber() => throw new System.NotImplementedException();
 
 
         /// Internal variables
