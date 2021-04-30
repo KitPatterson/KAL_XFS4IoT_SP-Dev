@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
- * PrintFormHandler_g.cs uses automatically generated parts. 
- * created at 29/04/2021 00:49:07
+ * PrintFormHandler_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -16,6 +15,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Printer.Commands;
 using XFS4IoT.Printer.Completions;
+using IServiceProvider = XFS4IoTServer.IServiceProvider;
 
 namespace XFS4IoTFramework.Printer
 {
@@ -25,10 +25,12 @@ namespace XFS4IoTFramework.Printer
         public PrintFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(PrintFormHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<PrinterServiceClass>();
+            Provider = Dispatcher.IsA<IServiceProvider>();
 
-            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(PrintFormHandler)} constructor. {nameof(Provider.Device)}");
-            Device = Provider.Device.IsA<IPrinterDevice>();
+            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(PrintFormHandler)} constructor. {nameof(Provider.Device)}")
+                           .IsA<IPrinterDevice>();
+
+            Printer = Provider.IsA<IPrinterServiceClass>();
 
             this.Logger = logger.IsNotNull($"Invalid parameter in the {nameof(PrintFormHandler)} constructor. {nameof(logger)}");
         }
@@ -59,8 +61,9 @@ namespace XFS4IoTFramework.Printer
             await connection.SendMessageAsync(response);
         }
 
-        private IPrinterDevice Device { get; }
-        private PrinterServiceClass Provider { get; }
+        private IPrinterDevice Device { get => Provider.Device.IsA<IPrinterDevice>(); }
+        private IServiceProvider Provider { get; }
+        private IPrinterServiceClass Printer { get; }
         private ILogger Logger { get; }
     }
 

@@ -16,7 +16,6 @@ namespace XFS4IoTServer
             ServerAddressUri.IsNotNullOrWhitespace($"Unexpected server address specified. {nameof(EndpointDetails)}");
             ServerAddressWUri.IsNotNullOrWhitespace($"Unexpected server address for websockets specified. {nameof(EndpointDetails)}");
             this.Port = Port;
-            this.SecureConnection = SecureConnection;
             this.ServerAddressUri = ServerAddressUri;
             SecureConnection = !ServerAddressUri.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase);
             this.ServerAddressWUri = ServerAddressWUri;

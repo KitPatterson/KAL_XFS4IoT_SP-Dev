@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
- * IClearScreenEvents_g.cs uses automatically generated parts. 
- * created at 29/04/2021 16:49:17
+ * IClearScreenEvents_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 

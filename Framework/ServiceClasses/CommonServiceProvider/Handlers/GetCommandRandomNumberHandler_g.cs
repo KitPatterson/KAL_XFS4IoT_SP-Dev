@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT Common interface.
- * GetCommandRandomNumberHandler_g.cs uses automatically generated parts. 
- * created at 29/04/2021 00:49:04
+ * GetCommandRandomNumberHandler_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -16,6 +15,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
+using IServiceProvider = XFS4IoTServer.IServiceProvider;
 
 namespace XFS4IoTFramework.Common
 {
@@ -25,10 +25,12 @@ namespace XFS4IoTFramework.Common
         public GetCommandRandomNumberHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(GetCommandRandomNumberHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<CommonServiceClass>();
+            Provider = Dispatcher.IsA<IServiceProvider>();
 
-            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(GetCommandRandomNumberHandler)} constructor. {nameof(Provider.Device)}");
-            Device = Provider.Device.IsA<ICommonDevice>();
+            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(GetCommandRandomNumberHandler)} constructor. {nameof(Provider.Device)}")
+                           .IsA<ICommonDevice>();
+
+            Common = Provider.IsA<ICommonServiceClass>();
 
             this.Logger = logger.IsNotNull($"Invalid parameter in the {nameof(GetCommandRandomNumberHandler)} constructor. {nameof(logger)}");
         }
@@ -59,8 +61,9 @@ namespace XFS4IoTFramework.Common
             await connection.SendMessageAsync(response);
         }
 
-        private ICommonDevice Device { get; }
-        private CommonServiceClass Provider { get; }
+        private ICommonDevice Device { get => Provider.Device.IsA<ICommonDevice>(); }
+        private IServiceProvider Provider { get; }
+        private ICommonServiceClass Common { get; }
         private ILogger Logger { get; }
     }
 

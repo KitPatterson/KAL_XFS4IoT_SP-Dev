@@ -22,45 +22,55 @@ namespace TestClient
 {
     class TestClient
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Don't let exceptions escape top level")]
-        async static Task Main(/*string[] args*/)
+        async static Task Main(/*string[] args*/) => await new TestClient().Run();
+
+        private async Task Run()
         {
             try
             {
-                Logger.WriteLine("Running test XFS4IoT application.");
+                Logger.LogLine("Running test XFS4IoT application.");
 
+                Logger.LogLine("Doing service discovery.");
                 await DoServiceDiscovery();
 
-                Logger.WriteLine("XFS4IoT SPs Connected. Doing accept card");
+                Logger.LogLine("Connecting to the card reader");
+                await OpenCardReader();
 
+                Logger.LogLine("Get card reader status");
+                await GetCardReaderStatus();
+
+                Logger.LogLine("Doing accept card");
                 await DoAcceptCard();
-                Logger.WriteLine($"Done");
 
-                // Start listening for messages from the server in the background to handle messages in an async
-                // way. 
+                Logger.LogLine($"Done");
 
-                while( true )
+                // Start listening for unsolicited messages from the server. 
+                while (true)
                 {
                     switch (await cardReader.ReceiveMessageAsync())
                     {
-                        case MediaRemovedEvent removed :
-                            Logger.WriteLine($"{nameof(MediaRemovedEvent)}: {removed.Serialise()}");
+                        case MediaRemovedEvent removed:
+                            Logger.LogLine($"{nameof(MediaRemovedEvent)}: {removed.Serialise()}");
                             break;
-                        //CardReader.MediaRemovedEvent:
-                        default:
-                            Logger.WriteLine("*** Unknown message received.");
+
+                        case MediaInsertedEvent inserted:
+                            Logger.LogLine($"{nameof(MediaInsertedEvent)} : {inserted.Serialise()}");
+                            break;
+
+                        case object message:
+                            Logger.LogLine($"*** Unknown message received. {message.GetType()}");
                             break;
                     }
                 }
             }
             catch (WebSocketException e)
             {
-                Logger.WriteError($"Connection error {e.Message}");
+                Logger.LogError($"Connection error {e.Message}");
                 System.Diagnostics.Debugger.Break();
             }
             catch (Exception e)
             {
-                Logger.WriteError($"Unhandled exception: {e.Message}");
+                Logger.LogError($"Unhandled exception: {e.Message}");
                 System.Diagnostics.Debugger.Break();
             }
         }
@@ -68,15 +78,15 @@ namespace TestClient
         /// <summary>
         /// Messages that we expect to receive so that we can decode them. 
         /// </summary>
-        private static readonly MessageDecoder ResponseDecoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Response);
+        private readonly MessageDecoder ResponseDecoder = new MessageDecoder(MessageDecoder.AutoPopulateType.Response);
 
-        private static readonly ConsoleLogger Logger = new ConsoleLogger();
+        private readonly ConsoleLogger Logger = new ConsoleLogger();
 
-        public static Uri CardReaderUri { get; private set; }
-        public static Uri PinPadUri { get; private set; }
-        public static Uri PrinterUri { get; private set; }
+        public Uri CardReaderUri { get; private set; }
+        //public Uri PinPadUri { get; private set; }
+        //public Uri PrinterUri { get; private set; }
 
-        private static async Task DoServiceDiscovery()
+        private async Task DoServiceDiscovery()
         {
             const int port = 5846;
             var Discovery = new XFS4IoTClient.ClientConnection(
@@ -88,30 +98,39 @@ namespace TestClient
             }
             catch (Exception e)
             {
-                Logger.WriteLine($"Caught exception ... {e}");
+                Logger.LogLine($"Caught exception ... {e}");
                 Thread.Sleep(30000);
             }
 
-            Logger.WriteLine($"Sending {nameof(GetServiceCommand)} command");
+            Logger.LogLine($"{nameof(GetServiceCommand)}", ConsoleColor.Blue);
 
             await Discovery.SendCommandAsync(new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(60000)));
-            Logger.WriteLine($"Waiting for response...");
+            Logger.LogLine($"Waiting for response...");
 
-            object cmdResponse = await Discovery.ReceiveMessageAsync();
-            if (cmdResponse is null)
-                Logger.WriteLine($"Invalid response to {nameof(GetServiceCompletion)}");
-            GetServiceCompletion response = cmdResponse as GetServiceCompletion;
-            if (response is null)
-                Logger.WriteLine($"Invalid type of response to {nameof(GetServiceCompletion)}");
+            switch (await Discovery.ReceiveMessageAsync())
+            {
 
-            if (response is not null)
-                EndPointDetails(response.Payload);
+                case GetServiceCompletion response:
+                    Logger.Log($"{nameof(GetServiceCompletion)}", ConsoleColor.Green);
+                    Logger.WriteLine($" : {response.Serialise()}");
+                    EndPointDetails(response.Payload);
+                    return;
+
+                case null:
+                    Logger.LogError($"Invalid response to {nameof(GetServiceCompletion)}");
+                    break;
+
+                case object message:
+                    Logger.LogError($"Invalid type of response {message.GetType()}");
+                    break;
+
+            }
         }
 
-        private static void EndPointDetails(GetServiceCompletion.PayloadData endpointDetails)
+        private void EndPointDetails(GetServiceCompletion.PayloadData endpointDetails)
         {
-            Logger.WriteLine($"Got endpoint details {endpointDetails}");
-            Logger.WriteLine($"Services:\n{string.Join("\n", from ep in endpointDetails.Services select ep.ToString())}");
+            Logger.LogLine($"Got endpoint details {endpointDetails}");
+            Logger.LogLine($"Services:\n{string.Join("\n", from ep in endpointDetails.Services select ep.ServiceUri)}");
 
             CardReaderUri = FindServiceUri(endpointDetails, XFSConstants.ServiceClass.CardReader);
         }
@@ -130,92 +149,164 @@ namespace TestClient
             return new Uri(service);
         }
 
-        private static XFS4IoTClient.ClientConnection cardReader;
-
-        private static async Task DoAcceptCard()
+        private XFS4IoTClient.ClientConnection cardReader;
+        private async Task OpenCardReader()
         {
             // Create the connection object. This doesn't start anything...  
             cardReader = new XFS4IoTClient.ClientConnection(
                     EndPoint: CardReaderUri ?? throw new NullReferenceException()
                     );
 
-            // Open the actual network connection
-            cardReader.ConnectAsync().Wait(10_000);
+            // Open the actual network connection, with a timeout. 
+            var cancel = new CancellationTokenSource();
+            cancel.CancelAfter(10_000);
+            await cardReader.ConnectAsync(cancel.Token);
+        }
 
-            Logger.WriteLine($"Sending {nameof(ReadRawDataCommand)} command");
+        private async Task GetCardReaderStatus()
+        {
+            Logger.LogLine($"{nameof(StatusCommand)}", ConsoleColor.Blue);
 
-            //MessageBox((IntPtr)0, "Send CardReader ReadRawData command to read chip card", "XFS4IoT Test Client", 0);
             // Create a new command and send it to the device
-            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(), new ReadRawDataCommand.PayloadData(60_000,
-                                                                                                               Track1: true,
-                                                                                                               Track2: true,
-                                                                                                               Track3: true,
-                                                                                                               Chip: true,
-                                                                                                               Security: false,
-                                                                                                               FluxInactive: false,
-                                                                                                               Watermark: false,
-                                                                                                               MemoryChip: false,
-                                                                                                               Track1Front: false,
-                                                                                                               FrontImage: false,
-                                                                                                               BackImage: false,
-                                                                                                               Track1JIS: false,
-                                                                                                               Track3JIS: false,
-                                                                                                               Ddi: false));
+            var command = new StatusCommand(Guid.NewGuid().ToString(), new StatusCommand.PayloadData(Timeout: 1_000));
             await cardReader.SendCommandAsync(command);
 
             // Wait for a response from the device. 
-            Logger.WriteLine("Waiting for response... ");
+            Logger.LogLine("Waiting for response... ");
 
-            for (; ;)
+            while (true)
             {
-                object cmdResponse = await cardReader.ReceiveMessageAsync();
-
-                if (cmdResponse is null)
+                switch (await cardReader.ReceiveMessageAsync())
                 {
-                    Logger.WriteLine($"Invalid response. {nameof(ReadRawDataCompletion)}");
-                    break;
+                    case StatusCompletion commandCompletion:
+                        Logger.Log($"{nameof(ReadRawDataCompletion)}", ConsoleColor.Green);
+                        Logger.WriteLine($" : {commandCompletion.Serialise()}");
+                        return;
+
+                    case null:
+                        Logger.LogError($"Invalid null response.");
+                        break;
+
+                    case object unknown:
+                        Logger.LogWarning($"Unexpected type of response. {unknown.GetType()}");
+                        break;
                 }
-
-                if (cmdResponse.GetType() != typeof(ReadRawDataCompletion))
-                {
-                    if (cmdResponse.GetType() == typeof(XFS4IoT.CardReader.Events.MediaInsertedEvent))
-                    {
-                        Logger.WriteLine($"Execute event received. {nameof(XFS4IoT.CardReader.Events.MediaInsertedEvent)}");
-                        continue;
-                    }
-                    else
-                    {
-                        Logger.WriteLine($"Unexpected type of response. {nameof(ReadRawDataCompletion)}");
-                    }
-                }
-
-                ReadRawDataCompletion response = cmdResponse as ReadRawDataCompletion;
-                if (response is null)
-                    Logger.WriteLine($"Invalid type of response. {nameof(ReadRawDataCompletion)}");
-                else
-                    Logger.WriteLine($"Response received. {nameof(ReadRawDataCompletion)}");
-
-                break;
             }
         }
 
+
+        private async Task DoAcceptCard()
+        {
+            Logger.LogLine($"{nameof(ReadRawDataCommand)}", ConsoleColor.Blue);
+
+            //MessageBox((IntPtr)0, "Send CardReader ReadRawData command to read chip card", "XFS4IoT Test Client", 0);
+            // Create a new command and send it to the device
+            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(),
+                                                 new ReadRawDataCommand.PayloadData(
+                                                        60_000,
+                                                        Track1: true,
+                                                        Track2: true,
+                                                        Track3: true,
+                                                        Chip: true,
+                                                        Security: false,
+                                                        FluxInactive: false,
+                                                        Watermark: false,
+                                                        MemoryChip: false,
+                                                        Track1Front: false,
+                                                        FrontImage: false,
+                                                        BackImage: false,
+                                                        Track1JIS: false,
+                                                        Track3JIS: false,
+                                                        Ddi: false));
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            while (true)
+            {
+                switch (await cardReader.ReceiveMessageAsync())
+                {
+                    case InsertCardEvent insertCardEvent:
+                        Logger.Log($"{nameof(MediaInsertedEvent)}", ConsoleColor.Yellow);
+                        Logger.WriteLine($" : {insertCardEvent.Serialise()}");
+                        break;
+
+                    case MediaInsertedEvent mediaInsertedEvent:
+                        Logger.Log($"{nameof(MediaInsertedEvent)}", ConsoleColor.Yellow);
+                        Logger.WriteLine($" : {mediaInsertedEvent.Serialise()}");
+                        break;
+
+                    case ReadRawDataCompletion commandCompletion:
+                        Logger.Log($"{nameof(ReadRawDataCompletion)}", ConsoleColor.Green);
+                        Logger.WriteLine($" : {commandCompletion.Serialise()}");
+                        return;
+
+                    case null:
+                        Logger.LogError($"Invalid null response.");
+                        break;
+
+                    case object unknown:
+                        Logger.LogWarning($"Unexpected type of response. {unknown.GetType()}");
+                        break;
+                }
+            }
+        }
 
         /// <summary>
         /// Log to the console, including timing details. 
         /// </summary>
         private class ConsoleLogger
         {
-            public void WriteLine(string v) => Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
-            public void WriteError(string v)
+            public ConsoleLogger()
             {
-                var oldColour = Console.ForegroundColor;
+                defaultColour = Console.ForegroundColor;
+            }
+            public void Log(string v, ConsoleColor? colour = null)
+            {
+                Console.ForegroundColor = colour ?? defaultColour; 
+                Console.Write($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                Console.ForegroundColor = defaultColour;
+            }
+
+            public void Write(string v, ConsoleColor? colour = null)
+            {
+                Console.ForegroundColor = colour ?? defaultColour;
+                Console.Write(v);
+                Console.ForegroundColor = defaultColour;
+            }
+
+            public void LogLine(string v, ConsoleColor? colour = null)
+            {
+                Console.ForegroundColor = colour ?? defaultColour;
+                Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                Console.ForegroundColor = defaultColour;
+            }
+
+            public void WriteLine(string v, ConsoleColor? colour = null)
+            {
+                Console.ForegroundColor = colour ?? defaultColour;
+                Console.WriteLine(v);
+                Console.ForegroundColor = defaultColour;
+            }
+
+            public void LogError(string v)
+            {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
-                Console.ForegroundColor = oldColour;
+                Console.ForegroundColor = defaultColour;
+            }
+            internal void LogWarning(string v)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                Console.ForegroundColor = defaultColour;
             }
 
             public void Restart() => Start = DateTime.Now;
+
             private DateTime Start = DateTime.Now;
+            private ConsoleColor defaultColour;
         }
     }
 }

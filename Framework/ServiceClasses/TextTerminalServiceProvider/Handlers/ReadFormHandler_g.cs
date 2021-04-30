@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
- * ReadFormHandler_g.cs uses automatically generated parts. 
- * created at 29/04/2021 00:49:05
+ * ReadFormHandler_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -16,6 +15,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.TextTerminal.Commands;
 using XFS4IoT.TextTerminal.Completions;
+using IServiceProvider = XFS4IoTServer.IServiceProvider;
 
 namespace XFS4IoTFramework.TextTerminal
 {
@@ -25,10 +25,12 @@ namespace XFS4IoTFramework.TextTerminal
         public ReadFormHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(ReadFormHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<TextTerminalServiceClass>();
+            Provider = Dispatcher.IsA<IServiceProvider>();
 
-            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ReadFormHandler)} constructor. {nameof(Provider.Device)}");
-            Device = Provider.Device.IsA<ITextTerminalDevice>();
+            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(ReadFormHandler)} constructor. {nameof(Provider.Device)}")
+                           .IsA<ITextTerminalDevice>();
+
+            TextTerminal = Provider.IsA<ITextTerminalServiceClass>();
 
             this.Logger = logger.IsNotNull($"Invalid parameter in the {nameof(ReadFormHandler)} constructor. {nameof(logger)}");
         }
@@ -59,8 +61,9 @@ namespace XFS4IoTFramework.TextTerminal
             await connection.SendMessageAsync(response);
         }
 
-        private ITextTerminalDevice Device { get; }
-        private TextTerminalServiceClass Provider { get; }
+        private ITextTerminalDevice Device { get => Provider.Device.IsA<ITextTerminalDevice>(); }
+        private IServiceProvider Provider { get; }
+        private ITextTerminalServiceClass TextTerminal { get; }
         private ILogger Logger { get; }
     }
 

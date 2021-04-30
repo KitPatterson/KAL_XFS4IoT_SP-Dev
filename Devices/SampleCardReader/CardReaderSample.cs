@@ -38,7 +38,9 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             MediaStatus = MediaStatusEnum.NotPresent;
         }
 
-        /// CARDREADER interface
+        //
+        // CARDREADER interface
+        //
 
         /// <summary>
         /// For motor driven card readers, the card unit checks whether a card has been inserted. 

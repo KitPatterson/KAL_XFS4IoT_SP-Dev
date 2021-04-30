@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Server\Server.csproj" />
+      <ProjectReference Include="..\CommonServiceProvider\CommonServiceProvider.csproj" />
       <ProjectReference Include="..\ServiceInterfaces\ServiceInterfaces.csproj" />
     </ItemGroup>
 
@@ -33,7 +34,7 @@
       <Compile Update="Handlers\*_g.cs">
         <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('_g', '.cs'))</DependentUpon>
       </Compile>
-      <Compile Update="*ServiceProvider_g.cs">
+      <Compile Update="*ServiceClass_g.cs">
         <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('_g', '.cs'))</DependentUpon>
       </Compile>
     </ItemGroup>

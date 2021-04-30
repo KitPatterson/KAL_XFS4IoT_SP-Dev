@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
- * IEMVClessIssuerUpdateEvents_g.cs uses automatically generated parts. 
- * created at 4/20/2021 12:28:05 PM
+ * IEMVClessIssuerUpdateEvents_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace XFS4IoTFramework.CardReader
 {
-    public interface IEMVClessIssuerUpdateEvents 
+    public interface IEMVClessIssuerUpdateEvents
     {
 
         Task EMVClessReadStatusEvent(XFS4IoT.CardReader.Events.EMVClessReadStatusEvent.PayloadData Payload);

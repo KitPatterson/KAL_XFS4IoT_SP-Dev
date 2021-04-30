@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT TextTerminal interface.
- * TextTerminalServiceProvider.cs.cs uses automatically generated parts. 
- * created at 29/04/2021 00:49:06
+ * TextTerminalServiceProvider.cs.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 using System.Collections.Generic;
@@ -15,20 +14,21 @@ using XFS4IoT;
 
 namespace XFS4IoTServer
 {
-    public partial class TextTerminalServiceClass : ServiceProvider, ITextTerminalServiceClass
+    public partial class TextTerminalServiceClass : ITextTerminalServiceClass
     {
-        public TextTerminalServiceClass(EndpointDetails endPoint, string ServiceName, IEnumerable<XFSConstants.ServiceClass> serviceClasses, IDevice device, ILogger logger)
-            : base(endPoint, ServiceName, serviceClasses, device, logger)
+        public TextTerminalServiceClass(IServiceProvider ServiceProvider, ILogger logger)
         {
+            this.ServiceProvider = ServiceProvider.IsNotNull();
         }
         public async Task FieldErrorEvent(XFS4IoT.TextTerminal.Events.FieldErrorEvent.PayloadData Payload)
-            => await BroadcastEvent(new XFS4IoT.TextTerminal.Events.FieldErrorEvent(Payload));
+            => await ServiceProvider.BroadcastEvent(new XFS4IoT.TextTerminal.Events.FieldErrorEvent(Payload));
 
         public async Task FieldWarningEvent()
-            => await BroadcastEvent(new XFS4IoT.TextTerminal.Events.FieldWarningEvent());
+            => await ServiceProvider.BroadcastEvent(new XFS4IoT.TextTerminal.Events.FieldWarningEvent());
 
         public async Task KeyEvent(XFS4IoT.TextTerminal.Events.KeyEvent.PayloadData Payload)
-            => await BroadcastEvent(new XFS4IoT.TextTerminal.Events.KeyEvent(Payload));
+            => await ServiceProvider.BroadcastEvent(new XFS4IoT.TextTerminal.Events.KeyEvent(Payload));
 
+        private readonly IServiceProvider ServiceProvider;
     }
 }

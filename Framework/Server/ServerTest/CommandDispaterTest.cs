@@ -36,10 +36,15 @@ namespace XFS4IoTServer.Test
         public Uri Uri { get; } = new Uri(string.Empty);
         public Uri WSUri { get; } = new Uri(string.Empty);
         public XFSConstants.ServiceClass ServiceClass { get => throw new Exception("Not implemented"); }
+        public IDevice Device { get => throw new NotImplementedException(); }
+
+        public Task BroadcastEvent(object payload) => throw new NotImplementedException();
 
         public Task Dispatch(IConnection Connection, object Command, CancellationToken Cancel) => throw new NotImplementedException();
         public Task DispatchError(IConnection Connection, object Command, Exception CommandException) => throw new NotImplementedException();
         public Task RunAsync() => throw new NotImplementedException();
+
+
     }
 
     internal class TestLogger : ILogger

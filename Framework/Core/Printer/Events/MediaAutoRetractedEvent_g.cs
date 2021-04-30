@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT Printer interface.
- * MediaAutoRetractedEvent_g.cs uses automatically generated parts. 
- * created at 29/04/2021 01:20:15
+ * MediaAutoRetractedEvent_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 using System;

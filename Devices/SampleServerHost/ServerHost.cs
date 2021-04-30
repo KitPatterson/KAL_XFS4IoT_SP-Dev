@@ -15,7 +15,7 @@ namespace Server
     {
         static async Task Main(/*string[] args*/)
         {
-            ConsoleLogger Logger = new ConsoleLogger();
+            ConsoleLogger Logger = new();
             try
             {
                 Logger.Log($"Running ServiceProvider Server");
@@ -24,9 +24,8 @@ namespace Server
                 var EndpointDetails = Publisher.EndpointDetails;
 
                 var simCardReaderDevice = new KAL.XFS4IoTSP.CardReader.Sample.CardReaderSample(Logger);
-                var cardReaderService = new CardReaderServiceClass(EndpointDetails,
+                var cardReaderService = new CardReaderServiceProvider(EndpointDetails,
                                                                    ServiceName: "SimCardReader",
-                                                                   new[] { XFSConstants.ServiceClass.Common, XFSConstants.ServiceClass.CardReader },
                                                                    simCardReaderDevice,
                                                                    Logger);
                 simCardReaderDevice.SetServiceProvider = cardReaderService;

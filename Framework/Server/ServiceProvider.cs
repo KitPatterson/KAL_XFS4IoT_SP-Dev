@@ -47,7 +47,7 @@ namespace XFS4IoTServer
 
         public IDevice Device { get; internal set; }
 
-        protected async Task BroadcastEvent(object payload)
+        public async Task BroadcastEvent(object payload)
         {
             logger.Log(nameof(ServiceProvider), $"Broadcasting unsolicited event");
 

@@ -100,6 +100,12 @@ namespace XFS4IoTServer
         public void Dispose() => EndPoint.Dispose();
         
         public void Add(IServiceProvider Service) => _Services.Add(Service);
+
+        public Task BroadcastEvent(object payload)
+        {
+            throw Contracts.Fail<Exception>("No broadcast events defined for the service publisher. Do not call BroadcastEvent on this class.");
+        }
+
         public IEnumerable<IServiceProvider> Services { get => _Services; } 
         private readonly List<IServiceProvider> _Services = new List<IServiceProvider>(); 
 
@@ -120,6 +126,7 @@ namespace XFS4IoTServer
         public string Name { get; } = String.Empty;
         public Uri Uri { get; }
         public Uri WSUri { get; }
+        public IDevice Device { get => Contracts.Fail<IDevice>("A device object was requested from the Publisher service, but the publisher service does not have a device class"); }
     }
 
     /// <summary>
