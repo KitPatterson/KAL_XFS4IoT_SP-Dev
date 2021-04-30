@@ -47,6 +47,9 @@ namespace Server
 
         }
 
+        /// <summary>
+        /// Sample logger. This should be replaced with a more robust implementation. 
+        /// </summary>
         private class ConsoleLogger : ILogger
         {
             public void Warning(string Message) => Warning("SvrHost", Message);

@@ -13,29 +13,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using XFS4IoTServer;
+using XFS4IoT;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// AcceptAndWriteCardResult
-    /// Accept card to write card tracks so that no card data to be read
-    /// </summary>
-    public sealed class AcceptAndWriteCardResult : DeviceResult
-    {
-        public AcceptAndWriteCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                        WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                        string ErrorDescription = null)
-            : base(CompletionCode, ErrorDescription)
-        {
-            this.ErrorCode = ErrorCode;
-        }
-
-        public WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode;
-    }
-
     /// <summary>
     /// WriteCardRequest
     /// Information contains to perform operation for writing card data after the card is successfully inserted in write position
@@ -96,7 +80,7 @@ namespace XFS4IoTFramework.CardReader
     {
         private async Task<WriteRawDataCompletion.PayloadData> HandleWriteRawData(IWriteRawDataEvents events, WriteRawDataCommand writeRawData, CancellationToken cancel)
         {
-            Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, WriteCardRequest.CardData> dataToWrite = new Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, WriteCardRequest.CardData>();
+            Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, WriteCardRequest.CardData> dataToWrite = new ();
             foreach (WriteRawDataCommand.PayloadData.DataClass data in writeRawData.Payload.Data)
             {
                 // First data check
@@ -123,18 +107,34 @@ namespace XFS4IoTFramework.CardReader
                                  new WriteCardRequest.CardData(writeData, data.WriteMethod));
             }
 
-            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptAndWriteCardAsync()");
-            var acceptCardResult = await Device.AcceptAndWriteCardAsync(events,
-                                                                        writeRawData.Payload.Timeout,
-                                                                        cancel);
-            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptAndWriteCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, "CardReaderDev.AcceptCardAsync()");
 
-            if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success ||
-                acceptCardResult.ErrorCode is not null)
+            IAcceptCardEvents newEvents = new AcceptCardEvents((WriteRawDataEvents)events);
+            newEvents.IsNotNull($"Invalid event reference. {nameof(AcceptCardEvents)}");
+
+            var acceptCardResult = await Device.AcceptCardAsync(newEvents,
+                                                                new AcceptCardRequest(ReadCardRequest.CardDataTypesEnum.NoDataRead, false, writeRawData.Payload.Timeout),
+                                                                cancel);
+            Logger.Log(Constants.DeviceClass, $"CardReaderDev.AcceptCardAsync() -> {acceptCardResult.CompletionCode}, {acceptCardResult.ErrorCode}");
+
+            if (acceptCardResult.CompletionCode != MessagePayload.CompletionCodeEnum.Success)
             {
+                // Map to XFS erro code
+                WriteRawDataCompletion.PayloadData.ErrorCodeEnum? errorCode = acceptCardResult.ErrorCode switch
+                {
+                    AcceptCardResult.ErrorCodeEnum.MediaJam => WriteRawDataCompletion.PayloadData.ErrorCodeEnum.MediaJam,
+                    AcceptCardResult.ErrorCodeEnum.ShutterFail => WriteRawDataCompletion.PayloadData.ErrorCodeEnum.ShutterFail,
+                    AcceptCardResult.ErrorCodeEnum.NoMedia => WriteRawDataCompletion.PayloadData.ErrorCodeEnum.NoMedia,
+                    AcceptCardResult.ErrorCodeEnum.InvalidMedia => WriteRawDataCompletion.PayloadData.ErrorCodeEnum.InvalidMedia,
+                    AcceptCardResult.ErrorCodeEnum.CardTooShort => WriteRawDataCompletion.PayloadData.ErrorCodeEnum.CardTooShort,
+                    AcceptCardResult.ErrorCodeEnum.CardTooLong => WriteRawDataCompletion.PayloadData.ErrorCodeEnum.CardTooLong,
+                    _ => null
+                };
+
+
                 return new WriteRawDataCompletion.PayloadData(acceptCardResult.CompletionCode,
                                                               acceptCardResult.ErrorDescription,
-                                                              acceptCardResult.ErrorCode);
+                                                              errorCode);
             }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.WriteCardDataAsync()");
