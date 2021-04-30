@@ -80,6 +80,16 @@ namespace XFS4IoTFramework.CardReader
                                                               errorCode);
             }
 
+            // The device specific class completed accepting card operation check the media status must be present for motorised cardreader before writing data.
+            if (acceptCardResult.DeviceType == DeviceTypeEnum.Motor &&
+                (acceptCardResult.MediaStatus != MediaStatusEnum.Present &&
+                 acceptCardResult.MediaStatus != MediaStatusEnum.NotSupported))
+            {
+                return new WriteRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError,
+                                                              "Accept operation is completed successfully, but the media is not present.",
+                                                              WriteRawDataCompletion.PayloadData.ErrorCodeEnum.NoMedia);
+            }
+
             Logger.Log(Constants.DeviceClass, "CardReaderDev.WriteCardDataAsync()");
             var writeCardDataResult = await Device.WriteCardAsync(events,
                                                                       new WriteCardRequest(dataToWrite),

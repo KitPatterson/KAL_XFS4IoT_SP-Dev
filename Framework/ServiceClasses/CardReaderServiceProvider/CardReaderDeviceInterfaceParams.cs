@@ -23,6 +23,34 @@ namespace XFS4IoTFramework.CardReader
     /// The classes used by the device interface for an Input/Output parameters
 
     /// <summary>
+    /// Device type requested by the framework
+    /// </summary>
+    public enum DeviceTypeEnum
+    {
+        Motor,
+        Swipe,
+        Dip,
+        LatchedDip,
+        Contactless,
+        IntelligentContactless,
+        Permanent,
+    }
+
+    /// <summary>
+    /// Media status requested by the framework
+    /// </summary>
+    public enum MediaStatusEnum
+    {
+        NotSupported,
+        Unknown,
+        Present,
+        NotPresent,
+        Jammed,
+        Entering,
+        Latched
+    }
+
+    /// <summary>
     /// AcceptCardRequest
     /// Information contains to perform operation for accepting card and read card data if the device can read data while accepting card
     /// </summary>
@@ -65,10 +93,24 @@ namespace XFS4IoTFramework.CardReader
     {
         public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                 ErrorCodeEnum? ErrorCode = null,
-                                string ErrorDescription = null)
+                                string ErrorDescription = null,
+                                DeviceTypeEnum? DeviceType = null,
+                                MediaStatusEnum? MediaStatus = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
+            this.DeviceType = DeviceType;
+            this.MediaStatus = MediaStatus;
+        }
+
+        public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                DeviceTypeEnum? DeviceType = null,
+                                MediaStatusEnum? MediaStatus = null)
+            : base(CompletionCode, null)
+        {
+            this.ErrorCode = null;
+            this.DeviceType = DeviceType;
+            this.MediaStatus = MediaStatus;
         }
 
         public enum ErrorCodeEnum
@@ -86,6 +128,16 @@ namespace XFS4IoTFramework.CardReader
         /// error code must be returned by the following ReadCardAsync method and this method should return success.
         /// </summary>
         public ErrorCodeEnum? ErrorCode { get; private set; }
+
+        /// <summary>
+        /// Specify the type of cardreader
+        /// </summary>
+        public DeviceTypeEnum? DeviceType { get; private set; }
+
+        /// <summary>
+        /// Specify the current status of media after card is accepted.
+        /// </summary>
+        public MediaStatusEnum? MediaStatus { get; private set; }
     }
 
     /// <summary>

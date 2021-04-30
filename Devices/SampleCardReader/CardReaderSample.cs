@@ -60,7 +60,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
 
             MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
 
-            return new AcceptCardResult(MessagePayload.CompletionCodeEnum.Success);
+            return new AcceptCardResult(MessagePayload.CompletionCodeEnum.Success, DeviceTypeEnum.Motor, MediaStatusEnum.Present);
         }
 
         /// <summary>
