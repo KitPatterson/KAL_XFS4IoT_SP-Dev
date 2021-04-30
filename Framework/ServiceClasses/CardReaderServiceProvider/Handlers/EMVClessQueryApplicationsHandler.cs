@@ -8,69 +8,15 @@
  * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoTServer;
-using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// EMVApplication
-    /// Provide chip application and kernel identifier supported
-    /// </summary>
-    public sealed class EMVApplication
-    {
-        public EMVApplication(List<byte> ApplicationIdentifier,
-                              List<byte> KernelIdentifier)
-        {
-            this.ApplicationIdentifier = ApplicationIdentifier;
-            this.KernelIdentifier = KernelIdentifier;
-        }
-
-        /// <summary>
-        /// Chip application identifier
-        /// </summary>
-        public List<byte> ApplicationIdentifier { get; private set; }
-        /// <summary>
-        /// The kernel identifier certified
-        /// </summary>
-        public List<byte> KernelIdentifier { get; private set; }
-    }
-
-    /// <summary>
-    /// QueryEMVApplicationResult
-    /// Return information for supported EMV applications by the device
-    /// </summary>
-    public sealed class QueryEMVApplicationResult : DeviceResult
-    {
-        public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                         ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                         string ErrorDescription = null,
-                                         List<EMVApplication> EMVApplications = null)
-            : base(CompletionCode, ErrorDescription)
-        {
-            this.EMVApplications = EMVApplications;
-        }
-
-        public QueryEMVApplicationResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                         List<EMVApplication> EMVApplications = null)
-            : base(CompletionCode, null)
-        {
-            this.EMVApplications = EMVApplications;
-        }
-
-        /// <summary>
-        /// List of EMV applications and kernels information
-        /// </summary>
-        public List<EMVApplication> EMVApplications { get; private set; }
-    }
-
     public partial class EMVClessQueryApplicationsHandler
     {
         private Task<EMVClessQueryApplicationsCompletion.PayloadData> HandleEMVClessQueryApplications(IEMVClessQueryApplicationsEvents events, EMVClessQueryApplicationsCommand eMVClessQueryApplications, CancellationToken cancel)

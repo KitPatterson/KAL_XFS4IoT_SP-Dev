@@ -10,25 +10,11 @@
 
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoTServer;
-using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// ResetCountResult
-    /// Return result of resetting retain bin counters
-    /// </summary>
-    public sealed class ResetCountResult : DeviceResult
-    {
-        public ResetCountResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                string ErrorDescription = null)
-            : base(CompletionCode, ErrorDescription)
-        { }
-    }
-
     public partial class ResetCountHandler
     {
         private async Task<ResetCountCompletion.PayloadData> HandleResetCount(IResetCountEvents events, ResetCountCommand resetCount, CancellationToken cancel)

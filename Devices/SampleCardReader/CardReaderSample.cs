@@ -15,6 +15,8 @@ using XFS4IoTFramework.Common;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
 using XFS4IoT.CardReader.Events;
+using XFS4IoT.CardReader.Commands;
+using XFS4IoT.CardReader.Completions;
 using XFS4IoT.Completions;
 using XFS4IoTServer;
 
@@ -33,6 +35,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             Logger.IsNotNull($"Invalid parameter received in the {nameof(CardReaderSample)} constructor. {nameof(Logger)}");
             this.Logger = Logger;
+            MediaStatus = MediaStatusEnum.NotPresent;
         }
 
         /// CARDREADER interface
@@ -50,7 +53,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                                                             AcceptCardRequest acceptCardInfo,
                                                             CancellationToken cancellation)
         {
-            if (acceptCardInfo.DataToRead != ReadCardRequest.CardDataTypesEnum.NoDataRead)
+            if (acceptCardInfo.DataToRead != ReadCardRequest.CardDataTypesEnum.NoDataRead ||
+                MediaStatus != MediaStatusEnum.Present)
             {
                 await events.InsertCardEvent();
 
@@ -58,7 +62,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 await events.MediaInsertedEvent();
             }
 
-            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present;
+            MediaStatus = MediaStatusEnum.Present;
 
             return new AcceptCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
@@ -149,7 +153,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             await Task.Delay(1000, cancellation);
 
-            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Entering;
+            MediaStatus = MediaStatusEnum.NotPresent;
 
             return new EjectCardResult(MessagePayload.CompletionCodeEnum.Success);
         }
@@ -189,7 +193,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             await Task.Delay(1000, cancellation);
 
-            MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
+            MediaStatus = MediaStatusEnum.NotPresent;
 
             return new ResetDeviceResult(MessagePayload.CompletionCodeEnum.Success);
         }
@@ -401,7 +405,17 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 StatusCompletion.PayloadData.CommonClass.AntiFraudModuleEnum.Ok);
 
             StatusCompletion.PayloadData.CardReaderClass cardReader = new(
-                MediaStatus,
+                MediaStatus switch
+                {
+                    MediaStatusEnum.Entering => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Entering,
+                    MediaStatusEnum.Jammed => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Jammed,
+                    MediaStatusEnum.Latched => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Latched,
+                    MediaStatusEnum.NotPresent => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent,
+                    MediaStatusEnum.NotSupported => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotSupported,
+                    MediaStatusEnum.Present => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present,
+                    MediaStatusEnum.Unknown => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Unknown,
+                    _ => null
+                },
                 StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok,
                 StatusCompletion.PayloadData.CardReaderClass.SecurityEnum.NotSupported,
                 CapturedCount,
@@ -528,13 +542,20 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(SynchronizeCommandCommand.PayloadData payload) => throw new System.NotImplementedException();
         public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(SetTransactionStateCommand.PayloadData payload) => throw new System.NotImplementedException();
         public GetTransactionStateCompletion.PayloadData GetTransactionState() => throw new System.NotImplementedException();
-        public Task<GetCommandRandomNumberHandler.GetCommandRandomNumberResult> GetCommandRandomNumber() => throw new System.NotImplementedException();
+        public Task<GetCommandRandomNumberResult> GetCommandRandomNumber() => throw new System.NotImplementedException();
+
+        /// <summary>
+        /// Specify the type of cardreader
+        /// </summary>
+        public DeviceTypeEnum DeviceType { get; private set; } = DeviceTypeEnum.Motor;
+
+        /// <summary>
+        /// Specify the current status of media after card is accepted.
+        /// </summary>
+        public MediaStatusEnum MediaStatus { get; private set; } = MediaStatusEnum.Unknown;
 
 
         /// Internal variables
-        
-        private StatusCompletion.PayloadData.CardReaderClass.MediaEnum MediaStatus = StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent;
-        // Retain bin count should be kept in persistent data
         private int CapturedCount = 0;
 
         private ILogger Logger { get; }

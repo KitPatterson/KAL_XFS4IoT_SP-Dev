@@ -12,77 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// ChipIORequest
-    /// Provide chip IO data to communicate with the chip
-    /// </summary>
-    public sealed class ChipIORequest
-    {
-        /// <summary>
-        /// Current XFS4IoT specification is specified free string for the chip protocol
-        /// It should be changed to enum string. - end of April 2021 preview
-        /// </summary>
-        public enum ChipProtocolEnum
-        {
-            chipT0,
-            chipT1,
-            chipTypeAPart3,
-            chipTypeAPart4,
-            chipTypeB,
-            chipTypeNFC,
-        }
-
-        /// <summary>
-        /// ChipIORequest
-        /// </summary>
-        /// <param name="ChipData">Binary data to be sent to the chip</param>
-        public ChipIORequest(ChipProtocolEnum ChipProtocol, List<byte> ChipData)
-        {
-            this.ChipProtocol = ChipProtocol;
-            this.ChipData = ChipData;
-        }
-
-        public List<byte> ChipData { get; private set; }
-
-        public ChipProtocolEnum ChipProtocol;
-    }
-
-    /// <summary>
-    /// ChipIOResult
-    /// Return result of chip communication
-    /// </summary>
-    public sealed class ChipIOResult : DeviceResult
-    {
-        public ChipIOResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                            ChipIOCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                            string ErrorDescription = null,
-                            List<byte> ChipData = null)
-            : base(CompletionCode, ErrorDescription)
-        {
-            this.ErrorCode = ErrorCode;
-            this.ChipData = ChipData;
-        }
-
-        public ChipIOResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                            List<byte> ChipData = null)
-            : base(CompletionCode, null)
-        {
-            this.ErrorCode = null;
-            this.ChipData = ChipData;
-        }
-
-        public ChipIOCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
-
-        public List<byte> ChipData { get; private set; }
-    }
-
     public partial class ChipIOHandler
     {
         private async Task<ChipIOCompletion.PayloadData> HandleChipIO(IChipIOEvents events, ChipIOCommand chipIO, CancellationToken cancel)
