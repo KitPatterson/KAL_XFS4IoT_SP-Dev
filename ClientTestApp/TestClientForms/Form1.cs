@@ -76,13 +76,17 @@ namespace TestClientForms
                     textBoxResponse.Text = response.Serialise();
                     break;
                 }
-                else if (cmdResponse is XFS4IoT.CardReader.Events.MediaInsertedEvent insertedEv)
+                else if (cmdResponse is XFS4IoT.CardReader.Events.MediaInsertedEvent cardInsertedEv)
                 {
-                    textBoxEvent.Text = insertedEv.Serialise();
+                    textBoxEvent.Text = cardInsertedEv.Serialise();
+                }
+                else if (cmdResponse is XFS4IoT.CardReader.Events.InsertCardEvent insertCardEv)
+                {
+                    textBoxEvent.Text = insertCardEv.Serialise();
                 }
                 else
                 {
-                    break;
+                    textBoxEvent.Text += "<Unknown Event>";
                 }
             }
         }

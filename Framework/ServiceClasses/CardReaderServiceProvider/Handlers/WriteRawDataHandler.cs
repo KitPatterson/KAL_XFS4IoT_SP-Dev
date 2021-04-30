@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoTServer;
 using XFS4IoT;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
@@ -20,62 +19,6 @@ using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// WriteCardRequest
-    /// Information contains to perform operation for writing card data after the card is successfully inserted in write position
-    /// </summary>
-    public sealed class WriteCardRequest
-    {
-        /// <summary>
-        /// Contains the data to write tracks with method
-        /// </summary>
-        public class CardData
-        {
-            /// <summary>
-            /// CardDataToWrite
-            /// </summary>
-            /// <param name="Data">Data to write to the track</param>
-            /// <param name="WriteMethod">The coercivity to write data</param>
-            public CardData(List<byte> Data = null,
-                            WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum? WriteMethod = null)
-            {
-                this.Data = Data;
-                this.WriteMethod = WriteMethod;
-            }
-
-            public WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum? WriteMethod { get; private set; }
-            public List<byte> Data { get; private set; }
-        }
-
-        /// <summary>
-        /// WriteCardDataRequest
-        /// </summary>
-        /// <param name="DataToWrite">Card data to write with destination. i.e. track1, 2 or 3</param>
-        public WriteCardRequest(Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, CardData> DataToWrite)
-        {
-            this.DataToWrite = DataToWrite;
-        }
-
-        public Dictionary<WriteRawDataCommand.PayloadData.DataClass.DestinationEnum, CardData> DataToWrite { get; private set; }
-    }
-
-    /// <summary>
-    /// WriteCardResult
-    /// Return result of writing data to the card tracks
-    /// </summary>
-    public sealed class WriteCardResult : DeviceResult
-    {
-        public WriteCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                               string ErrorDescription = null)
-            : base(CompletionCode, ErrorDescription)
-        {
-            this.ErrorCode = ErrorCode;
-        }
-
-        public WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
-    }
-
     public partial class WriteRawDataHandler
     {
         private async Task<WriteRawDataCompletion.PayloadData> HandleWriteRawData(IWriteRawDataEvents events, WriteRawDataCommand writeRawData, CancellationToken cancel)
@@ -135,6 +78,16 @@ namespace XFS4IoTFramework.CardReader
                 return new WriteRawDataCompletion.PayloadData(acceptCardResult.CompletionCode,
                                                               acceptCardResult.ErrorDescription,
                                                               errorCode);
+            }
+
+            // The device specific class completed accepting card operation check the media status must be present for motorised cardreader before writing data.
+            if (Device.DeviceType == DeviceTypeEnum.Motor &&
+                (Device.MediaStatus != MediaStatusEnum.Present &&
+                 Device.MediaStatus != MediaStatusEnum.NotSupported))
+            {
+                return new WriteRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError,
+                                                              "Accept operation is completed successfully, but the media is not present.",
+                                                              WriteRawDataCompletion.PayloadData.ErrorCodeEnum.NoMedia);
             }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.WriteCardDataAsync()");

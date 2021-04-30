@@ -8,72 +8,16 @@
  * created at 4/20/2021 12:28:05 PM
 \***********************************************************************************************/
 
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// EMVContactlessIssuerUpdateRequest
-    /// Provide an information to perform EMV transaction
-    /// </summary>
-    public sealed class EMVContactlessIssuerUpdateRequest
-    {
-        /// <summary>
-        /// EMVClessIssuerUpdateRequest
-        /// </summary>
-        /// <param name="TerminalData"></param>
-        /// <param name="Timeout"></param>
-        public EMVContactlessIssuerUpdateRequest(List<byte> TerminalData, int Timeout)
-        {
-            this.TerminalData = TerminalData;
-            this.Timeout = Timeout;
-        }
-
-        public List<byte> TerminalData { get; private set; }
-        public int Timeout { get; private set; }
-    }
-
-    /// <summary>
-    /// EMVContactlessIssuerUpdateResult
-    /// Return result of EMV transaction
-    /// </summary>
-    public sealed class EMVContactlessIssuerUpdateResult : DeviceResult
-    {
-
-        public EMVContactlessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                                EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                                string ErrorDescription = null,
-                                                EMVContactlessTransactionDataOutput TransactionResult = null)
-            : base(CompletionCode, ErrorDescription)
-        {
-            this.ErrorCode = ErrorCode;
-            this.TransactionResult = TransactionResult;
-        }
-
-        public EMVContactlessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                                EMVContactlessTransactionDataOutput TransactionResult = null)
-            : base(CompletionCode, null)
-        {
-            this.ErrorCode = null;
-            this.TransactionResult = TransactionResult;
-        }
-
-        public EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
-
-        /// <summary>
-        /// Result of the contactless transaction
-        /// </summary>
-        public EMVContactlessTransactionDataOutput TransactionResult { get; private set; }
-    }
-
     public partial class EMVClessIssuerUpdateHandler
     {
         private async Task<EMVClessIssuerUpdateCompletion.PayloadData> HandleEMVClessIssuerUpdate(IEMVClessIssuerUpdateEvents events, EMVClessIssuerUpdateCommand eMVClessIssuerUpdate, CancellationToken cancel)

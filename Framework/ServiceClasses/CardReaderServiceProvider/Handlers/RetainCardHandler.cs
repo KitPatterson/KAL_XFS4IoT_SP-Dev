@@ -10,48 +10,11 @@
 
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoTServer;
-using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 
 namespace XFS4IoTFramework.CardReader
 {
-    /// <summary>
-    /// WriteCardDataResult
-    /// Return result of writing data to the card tracks
-    /// </summary>
-    public sealed class CaptureCardResult : DeviceResult
-    {
-        public CaptureCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                 string ErrorDescription = null,
-                                 int? Count = null,
-                                 RetainCardCompletion.PayloadData.PositionEnum? Position = null)
-            : base(CompletionCode, ErrorDescription)
-        {
-            this.ErrorCode = ErrorCode;
-            this.Count = Count;
-            this.Position = Position;
-        }
-
-        public CaptureCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 int? Count = null,
-                                 RetainCardCompletion.PayloadData.PositionEnum? Position = null)
-           : base(CompletionCode, null)
-        {
-            this.ErrorCode = null;
-            this.Count = Count;
-            this.Position = Position;
-        }
-
-        public RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; private set; }
-
-        public int? Count { get; private set; }
-
-        public RetainCardCompletion.PayloadData.PositionEnum? Position { get; private set; }
-    }
-
     public partial class RetainCardHandler
     {
         private async Task<RetainCardCompletion.PayloadData> HandleRetainCard(IRetainCardEvents events, RetainCardCommand retainCard, CancellationToken cancel)
