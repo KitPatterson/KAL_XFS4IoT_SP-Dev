@@ -70,20 +70,7 @@ namespace TestClient
                 // Start listening for unsolicited messages from the server. 
                 while (true)
                 {
-                    switch (await cardReader.ReceiveMessageAsync())
-                    {
-                        case MediaRemovedEvent removed:
-                            Logger.LogLine($"{nameof(MediaRemovedEvent)}: {removed.Serialise()}");
-                            break;
-
-                        case MediaInsertedEvent inserted:
-                            Logger.LogLine($"{nameof(MediaInsertedEvent)} : {inserted.Serialise()}");
-                            break;
-
-                        case object message:
-                            Logger.LogWarning($"*** Unknown message received. {message.GetType()}");
-                            break;
-                    }
+                    Logger.LogMessage(await cardReader.ReceiveMessageAsync());
                 }
             }
             catch (WebSocketException e)
@@ -189,12 +176,7 @@ namespace TestClient
             // Wait for a response from the device. 
             Logger.LogLine("Waiting for response... ");
 
-            while (true)
-            {
-                var message = await cardReader.ReceiveMessageAsync();
-                Logger.LogMessage(message);
-                if( message is StatusCompletion ) return;
-            }
+            await GetCompletionAsync(typeof(StatusCompletion));
         }
 
 
@@ -226,11 +208,16 @@ namespace TestClient
             // Wait for a response from the device. 
             Logger.LogLine("Waiting for response... ");
 
+            await GetCompletionAsync(typeof(ReadRawDataCompletion));
+        }
+
+        private async Task GetCompletionAsync( Type CompletionType )
+        {
             while (true)
             {
                 var Message = await cardReader.ReceiveMessageAsync();
                 Logger.LogMessage(Message);
-                if (Message is ReadRawDataCompletion) return;
+                if (Message.GetType() == CompletionType) return;
             }
         }
 
