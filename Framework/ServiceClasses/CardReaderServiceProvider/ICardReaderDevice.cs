@@ -195,12 +195,12 @@ namespace XFS4IoTFramework.CardReader
         /// <summary>
         /// Specify the type of cardreader
         /// </summary>
-        public DeviceTypeEnum DeviceType { get; }
+        DeviceTypeEnum DeviceType { get; }
 
         /// <summary>
         /// Specify the current status of media
         /// </summary>
-        public MediaStatusEnum MediaStatus { get; }
+        MediaStatusEnum MediaStatus { get; }
 
     }
 }
