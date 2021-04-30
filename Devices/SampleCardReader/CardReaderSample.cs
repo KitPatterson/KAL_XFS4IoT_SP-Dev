@@ -35,6 +35,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             Logger.IsNotNull($"Invalid parameter received in the {nameof(CardReaderSample)} constructor. {nameof(Logger)}");
             this.Logger = Logger;
+            MediaStatus = MediaStatusEnum.NotPresent;
         }
 
         /// CARDREADER interface
@@ -52,7 +53,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                                                             AcceptCardRequest acceptCardInfo,
                                                             CancellationToken cancellation)
         {
-            if (acceptCardInfo.DataToRead != ReadCardRequest.CardDataTypesEnum.NoDataRead)
+            if (acceptCardInfo.DataToRead != ReadCardRequest.CardDataTypesEnum.NoDataRead ||
+                MediaStatus != MediaStatusEnum.Present)
             {
                 await events.InsertCardEvent();
 
