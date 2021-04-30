@@ -52,6 +52,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             if (acceptCardInfo.DataToRead != ReadCardRequest.CardDataTypesEnum.NoDataRead)
             {
+                await events.InsertCardEvent();
+
                 await Task.Delay(2000, cancellation);
                 await events.MediaInsertedEvent();
             }
