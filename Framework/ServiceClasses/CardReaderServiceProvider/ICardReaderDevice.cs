@@ -191,5 +191,16 @@ namespace XFS4IoTFramework.CardReader
         /// </summary>
         QueryEMVApplicationResult EMVContactlessQueryApplications();
 
+
+        /// <summary>
+        /// Specify the type of cardreader
+        /// </summary>
+        public DeviceTypeEnum DeviceType { get; }
+
+        /// <summary>
+        /// Specify the current status of media
+        /// </summary>
+        public MediaStatusEnum MediaStatus { get; }
+
     }
 }

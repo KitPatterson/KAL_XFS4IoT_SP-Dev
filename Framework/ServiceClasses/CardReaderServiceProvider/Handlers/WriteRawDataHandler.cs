@@ -81,9 +81,9 @@ namespace XFS4IoTFramework.CardReader
             }
 
             // The device specific class completed accepting card operation check the media status must be present for motorised cardreader before writing data.
-            if (acceptCardResult.DeviceType == DeviceTypeEnum.Motor &&
-                (acceptCardResult.MediaStatus != MediaStatusEnum.Present &&
-                 acceptCardResult.MediaStatus != MediaStatusEnum.NotSupported))
+            if (Device.DeviceType == DeviceTypeEnum.Motor &&
+                (Device.MediaStatus != MediaStatusEnum.Present &&
+                 Device.MediaStatus != MediaStatusEnum.NotSupported))
             {
                 return new WriteRawDataCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError,
                                                               "Accept operation is completed successfully, but the media is not present.",

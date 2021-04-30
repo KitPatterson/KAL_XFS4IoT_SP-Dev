@@ -93,24 +93,16 @@ namespace XFS4IoTFramework.CardReader
     {
         public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                 ErrorCodeEnum? ErrorCode = null,
-                                string ErrorDescription = null,
-                                DeviceTypeEnum? DeviceType = null,
-                                MediaStatusEnum? MediaStatus = null)
+                                string ErrorDescription = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
-            this.DeviceType = DeviceType;
-            this.MediaStatus = MediaStatus;
         }
 
-        public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                DeviceTypeEnum? DeviceType = null,
-                                MediaStatusEnum? MediaStatus = null)
+        public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
-            this.DeviceType = DeviceType;
-            this.MediaStatus = MediaStatus;
         }
 
         public enum ErrorCodeEnum
@@ -128,16 +120,6 @@ namespace XFS4IoTFramework.CardReader
         /// error code must be returned by the following ReadCardAsync method and this method should return success.
         /// </summary>
         public ErrorCodeEnum? ErrorCode { get; private set; }
-
-        /// <summary>
-        /// Specify the type of cardreader
-        /// </summary>
-        public DeviceTypeEnum? DeviceType { get; private set; }
-
-        /// <summary>
-        /// Specify the current status of media after card is accepted.
-        /// </summary>
-        public MediaStatusEnum? MediaStatus { get; private set; }
     }
 
     /// <summary>
