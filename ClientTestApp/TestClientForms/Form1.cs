@@ -122,11 +122,13 @@ namespace TestClientForms
                 {
                     case EjectCardCompletion response:
                         textBoxResponse.Text = response.Serialise();
-                        return;
+                        if (response.Payload.CompletionCode != XFS4IoT.Completions.MessagePayload.CompletionCodeEnum.Success)
+                            return;
+                        break;
 
                     case XFS4IoT.CardReader.Events.MediaRemovedEvent removedEv:
                         textBoxEvent.Text += removedEv.Serialise();
-                        break;
+                        return;
 
                     default:
                         textBoxEvent.Text += "<Unknown Event>";

@@ -14,6 +14,8 @@ namespace XFS4IoTServer
 {
     public interface IDevice
     {
+        public Task RunAsync();
+
         public IServiceProvider SetServiceProvider { get;  set; }
     }
 }
