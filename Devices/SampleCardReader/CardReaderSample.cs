@@ -472,7 +472,17 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 false);
 
             CapabilitiesCompletion.PayloadData.CardReaderClass cardReader = new(
-                CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Motor,
+                DeviceType switch
+                {
+                    DeviceTypeEnum.Motor => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Motor,
+                    DeviceTypeEnum.Dip => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Dip,
+                    DeviceTypeEnum.LatchedDip => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.LatchedDip,
+                    DeviceTypeEnum.Swipe => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Swipe,
+                    DeviceTypeEnum.Contactless => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Contactless,
+                    DeviceTypeEnum.IntelligentContactless => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.IntelligentContactless,
+                    DeviceTypeEnum.Permanent => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Permanent,
+                    _ => null
+                },
                 new CapabilitiesCompletion.PayloadData.CardReaderClass.ReadTracksClass(true, true, true, false, false, false, false, false, false, false),
                 new CapabilitiesCompletion.PayloadData.CardReaderClass.WriteTracksClass(true, true, true, false, false, false),
                 new CapabilitiesCompletion.PayloadData.CardReaderClass.ChipProtocolsClass(true, true, false, false, false, false, false),
