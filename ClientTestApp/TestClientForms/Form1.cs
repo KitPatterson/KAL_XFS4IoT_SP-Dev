@@ -298,5 +298,47 @@ namespace TestClientForms
 
         int? ServicePort = null;
         readonly int CommandTimeout = 60000;
+
+		private async void CaptureCard_Click(object sender, EventArgs e)
+		{
+            var cardReader = new XFS4IoTClient.ClientConnection(new Uri($"{textBoxCardReader.Text}"));
+
+            try
+            {
+                await cardReader.ConnectAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            var captureCmd = new RetainCardCommand(
+                Guid.NewGuid().ToString(), new RetainCardCommand.PayloadData(
+                    Timeout: CommandTimeout));
+
+            textBoxCommand.Text = captureCmd.Serialise();
+
+            await cardReader.SendCommandAsync(captureCmd);
+
+            textBoxResponse.Text = string.Empty;
+            textBoxEvent.Text = string.Empty;
+
+            while (true)
+            {
+                switch (await cardReader.ReceiveMessageAsync())
+                {
+                    case RetainCardCompletion response:
+                        textBoxResponse.Text = response.Serialise();
+                        return;
+                    case XFS4IoT.CardReader.Events.MediaRetainedEvent retainedEv:
+                        textBoxEvent.Text += retainedEv.Serialise();
+                        break;
+                    default:
+                        textBoxEvent.Text += "<Unknown Event>";
+                        break;
+                }
+            }
+
+        }
     }
 }
