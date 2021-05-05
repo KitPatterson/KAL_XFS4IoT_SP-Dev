@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XFS4IoT;
+using XFS4IoT.CashManagement.Events;
 using XFS4IoT.Common.Events;
 using XFS4IoT.Dispenser.Events;
 using XFS4IoTServer;
@@ -49,11 +50,11 @@ namespace DispenserServiceProvider
         #endregion
 
         #region CashManagement unsolicited events
-        public Task TellerInfoChangedEvent(XFS4IoT.CashManagement.Events.TellerInfoChangedEvent.PayloadData Payload) => CashManagement.TellerInfoChangedEvent(Payload);
+        public Task TellerInfoChangedEvent(TellerInfoChangedEvent.PayloadData Payload) => CashManagement.TellerInfoChangedEvent(Payload);
 
-        public Task CashUnitThresholdEvent(XFS4IoT.CashManagement.Events.CashUnitThresholdEvent.PayloadData Payload) => CashManagement.CashUnitThresholdEvent(Payload);
+        public Task CashUnitThresholdEvent(CashUnitThresholdEvent.PayloadData Payload) => CashManagement.CashUnitThresholdEvent(Payload);
 
-        public Task CashUnitInfoChangedEvent(XFS4IoT.CashManagement.Events.CashUnitInfoChangedEvent.PayloadData Payload) => CashManagement.CashUnitInfoChangedEvent(Payload);
+        public Task CashUnitInfoChangedEvent(CashUnitInfoChangedEvent.PayloadData Payload) => CashManagement.CashUnitInfoChangedEvent(Payload);
 
         public Task SafeDoorOpenEvent() => CashManagement.SafeDoorOpenEvent();
 
