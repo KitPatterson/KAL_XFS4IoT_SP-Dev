@@ -22,7 +22,5 @@ namespace XFS4IoTFramework.CashManagement
 
         Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload);
 
-        Task ItemsTakenEvent(XFS4IoT.CashManagement.Events.ItemsTakenEvent.PayloadData Payload);
-
     }
 }

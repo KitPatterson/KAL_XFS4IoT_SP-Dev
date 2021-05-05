@@ -16,15 +16,11 @@ namespace XFS4IoTFramework.Dispenser
     public interface ITestCashUnitsEvents
     {
 
-        Task CashUnitErrorEvent(XFS4IoT.Dispenser.Events.CashUnitErrorEvent.PayloadData Payload);
+        Task CashUnitErrorEvent(XFS4IoT.CashManagement.Events.CashUnitErrorEvent.PayloadData Payload);
 
-        Task CashUnitThresholdEvent(XFS4IoT.Dispenser.Events.CashUnitThresholdEvent.PayloadData Payload);
+        Task NoteErrorEvent(XFS4IoT.CashManagement.Events.NoteErrorEvent.PayloadData Payload);
 
-        Task NoteErrorEvent(XFS4IoT.Dispenser.Events.NoteErrorEvent.PayloadData Payload);
-
-        Task InfoAvailableEvent(XFS4IoT.Dispenser.Events.InfoAvailableEvent.PayloadData Payload);
-
-        Task CashUnitInfoChangedEvent(XFS4IoT.Dispenser.Events.CashUnitInfoChangedEvent.PayloadData Payload);
+        Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload);
 
     }
 }

@@ -16,9 +16,7 @@ namespace XFS4IoTFramework.Dispenser
     public interface IPresentEvents
     {
 
-        Task CashUnitThresholdEvent(XFS4IoT.Dispenser.Events.CashUnitThresholdEvent.PayloadData Payload);
-
-        Task InfoAvailableEvent(XFS4IoT.Dispenser.Events.InfoAvailableEvent.PayloadData Payload);
+        Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload);
 
     }
 }

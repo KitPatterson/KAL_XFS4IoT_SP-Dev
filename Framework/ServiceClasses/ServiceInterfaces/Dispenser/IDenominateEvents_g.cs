@@ -16,7 +16,7 @@ namespace XFS4IoTFramework.Dispenser
     public interface IDenominateEvents
     {
 
-        Task CashUnitErrorEvent(XFS4IoT.Dispenser.Events.CashUnitErrorEvent.PayloadData Payload);
+        Task CashUnitErrorEvent(XFS4IoT.CashManagement.Events.CashUnitErrorEvent.PayloadData Payload);
 
     }
 }
