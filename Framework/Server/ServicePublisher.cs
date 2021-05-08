@@ -107,7 +107,7 @@ namespace XFS4IoTServer
         }
 
         public IEnumerable<IServiceProvider> Services { get => _Services; } 
-        private readonly List<IServiceProvider> _Services = new List<IServiceProvider>(); 
+        private readonly List<IServiceProvider> _Services = new(); 
 
         private readonly XFS4IoTServer.EndPoint EndPoint;
 

@@ -58,10 +58,13 @@ namespace XFS4IoTServer
             }
         }
 
-        public Task Dispatch(IConnection Connection, object Command, CancellationToken Cancel)
+        public Task Dispatch(IConnection Connection, object Command)
         {
             Connection.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Connection)}");
             Command.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Command)}");
+
+            using var cts = new CancellationTokenSource();
+            CancellationToken Cancel = cts.Token;
 
             var commandType = Command.GetType();
 
@@ -73,9 +76,9 @@ namespace XFS4IoTServer
             ConstructorInfo constructorInfo = handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) });
             constructorInfo.IsNotNull($"Failed to find constructor for {handlerClass}");
 
-            object handler = constructorInfo.Invoke(new object[] { this, Logger });
+            ICommandHandler handler = constructorInfo.Invoke(new object[] { this, Logger }).IsA<ICommandHandler>();
 
-            MethodInfo handleMethod = handlerClass.GetMethod("Handle");
+            MethodInfo handleMethod = handlerClass.GetMethod(nameof(ICommandHandler.Handle) /*"Handle"*/);
             handleMethod.IsNotNull($"Failed to find a Handle method on {handlerClass}");
 
             var parameters = new object[] { Connection, Command, Cancel };
