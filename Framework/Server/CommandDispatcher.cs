@@ -39,7 +39,7 @@ namespace XFS4IoTServer
                 select (message: namedArg as Type, handler: type)
                 );
 
-            var handlers = string.Join("\n", from next in MessageHandlers select $"{next.Key.ToString()} => {next.Value.ToString()}");
+            var handlers = string.Join("\n", from next in MessageHandlers select $"{next.Key} => {next.Value}");
             Logger.Log(Constants.Component, $"Dispatch, found Command Handler classes:\n{handlers}");
 
             // Double check that command handler classes were declared with the right constructor so that we'll be able to use them. 
@@ -113,7 +113,7 @@ namespace XFS4IoTServer
                 MessageHandlers.Add(Message, Handler);
         }
 
-        private readonly Dictionary<Type, Type> MessageHandlers = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, Type> MessageHandlers = new();
 
         private readonly ILogger Logger;
 

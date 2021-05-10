@@ -4,8 +4,7 @@
  * See the LICENSE file in the project root for more information.
  *
  * This file was created automatically as part of the XFS4IoT CardReader interface.
- * RetainCardHandler_g.cs uses automatically generated parts. 
- * created at 29/04/2021 00:49:04
+ * RetainCardHandler_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -16,6 +15,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
+using IServiceProvider = XFS4IoTServer.IServiceProvider;
 
 namespace XFS4IoTFramework.CardReader
 {
@@ -25,10 +25,12 @@ namespace XFS4IoTFramework.CardReader
         public RetainCardHandler(ICommandDispatcher Dispatcher, ILogger logger)
         {
             Dispatcher.IsNotNull($"Invalid parameter received in the {nameof(RetainCardHandler)} constructor. {nameof(Dispatcher)}");
-            Provider = Dispatcher.IsA<CardReaderServiceClass>();
+            Provider = Dispatcher.IsA<IServiceProvider>();
 
-            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(RetainCardHandler)} constructor. {nameof(Provider.Device)}");
-            Device = Provider.Device.IsA<ICardReaderDevice>();
+            Provider.Device.IsNotNull($"Invalid parameter received in the {nameof(RetainCardHandler)} constructor. {nameof(Provider.Device)}")
+                           .IsA<ICardReaderDevice>();
+
+            CardReader = Provider.IsA<ICardReaderServiceClass>();
 
             this.Logger = logger.IsNotNull($"Invalid parameter in the {nameof(RetainCardHandler)} constructor. {nameof(logger)}");
         }
@@ -59,8 +61,9 @@ namespace XFS4IoTFramework.CardReader
             await connection.SendMessageAsync(response);
         }
 
-        private ICardReaderDevice Device { get; }
-        private CardReaderServiceClass Provider { get; }
+        private ICardReaderDevice Device { get => Provider.Device.IsA<ICardReaderDevice>(); }
+        private IServiceProvider Provider { get; }
+        private ICardReaderServiceClass CardReader { get; }
         private ILogger Logger { get; }
     }
 

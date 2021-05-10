@@ -35,10 +35,10 @@ namespace XFS4IoTServer
                                          Logger);
         }
 
-        public async Task RunAsync() => await EndPoint.RunAsync();
+        public async Task RunAsync() => await Task.WhenAll(EndPoint.RunAsync(), Device.RunAsync());
 
         public string Name { get; internal set; }
-        private readonly XFS4IoTServer.EndPoint EndPoint;
+        private readonly EndPoint EndPoint;
         private readonly ILogger logger;
 
         private MessageDecoder CommandDecoder { get; } = new MessageDecoder(MessageDecoder.AutoPopulateType.Command);
@@ -47,7 +47,7 @@ namespace XFS4IoTServer
 
         public IDevice Device { get; internal set; }
 
-        protected async Task BroadcastEvent(object payload)
+        public async Task BroadcastEvent(object payload)
         {
             logger.Log(nameof(ServiceProvider), $"Broadcasting unsolicited event");
 
