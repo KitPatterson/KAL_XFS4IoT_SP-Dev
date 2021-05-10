@@ -63,26 +63,22 @@ namespace XFS4IoTServer
             Connection.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Connection)}");
             Command.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Command)}");
 
-            using var cts = new CancellationTokenSource();
-            CancellationToken Cancel = cts.Token;
-
-            var commandType = Command.GetType();
-
-            Type handlerClass = MessageHandlers[commandType];
-            Contracts.IsTrue(typeof(ICommandHandler).IsAssignableFrom(handlerClass), $"Class {handlerClass.Name} is registered to handle {Command.GetType().Name} but isn't a {nameof(ICommandHandler)}");
+            Type handlerClass = MessageHandlers[Command.GetType()];
+            Contracts.IsTrue(
+                typeof(ICommandHandler).IsAssignableFrom(handlerClass),
+                $"Class {handlerClass.Name} is registered to handle {Command.GetType().Name} but isn't a {nameof(ICommandHandler)}");
 
             Logger.Log(Constants.Component, $"Dispatch: Handling a {Command.GetType()} message with {handlerClass.Name}");
 
-            ConstructorInfo constructorInfo = handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) });
-            constructorInfo.IsNotNull($"Failed to find constructor for {handlerClass}");
+            // Create a new handler object. Effectively the same as: 
+            // ICommandHandler handler = new handlerClass( this, Logger );
+            ICommandHandler handler = handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) })
+                                                  .IsNotNull($"Failed to find constructor for {handlerClass}")
+                                                  .Invoke(new object[] { this, Logger })
+                                                  .IsA<ICommandHandler>();
 
-            ICommandHandler handler = constructorInfo.Invoke(new object[] { this, Logger }).IsA<ICommandHandler>();
-
-            MethodInfo handleMethod = handlerClass.GetMethod(nameof(ICommandHandler.Handle) /*"Handle"*/);
-            handleMethod.IsNotNull($"Failed to find a Handle method on {handlerClass}");
-
-            var parameters = new object[] { Connection, Command, Cancel };
-            return handleMethod.Invoke(handler, parameters) as Task ?? Task.CompletedTask;
+            using var cts = new CancellationTokenSource();
+            return handler.Handle( Connection, Command, cts.Token ) ?? Task.CompletedTask;
         }
 
         public Task DispatchError(IConnection Connection, object Command, Exception CommandErrorexception)
@@ -91,23 +87,21 @@ namespace XFS4IoTServer
             Command.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Command)}");
             CommandErrorexception.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(CommandErrorexception)}");
 
-            var commandType = Command.GetType();
 
-            Type handlerClass = MessageHandlers[commandType];
+            Type handlerClass = MessageHandlers[Command.GetType()];
             Contracts.IsTrue(typeof(ICommandHandler).IsAssignableFrom(handlerClass), $"Class {handlerClass.Name} is registered to handle {Command.GetType().Name} but isn't a {nameof(ICommandHandler)}");
 
             Logger.Log(Constants.Component, $"Dispatch: Handling a {Command.GetType()} message with {handlerClass.Name}");
 
-            ConstructorInfo constructorInfo = handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) });
-            constructorInfo.IsNotNull($"Failed to find constructor for {handlerClass}");
+            // Create a new handler object. Effectively the same as: 
+            // ICommandHandler handler = new handlerClass( this, Logger );
+            ICommandHandler handler = handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) })
+                                                  .IsNotNull($"Failed to find constructor for {handlerClass}")
+                                                  .Invoke(parameters: new object[] { this, Logger })
+                                                  .IsA<ICommandHandler>();
 
-            object handler = constructorInfo.Invoke(new object[] { this, Logger });
-
-            MethodInfo handleMethod = handlerClass.GetMethod("HandleError");
-            handleMethod.IsNotNull($"Failed to find a Handle method on {handlerClass}");
-
-            var parameters = new object[] { Connection, Command, CommandErrorexception };
-            return handleMethod.Invoke(handler, parameters) as Task ?? Task.CompletedTask;
+            // Call the HandlerError method on 
+            return handler.HandleError( Connection, Command, CommandErrorexception ) ?? Task.CompletedTask;
         }
 
         private void Add(IEnumerable<(Type, Type)> types)
