@@ -100,7 +100,7 @@ namespace XFS4IoTServer
             }
             catch (InvalidDataException ex)
             {
-                await CommandDispatcher.DispatchError(this, command, ex);
+                await CommandDispatcher.DispatchError(this, commandBase, ex);
                 return;
             }
             catch (Exception ex)
@@ -111,11 +111,11 @@ namespace XFS4IoTServer
 
             try
             {
-                await CommandDispatcher.Dispatch(this, command );
+                await CommandDispatcher.Dispatch(this, commandBase);
             }
             catch (NotImplementedException ex) // Add more exception can be thrown by the device specific class
             {
-                await CommandDispatcher.DispatchError(this, command, ex);
+                await CommandDispatcher.DispatchError(this, commandBase, ex);
             }
             catch (Exception ex)
             {

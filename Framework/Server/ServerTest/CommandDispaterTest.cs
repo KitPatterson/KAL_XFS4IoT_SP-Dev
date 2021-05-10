@@ -24,9 +24,9 @@ namespace XFS4IoTServer.Test
             var dispatcher = new CommandDispatcher( new[] { XFSConstants.ServiceClass.Publisher }, new TestLogger() );
 
 
-            await dispatcher.Dispatch(new TestConnection(), new TestMessage1(), new CancellationToken());
-            await dispatcher.Dispatch(new TestConnection(), new TestMessage2(), new CancellationToken());
-            await dispatcher.Dispatch(new TestConnection(), new TestMessage3(), new CancellationToken());
+            await dispatcher.Dispatch(new TestConnection(), new TestMessage1());
+            await dispatcher.Dispatch(new TestConnection(), new TestMessage2());
+            await dispatcher.Dispatch(new TestConnection(), new TestMessage3());
         }
     }
 
@@ -37,8 +37,8 @@ namespace XFS4IoTServer.Test
         public Uri WSUri { get; } = new Uri(string.Empty);
         public IDevice Device { get => throw new NotImplementedException(); }
         public Task BroadcastEvent(object payload) => throw new NotImplementedException();
-        public Task Dispatch(IConnection Connection, object Command, CancellationToken Cancel) => throw new NotImplementedException();
-        public Task DispatchError(IConnection Connection, object Command, Exception CommandException) => throw new NotImplementedException();
+        public Task Dispatch(IConnection Connection, MessageBase Command) => throw new NotImplementedException();
+        public Task DispatchError(IConnection Connection, MessageBase Command, Exception CommandException) => throw new NotImplementedException();
         public Task RunAsync() => throw new NotImplementedException();
     }
 
