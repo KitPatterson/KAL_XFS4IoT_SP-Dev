@@ -10,6 +10,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+
 using XFS4IoT;
 
 namespace XFS4IoTServer
@@ -66,12 +68,12 @@ namespace XFS4IoTServer
             var cts = new CancellationTokenSource();
             ICommandHandler commandHandler = CreateHandler(Command.GetType());
             Logger.Log("Dispatcher", $"Queing command a {commandHandler} handler for {Command.Headers.Name} id:{Command.Headers.RequestId}" );
-            CommandQueue.Add(new CommandQueueRecord ( commandHandler, Connection, Command, cts) );
+            CommandQueue.Post(new CommandQueueRecord ( commandHandler, Connection, Command, cts) );
         }
 
         private record CommandQueueRecord ( ICommandHandler CommandHandler, IConnection Connection, MessageBase command, CancellationTokenSource cts );
 
-        private readonly List<CommandQueueRecord> CommandQueue = new List<CommandQueueRecord>(); 
+        private readonly BufferBlock<CommandQueueRecord> CommandQueue = new BufferBlock<CommandQueueRecord>();
 
         public Task DispatchError(IConnection Connection, MessageBase Command, Exception CommandErrorexception)
         {
@@ -104,17 +106,11 @@ namespace XFS4IoTServer
         {
             while( true )
             {
-                while( CommandQueue.Count > 0 )
-                {
-                    var (handler, connection, command, cts) = CommandQueue[0];
-                    Logger.Log("Dispatcher", $"Running {command.Headers.Name} id:{command.Headers.RequestId}");
-                    await handler.Handle(connection, command, cts.Token);
-                    Logger.Log("Dispatcher", $"Completed {command.Headers.Name} id:{command.Headers.RequestId}");
-                    CommandQueue.RemoveAt(0);
-                    cts.Dispose();
-                }
-                // Todo: Need a way to wait on new records
-                await Task.Delay(100);
+                var (handler, connection, command, cts) = await CommandQueue.ReceiveAsync();
+                Logger.Log("Dispatcher", $"Running {command.Headers.Name} id:{command.Headers.RequestId}");
+                await handler.Handle(connection, command, cts.Token);
+                Logger.Log("Dispatcher", $"Completed {command.Headers.Name} id:{command.Headers.RequestId}");
+                cts.Dispose();
             }
         }
         private void Add(IEnumerable<(Type, Type)> types)
