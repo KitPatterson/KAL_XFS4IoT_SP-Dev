@@ -339,7 +339,7 @@ namespace TestClient
                         break;
 
                     case InsertCardEvent insertCardEvent:
-                        LogMessage(nameof(MediaInsertedEvent),ConsoleColor.Yellow, insertCardEvent.Serialise());
+                        LogMessage(nameof(InsertCardEvent),ConsoleColor.Yellow, insertCardEvent.Serialise());
                         break;
 
                     case MediaInsertedEvent mediaInsertedEvent:
