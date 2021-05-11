@@ -58,14 +58,20 @@ namespace XFS4IoTServer
             }
         }
 
-        public Task Dispatch(IConnection Connection, MessageBase Command)
+        public void Dispatch(IConnection Connection, MessageBase Command)
         {
             Connection.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Connection)}");
             Command.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Command)}");
 
-            using var cts = new CancellationTokenSource();
-            return CreateHandler(Command.GetType()).Handle(Connection, Command, cts.Token) ?? Task.CompletedTask;
+            var cts = new CancellationTokenSource();
+            ICommandHandler commandHandler = CreateHandler(Command.GetType());
+            Logger.Log("Dispatcher", $"Queing command a {commandHandler} handler for {Command.Headers.Name} id:{Command.Headers.RequestId}" );
+            CommandQueue.Add(new CommandQueueRecord ( commandHandler, Connection, Command, cts) );
         }
+
+        private record CommandQueueRecord ( ICommandHandler CommandHandler, IConnection Connection, MessageBase command, CancellationTokenSource cts );
+
+        private readonly List<CommandQueueRecord> CommandQueue = new List<CommandQueueRecord>(); 
 
         public Task DispatchError(IConnection Connection, MessageBase Command, Exception CommandErrorexception)
         {
@@ -83,7 +89,7 @@ namespace XFS4IoTServer
                 typeof(ICommandHandler).IsAssignableFrom(handlerClass),
                 $"Class {handlerClass.Name} is registered to handle {type.Name} but isn't a {nameof(ICommandHandler)}");
 
-            Logger.Log(Constants.Component, $"Dispatch: Handling a {type} message with {handlerClass.Name}");
+            //Logger.Log(Constants.Component, $"Dispatch: Handling {type} message with {handlerClass.Name}");
 
             // Create a new handler object. Effectively the same as: 
             // ICommandHandler handler = new handlerClass( this, Logger );
@@ -93,6 +99,24 @@ namespace XFS4IoTServer
                                .IsA<ICommandHandler>();
         }
 
+
+        public virtual async Task RunAsync()
+        {
+            while( true )
+            {
+                while( CommandQueue.Count > 0 )
+                {
+                    var (handler, connection, command, cts) = CommandQueue[0];
+                    Logger.Log("Dispatcher", $"Running {command.Headers.Name} id:{command.Headers.RequestId}");
+                    await handler.Handle(connection, command, cts.Token);
+                    Logger.Log("Dispatcher", $"Completed {command.Headers.Name} id:{command.Headers.RequestId}");
+                    CommandQueue.RemoveAt(0);
+                    cts.Dispose();
+                }
+                // Todo: Need a way to wait on new records
+                await Task.Delay(100);
+            }
+        }
         private void Add(IEnumerable<(Type, Type)> types)
         {
             foreach (var (Message, Handler) in types)

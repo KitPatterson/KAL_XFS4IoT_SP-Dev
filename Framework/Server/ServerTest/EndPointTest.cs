@@ -83,6 +83,7 @@ namespace XFS4IoTServerTest
         {
             public Task Dispatch(IConnection Connection, MessageBase Command) => throw new System.NotImplementedException();
             public Task DispatchError(IConnection Connection, MessageBase Command, Exception CommandException) => throw new System.NotImplementedException();
+            public Task RunAsync() => throw new System.NotImplementedException();
             public IEnumerator GetEnumerator() => throw new System.NotImplementedException();
             public IEnumerable<Type> Commands { get => throw new NotImplementedException(); }
         }

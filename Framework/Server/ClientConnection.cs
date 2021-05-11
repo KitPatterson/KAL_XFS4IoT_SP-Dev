@@ -111,7 +111,7 @@ namespace XFS4IoTServer
 
             try
             {
-                await CommandDispatcher.Dispatch(this, commandBase);
+                CommandDispatcher.Dispatch(this, commandBase);
             }
             catch (NotImplementedException ex) // Add more exception can be thrown by the device specific class
             {
