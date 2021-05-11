@@ -346,6 +346,10 @@ namespace TestClient
                         LogMessage(nameof(MediaInsertedEvent),ConsoleColor.Yellow, mediaInsertedEvent.Serialise());
                         break;
 
+                    case MediaRemovedEvent mediaRemovedEvent:
+                        LogMessage(nameof(MediaRemovedEvent),ConsoleColor.Yellow, mediaRemovedEvent.Serialise());
+                        break;
+
                     case null:
                         LogError($"Invalid response to {nameof(GetServiceCompletion)}");
                         break;
