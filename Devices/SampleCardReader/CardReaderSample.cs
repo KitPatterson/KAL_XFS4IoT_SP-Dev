@@ -4,6 +4,7 @@
  * See the LICENSE file in the project root for more information.
 \***********************************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -155,9 +156,21 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             await Task.Delay(1000, cancellation);
 
-            MediaStatus = MediaStatusEnum.NotPresent;
+            MediaStatus = MediaStatusEnum.Entering;
+
+            new Thread(CardTakenThread).IsNotNull().Start();
 
             return new EjectCardResult(MessagePayload.CompletionCodeEnum.Success);
+        }
+
+        /// <summary>
+        /// Thread for simulate card taken event to be fired
+        /// </summary>
+        private void CardTakenThread()
+        {
+            Thread.Sleep(5000);
+
+            cardTakenSignal.Release();
         }
 
         /// <summary>
@@ -333,6 +346,35 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             await Task.Delay(1000, cancellation);
 
             await events.MediaRetainedEvent();
+            
+            CapturedCount++;
+
+            CardReaderServiceProvider cardReaderServiceProvider = SetServiceProvider as CardReaderServiceProvider;
+            if (CapturedCount >= CpMaxCaptureCount)
+            {
+                // Send the threshold event only once when we reached the threshold
+                if (RetainBinStatus != StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.High)
+                {
+                    await cardReaderServiceProvider.IsNotNull().RetainBinThresholdEvent(new RetainBinThresholdEvent.PayloadData(RetainBinThresholdEvent.PayloadData.StateEnum.Full));
+                }
+
+                RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Full;
+            }
+            else if (CapturedCount >= (int)(((3 * CpMaxCaptureCount) / 4) + 0.5))
+            {
+                // Send the threshold event only once when we reached the threshold
+                if (RetainBinStatus != StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.High)
+                {
+                    // unsolic threadhold
+                    await cardReaderServiceProvider.IsNotNull().RetainBinThresholdEvent(new RetainBinThresholdEvent.PayloadData(RetainBinThresholdEvent.PayloadData.StateEnum.High));
+                }
+
+                RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.High;
+            }
+            else
+            {
+                RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok;
+            }
 
             return new CaptureCardResult(MessagePayload.CompletionCodeEnum.Success,
                                          CapturedCount++,
@@ -360,6 +402,23 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         {
             await Task.Delay(1000, cancellation);
             return new SetCIM86KeyResult(MessagePayload.CompletionCodeEnum.Success);
+        }
+
+        /// <summary>
+        /// RunAync
+        /// Handle unsolic events
+        /// Here is an example of handling MediaRemovedEvent after card is ejected successfully.
+        /// </summary>
+        /// <returns></returns>
+        public async Task RunAsync()
+        {
+            for (; ; )
+            {
+                await cardTakenSignal?.WaitAsync();
+                MediaStatus = MediaStatusEnum.NotPresent;
+                CardReaderServiceProvider cardReaderServiceProvider = SetServiceProvider as CardReaderServiceProvider;
+                await cardReaderServiceProvider.IsNotNull().MediaRemovedEvent();
+            }
         }
 
         /// <summary>
@@ -472,11 +531,21 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 false);
 
             CapabilitiesCompletion.PayloadData.CardReaderClass cardReader = new(
-                CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Motor,
+                DeviceType switch
+                {
+                    DeviceTypeEnum.Motor => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Motor,
+                    DeviceTypeEnum.Dip => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Dip,
+                    DeviceTypeEnum.LatchedDip => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.LatchedDip,
+                    DeviceTypeEnum.Swipe => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Swipe,
+                    DeviceTypeEnum.Contactless => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Contactless,
+                    DeviceTypeEnum.IntelligentContactless => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.IntelligentContactless,
+                    DeviceTypeEnum.Permanent => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Permanent,
+                    _ => null
+                },
                 new CapabilitiesCompletion.PayloadData.CardReaderClass.ReadTracksClass(true, true, true, false, false, false, false, false, false, false),
                 new CapabilitiesCompletion.PayloadData.CardReaderClass.WriteTracksClass(true, true, true, false, false, false),
                 new CapabilitiesCompletion.PayloadData.CardReaderClass.ChipProtocolsClass(true, true, false, false, false, false, false),
-                100,
+                CpMaxCaptureCount,
                 CapabilitiesCompletion.PayloadData.CardReaderClass.SecurityTypeEnum.NotSupported,
                 CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOnOptionEnum.NoAction,
                 CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOffOptionEnum.NoAction,
@@ -556,11 +625,17 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         /// </summary>
         public MediaStatusEnum MediaStatus { get; private set; } = MediaStatusEnum.Unknown;
 
+        public XFS4IoTServer.IServiceProvider SetServiceProvider { get; set; } = null;
 
         /// Internal variables
+        /// 
         private int CapturedCount = 0;
+        private int CpMaxCaptureCount = 100;
+
+        private StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok;
 
         private ILogger Logger { get; }
-        public IServiceProvider SetServiceProvider { get; set; }
+
+        private readonly SemaphoreSlim cardTakenSignal = new(0, 1);
     }
 }

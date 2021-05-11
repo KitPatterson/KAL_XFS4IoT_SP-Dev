@@ -92,8 +92,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class AcceptCardResult : DeviceResult
     {
         public AcceptCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                ErrorCodeEnum? ErrorCode = null,
-                                string ErrorDescription = null)
+                                string ErrorDescription = null,
+                                ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -352,8 +352,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class WriteCardResult : DeviceResult
     {
         public WriteCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                               string ErrorDescription = null)
+                               string ErrorDescription = null,
+                               WriteRawDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -387,8 +387,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class EjectCardResult : DeviceResult
     {
         public EjectCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               EjectCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                               string ErrorDescription = null)
+                               string ErrorDescription = null,
+                               EjectCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -404,8 +404,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class CaptureCardResult : DeviceResult
     {
         public CaptureCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                  string ErrorDescription = null,
+                                 RetainCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                  int? Count = null,
                                  RetainCardCompletion.PayloadData.PositionEnum? Position = null)
             : base(CompletionCode, ErrorDescription)
@@ -474,8 +474,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class ChipIOResult : DeviceResult
     {
         public ChipIOResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                            ChipIOCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                             string ErrorDescription = null,
+                            ChipIOCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                             List<byte> ChipData = null)
             : base(CompletionCode, ErrorDescription)
         {
@@ -522,8 +522,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class ChipPowerResult : DeviceResult
     {
         public ChipPowerResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                               string ErrorDescription = null)
+                               string ErrorDescription = null,
+                               ChipPowerCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -557,8 +557,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class ResetDeviceResult : DeviceResult
     {
         public ResetDeviceResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                 string ErrorDescription = null)
+                                 string ErrorDescription = null,
+                                 ResetCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -604,8 +604,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class SetCIM86KeyResult : DeviceResult
     {
         public SetCIM86KeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                 string ErrorDescription = null)
+                                 string ErrorDescription = null,
+                                 SetKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -646,8 +646,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class ParkCardResult : DeviceResult
     {
         public ParkCardResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                 string ErrorDescription = null)
+                              string ErrorDescription = null,
+                              ParkCardCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -804,8 +804,8 @@ namespace XFS4IoTFramework.CardReader
     public sealed class EMVContactlessConfigureResult : DeviceResult
     {
         public EMVContactlessConfigureResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                             EMVClessConfigureCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
-                                             string ErrorDescription = null)
+                                             string ErrorDescription = null,
+                                             EMVClessConfigureCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -1065,8 +1065,8 @@ namespace XFS4IoTFramework.CardReader
     {
 
         public EMVContactlessPerformTransactionResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                                      EMVClessPerformTransactionCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                                       string ErrorDescription = null,
+                                                      EMVClessPerformTransactionCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                                       Dictionary<DataSourceTypeEnum, EMVContactlessTransactionDataOutput> TransactionResults = null)
             : base(CompletionCode, ErrorDescription)
         {
@@ -1127,8 +1127,8 @@ namespace XFS4IoTFramework.CardReader
     {
 
         public EMVContactlessIssuerUpdateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                                EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                                 string ErrorDescription = null,
+                                                EMVClessIssuerUpdateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
                                                 EMVContactlessTransactionDataOutput TransactionResult = null)
             : base(CompletionCode, ErrorDescription)
         {

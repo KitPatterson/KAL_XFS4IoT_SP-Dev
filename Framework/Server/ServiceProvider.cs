@@ -35,10 +35,10 @@ namespace XFS4IoTServer
                                          Logger);
         }
 
-        public override async Task RunAsync() => await Task.WhenAll(EndPoint.RunAsync(), base.RunAsync());
+        public async Task RunAsync() => await Task.WhenAll(EndPoint.RunAsync(), Device.RunAsync(), base.RunAsync());
 
         public string Name { get; internal set; }
-        private readonly XFS4IoTServer.EndPoint EndPoint;
+        private readonly EndPoint EndPoint;
         private readonly ILogger logger;
 
         private MessageDecoder CommandDecoder { get; } = new MessageDecoder(MessageDecoder.AutoPopulateType.Command);
