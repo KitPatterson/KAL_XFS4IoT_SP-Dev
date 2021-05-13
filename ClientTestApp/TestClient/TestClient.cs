@@ -16,6 +16,7 @@ using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 using XFS4IoT.CardReader.Events;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace TestClient
 {
@@ -32,12 +33,17 @@ namespace TestClient
                 Logger.LogLine("Running test XFS4IoT application.");
 
                 bool ShowJSON = false;
+                int ParallelCount = 1;
                 foreach (var (name, value) in from p in args
                                               let m = paramRegex.Match(p)
                                               select (m.Groups["name"].Value, m.Groups["value"].Value))
                 {
                     switch (name.ToLower())
                     {
+                        case "parallelcount" or "count"  : 
+                            if( !int.TryParse(value, out ParallelCount ) ) 
+                                throw new Exception($"Invalid prallel count {value}"); ; 
+                            break;
                         case "address"  : Address = value; break;
                         case "showjson" :
                             if (string.IsNullOrEmpty(value))
@@ -56,20 +62,33 @@ namespace TestClient
                 Logger.LogLine("Doing service discovery.");
                 await DoServiceDiscovery();
 
-                Logger.LogLine("Connecting to the card reader");
-                await OpenCardReader();
+                // The test sequence - may be run multiple times. 
+                async Task DoCardReader()
+                {
+                    Logger.LogLine("Connecting to the card reader");
+                    XFS4IoTClient.ClientConnection cardReader = await OpenCardReader();
 
-                Logger.LogLine("Get card reader status");
-                await GetCardReaderStatus();
+                    Logger.LogLine("Get card reader status");
+                    await GetCardReaderStatus(cardReader);
 
-                Logger.LogLine("Doing accept card");
-                await DoAcceptCard();
+                    Logger.LogLine("Doing accept card");
+                    await DoAcceptCard(cardReader);
+
+                    Logger.LogLine("Doing eject card");
+                    await DoEjectCard(cardReader);
+                }
+
+                IEnumerable<Task> tasks = from i in Enumerable.Range(0, ParallelCount)
+                                          select DoCardReader();
+
+                Task.WaitAll(tasks.ToArray());
 
                 Logger.LogLine($"Done");
 
                 // Start listening for unsolicited messages from the server. 
                 while (true)
                 {
+                    XFS4IoTClient.ClientConnection cardReader = await OpenCardReader();
                     Logger.LogMessage(await cardReader.ReceiveMessageAsync());
                 }
             }
@@ -151,11 +170,11 @@ namespace TestClient
             return !string.IsNullOrEmpty(service) ? new Uri(service) : throw new Exception($"Failed to find a device {ServiceClass} endpoint");
         }
 
-        private XFS4IoTClient.ClientConnection cardReader;
-        private async Task OpenCardReader()
+        private async Task<XFS4IoTClient.ClientConnection> OpenCardReader()
         {
             // Create the connection object. This doesn't start anything...  
-            cardReader = new XFS4IoTClient.ClientConnection(
+            XFS4IoTClient.ClientConnection cardReader
+                = new XFS4IoTClient.ClientConnection(
                     EndPoint: CardReaderUri ?? throw new NullReferenceException()
                     );
 
@@ -163,9 +182,11 @@ namespace TestClient
             var cancel = new CancellationTokenSource();
             cancel.CancelAfter(10_000);
             await cardReader.ConnectAsync(cancel.Token);
+
+            return cardReader; 
         }
 
-        private async Task GetCardReaderStatus()
+        private async Task GetCardReaderStatus(XFS4IoTClient.ClientConnection cardReader)
         {
             Logger.LogLine($"{nameof(StatusCommand)}", ConsoleColor.Blue);
 
@@ -176,15 +197,14 @@ namespace TestClient
             // Wait for a response from the device. 
             Logger.LogLine("Waiting for response... ");
 
-            await GetCompletionAsync(typeof(StatusCompletion));
+            await GetCompletionAsync(cardReader, typeof(StatusCompletion));
         }
 
 
-        private async Task DoAcceptCard()
+        private async Task DoAcceptCard(XFS4IoTClient.ClientConnection cardReader)
         {
             Logger.LogLine($"{nameof(ReadRawDataCommand)}", ConsoleColor.Blue);
 
-            //MessageBox((IntPtr)0, "Send CardReader ReadRawData command to read chip card", "XFS4IoT Test Client", 0);
             // Create a new command and send it to the device
             var command = new ReadRawDataCommand(Guid.NewGuid().ToString(),
                                                  new ReadRawDataCommand.PayloadData(
@@ -208,10 +228,25 @@ namespace TestClient
             // Wait for a response from the device. 
             Logger.LogLine("Waiting for response... ");
 
-            await GetCompletionAsync(typeof(ReadRawDataCompletion));
+            await GetCompletionAsync(cardReader, typeof(ReadRawDataCompletion));
+        }
+        private async Task DoEjectCard(XFS4IoTClient.ClientConnection cardReader)
+        {
+            Logger.LogLine($"{nameof(EjectCardCommand)}", ConsoleColor.Blue);
+
+            // Create a new command and send it to the device
+            var command = new EjectCardCommand(Guid.NewGuid().ToString(), 
+                                                new(10_000)
+                                                );
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(EjectCardCompletion));
         }
 
-        private async Task GetCompletionAsync( Type CompletionType )
+        private async Task GetCompletionAsync(XFS4IoTClient.ClientConnection cardReader, Type CompletionType )
         {
             while (true)
             {
@@ -232,39 +267,56 @@ namespace TestClient
             }
             public void Log(string v, ConsoleColor? colour = null)
             {
-                Console.ForegroundColor = colour ?? defaultColour; 
-                Console.Write($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
-                Console.ForegroundColor = defaultColour;
-            }
+                lock (this)
+                {
+                        Console.ForegroundColor = colour ?? defaultColour;
+                    Console.Write($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                    Console.ForegroundColor = defaultColour;
+                }            }
             public void Write(string v, ConsoleColor? colour = null)
             {
-                Console.ForegroundColor = colour ?? defaultColour;
-                Console.Write(v);
-                Console.ForegroundColor = defaultColour;
+                lock (this)
+                {
+                    Console.ForegroundColor = colour ?? defaultColour;
+                    Console.Write(v);
+                    Console.ForegroundColor = defaultColour;
+                }
             }
             public void LogLine(string v, ConsoleColor? colour = null)
             {
-                Console.ForegroundColor = colour ?? defaultColour;
-                Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
-                Console.ForegroundColor = defaultColour;
+                lock (this)
+                {
+                    Console.ForegroundColor = colour ?? defaultColour;
+                    Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                    Console.ForegroundColor = defaultColour;
+                }
             }
             public void WriteLine(string v, ConsoleColor? colour = null)
             {
-                Console.ForegroundColor = colour ?? defaultColour;
-                Console.WriteLine(v);
-                Console.ForegroundColor = defaultColour;
+                lock (this)
+                {
+                    Console.ForegroundColor = colour ?? defaultColour;
+                    Console.WriteLine(v);
+                    Console.ForegroundColor = defaultColour;
+                }
             }
             public void LogError(string v)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
-                Console.ForegroundColor = defaultColour;
+                lock (this)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                    Console.ForegroundColor = defaultColour;
+                }
             }
             public void LogWarning(string v)
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
-                Console.ForegroundColor = defaultColour;
+                lock (this)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
+                    Console.ForegroundColor = defaultColour;
+                }
             }
             public void LogMessage(object Message)
             {
@@ -278,16 +330,24 @@ namespace TestClient
                         LogMessage(nameof(ReadRawDataCompletion), ConsoleColor.Green, readRawDataCompletion.Serialise());
                         break;
 
+                    case EjectCardCompletion EjectCardCompletion:
+                        LogMessage(nameof(EjectCardCompletion), ConsoleColor.Green, EjectCardCompletion.Serialise());
+                        break;
+
                     case StatusCompletion statusCompletion:
                         LogMessage(nameof(StatusCompletion), ConsoleColor.Green, statusCompletion.Serialise());
                         break;
 
                     case InsertCardEvent insertCardEvent:
-                        LogMessage(nameof(MediaInsertedEvent),ConsoleColor.Yellow, insertCardEvent.Serialise());
+                        LogMessage(nameof(InsertCardEvent),ConsoleColor.Yellow, insertCardEvent.Serialise());
                         break;
 
                     case MediaInsertedEvent mediaInsertedEvent:
                         LogMessage(nameof(MediaInsertedEvent),ConsoleColor.Yellow, mediaInsertedEvent.Serialise());
+                        break;
+
+                    case MediaRemovedEvent mediaRemovedEvent:
+                        LogMessage(nameof(MediaRemovedEvent),ConsoleColor.Yellow, mediaRemovedEvent.Serialise());
                         break;
 
                     case null:
@@ -302,11 +362,14 @@ namespace TestClient
 
             private void LogMessage(string name, ConsoleColor colour, string JSON )
             {
-                Log($"{name}", colour);
-                if (WriteJSON)
-                    WriteLine($" : {JSON}");
-                else
-                    WriteLine("");
+                lock(this)
+                {
+                    Log($"{name}", colour);
+                    if (WriteJSON)
+                        WriteLine($" : {JSON}");
+                    else
+                        WriteLine("");
+                }
             }
 
             public bool WriteJSON { private get; set; } = false;
