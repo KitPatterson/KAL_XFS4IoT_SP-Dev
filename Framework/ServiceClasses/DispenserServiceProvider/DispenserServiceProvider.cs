@@ -8,6 +8,7 @@ using XFS4IoT.CashManagement.Events;
 using XFS4IoT.Common.Events;
 using XFS4IoT.Dispenser.Events;
 using XFS4IoTServer;
+using XFS4IoTFramework.Dispenser;
 
 namespace DispenserServiceProvider
 {
@@ -32,6 +33,10 @@ namespace DispenserServiceProvider
             Dispenser = new DispenserServiceClass(this, logger);
             CashManagement = new CashManagementServiceClass(this, logger);
             Common = new CommonServiceClass(this, logger);
+
+            // CashDispenser class needs to access to the cash unit information
+            Dispenser.CommonService = Common;
+            Dispenser.CashManagementService = CashManagement;
         }
 
         private readonly DispenserServiceClass Dispenser;
@@ -66,6 +71,5 @@ namespace DispenserServiceProvider
 
         public Task DevicePositionEvent(DevicePositionEvent.PayloadData Payload) => Common.DevicePositionEvent(Payload);
         #endregion
-
     }
 }

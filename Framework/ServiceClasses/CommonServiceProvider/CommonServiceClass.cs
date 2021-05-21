@@ -12,12 +12,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XFS4IoTServer.Common;
 
 namespace XFS4IoTServer
+{
+    public partial class CommonServiceClass
     {
-        // TODO: It should be possible to merge multiple service classes into a single service provider. 
-        public partial class CommonServiceClass
-        {
-            // TODO: This class would contain hand coded parts of the service class, such as accounting for cash services. 
-        }
+        
+        /// <summary>
+        /// Stores CashDispenser capabilites internally
+        /// </summary>
+        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get; internal set; } = null;
     }
+}

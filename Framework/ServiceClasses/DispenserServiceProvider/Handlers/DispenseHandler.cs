@@ -24,7 +24,6 @@ namespace XFS4IoTFramework.Dispenser
         private Task<DispenseCompletion.PayloadData> HandleDispense(IDispenseEvents events, DispenseCommand dispense, CancellationToken cancel)
         {
             //ToDo: Implement HandleDispense for Dispenser.
-            
             #if DEBUG
                 throw new NotImplementedException("HandleDispense for Dispenser is not implemented in DispenseHandler.cs");
             #else

@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerHostSample", "SampleS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceInterfaces", "..\Framework\ServiceClasses\ServiceInterfaces\ServiceInterfaces.csproj", "{4BAB56F6-CA49-4CAA-8214-D28CFD8F8113}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DispenserServiceProvider", "..\Framework\ServiceClasses\DispenserServiceProvider\DispenserServiceProvider.csproj", "{040E21A3-95E0-4579-9A99-49C097BC95F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashManagementServiceProvider", "..\Framework\ServiceClasses\CashManagementServiceProvider\CashManagementServiceProvider.csproj", "{356274F7-D826-40CA-BADA-FD9719ECB358}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{4BAB56F6-CA49-4CAA-8214-D28CFD8F8113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BAB56F6-CA49-4CAA-8214-D28CFD8F8113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BAB56F6-CA49-4CAA-8214-D28CFD8F8113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{040E21A3-95E0-4579-9A99-49C097BC95F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{040E21A3-95E0-4579-9A99-49C097BC95F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{040E21A3-95E0-4579-9A99-49C097BC95F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{040E21A3-95E0-4579-9A99-49C097BC95F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{356274F7-D826-40CA-BADA-FD9719ECB358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{356274F7-D826-40CA-BADA-FD9719ECB358}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{356274F7-D826-40CA-BADA-FD9719ECB358}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{356274F7-D826-40CA-BADA-FD9719ECB358}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

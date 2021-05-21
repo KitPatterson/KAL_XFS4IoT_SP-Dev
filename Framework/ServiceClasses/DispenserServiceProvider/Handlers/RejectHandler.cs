@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Dispenser interface.
- * RejectHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -20,17 +18,15 @@ namespace XFS4IoTFramework.Dispenser
 {
     public partial class RejectHandler
     {
-
-        private Task<RejectCompletion.PayloadData> HandleReject(IRejectEvents events, RejectCommand reject, CancellationToken cancel)
+        private async Task<RejectCompletion.PayloadData> HandleReject(IRejectEvents events, RejectCommand reject, CancellationToken cancel)
         {
-            //ToDo: Implement HandleReject for Dispenser.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleReject for Dispenser is not implemented in RejectHandler.cs");
-            #else
-                #error HandleReject for Dispenser is not implemented in RejectHandler.cs
-            #endif
-        }
+            Logger.Log(Constants.DeviceClass, "CashDispenserDev.RejectAsync()");
 
+            var result = await Device.RejectAsync(events, cancel);
+
+            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.RejectAsync() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new RejectCompletion.PayloadData(result.CompletionCode, result.ErrorDescription, result.ErrorCode);
+        }
     }
 }

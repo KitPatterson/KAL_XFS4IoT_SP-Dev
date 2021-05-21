@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Dispenser interface.
- * CountHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -15,22 +13,56 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
+using XFS4IoTServer.Common;
+using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.Dispenser
 {
     public partial class CountHandler
     {
-
-        private Task<CountCompletion.PayloadData> HandleCount(ICountEvents events, CountCommand count, CancellationToken cancel)
+        private async Task<CountCompletion.PayloadData> HandleCount(ICountEvents events, CountCommand count, CancellationToken cancel)
         {
-            //ToDo: Implement HandleCount for Dispenser.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleCount for Dispenser is not implemented in CountHandler.cs");
-            #else
-                #error HandleCount for Dispenser is not implemented in CountHandler.cs
-            #endif
-        }
+            CashDispenserCapabilitiesClass.OutputPositionEnum position = CashDispenserCapabilitiesClass.OutputPositionEnum.Default;
+            if (count.Payload.Position is not null)
+            {
+                position = count.Payload.Position switch
+                {
+                    CountCommand.PayloadData.PositionEnum.Bottom => CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom,
+                    CountCommand.PayloadData.PositionEnum.Center => CashDispenserCapabilitiesClass.OutputPositionEnum.Center,
+                    CountCommand.PayloadData.PositionEnum.Default => CashDispenserCapabilitiesClass.OutputPositionEnum.Default,
+                    CountCommand.PayloadData.PositionEnum.Front => CashDispenserCapabilitiesClass.OutputPositionEnum.Front,
+                    CountCommand.PayloadData.PositionEnum.Left => CashDispenserCapabilitiesClass.OutputPositionEnum.Left,
+                    CountCommand.PayloadData.PositionEnum.Rear => CashDispenserCapabilitiesClass.OutputPositionEnum.Rear,
+                    CountCommand.PayloadData.PositionEnum.Right => CashDispenserCapabilitiesClass.OutputPositionEnum.Right,
+                    CountCommand.PayloadData.PositionEnum.Top => CashDispenserCapabilitiesClass.OutputPositionEnum.Top,
+                    _ => CashDispenserCapabilitiesClass.OutputPositionEnum.Default
+                };
+            }
 
+            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
+            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+
+            CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
+
+            if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
+            {
+                return new CountCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                       $"Unsupported position. {position}");
+            }
+
+            CountRequest request = new (position);
+            if (!string.IsNullOrEmpty(count.Payload.PhysicalPositionName))
+            {
+                request = new CountRequest(position, count.Payload.PhysicalPositionName);
+            }
+
+            Logger.Log(Constants.DeviceClass, "CashDispenserDev.CountAsync()");
+
+            var result = await Device.CountAsync(events, request, cancel);
+
+            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.CountAsync() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new CountCompletion.PayloadData(result.CompletionCode, result.ErrorDescription, result.ErrorCode);
+        }
     }
 }

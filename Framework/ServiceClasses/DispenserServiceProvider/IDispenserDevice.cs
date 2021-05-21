@@ -7,121 +7,92 @@
  * IDispenserDevice.cs uses automatically generated parts.
 \***********************************************************************************************/
 
-
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using XFS4IoTServer;
+using XFS4IoT.Dispenser.Completions;
+using XFS4IoT.Dispenser.Commands;
 
 // KAL specific implementation of dispenser. 
 namespace XFS4IoTFramework.Dispenser
 {
     public interface IDispenserDevice : IDevice
     {
-
-        /// <summary>
-        /// This command is used to obtain a list of supported mixalgorithms and available house mix tables.
-        /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.GetMixTypesCompletion.PayloadData> GetMixTypes(IGetMixTypesEvents events, 
-                                                                                          XFS4IoT.Dispenser.Commands.GetMixTypesCommand.PayloadData payload, 
-                                                                                          CancellationToken cancellation);
-
-        /// <summary>
-        /// This command is used to obtain the house mix tablespecified by the supplied mix number.
-        /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.GetMixTableCompletion.PayloadData> GetMixTable(IGetMixTableEvents events, 
-                                                                                          XFS4IoT.Dispenser.Commands.GetMixTableCommand.PayloadData payload, 
-                                                                                          CancellationToken cancellation);
-
         /// <summary>
         /// {}
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.GetPresentStatusCompletion.PayloadData> GetPresentStatus(IGetPresentStatusEvents events, 
-                                                                                                    XFS4IoT.Dispenser.Commands.GetPresentStatusCommand.PayloadData payload, 
-                                                                                                    CancellationToken cancellation);
+        Task<DispenseCompletion.PayloadData> Dispense(IDispenseEvents events, 
+                                                      DispenseCommand.PayloadData payload, 
+                                                      CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// PresentCashAsync
+        /// Present cash to the specified output position
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.DenominateCompletion.PayloadData> Denominate(IDenominateEvents events, 
-                                                                                        XFS4IoT.Dispenser.Commands.DenominateCommand.PayloadData payload, 
-                                                                                        CancellationToken cancellation);
-
-        /// <summary>
-        /// {}
-        /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.DispenseCompletion.PayloadData> Dispense(IDispenseEvents events, 
-                                                                                    XFS4IoT.Dispenser.Commands.DispenseCommand.PayloadData payload, 
-                                                                                    CancellationToken cancellation);
-
-        /// <summary>
-        /// {}
-        /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.PresentCompletion.PayloadData> Present(IPresentEvents events, 
-                                                                                  XFS4IoT.Dispenser.Commands.PresentCommand.PayloadData payload, 
-                                                                                  CancellationToken cancellation);
+        Task<PresentCashResult> PresentCashAsync(IPresentEvents events, 
+                                                 PresentCashRequest presentInfo, 
+                                                 CancellationToken cancellation);
 
         /// <summary>
         /// This command will move items from the intermediatestacker and transport them to a reject cash unit (i.e. a cash unit with*type* \"rejectCassette\"). The *count*field of the reject cash unit is incremented by the number of items thatwere thought to be present at the time of the reject or the numbercounted by the device during the reject. Note that the reject bin countis unreliable.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.RejectCompletion.PayloadData> Reject(IRejectEvents events, 
-                                                                                XFS4IoT.Dispenser.Commands.RejectCommand.PayloadData payload, 
-                                                                                CancellationToken cancellation);
+        Task<RejectResult> RejectAsync(IRejectEvents events, 
+                                       CancellationToken cancellation);
 
         /// <summary>
         /// {}
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.RetractCompletion.PayloadData> Retract(IRetractEvents events, 
-                                                                                  XFS4IoT.Dispenser.Commands.RetractCommand.PayloadData payload, 
-                                                                                  CancellationToken cancellation);
+        Task<RetractCompletion.PayloadData> Retract(IRetractEvents events, 
+                                                    RetractCommand.PayloadData payload, 
+                                                    CancellationToken cancellation);
 
         /// <summary>
-        /// This command opens the shutter.
+        /// OpenShutterAsync
+        /// Perform shutter operation to open.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.OpenShutterCompletion.PayloadData> OpenShutter(IOpenShutterEvents events, 
-                                                                                          XFS4IoT.Dispenser.Commands.OpenShutterCommand.PayloadData payload, 
-                                                                                          CancellationToken cancellation);
+        Task<OpenCloseShutterResult> OpenShutterAsync(OpenCloseShutterRequest shutterInfo,
+                                                      CancellationToken cancellation);
 
         /// <summary>
-        /// |-  This command closes the shutter.
+        /// CloseShutterAsync
+        /// Perform shutter operation to close.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.CloseShutterCompletion.PayloadData> CloseShutter(ICloseShutterEvents events, 
-                                                                                            XFS4IoT.Dispenser.Commands.CloseShutterCommand.PayloadData payload, 
-                                                                                            CancellationToken cancellation);
+        Task<OpenCloseShutterResult> CloseShutterAsync(OpenCloseShutterRequest shutterInfo, 
+                                                       CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// ResetDeviceAsync
+        /// Perform a hardware reset which will attempt to return the CashDispenser device to a known good state.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.SetMixTableCompletion.PayloadData> SetMixTable(ISetMixTableEvents events, 
-                                                                                          XFS4IoT.Dispenser.Commands.SetMixTableCommand.PayloadData payload, 
-                                                                                          CancellationToken cancellation);
+        Task<ResetDeviceResult> ResetDeviceAsync(IResetEvents events, 
+                                                 ResetDeviceRequest resetDeviceInfo, 
+                                                 CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// Perform a hardware reset which will attempt to return the CashDispenser device to a known good state.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.ResetCompletion.PayloadData> Reset(IResetEvents events, 
-                                                                              XFS4IoT.Dispenser.Commands.ResetCommand.PayloadData payload, 
-                                                                              CancellationToken cancellation);
+        Task<TestCashUnitsCompletion.PayloadData> TestCashUnits(ITestCashUnitsEvents events, 
+                                                                TestCashUnitsCommand.PayloadData payload, 
+                                                                CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// CountAsync
+        /// Perform count operation to empty the specified physical cash unit(s). 
+        /// All items dispensed from the cash unit are counted and moved to the specified output location.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.TestCashUnitsCompletion.PayloadData> TestCashUnits(ITestCashUnitsEvents events, 
-                                                                                              XFS4IoT.Dispenser.Commands.TestCashUnitsCommand.PayloadData payload, 
-                                                                                              CancellationToken cancellation);
+        Task<CountResult> CountAsync(ICountEvents events, 
+                                     CountRequest countInfo,
+                                     CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// PrepareDispenseAsync
+        /// On some hardware it can take a significant amount of time for the dispenser to get ready to dispense media. 
+        /// On this type of hardware the this method can be used to improve transaction performance.
         /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.CountCompletion.PayloadData> Count(ICountEvents events, 
-                                                                              XFS4IoT.Dispenser.Commands.CountCommand.PayloadData payload, 
-                                                                              CancellationToken cancellation);
-
-        /// <summary>
-        /// {}
-        /// </summary>
-        Task<XFS4IoT.Dispenser.Completions.PrepareDispenseCompletion.PayloadData> PrepareDispense(IPrepareDispenseEvents events, 
-                                                                                                  XFS4IoT.Dispenser.Commands.PrepareDispenseCommand.PayloadData payload, 
-                                                                                                  CancellationToken cancellation);
+        Task<PrepareDispenseResult> PrepareDispenseAsync(PrepareDispenseRequest prepareDispenseInfo,
+                                                         CancellationToken cancellation);
 
     }
 }
