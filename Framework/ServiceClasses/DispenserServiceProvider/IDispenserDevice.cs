@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Dispenser interface.
- * IDispenserDevice.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 using System;
@@ -21,7 +19,7 @@ namespace XFS4IoTFramework.Dispenser
     public interface IDispenserDevice : IDevice
     {
         /// <summary>
-        /// {}
+        /// This method performs the dispensing of items to the customer. 
         /// </summary>
         Task<DispenseCompletion.PayloadData> Dispense(IDispenseEvents events, 
                                                       DispenseCommand.PayloadData payload, 
@@ -29,38 +27,38 @@ namespace XFS4IoTFramework.Dispenser
 
         /// <summary>
         /// PresentCashAsync
-        /// Present cash to the specified output position
+        /// This method will move items to the exit position for removal by the user. 
+        /// If a shutter exists, then it will be implicitly controlled during the present operation, even if the ShutterControl capability is set to false.
+        /// The shutter will be closed when the user removes the items or the items are retracted. 
         /// </summary>
         Task<PresentCashResult> PresentCashAsync(IPresentEvents events, 
                                                  PresentCashRequest presentInfo, 
                                                  CancellationToken cancellation);
 
         /// <summary>
-        /// This command will move items from the intermediatestacker and transport them to a reject cash unit (i.e. a cash unit with*type* \"rejectCassette\"). The *count*field of the reject cash unit is incremented by the number of items thatwere thought to be present at the time of the reject or the numbercounted by the device during the reject. Note that the reject bin countis unreliable.
+        /// This method will move items from the intermediatestacker and transport them to a reject cash unit (i.e. a cash unit with type rejectCassette). 
+        /// The count field of the reject cash unit is incremented by the number of items that were thought to be present at the time of the reject or the number counted by the device during the reject.
+        /// Note that the reject bin countis unreliable.
         /// </summary>
         Task<RejectResult> RejectAsync(IRejectEvents events, 
                                        CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// This method will retract items which may have been in customer access from an output position or from internal areas within the CashDispenser. 
+        /// Retracted items will be moved to either a retract cash unit, a reject cash unit, item cash units, the transport or the intermediate stacker. 
+        /// After the items are retracted the shutter is closed automatically, even if the ShutterControl capability is set to false.
         /// </summary>
         Task<RetractCompletion.PayloadData> Retract(IRetractEvents events, 
                                                     RetractCommand.PayloadData payload, 
                                                     CancellationToken cancellation);
 
         /// <summary>
-        /// OpenShutterAsync
-        /// Perform shutter operation to open.
+        /// OpenCloseShutterAsync
+        /// Perform shutter operation to open or close.
         /// </summary>
-        Task<OpenCloseShutterResult> OpenShutterAsync(OpenCloseShutterRequest shutterInfo,
-                                                      CancellationToken cancellation);
+        Task<OpenCloseShutterResult> OpenCloseShutterAsync(OpenCloseShutterRequest shutterInfo,
+                                                           CancellationToken cancellation);
 
-        /// <summary>
-        /// CloseShutterAsync
-        /// Perform shutter operation to close.
-        /// </summary>
-        Task<OpenCloseShutterResult> CloseShutterAsync(OpenCloseShutterRequest shutterInfo, 
-                                                       CancellationToken cancellation);
 
         /// <summary>
         /// ResetDeviceAsync
@@ -71,7 +69,11 @@ namespace XFS4IoTFramework.Dispenser
                                                  CancellationToken cancellation);
 
         /// <summary>
-        /// Perform a hardware reset which will attempt to return the CashDispenser device to a known good state.
+        /// This method is used to test cash units following replenishment.
+        /// All physical cash units which are testable (i.e. that have a status of ok or low and no application lock in the the physical cash unit) are tested.
+        /// If the hardware is able to do so tests are continued even if an error occurs while testing one of the cash units. 
+        /// The method completes with success if the device successfully manages to test all of the testable cash units regardless of the outcome of the test. 
+        /// This is the case if all testable cash units could be tested and a dispense was possible from at least one of the cash units.
         /// </summary>
         Task<TestCashUnitsCompletion.PayloadData> TestCashUnits(ITestCashUnitsEvents events, 
                                                                 TestCashUnitsCommand.PayloadData payload, 

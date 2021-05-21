@@ -51,11 +51,11 @@ namespace XFS4IoTFramework.Dispenser
                                                                CloseShutterCompletion.PayloadData.ErrorCodeEnum.UnsupportedPosition);
             }
 
-            Logger.Log(Constants.DeviceClass, "CashDispenserDev.CloseShutter()");
+            Logger.Log(Constants.DeviceClass, "CashDispenserDev.OpenCloseShutterAsync()");
 
-            var result = await Device.CloseShutterAsync(new OpenCloseShutterRequest(OpenCloseShutterRequest.ActionEnum.Close, position), cancel);
+            var result = await Device.OpenCloseShutterAsync(new OpenCloseShutterRequest(OpenCloseShutterRequest.ActionEnum.Close, position), cancel);
 
-            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.CloseShutter() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.OpenCloseShutterAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             CloseShutterCompletion.PayloadData.ErrorCodeEnum? errorCode = null;
             if (result.ErrorCode is not null)

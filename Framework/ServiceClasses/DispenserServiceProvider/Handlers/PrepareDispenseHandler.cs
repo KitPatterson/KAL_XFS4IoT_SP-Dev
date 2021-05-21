@@ -14,6 +14,7 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
+using XFS4IoTServer.Common;
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -24,6 +25,14 @@ namespace XFS4IoTFramework.Dispenser
             if (prepareDispense.Payload.Action is null)
             {
                 return new PrepareDispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, "Index property is set to null where the retract area is specified to retract position.");
+            }
+
+            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
+            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+
+            if (!CashDispenserService.CommonService.CashDispenserCapabilities.PrepareDispense)
+            {
+                return new PrepareDispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.UnsupportedCommand, "PrepareDispense command is not supported. see capabilities PrepareDispense is false.");
             }
 
             Logger.Log(Constants.DeviceClass, "CashDispenserDev.PrepareDispenseAsync()");
