@@ -67,19 +67,19 @@ namespace XFS4IoTServer.Test
     [Command(Name = "Common.TestMessage1")]
     public class TestMessage1 : XFS4IoT.Commands.Command<XFS4IoT.Commands.MessagePayload>
     {
-        public TestMessage1() : base(Guid.NewGuid().ToString(), null)
+        public TestMessage1() : base(new Random().Next(), null)
         { }
     }
     [Command(Name = "Common.TestMessage2")]
     public class TestMessage2 : XFS4IoT.Commands.Command<XFS4IoT.Commands.MessagePayload>
     {
-        public TestMessage2() : base(Guid.NewGuid().ToString(), null)
+        public TestMessage2() : base(new Random().Next(), null)
         { }
     }
     [Command(Name = "Common.TestMessage3")]
     public class TestMessage3 : XFS4IoT.Commands.Command<XFS4IoT.Commands.MessagePayload>
     {
-        public TestMessage3() : base(Guid.NewGuid().ToString(), null)
+        public TestMessage3() : base(new Random().Next(), null)
         { }
     }
 

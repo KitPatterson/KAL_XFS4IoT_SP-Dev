@@ -43,7 +43,7 @@ namespace TestClientForms
             }
 
             var readRawDataCmd = new ReadRawDataCommand(
-                Guid.NewGuid().ToString(),
+                RequestId++,
                 new ReadRawDataCommand.PayloadData(
                     Timeout: CommandTimeout,
                     Track1: true,
@@ -105,7 +105,7 @@ namespace TestClientForms
             }
 
             var ejectCmd = new EjectCardCommand(
-                Guid.NewGuid().ToString(), new EjectCardCommand.PayloadData(
+                RequestId++, new EjectCardCommand.PayloadData(
                     Timeout: CommandTimeout,
                     EjectPosition: EjectCardCommand.PayloadData.EjectPositionEnum.ExitPosition));
 
@@ -150,7 +150,7 @@ namespace TestClientForms
                 return;
             }
 
-            var statusCmd = new StatusCommand(Guid.NewGuid().ToString(), new StatusCommand.PayloadData(CommandTimeout));
+            var statusCmd = new StatusCommand(RequestId++, new StatusCommand.PayloadData(CommandTimeout));
             textBoxCommand.Text = statusCmd.Serialise();
 
             await cardReader.SendCommandAsync(statusCmd);
@@ -180,7 +180,7 @@ namespace TestClientForms
                 return;
             }
 
-            var capabilitiesCmd = new CapabilitiesCommand(Guid.NewGuid().ToString(), new CapabilitiesCommand.PayloadData(CommandTimeout));
+            var capabilitiesCmd = new CapabilitiesCommand(RequestId++, new CapabilitiesCommand.PayloadData(CommandTimeout));
             textBoxCommand.Text = capabilitiesCmd.Serialise();
 
             await cardReader.SendCommandAsync(capabilitiesCmd);
@@ -254,20 +254,20 @@ namespace TestClientForms
                             continue;
                         }
 
-                        var getServiceCommand = new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(CommandTimeout));
+                        var getServiceCommand = new GetServicesCommand(RequestId++, new GetServicesCommand.PayloadData(CommandTimeout));
                         commandString = getServiceCommand.Serialise();
                         await Discovery.SendCommandAsync(getServiceCommand);
 
                         object cmdResponse = await Discovery.ReceiveMessageAsync();
-                        if (cmdResponse is GetServiceCompletion response)
+                        if (cmdResponse is GetServicesCompletion response)
                         {
                             responseString = response.Serialise();
                             var service =
                                 (from ep in response.Payload.Services
-                                 where ep.ServiceUri.Contains("CardReader")
+                                 where ep.ServiceURI.Contains("CardReader")
                                  select ep
                                 ).FirstOrDefault()
-                                ?.ServiceUri;
+                                ?.ServiceURI;
 
                             if (!string.IsNullOrEmpty(service))
                                 cardServiceURI = service;
@@ -298,6 +298,7 @@ namespace TestClientForms
 
         int? ServicePort = null;
         readonly int CommandTimeout = 60000;
+        private int RequestId { get; set; } = 0;
 
 		private async void CaptureCard_Click(object sender, EventArgs e)
 		{
@@ -313,7 +314,7 @@ namespace TestClientForms
             }
 
             var captureCmd = new RetainCardCommand(
-                Guid.NewGuid().ToString(), new RetainCardCommand.PayloadData(
+                RequestId++, new RetainCardCommand.PayloadData(
                     Timeout: CommandTimeout));
 
             textBoxCommand.Text = captureCmd.Serialise();

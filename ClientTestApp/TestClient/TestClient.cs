@@ -114,6 +114,8 @@ namespace TestClient
         private readonly ConsoleLogger Logger = new();
         private string Address { get; set; } = "localhost";
 
+        private int RequestId { get; set; } = 0;
+
         private Uri CardReaderUri { get; set; }
         //public Uri PinPadUri { get; private set; }
         //public Uri PrinterUri { get; private set; }
@@ -136,36 +138,36 @@ namespace TestClient
                 throw;
             }
 
-            Logger.LogLine($"{nameof(GetServiceCommand)}", ConsoleColor.Blue);
+            Logger.LogLine($"{nameof(GetServicesCommand)}", ConsoleColor.Blue);
 
-            await Discovery.SendCommandAsync(new GetServiceCommand(Guid.NewGuid().ToString(), new GetServiceCommand.PayloadData(60000)));
+            await Discovery.SendCommandAsync(new GetServicesCommand(RequestId++, new GetServicesCommand.PayloadData(60000)));
             Logger.LogLine($"Waiting for response...");
 
             var message = await Discovery.ReceiveMessageAsync();
             Logger.LogMessage(message);
-            if (message is GetServiceCompletion response) 
+            if (message is GetServicesCompletion response) 
             {
                 EndPointDetails(response.Payload);
                 return;
             }
         }
 
-        private void EndPointDetails(GetServiceCompletion.PayloadData endpointDetails)
+        private void EndPointDetails(GetServicesCompletion.PayloadData endpointDetails)
         {
             Logger.LogLine($"Got endpoint details {endpointDetails}");
-            Logger.LogLine($"Services:\n{string.Join("\n", from ep in endpointDetails.Services select ep.ServiceUri)}");
+            Logger.LogLine($"Services:\n{string.Join("\n", from ep in endpointDetails.Services select ep.ServiceURI)}");
 
             CardReaderUri = FindServiceUri(endpointDetails, XFSConstants.ServiceClass.CardReader);
         }
 
-        private static Uri FindServiceUri(GetServiceCompletion.PayloadData endpointDetails, XFSConstants.ServiceClass ServiceClass)
+        private static Uri FindServiceUri(GetServicesCompletion.PayloadData endpointDetails, XFSConstants.ServiceClass ServiceClass)
         {
             var service =
                 (from ep in endpointDetails.Services
-                 where ep.ServiceUri.Contains(ServiceClass.ToString())
+                 where ep.ServiceURI.Contains(ServiceClass.ToString())
                  select ep
                  ).FirstOrDefault()
-                 ?.ServiceUri;
+                 ?.ServiceURI;
 
             return !string.IsNullOrEmpty(service) ? new Uri(service) : throw new Exception($"Failed to find a device {ServiceClass} endpoint");
         }
@@ -191,7 +193,7 @@ namespace TestClient
             Logger.LogLine($"{nameof(StatusCommand)}", ConsoleColor.Blue);
 
             // Create a new command and send it to the device
-            var command = new StatusCommand(Guid.NewGuid().ToString(), new StatusCommand.PayloadData(Timeout: 1_000));
+            var command = new StatusCommand(RequestId++, new StatusCommand.PayloadData(Timeout: 1_000));
             await cardReader.SendCommandAsync(command);
 
             // Wait for a response from the device. 
@@ -206,7 +208,7 @@ namespace TestClient
             Logger.LogLine($"{nameof(ReadRawDataCommand)}", ConsoleColor.Blue);
 
             // Create a new command and send it to the device
-            var command = new ReadRawDataCommand(Guid.NewGuid().ToString(),
+            var command = new ReadRawDataCommand(RequestId++,
                                                  new ReadRawDataCommand.PayloadData(
                                                         60_000,
                                                         Track1: true,
@@ -235,7 +237,7 @@ namespace TestClient
             Logger.LogLine($"{nameof(EjectCardCommand)}", ConsoleColor.Blue);
 
             // Create a new command and send it to the device
-            var command = new EjectCardCommand(Guid.NewGuid().ToString(), 
+            var command = new EjectCardCommand(RequestId++, 
                                                 new(10_000)
                                                 );
             await cardReader.SendCommandAsync(command);
@@ -272,7 +274,8 @@ namespace TestClient
                         Console.ForegroundColor = colour ?? defaultColour;
                     Console.Write($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
                     Console.ForegroundColor = defaultColour;
-                }            }
+                }
+            }
             public void Write(string v, ConsoleColor? colour = null)
             {
                 lock (this)
@@ -322,8 +325,8 @@ namespace TestClient
             {
                 switch (Message)
                 {
-                    case GetServiceCompletion getServiceCompletion:
-                        LogMessage(nameof(GetServiceCompletion), ConsoleColor.Green, getServiceCompletion.Serialise());
+                    case GetServicesCompletion getServiceCompletion:
+                        LogMessage(nameof(GetServicesCompletion), ConsoleColor.Green, getServiceCompletion.Serialise());
                         break;
 
                     case ReadRawDataCompletion readRawDataCompletion:
@@ -351,7 +354,7 @@ namespace TestClient
                         break;
 
                     case null:
-                        LogError($"Invalid response to {nameof(GetServiceCompletion)}");
+                        LogError($"Invalid response to {nameof(GetServicesCompletion)}");
                         break;
 
                     case object message:
