@@ -15,7 +15,9 @@ using XFS4IoTFramework.CardReader;
 using XFS4IoTFramework.Common;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
+using XFS4IoT.Common;
 using XFS4IoT.CardReader.Events;
+using XFS4IoT.CardReader;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 using XFS4IoT.Completions;
@@ -353,32 +355,32 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             if (CapturedCount >= CpMaxCaptureCount)
             {
                 // Send the threshold event only once when we reached the threshold
-                if (RetainBinStatus != StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.High)
+                if (RetainBinStatus != StatusClass.RetainBinEnum.High)
                 {
                     await cardReaderServiceProvider.IsNotNull().RetainBinThresholdEvent(new RetainBinThresholdEvent.PayloadData(RetainBinThresholdEvent.PayloadData.StateEnum.Full));
                 }
 
-                RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Full;
+                RetainBinStatus = StatusClass.RetainBinEnum.Full;
             }
             else if (CapturedCount >= (int)(((3 * CpMaxCaptureCount) / 4) + 0.5))
             {
                 // Send the threshold event only once when we reached the threshold
-                if (RetainBinStatus != StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.High)
+                if (RetainBinStatus != StatusClass.RetainBinEnum.High)
                 {
                     // unsolic threadhold
                     await cardReaderServiceProvider.IsNotNull().RetainBinThresholdEvent(new RetainBinThresholdEvent.PayloadData(RetainBinThresholdEvent.PayloadData.StateEnum.High));
                 }
 
-                RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.High;
+                RetainBinStatus = StatusClass.RetainBinEnum.High;
             }
             else
             {
-                RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok;
+                RetainBinStatus = StatusClass.RetainBinEnum.Ok;
             }
 
             return new CaptureCardResult(MessagePayload.CompletionCodeEnum.Success,
                                          CapturedCount++,
-                                         XFS4IoT.CardReader.Completions.RetainCardCompletion.PayloadData.PositionEnum.Present);
+                                         RetainCardCompletion.PayloadData.PositionEnum.Present);
         }
 
         /// <summary>
@@ -431,7 +433,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
             return new QueryIFMIdentifierResult(MessagePayload.CompletionCodeEnum.Success,
                                                 new List<IFMIdentifierInfo>()
                                                 {
-                                                new IFMIdentifierInfo(XFS4IoT.CardReader.Completions.QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum.Emv, new List<byte>() { 0x1, 0x2, 0x3, 0x4 } )
+                                                new IFMIdentifierInfo(QueryIFMIdentifierCompletion.PayloadData.IfmAuthorityEnum.Emv, new List<byte>() { 0x1, 0x2, 0x3, 0x4 } )
                                                 });
         }
 
@@ -454,38 +456,38 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
 
         public StatusCompletion.PayloadData Status()
         {
-            StatusCompletion.PayloadData.CommonClass common = new(
-                StatusCompletion.PayloadData.CommonClass.DeviceEnum.Online,
+            StatusPropertiesClass common = new(
+                StatusPropertiesClass.DeviceEnum.Online,
                 new List<string>(), 
-                new StatusCompletion.PayloadData.CommonClass.GuideLightsClass(
-                    StatusCompletion.PayloadData.CommonClass.GuideLightsClass.FlashRateEnum.Off,
-                    StatusCompletion.PayloadData.CommonClass.GuideLightsClass.ColorEnum.Green,
-                    StatusCompletion.PayloadData.CommonClass.GuideLightsClass.DirectionEnum.Off),
-                StatusCompletion.PayloadData.CommonClass.DevicePositionEnum.Inposition,
+                new List<StatusPropertiesClass.GuideLightsClass>(){ new StatusPropertiesClass.GuideLightsClass(
+                    StatusPropertiesClass.GuideLightsClass.FlashRateEnum.Off,
+                    StatusPropertiesClass.GuideLightsClass.ColorEnum.Green,
+                    StatusPropertiesClass.GuideLightsClass.DirectionEnum.Off) },
+                PositionStatusEnum.Inposition,
                 0,
-                StatusCompletion.PayloadData.CommonClass.AntiFraudModuleEnum.Ok);
+                StatusPropertiesClass.AntiFraudModuleEnum.Ok);
 
-            StatusCompletion.PayloadData.CardReaderClass cardReader = new(
+            StatusClass cardReader = new(
                 MediaStatus switch
                 {
-                    MediaStatusEnum.Entering => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Entering,
-                    MediaStatusEnum.Jammed => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Jammed,
-                    MediaStatusEnum.Latched => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Latched,
-                    MediaStatusEnum.NotPresent => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotPresent,
-                    MediaStatusEnum.NotSupported => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.NotSupported,
-                    MediaStatusEnum.Present => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Present,
-                    MediaStatusEnum.Unknown => StatusCompletion.PayloadData.CardReaderClass.MediaEnum.Unknown,
+                    MediaStatusEnum.Entering => StatusClass.MediaEnum.Entering,
+                    MediaStatusEnum.Jammed => StatusClass.MediaEnum.Jammed,
+                    MediaStatusEnum.Latched => StatusClass.MediaEnum.Latched,
+                    MediaStatusEnum.NotPresent => StatusClass.MediaEnum.NotPresent,
+                    MediaStatusEnum.NotSupported => StatusClass.MediaEnum.NotSupported,
+                    MediaStatusEnum.Present => StatusClass.MediaEnum.Present,
+                    MediaStatusEnum.Unknown => StatusClass.MediaEnum.Unknown,
                     _ => null
                 },
-                StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok,
-                StatusCompletion.PayloadData.CardReaderClass.SecurityEnum.NotSupported,
+                StatusClass.RetainBinEnum.Ok,
+                StatusClass.SecurityEnum.NotSupported,
                 CapturedCount,
-                StatusCompletion.PayloadData.CardReaderClass.ChipPowerEnum.PoweredOff,
-                StatusCompletion.PayloadData.CardReaderClass.ChipModuleEnum.Ok,
-                StatusCompletion.PayloadData.CardReaderClass.MagWriteModuleEnum.Ok,
-                StatusCompletion.PayloadData.CardReaderClass.FrontImageModuleEnum.Ok,
-                StatusCompletion.PayloadData.CardReaderClass.BackImageModuleEnum.Ok,
-                new List<string>());
+                StatusClass.ChipPowerEnum.PoweredOff,
+                StatusClass.ChipModuleEnum.Ok,
+                StatusClass.MagWriteModuleEnum.Ok,
+                StatusClass.FrontImageModuleEnum.Ok,
+                StatusClass.BackImageModuleEnum.Ok,
+                new List<StatusClass.ParkingStationMediaEnum>());
 
             return new StatusCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                     null,
@@ -495,26 +497,28 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
 
         public CapabilitiesCompletion.PayloadData Capabilities()
         {
-            CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass guideLights = new(
-                new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass.FlashRateClass(true, true, true, true),
-                new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass.ColorClass(true, true, true, true, true, true, true),
-                new CapabilitiesCompletion.PayloadData.CommonClass.GuideLightsClass.DirectionClass(false, false));
+            List<CapabilityPropertiesClass.GuideLightsClass> guideLights = new()
+            {
+                new(new CapabilityPropertiesClass.GuideLightsClass.FlashRateClass(true, true, true, true),
+                new CapabilityPropertiesClass.GuideLightsClass.ColorClass(true, true, true, true, true, true, true),
+                new CapabilityPropertiesClass.GuideLightsClass.DirectionClass(false, false))
+            };
 
-            CapabilitiesCompletion.PayloadData.CommonClass common = new(
+            CapabilityPropertiesClass common = new(
                 "1.0",
-                new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass(
+                new List<DeviceInformationClass>() { new DeviceInformationClass(
                     "Simulator",
                     "123456-78900001",
                     "1.0",
                     "KAL simualtor",
-                    new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass.FirmwareClass(
+                    new List<FirmwareClass>() {new FirmwareClass(
                     "XFS4 SP",
                     "1.0",
-                    "1.0"),
-                    new CapabilitiesCompletion.PayloadData.CommonClass.DeviceInformationClass.SoftwareClass(
+                    "1.0") },
+                    new List<SoftwareClass>(){ new SoftwareClass(
                     "XFS4 SP",
-                    "1.0")),
-                new CapabilitiesCompletion.PayloadData.CommonClass.VendorModeIformationClass(
+                    "1.0") }) },
+                new VendorModeInfoClass(
                     true,
                     new List<string>() 
                     { 
@@ -530,37 +534,37 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                 false,
                 false);
 
-            CapabilitiesCompletion.PayloadData.CardReaderClass cardReader = new(
+            CapabilitiesClass cardReader = new(
                 DeviceType switch
                 {
-                    DeviceTypeEnum.Motor => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Motor,
-                    DeviceTypeEnum.Dip => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Dip,
-                    DeviceTypeEnum.LatchedDip => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.LatchedDip,
-                    DeviceTypeEnum.Swipe => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Swipe,
-                    DeviceTypeEnum.Contactless => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Contactless,
-                    DeviceTypeEnum.IntelligentContactless => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.IntelligentContactless,
-                    DeviceTypeEnum.Permanent => CapabilitiesCompletion.PayloadData.CardReaderClass.TypeEnum.Permanent,
+                    DeviceTypeEnum.Motor => CapabilitiesClass.TypeEnum.Motor,
+                    DeviceTypeEnum.Dip => CapabilitiesClass.TypeEnum.Dip,
+                    DeviceTypeEnum.LatchedDip => CapabilitiesClass.TypeEnum.LatchedDip,
+                    DeviceTypeEnum.Swipe => CapabilitiesClass.TypeEnum.Swipe,
+                    DeviceTypeEnum.Contactless => CapabilitiesClass.TypeEnum.Contactless,
+                    DeviceTypeEnum.IntelligentContactless => CapabilitiesClass.TypeEnum.IntelligentContactless,
+                    DeviceTypeEnum.Permanent => CapabilitiesClass.TypeEnum.Permanent,
                     _ => null
                 },
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.ReadTracksClass(true, true, true, false, false, false, false, false, false, false),
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.WriteTracksClass(true, true, true, false, false, false),
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.ChipProtocolsClass(true, true, false, false, false, false, false),
+                new CapabilitiesClass.ReadTracksClass(true, true, true, false, false, false, false, false, false, false),
+                new CapabilitiesClass.WriteTracksClass(true, true, true, false, false, false),
+                new CapabilitiesClass.ChipProtocolsClass(true, true, false, false, false, false, false),
                 CpMaxCaptureCount,
-                CapabilitiesCompletion.PayloadData.CardReaderClass.SecurityTypeEnum.NotSupported,
-                CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOnOptionEnum.NoAction,
-                CapabilitiesCompletion.PayloadData.CardReaderClass.PowerOffOptionEnum.NoAction,
+                CapabilitiesClass.SecurityTypeEnum.NotSupported,
+                CapabilitiesClass.PowerOnOptionEnum.NoAction,
+                CapabilitiesClass.PowerOffOptionEnum.NoAction,
                 false, false, 
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.WriteModeClass(false, true, false, true),
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.ChipPowerClass(false, true, true, true),
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.MemoryChipProtocolsClass(false, false),
-                new CapabilitiesCompletion.PayloadData.CardReaderClass.EjectPositionClass(true, false),
+                new CapabilitiesClass.WriteModeClass(false, true, false, true),
+                new CapabilitiesClass.ChipPowerClass(false, true, true, true),
+                new CapabilitiesClass.MemoryChipProtocolsClass(false, false),
+                new CapabilitiesClass.EjectPositionClass(true, false),
                 0);
 
 
-            List<CapabilitiesCompletion.PayloadData.InterfacesClass> interfaces = new()
+            List<InterfaceClass> interfaces = new()
             {
-                new CapabilitiesCompletion.PayloadData.InterfacesClass(
-                    CapabilitiesCompletion.PayloadData.InterfacesClass.NameEnum.Common,
+                new InterfaceClass(
+                    InterfaceClass.NameEnum.Common,
                     new List<string>()
                     { 
                         "Common.Status", 
@@ -569,8 +573,8 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                     new List<string>(),
                     1000,
                     new List<string>()),
-                new CapabilitiesCompletion.PayloadData.InterfacesClass(
-                    CapabilitiesCompletion.PayloadData.InterfacesClass.NameEnum.CardReader,
+                new InterfaceClass(
+                    InterfaceClass.NameEnum.CardReader,
                     new List<string>
                     { 
                         "CardReader.ReadRawData", 
@@ -609,11 +613,11 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
                                                           cardReader);
         }
 
-        public Task<PowerSaveControlCompletion.PayloadData> PowerSaveControl(PowerSaveControlCommand.PayloadData payload) => throw new System.NotImplementedException();
-        public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(SynchronizeCommandCommand.PayloadData payload) => throw new System.NotImplementedException();
-        public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(SetTransactionStateCommand.PayloadData payload) => throw new System.NotImplementedException();
-        public GetTransactionStateCompletion.PayloadData GetTransactionState() => throw new System.NotImplementedException();
-        public Task<GetCommandRandomNumberResult> GetCommandRandomNumber() => throw new System.NotImplementedException();
+        public Task<PowerSaveControlCompletion.PayloadData> PowerSaveControl(PowerSaveControlCommand.PayloadData payload) => throw new NotImplementedException();
+        public Task<SynchronizeCommandCompletion.PayloadData> SynchronizeCommand(SynchronizeCommandCommand.PayloadData payload) => throw new NotImplementedException();
+        public Task<SetTransactionStateCompletion.PayloadData> SetTransactionState(SetTransactionStateCommand.PayloadData payload) => throw new NotImplementedException();
+        public GetTransactionStateCompletion.PayloadData GetTransactionState() => throw new NotImplementedException();
+        public Task<GetCommandRandomNumberResult> GetCommandRandomNumber() => throw new NotImplementedException();
 
         /// <summary>
         /// Specify the type of cardreader
@@ -632,7 +636,7 @@ namespace KAL.XFS4IoTSP.CardReader.Sample
         private int CapturedCount = 0;
         private int CpMaxCaptureCount = 100;
 
-        private StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum RetainBinStatus = StatusCompletion.PayloadData.CardReaderClass.RetainBinEnum.Ok;
+        private StatusClass.RetainBinEnum RetainBinStatus = StatusClass.RetainBinEnum.Ok;
 
         private ILogger Logger { get; }
 
