@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class TestCashUnitsEvents : DispenserEvents, ITestCashUnitsEvents
     {
 
-        public TestCashUnitsEvents(IConnection connection, string requestId)
+        public TestCashUnitsEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

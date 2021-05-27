@@ -19,7 +19,7 @@ namespace XFS4IoT.CashManagement.Commands
     [Command(Name = "CashManagement.OpenSafeDoor")]
     public sealed class OpenSafeDoorCommand : Command<OpenSafeDoorCommand.PayloadData>
     {
-        public OpenSafeDoorCommand(string RequestId, OpenSafeDoorCommand.PayloadData Payload)
+        public OpenSafeDoorCommand(int RequestId, OpenSafeDoorCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashManagement.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

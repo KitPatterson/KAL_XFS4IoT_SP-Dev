@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.Dispenser
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var openShutterCmd = command.IsA<OpenShutterCommand>($"Invalid parameter in the OpenShutter Handle method. {nameof(OpenShutterCommand)}");
-            
-            IOpenShutterEvents events = new OpenShutterEvents(Connection, openShutterCmd.Headers.RequestId);
+            openShutterCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IOpenShutterEvents events = new OpenShutterEvents(Connection, openShutterCmd.Headers.RequestId.Value);
 
             var result = await HandleOpenShutter(events, openShutterCmd, cancel);
-            await Connection.SendMessageAsync(new OpenShutterCompletion(openShutterCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new OpenShutterCompletion(openShutterCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var openShuttercommand = command.IsA<OpenShutterCommand>();
+            openShuttercommand.Headers.RequestId.HasValue.IsTrue();
 
             OpenShutterCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.Dispenser
                 _ => OpenShutterCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new OpenShutterCompletion(openShuttercommand.Headers.RequestId, new OpenShutterCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new OpenShutterCompletion(openShuttercommand.Headers.RequestId.Value, new OpenShutterCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

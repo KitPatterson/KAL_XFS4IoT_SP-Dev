@@ -18,13 +18,20 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.Reset")]
     public sealed class ResetCompletion : Completion<ResetCompletion.PayloadData>
     {
-        public ResetCompletion(string RequestId, ResetCompletion.PayloadData Payload)
+        public ResetCompletion(int RequestId, ResetCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
             public enum ErrorCodeEnum
             {
                 CashUnitError,
@@ -33,14 +40,7 @@ namespace XFS4IoT.Dispenser.Completions
                 InvalidRetractPosition,
                 NotRetractArea,
                 PositionNotEmpty,
-                IncompleteRetract,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
+                IncompleteRetract
             }
 
             /// <summary>
@@ -54,7 +54,7 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```positionNotEmpty``` - The retract area specified in *retractArea* is not empty so the moving of items was not possible.
             /// * ```incompleteRetract``` - Some or all of the items were not retracted for a reason not covered by other error codes. The detail will be reported with the Dispenser.IncompleteRetractEvent.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

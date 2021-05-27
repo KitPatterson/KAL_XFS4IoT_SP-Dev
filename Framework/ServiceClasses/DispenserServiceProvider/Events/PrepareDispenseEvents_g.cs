@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class PrepareDispenseEvents : DispenserEvents, IPrepareDispenseEvents
     {
 
-        public PrepareDispenseEvents(IConnection connection, string requestId)
+        public PrepareDispenseEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

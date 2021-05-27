@@ -18,26 +18,26 @@ namespace XFS4IoT.CashManagement.Completions
     [Completion(Name = "CashManagement.SetCashUnitInfo")]
     public sealed class SetCashUnitInfoCompletion : Completion<SetCashUnitInfoCompletion.PayloadData>
     {
-        public SetCashUnitInfoCompletion(string RequestId, SetCashUnitInfoCompletion.PayloadData Payload)
+        public SetCashUnitInfoCompletion(int RequestId, SetCashUnitInfoCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                InvalidTellerId,
-                InvalidCashUnit,
-                NoExchangeActive,
-                CashUnitError,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                InvalidTellerId,
+                InvalidCashUnit,
+                NoExchangeActive,
+                CashUnitError
             }
 
             /// <summary>
@@ -50,7 +50,7 @@ namespace XFS4IoT.CashManagement.Completions
             /// * ```cashUnitError``` - A problem occurred with a cash unit. A CashManagement.CashUnitErrorEvent will 
             /// be posted with the details.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.GetPositionCapabilities")]
     public sealed class GetPositionCapabilitiesCommand : Command<GetPositionCapabilitiesCommand.PayloadData>
     {
-        public GetPositionCapabilitiesCommand(string RequestId, GetPositionCapabilitiesCommand.PayloadData Payload)
+        public GetPositionCapabilitiesCommand(int RequestId, GetPositionCapabilitiesCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashAcceptor.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

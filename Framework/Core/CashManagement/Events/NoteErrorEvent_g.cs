@@ -20,7 +20,7 @@ namespace XFS4IoT.CashManagement.Events
     public sealed class NoteErrorEvent : Event<NoteErrorEvent.PayloadData>
     {
 
-        public NoteErrorEvent(string RequestId, PayloadData Payload)
+        public NoteErrorEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -28,6 +28,12 @@ namespace XFS4IoT.CashManagement.Events
         [DataContract]
         public sealed class PayloadData : MessagePayloadBase
         {
+
+            public PayloadData(ReasonEnum? Reason = null)
+                : base()
+            {
+                this.Reason = Reason;
+            }
 
             public enum ReasonEnum
             {
@@ -37,14 +43,7 @@ namespace XFS4IoT.CashManagement.Events
                 IncorrectCount,
                 NotesTooClose,
                 OtherNoteError,
-                ShortNote,
-            }
-
-
-            public PayloadData(ReasonEnum? Reason = null)
-                : base()
-            {
-                this.Reason = Reason;
+                ShortNote
             }
 
             /// <summary>
@@ -58,8 +57,9 @@ namespace XFS4IoT.CashManagement.Events
             /// * ```otherNoteError``` - An item error not covered by the other values has been detected.
             /// * ```shortNote``` - Short notes have been detected.
             /// </summary>
-            [DataMember(Name = "reason")] 
+            [DataMember(Name = "reason")]
             public ReasonEnum? Reason { get; private set; }
+
         }
 
     }

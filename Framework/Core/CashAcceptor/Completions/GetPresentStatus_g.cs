@@ -18,138 +18,13 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.GetPresentStatus")]
     public sealed class GetPresentStatusCompletion : Completion<GetPresentStatusCompletion.PayloadData>
     {
-        public GetPresentStatusCompletion(string RequestId, GetPresentStatusCompletion.PayloadData Payload)
+        public GetPresentStatusCompletion(int RequestId, GetPresentStatusCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum PositionEnum
-            {
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear,
-            }
-
-            public enum PresentStateEnum
-            {
-                Presented,
-                NotPresented,
-                Unknown,
-            }
-
-            public enum AdditionalBunchesEnum
-            {
-                None,
-                OneMore,
-                Unknown,
-            }
-
-            /// <summary>
-            /// Array holding a list of banknote numbers which have been moved to the output position as a result of the most recent operation.
-            /// </summary>
-            public class ReturnedItemsClass
-            {
-                
-                /// <summary>
-                /// Array of banknote numbers the cash unit contains.
-                /// </summary>
-                public class NoteNumberClass 
-                {
-                    [DataMember(Name = "noteID")] 
-                    public int? NoteID { get; private set; }
-                    [DataMember(Name = "count")] 
-                    public int? Count { get; private set; }
-
-                    public NoteNumberClass (int? NoteID, int? Count)
-                    {
-                        this.NoteID = NoteID;
-                        this.Count = Count;
-                    }
-                }
-                [DataMember(Name = "noteNumber")] 
-                public NoteNumberClass NoteNumber { get; private set; }
-
-                public ReturnedItemsClass (NoteNumberClass NoteNumber)
-                {
-                    this.NoteNumber = NoteNumber;
-                }
-
-
-            }
-
-            /// <summary>
-            /// Array of cumulative banknote numbers which have been moved to the output position. 
-            /// This value will be reset when the CashInStart, CashIn, CashInEnd, Retract, Reset or CashInRollback command is executed.
-            /// </summary>
-            public class TotalReturnedItemsClass
-            {
-                
-                /// <summary>
-                /// Array of banknote numbers the cash unit contains.
-                /// </summary>
-                public class NoteNumberClass 
-                {
-                    [DataMember(Name = "noteID")] 
-                    public int? NoteID { get; private set; }
-                    [DataMember(Name = "count")] 
-                    public int? Count { get; private set; }
-
-                    public NoteNumberClass (int? NoteID, int? Count)
-                    {
-                        this.NoteID = NoteID;
-                        this.Count = Count;
-                    }
-                }
-                [DataMember(Name = "noteNumber")] 
-                public NoteNumberClass NoteNumber { get; private set; }
-
-                public TotalReturnedItemsClass (NoteNumberClass NoteNumber)
-                {
-                    this.NoteNumber = NoteNumber;
-                }
-
-
-            }
-
-            /// <summary>
-            /// Array of banknote numbers on the intermediate stacker or transport which have not been yet moved to the output position.
-            /// </summary>
-            public class RemainingItemsClass
-            {
-                
-                /// <summary>
-                /// Array of banknote numbers the cash unit contains.
-                /// </summary>
-                public class NoteNumberClass 
-                {
-                    [DataMember(Name = "noteID")] 
-                    public int? NoteID { get; private set; }
-                    [DataMember(Name = "count")] 
-                    public int? Count { get; private set; }
-
-                    public NoteNumberClass (int? NoteID, int? Count)
-                    {
-                        this.NoteID = NoteID;
-                        this.Count = Count;
-                    }
-                }
-                [DataMember(Name = "noteNumber")] 
-                public NoteNumberClass NoteNumber { get; private set; }
-
-                public RemainingItemsClass (NoteNumberClass NoteNumber)
-                {
-                    this.NoteNumber = NoteNumber;
-                }
-
-
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, PositionEnum? Position = null, PresentStateEnum? PresentState = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null, ReturnedItemsClass ReturnedItems = null, TotalReturnedItemsClass TotalReturnedItems = null, RemainingItemsClass RemainingItems = null)
                 : base(CompletionCode, ErrorDescription)
@@ -161,6 +36,17 @@ namespace XFS4IoT.CashAcceptor.Completions
                 this.ReturnedItems = ReturnedItems;
                 this.TotalReturnedItems = TotalReturnedItems;
                 this.RemainingItems = RemainingItems;
+            }
+
+            public enum PositionEnum
+            {
+                Left,
+                Right,
+                Center,
+                Top,
+                Bottom,
+                Front,
+                Rear
             }
 
             /// <summary>
@@ -180,8 +66,16 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"rear\": Rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
+            public enum PresentStateEnum
+            {
+                Presented,
+                NotPresented,
+                Unknown
+            }
+
             /// <summary>
             /// Supplies the status of the items that were to be presented by the most recent attempt to present or return items to the customer. Following values are possible:
             /// 
@@ -191,8 +85,16 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"unknown\": It is not known if the customer had access to the items.
             /// </summary>
-            [DataMember(Name = "presentState")] 
+            [DataMember(Name = "presentState")]
             public PresentStateEnum? PresentState { get; private set; }
+
+            public enum AdditionalBunchesEnum
+            {
+                None,
+                OneMore,
+                Unknown
+            }
+
             /// <summary>
             /// Specifies whether or not additional bunches of items are remaining to be presented as a result of the most recent operation. Following values are possible:
             /// 
@@ -202,30 +104,157 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"unknown\": It is unknown whether additional bunches remain.
             /// </summary>
-            [DataMember(Name = "additionalBunches")] 
+            [DataMember(Name = "additionalBunches")]
             public AdditionalBunchesEnum? AdditionalBunches { get; private set; }
+
             /// <summary>
             /// If *additionalBunches* is \"oneMore\", specifies the number of additional bunches of items remaining to be presented as a result of the current operation. 
             /// If the number of additional bunches is at least one, but the precise number is unknown, *bunchesRemaining* will be 255 (TODO: Check if there is a better way to represent this state). 
             /// For any other value of *additionalBunches*, *bunchesRemaining* will be zero.
             /// </summary>
-            [DataMember(Name = "bunchesRemaining")] 
+            [DataMember(Name = "bunchesRemaining")]
             public int? BunchesRemaining { get; private set; }
+
+            [DataContract]
+            public sealed class ReturnedItemsClass
+            {
+                public ReturnedItemsClass(List<NoteNumberClass> NoteNumber = null)
+                {
+                    this.NoteNumber = NoteNumber;
+                }
+
+                [DataContract]
+                public sealed class NoteNumberClass
+                {
+                    public NoteNumberClass(int? NoteID = null, int? Count = null)
+                    {
+                        this.NoteID = NoteID;
+                        this.Count = Count;
+                    }
+
+                    /// <summary>
+                    /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
+                    /// If this value is zero then the note type is unknown.
+                    /// </summary>
+                    [DataMember(Name = "noteID")]
+                    public int? NoteID { get; private set; }
+
+                    /// <summary>
+                    /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
+                    /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
+                    /// </summary>
+                    [DataMember(Name = "count")]
+                    public int? Count { get; private set; }
+
+                }
+
+                /// <summary>
+                /// Array of banknote numbers the cash unit contains.
+                /// </summary>
+                [DataMember(Name = "noteNumber")]
+                public List<NoteNumberClass> NoteNumber { get; private set; }
+
+            }
+
             /// <summary>
             /// Array holding a list of banknote numbers which have been moved to the output position as a result of the most recent operation.
             /// </summary>
-            [DataMember(Name = "returnedItems")] 
+            [DataMember(Name = "returnedItems")]
             public ReturnedItemsClass ReturnedItems { get; private set; }
+
+            [DataContract]
+            public sealed class TotalReturnedItemsClass
+            {
+                public TotalReturnedItemsClass(List<NoteNumberClass> NoteNumber = null)
+                {
+                    this.NoteNumber = NoteNumber;
+                }
+
+                [DataContract]
+                public sealed class NoteNumberClass
+                {
+                    public NoteNumberClass(int? NoteID = null, int? Count = null)
+                    {
+                        this.NoteID = NoteID;
+                        this.Count = Count;
+                    }
+
+                    /// <summary>
+                    /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
+                    /// If this value is zero then the note type is unknown.
+                    /// </summary>
+                    [DataMember(Name = "noteID")]
+                    public int? NoteID { get; private set; }
+
+                    /// <summary>
+                    /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
+                    /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
+                    /// </summary>
+                    [DataMember(Name = "count")]
+                    public int? Count { get; private set; }
+
+                }
+
+                /// <summary>
+                /// Array of banknote numbers the cash unit contains.
+                /// </summary>
+                [DataMember(Name = "noteNumber")]
+                public List<NoteNumberClass> NoteNumber { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of cumulative banknote numbers which have been moved to the output position. 
             /// This value will be reset when the CashInStart, CashIn, CashInEnd, Retract, Reset or CashInRollback command is executed.
             /// </summary>
-            [DataMember(Name = "totalReturnedItems")] 
+            [DataMember(Name = "totalReturnedItems")]
             public TotalReturnedItemsClass TotalReturnedItems { get; private set; }
+
+            [DataContract]
+            public sealed class RemainingItemsClass
+            {
+                public RemainingItemsClass(List<NoteNumberClass> NoteNumber = null)
+                {
+                    this.NoteNumber = NoteNumber;
+                }
+
+                [DataContract]
+                public sealed class NoteNumberClass
+                {
+                    public NoteNumberClass(int? NoteID = null, int? Count = null)
+                    {
+                        this.NoteID = NoteID;
+                        this.Count = Count;
+                    }
+
+                    /// <summary>
+                    /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
+                    /// If this value is zero then the note type is unknown.
+                    /// </summary>
+                    [DataMember(Name = "noteID")]
+                    public int? NoteID { get; private set; }
+
+                    /// <summary>
+                    /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
+                    /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
+                    /// </summary>
+                    [DataMember(Name = "count")]
+                    public int? Count { get; private set; }
+
+                }
+
+                /// <summary>
+                /// Array of banknote numbers the cash unit contains.
+                /// </summary>
+                [DataMember(Name = "noteNumber")]
+                public List<NoteNumberClass> NoteNumber { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of banknote numbers on the intermediate stacker or transport which have not been yet moved to the output position.
             /// </summary>
-            [DataMember(Name = "remainingItems")] 
+            [DataMember(Name = "remainingItems")]
             public RemainingItemsClass RemainingItems { get; private set; }
 
         }

@@ -19,7 +19,7 @@ namespace XFS4IoT.CashManagement.Commands
     [Command(Name = "CashManagement.GetCashUnitInfo")]
     public sealed class GetCashUnitInfoCommand : Command<GetCashUnitInfoCommand.PayloadData>
     {
-        public GetCashUnitInfoCommand(string RequestId, GetCashUnitInfoCommand.PayloadData Payload)
+        public GetCashUnitInfoCommand(int RequestId, GetCashUnitInfoCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashManagement.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

@@ -18,26 +18,26 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.DeviceLockControl")]
     public sealed class DeviceLockControlCompletion : Completion<DeviceLockControlCompletion.PayloadData>
     {
-        public DeviceLockControlCompletion(string RequestId, DeviceLockControlCompletion.PayloadData Payload)
+        public DeviceLockControlCompletion(int RequestId, DeviceLockControlCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                InvalidCashUnit,
-                CashInActive,
-                ExchangeActive,
-                DeviceLockFailure,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                InvalidCashUnit,
+                CashInActive,
+                ExchangeActive,
+                DeviceLockFailure
             }
 
             /// <summary>
@@ -52,7 +52,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// \"deviceLockFailure\": The device and/or the cash units specified could not be locked/unlocked. (e.g. the lock action could not be 
             /// performed because the cash unit specified to be locked had been removed).
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

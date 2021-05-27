@@ -19,13 +19,21 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.GetPresentStatus")]
     public sealed class GetPresentStatusCommand : Command<GetPresentStatusCommand.PayloadData>
     {
-        public GetPresentStatusCommand(string RequestId, GetPresentStatusCommand.PayloadData Payload)
+        public GetPresentStatusCommand(int RequestId, GetPresentStatusCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, PositionEnum? Position = null, string RandomNumber = null)
+                : base(Timeout)
+            {
+                this.Position = Position;
+                this.RandomNumber = RandomNumber;
+            }
+
             public enum PositionEnum
             {
                 Default,
@@ -35,15 +43,7 @@ namespace XFS4IoT.Dispenser.Commands
                 Top,
                 Bottom,
                 Front,
-                Rear,
-            }
-
-
-            public PayloadData(int Timeout, PositionEnum? Position = null, string RandomNumber = null)
-                : base(Timeout)
-            {
-                this.Position = Position;
-                this.RandomNumber = RandomNumber;
+                Rear
             }
 
             /// <summary>
@@ -58,13 +58,14 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```front``` - The front output position.
             /// * ```rear``` - The rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
             /// <summary>
             /// A random number to be used when creating the end to end security token in the  response. See the API
             /// documentation on end to end security for more details.
             /// </summary>
-            [DataMember(Name = "randomNumber")] 
+            [DataMember(Name = "randomNumber")]
             public string RandomNumber { get; private set; }
 
         }

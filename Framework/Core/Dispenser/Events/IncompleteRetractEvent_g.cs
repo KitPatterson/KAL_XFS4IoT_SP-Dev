@@ -20,7 +20,7 @@ namespace XFS4IoT.Dispenser.Events
     public sealed class IncompleteRetractEvent : Event<IncompleteRetractEvent.PayloadData>
     {
 
-        public IncompleteRetractEvent(string RequestId, PayloadData Payload)
+        public IncompleteRetractEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -29,29 +29,25 @@ namespace XFS4IoT.Dispenser.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
-            /// <summary>
-            /// The values in this structure report the amount and number of each denomination that were successfully moved during the command prior to the failure.
-            /// </summary>
-            public class ItemNumberListClass
+            public PayloadData(ItemNumberListClass ItemNumberList = null, ReasonEnum? Reason = null)
+                : base()
             {
-                
-                /// <summary>
-                /// Array of item number objects.
-                /// </summary>
-                public class ItemNumberClass 
-                {
-                    [DataMember(Name = "currencyID")] 
-                    public string CurrencyID { get; private set; }
-                    [DataMember(Name = "values")] 
-                    public double? Values { get; private set; }
-                    [DataMember(Name = "release")] 
-                    public int? Release { get; private set; }
-                    [DataMember(Name = "count")] 
-                    public int? Count { get; private set; }
-                    [DataMember(Name = "cashunit")] 
-                    public string Cashunit { get; private set; }
+                this.ItemNumberList = ItemNumberList;
+                this.Reason = Reason;
+            }
 
-                    public ItemNumberClass (string CurrencyID, double? Values, int? Release, int? Count, string Cashunit)
+            [DataContract]
+            public sealed class ItemNumberListClass
+            {
+                public ItemNumberListClass(List<ItemNumberClass> ItemNumber = null)
+                {
+                    this.ItemNumber = ItemNumber;
+                }
+
+                [DataContract]
+                public sealed class ItemNumberClass
+                {
+                    public ItemNumberClass(string CurrencyID = null, double? Values = null, int? Release = null, int? Count = null, string Cashunit = null)
                     {
                         this.CurrencyID = CurrencyID;
                         this.Values = Values;
@@ -59,39 +55,66 @@ namespace XFS4IoT.Dispenser.Events
                         this.Count = Count;
                         this.Cashunit = Cashunit;
                     }
-                }
-                [DataMember(Name = "itemNumber")] 
-                public ItemNumberClass ItemNumber { get; private set; }
 
-                public ItemNumberListClass (ItemNumberClass ItemNumber)
-                {
-                    this.ItemNumber = ItemNumber;
+                    /// <summary>
+                    /// A three character array storing the ISO format [Ref. 2] Currency ID; if the currency of the item is not known this is omitted.
+                    /// </summary>
+                    [DataMember(Name = "currencyID")]
+                    public string CurrencyID { get; private set; }
+
+                    /// <summary>
+                    /// The value of a single item expressed as floating point value; or a zero value if the value of the item is not known.
+                    /// </summary>
+                    [DataMember(Name = "values")]
+                    public double? Values { get; private set; }
+
+                    /// <summary>
+                    /// The release of the item. The higher this number is, the newer the release. Zero means that there is 
+                    /// only one release or the release is not known. This value has not been standardized 
+                    /// and therefore a release number of the same item will not necessarily have the same value in different systems.
+                    /// </summary>
+                    [DataMember(Name = "release")]
+                    public int? Release { get; private set; }
+
+                    /// <summary>
+                    /// The count of items of the same type moved to the same destination during the execution of this command.
+                    /// </summary>
+                    [DataMember(Name = "count")]
+                    public int? Count { get; private set; }
+
+                    /// <summary>
+                    /// The object name of the cash unit which received items during the execution of this command as stated by the 
+                    /// [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) command.
+                    /// This value will be omitted if items were moved to the 
+                    /// [retractArea](#dispenser.retract.command.properties.retractarea) ```transport``` or ```stacker```.
+                    /// </summary>
+                    [DataMember(Name = "cashunit")]
+                    public string Cashunit { get; private set; }
+
                 }
 
+                /// <summary>
+                /// Array of item number objects.
+                /// </summary>
+                [DataMember(Name = "itemNumber")]
+                public List<ItemNumberClass> ItemNumber { get; private set; }
 
             }
+
+            /// <summary>
+            /// The values in this structure report the amount and number of each denomination that were successfully moved during the command prior to the failure.
+            /// </summary>
+            [DataMember(Name = "itemNumberList")]
+            public ItemNumberListClass ItemNumberList { get; private set; }
 
             public enum ReasonEnum
             {
                 RetractFailure,
                 RetractAreaFull,
                 ForeignItemsDetected,
-                InvalidBunch,
+                InvalidBunch
             }
 
-
-            public PayloadData(object ItemNumberList = null, ReasonEnum? Reason = null)
-                : base()
-            {
-                this.ItemNumberList = ItemNumberList;
-                this.Reason = Reason;
-            }
-
-            /// <summary>
-            /// The values in this structure report the amount and number of each denomination that were successfully moved during the command prior to the failure.
-            /// </summary>
-            [DataMember(Name = "itemNumberList")] 
-            public object ItemNumberList { get; private set; }
             /// <summary>
             /// The reason for not having retracted items. Following values are possible:
             /// 
@@ -102,8 +125,9 @@ namespace XFS4IoT.Dispenser.Events
             /// * ```foreignItemsDetected``` - Foreign items have been detected.
             /// * ```invalidBunch``` - An invalid bunch of items has been detected, e.g. it is too large or could not be processed.
             /// </summary>
-            [DataMember(Name = "reason")] 
+            [DataMember(Name = "reason")]
             public ReasonEnum? Reason { get; private set; }
+
         }
 
     }

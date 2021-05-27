@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.CashManagement
     internal class OpenSafeDoorEvents : CashManagementEvents, IOpenSafeDoorEvents
     {
 
-        public OpenSafeDoorEvents(IConnection connection, string requestId)
+        public OpenSafeDoorEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

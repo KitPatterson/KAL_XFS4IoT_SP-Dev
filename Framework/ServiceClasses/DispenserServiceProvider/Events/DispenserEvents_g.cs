@@ -16,12 +16,11 @@ namespace XFS4IoTFramework.Dispenser
     internal abstract class DispenserEvents
     {
         protected readonly IConnection connection;
-        protected readonly string requestId;
+        protected readonly int requestId;
 
-        public DispenserEvents(IConnection connection, string requestId)
+        public DispenserEvents(IConnection connection, int requestId)
         {
             this.connection = connection;
-            Contracts.IsNotNullOrWhitespace(requestId, $"Unexpected request ID is received. {requestId}");
             this.requestId = requestId;
         }
 

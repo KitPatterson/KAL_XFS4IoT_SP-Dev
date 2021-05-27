@@ -20,7 +20,7 @@ namespace XFS4IoT.Dispenser.Events
     public sealed class PartialDispenseEvent : Event<PartialDispenseEvent.PayloadData>
     {
 
-        public PartialDispenseEvent(string RequestId, PayloadData Payload)
+        public PartialDispenseEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -28,7 +28,6 @@ namespace XFS4IoT.Dispenser.Events
         [DataContract]
         public sealed class PayloadData : MessagePayloadBase
         {
-
 
             public PayloadData(int? DispNum = null)
                 : base()
@@ -39,8 +38,9 @@ namespace XFS4IoT.Dispenser.Events
             /// <summary>
             /// The number of sub-dispense operations into which the dispense operation has been divided.
             /// </summary>
-            [DataMember(Name = "dispNum")] 
+            [DataMember(Name = "dispNum")]
             public int? DispNum { get; private set; }
+
         }
 
     }

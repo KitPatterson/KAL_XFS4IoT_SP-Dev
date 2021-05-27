@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.CashManagement
     internal class GetItemInfoEvents : CashManagementEvents, IGetItemInfoEvents
     {
 
-        public GetItemInfoEvents(IConnection connection, string requestId)
+        public GetItemInfoEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

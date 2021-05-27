@@ -18,39 +18,27 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.PreparePresent")]
     public sealed class PreparePresentCompletion : Completion<PreparePresentCompletion.PayloadData>
     {
-        public PreparePresentCompletion(string RequestId, PreparePresentCompletion.PayloadData Payload)
+        public PreparePresentCompletion(int RequestId, PreparePresentCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                UnsupportedPosition,
-                PositionNotEmpty,
-                NoItems,
-                CashUnitError,
-            }
-
-            public enum PositionEnum
-            {
-                Null,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, PositionEnum? Position = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
                 this.Position = Position;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                UnsupportedPosition,
+                PositionNotEmpty,
+                NoItems,
+                CashUnitError
             }
 
             /// <summary>
@@ -64,8 +52,21 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"cashUnitError\": A cash unit caused a problem. A CashManagement.CashUnitErrorEvent will be posted with the details.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
+            public enum PositionEnum
+            {
+                Null,
+                OutLeft,
+                OutRight,
+                OutCenter,
+                OutTop,
+                OutBottom,
+                OutFront,
+                OutRear
+            }
+
             /// <summary>
             /// Describes the position where the items are to be moved. Following values are possible:
             /// 
@@ -85,7 +86,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"outRear\": Move items to the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
 
         }

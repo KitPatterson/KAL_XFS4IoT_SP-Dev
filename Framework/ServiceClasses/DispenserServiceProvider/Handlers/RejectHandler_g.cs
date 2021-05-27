@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.Dispenser
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var rejectCmd = command.IsA<RejectCommand>($"Invalid parameter in the Reject Handle method. {nameof(RejectCommand)}");
-            
-            IRejectEvents events = new RejectEvents(Connection, rejectCmd.Headers.RequestId);
+            rejectCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IRejectEvents events = new RejectEvents(Connection, rejectCmd.Headers.RequestId.Value);
 
             var result = await HandleReject(events, rejectCmd, cancel);
-            await Connection.SendMessageAsync(new RejectCompletion(rejectCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new RejectCompletion(rejectCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var rejectcommand = command.IsA<RejectCommand>();
+            rejectcommand.Headers.RequestId.HasValue.IsTrue();
 
             RejectCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.Dispenser
                 _ => RejectCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new RejectCompletion(rejectcommand.Headers.RequestId, new RejectCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new RejectCompletion(rejectcommand.Headers.RequestId.Value, new RejectCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

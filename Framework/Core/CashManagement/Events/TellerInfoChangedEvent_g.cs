@@ -29,7 +29,6 @@ namespace XFS4IoT.CashManagement.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
-
             public PayloadData(int? TellerID = null)
                 : base()
             {
@@ -39,8 +38,9 @@ namespace XFS4IoT.CashManagement.Events
             /// <summary>
             /// Integer holding the ID of the teller whose counts have changed.
             /// </summary>
-            [DataMember(Name = "tellerID")] 
+            [DataMember(Name = "tellerID")]
             public int? TellerID { get; private set; }
+
         }
 
     }

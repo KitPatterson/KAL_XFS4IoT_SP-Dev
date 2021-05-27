@@ -19,82 +19,15 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.Dispense")]
     public sealed class DispenseCommand : Command<DispenseCommand.PayloadData>
     {
-        public DispenseCommand(string RequestId, DispenseCommand.PayloadData Payload)
+        public DispenseCommand(int RequestId, DispenseCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum PositionEnum
-            {
-                Default,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear,
-            }
 
-            /// <summary>
-            /// Denomination object describing the denominations used for the dispense operation.
-            /// </summary>
-            public class DenominationClass
-            {
-                
-                /// <summary>
-                /// \"List of currency and amount combinations for denomination. There will be one entry for each currency
-                /// in the denomination. The property name is the currency name in ISO format (e.g. \"EUR\").
-                /// </summary>
-                public class CurrenciesClass 
-                {
-                    [DataMember(Name = "additionalProperties")] 
-                    public double? AdditionalProperties { get; private set; }
-
-                    public CurrenciesClass (double? AdditionalProperties)
-                    {
-                        this.AdditionalProperties = AdditionalProperties;
-                    }
-                }
-                [DataMember(Name = "currencies")] 
-                public CurrenciesClass Currencies { get; private set; }
-                
-                /// <summary>
-                /// This list specifies the number of items to take from the cash units. 
-                /// Each entry uses a cashunit object name as stated by the 
-                /// [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) command. The value of the entry is the 
-                /// number of items to take from that unit.
-                /// If the application does not wish to specify a denomination, it should omit the values property.
-                /// </summary>
-                public class ValuesClass 
-                {
-                    [DataMember(Name = "additionalProperties")] 
-                    public int? AdditionalProperties { get; private set; }
-
-                    public ValuesClass (int? AdditionalProperties)
-                    {
-                        this.AdditionalProperties = AdditionalProperties;
-                    }
-                }
-                [DataMember(Name = "values")] 
-                public ValuesClass Values { get; private set; }
-                [DataMember(Name = "cashBox")] 
-                public int? CashBox { get; private set; }
-
-                public DenominationClass (CurrenciesClass Currencies, ValuesClass Values, int? CashBox)
-                {
-                    this.Currencies = Currencies;
-                    this.Values = Values;
-                    this.CashBox = CashBox;
-                }
-
-
-            }
-
-
-            public PayloadData(int Timeout, int? TellerID = null, int? MixNumber = null, PositionEnum? Position = null, object Denomination = null, string Token = null)
+            public PayloadData(int Timeout, int? TellerID = null, int? MixNumber = null, PositionEnum? Position = null, DenominationClass Denomination = null, string Token = null)
                 : base(Timeout)
             {
                 this.TellerID = TellerID;
@@ -107,15 +40,29 @@ namespace XFS4IoT.Dispenser.Commands
             /// <summary>
             /// Identifies the teller. This field is ignored if the device is a Self-Service Dispenser.
             /// </summary>
-            [DataMember(Name = "tellerID")] 
+            [DataMember(Name = "tellerID")]
             public int? TellerID { get; private set; }
+
             /// <summary>
             /// Mix algorithm or house mix table to be used to create a denomination of the supplied amount. 
             /// If the value is 0 (\"individual\"), the denomination supplied in the *denomination* field is 
             /// validated prior to the dispense operation. If it is found to be invalid no alternative denomination will be calculated.
             /// </summary>
-            [DataMember(Name = "mixNumber")] 
+            [DataMember(Name = "mixNumber")]
             public int? MixNumber { get; private set; }
+
+            public enum PositionEnum
+            {
+                Default,
+                Left,
+                Right,
+                Center,
+                Top,
+                Bottom,
+                Front,
+                Rear
+            }
+
             /// <summary>
             /// Required output position. Following values are possible:
             /// 
@@ -128,13 +75,50 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```front``` - Present items to the front output position.
             /// * ```rear``` - Present items to the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
+            [DataContract]
+            public sealed class DenominationClass
+            {
+                public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, int> Values = null, int? CashBox = null)
+                {
+                    this.Currencies = Currencies;
+                    this.Values = Values;
+                    this.CashBox = CashBox;
+                }
+
+                /// <summary>
+                /// \"List of currency and amount combinations for denomination. There will be one entry for each currency
+                /// in the denomination. The property name is the currency name in ISO format (e.g. \"EUR\").
+                /// </summary>
+                [DataMember(Name = "currencies")]
+                public Dictionary<string, double> Currencies { get; private set; }
+
+                /// <summary>
+                /// This list specifies the number of items to take from the cash units. 
+                /// Each entry uses a cashunit object name as stated by the 
+                /// [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) command. The value of the entry is the 
+                /// number of items to take from that unit.
+                /// If the application does not wish to specify a denomination, it should omit the values property.
+                /// </summary>
+                [DataMember(Name = "values")]
+                public Dictionary<string, int> Values { get; private set; }
+
+                /// <summary>
+                /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.
+                /// </summary>
+                [DataMember(Name = "cashBox")]
+                public int? CashBox { get; private set; }
+
+            }
+
             /// <summary>
             /// Denomination object describing the denominations used for the dispense operation.
             /// </summary>
-            [DataMember(Name = "denomination")] 
-            public object Denomination { get; private set; }
+            [DataMember(Name = "denomination")]
+            public DenominationClass Denomination { get; private set; }
+
             /// <summary>
             /// The dispense token that authorises the dispense operation, as created by the authorising host. See 
             /// the section on end to end security for more information. 
@@ -156,7 +140,7 @@ namespace XFS4IoT.Dispenser.Commands
             /// greater or equal to the amount in the denomination parameter. If the Token has a lower value, 
             /// or the Token is invalid for any reason, then the command will fail with an invalid data error code.
             /// </summary>
-            [DataMember(Name = "token")] 
+            [DataMember(Name = "token")]
             public string Token { get; private set; }
 
         }

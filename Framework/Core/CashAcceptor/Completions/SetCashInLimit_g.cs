@@ -18,18 +18,13 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.SetCashInLimit")]
     public sealed class SetCashInLimitCompletion : Completion<SetCashInLimitCompletion.PayloadData>
     {
-        public SetCashInLimitCompletion(string RequestId, SetCashInLimitCompletion.PayloadData Payload)
+        public SetCashInLimitCompletion(int RequestId, SetCashInLimitCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                ExchangeActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
@@ -37,12 +32,17 @@ namespace XFS4IoT.CashAcceptor.Completions
                 this.ErrorCode = ErrorCode;
             }
 
+            public enum ErrorCodeEnum
+            {
+                ExchangeActive
+            }
+
             /// <summary>
             /// Specifies the error code if applicable. Following values are possible:
             /// 
             /// \"exchangeActive\": The device is in the exchange state.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

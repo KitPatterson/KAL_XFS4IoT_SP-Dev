@@ -19,7 +19,7 @@ namespace XFS4IoT.CashManagement.Commands
     [Command(Name = "CashManagement.EndExchange")]
     public sealed class EndExchangeCommand : Command<EndExchangeCommand.PayloadData>
     {
-        public EndExchangeCommand(string RequestId, EndExchangeCommand.PayloadData Payload)
+        public EndExchangeCommand(int RequestId, EndExchangeCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashManagement.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

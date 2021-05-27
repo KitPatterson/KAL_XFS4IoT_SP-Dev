@@ -18,26 +18,26 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.CloseShutter")]
     public sealed class CloseShutterCompletion : Completion<CloseShutterCompletion.PayloadData>
     {
-        public CloseShutterCompletion(string RequestId, CloseShutterCompletion.PayloadData Payload)
+        public CloseShutterCompletion(int RequestId, CloseShutterCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                UnsupportedPosition,
-                ShutterClosed,
-                ShutterNotClosed,
-                ExchangeActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                UnsupportedPosition,
+                ShutterClosed,
+                ShutterNotClosed,
+                ExchangeActive
             }
 
             /// <summary>
@@ -49,7 +49,7 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```exchangeActive``` - The device is in an exchange state (see 
             /// [CashManagement.StartExchange](#cashmanagement.startexchange)).
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

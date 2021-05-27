@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.ConfigureNoteReader")]
     public sealed class ConfigureNoteReaderCommand : Command<ConfigureNoteReaderCommand.PayloadData>
     {
-        public ConfigureNoteReaderCommand(string RequestId, ConfigureNoteReaderCommand.PayloadData Payload)
+        public ConfigureNoteReaderCommand(int RequestId, ConfigureNoteReaderCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -36,7 +36,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// <summary>
             /// If set to TRUE, the Service loads the currency description data into the note reader, even if it is already loaded.
             /// </summary>
-            [DataMember(Name = "loadAlways")] 
+            [DataMember(Name = "loadAlways")]
             public bool? LoadAlways { get; private set; }
 
         }

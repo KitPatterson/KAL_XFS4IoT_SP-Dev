@@ -19,13 +19,20 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.PreparePresent")]
     public sealed class PreparePresentCommand : Command<PreparePresentCommand.PayloadData>
     {
-        public PreparePresentCommand(string RequestId, PreparePresentCommand.PayloadData Payload)
+        public PreparePresentCommand(int RequestId, PreparePresentCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, PositionEnum? Position = null)
+                : base(Timeout)
+            {
+                this.Position = Position;
+            }
+
             public enum PositionEnum
             {
                 Null,
@@ -35,14 +42,7 @@ namespace XFS4IoT.CashAcceptor.Commands
                 OutTop,
                 OutBottom,
                 OutFront,
-                OutRear,
-            }
-
-
-            public PayloadData(int Timeout, PositionEnum? Position = null)
-                : base(Timeout)
-            {
-                this.Position = Position;
+                OutRear
             }
 
             /// <summary>
@@ -64,7 +64,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// \"outRear\": Move items to the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
 
         }

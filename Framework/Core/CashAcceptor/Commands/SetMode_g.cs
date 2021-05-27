@@ -19,24 +19,24 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.SetMode")]
     public sealed class SetModeCommand : Command<SetModeCommand.PayloadData>
     {
-        public SetModeCommand(string RequestId, SetModeCommand.PayloadData Payload)
+        public SetModeCommand(int RequestId, SetModeCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum MixedModeEnum
-            {
-                MixedMediaNotActive,
-                MixedMedia,
-            }
-
 
             public PayloadData(int Timeout, MixedModeEnum? MixedMode = null)
                 : base(Timeout)
             {
                 this.MixedMode = MixedMode;
+            }
+
+            public enum MixedModeEnum
+            {
+                MixedMediaNotActive,
+                MixedMedia
             }
 
             /// <summary>
@@ -46,7 +46,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// \"mixedMedia\": Mixed Media transactions are activated in combination with the ItemProcessor interface as defined by the capability *mixedMode*.
             /// </summary>
-            [DataMember(Name = "mixedMode")] 
+            [DataMember(Name = "mixedMode")]
             public MixedModeEnum? MixedMode { get; private set; }
 
         }

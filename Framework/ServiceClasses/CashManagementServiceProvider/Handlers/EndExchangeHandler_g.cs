@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var endExchangeCmd = command.IsA<EndExchangeCommand>($"Invalid parameter in the EndExchange Handle method. {nameof(EndExchangeCommand)}");
-            
-            IEndExchangeEvents events = new EndExchangeEvents(Connection, endExchangeCmd.Headers.RequestId);
+            endExchangeCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IEndExchangeEvents events = new EndExchangeEvents(Connection, endExchangeCmd.Headers.RequestId.Value);
 
             var result = await HandleEndExchange(events, endExchangeCmd, cancel);
-            await Connection.SendMessageAsync(new EndExchangeCompletion(endExchangeCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new EndExchangeCompletion(endExchangeCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var endExchangecommand = command.IsA<EndExchangeCommand>();
+            endExchangecommand.Headers.RequestId.HasValue.IsTrue();
 
             EndExchangeCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => EndExchangeCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new EndExchangeCompletion(endExchangecommand.Headers.RequestId, new EndExchangeCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new EndExchangeCompletion(endExchangecommand.Headers.RequestId.Value, new EndExchangeCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

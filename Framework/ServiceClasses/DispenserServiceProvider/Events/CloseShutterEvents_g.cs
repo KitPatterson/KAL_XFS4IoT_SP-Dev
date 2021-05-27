@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class CloseShutterEvents : DispenserEvents, ICloseShutterEvents
     {
 
-        public CloseShutterEvents(IConnection connection, string requestId)
+        public CloseShutterEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

@@ -18,13 +18,20 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.CloseShutter")]
     public sealed class CloseShutterCompletion : Completion<CloseShutterCompletion.PayloadData>
     {
-        public CloseShutterCompletion(string RequestId, CloseShutterCompletion.PayloadData Payload)
+        public CloseShutterCompletion(int RequestId, CloseShutterCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
             public enum ErrorCodeEnum
             {
                 UnsupportedPosition,
@@ -32,14 +39,7 @@ namespace XFS4IoT.CashAcceptor.Completions
                 ExchangeActive,
                 ShutterNotClosed,
                 TooManyItems,
-                ForeignItemsDetected,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
+                ForeignItemsDetected
             }
 
             /// <summary>
@@ -57,7 +57,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"foreignItemsDetected\": Foreign items have been detected in the input position. The shutter is open.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

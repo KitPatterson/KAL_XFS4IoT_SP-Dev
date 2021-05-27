@@ -19,37 +19,13 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.CashInStart")]
     public sealed class CashInStartCommand : Command<CashInStartCommand.PayloadData>
     {
-        public CashInStartCommand(string RequestId, CashInStartCommand.PayloadData Payload)
+        public CashInStartCommand(int RequestId, CashInStartCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum OutputPositionEnum
-            {
-                Null,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear,
-            }
-
-            public enum InputPositionEnum
-            {
-                Null,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear,
-            }
-
 
             public PayloadData(int Timeout, int? TellerID = null, bool? UseRecycleUnits = null, OutputPositionEnum? OutputPosition = null, InputPositionEnum? InputPosition = null)
                 : base(Timeout)
@@ -63,14 +39,28 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// <summary>
             /// Identification of teller. This field is not applicable to Self-Service devices and should be omitted.
             /// </summary>
-            [DataMember(Name = "tellerID")] 
+            [DataMember(Name = "tellerID")]
             public int? TellerID { get; private set; }
+
             /// <summary>
             /// Specifies whether or not the recycle cash units should be used when items are cashed in on a 
             /// successful CashAcceptor.CashInEnd command. This parameter will be ignored if there are no recycle cash units or the hardware does not support this.
             /// </summary>
-            [DataMember(Name = "useRecycleUnits")] 
+            [DataMember(Name = "useRecycleUnits")]
             public bool? UseRecycleUnits { get; private set; }
+
+            public enum OutputPositionEnum
+            {
+                Null,
+                Left,
+                Right,
+                Center,
+                Top,
+                Bottom,
+                Front,
+                Rear
+            }
+
             /// <summary>
             /// The output position where the items will be presented to the customer in the case of a rollback. Following values are possible:
             /// 
@@ -90,8 +80,21 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// \"rear\": The items will be presented to the rear output position.
             /// </summary>
-            [DataMember(Name = "outputPosition")] 
+            [DataMember(Name = "outputPosition")]
             public OutputPositionEnum? OutputPosition { get; private set; }
+
+            public enum InputPositionEnum
+            {
+                Null,
+                Left,
+                Right,
+                Center,
+                Top,
+                Bottom,
+                Front,
+                Rear
+            }
+
             /// <summary>
             /// Specifies from which position the cash should be inserted. Following values are possible:
             /// 
@@ -111,7 +114,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// \"rear\": The cash is inserted from the rear input position.
             /// </summary>
-            [DataMember(Name = "inputPosition")] 
+            [DataMember(Name = "inputPosition")]
             public InputPositionEnum? InputPosition { get; private set; }
 
         }

@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.GetReplenishTarget")]
     public sealed class GetReplenishTargetCommand : Command<GetReplenishTargetCommand.PayloadData>
     {
-        public GetReplenishTargetCommand(string RequestId, GetReplenishTargetCommand.PayloadData Payload)
+        public GetReplenishTargetCommand(int RequestId, GetReplenishTargetCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -37,7 +37,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
             /// command) which would be used as the source of the replenishment operation.
             /// </summary>
-            [DataMember(Name = "cashunitSource")] 
+            [DataMember(Name = "cashunitSource")]
             public string CashunitSource { get; private set; }
 
         }

@@ -42,7 +42,7 @@ namespace XFS4IoTFramework.Dispenser
             foreach (var table in mixTable.Mixes)
             {
                 mixRows.Add(new GetMixTableCompletion.PayloadData.MixRowsClass(table.Key,
-                                                                               table.Value.Select(t => (int?)t).ToList()));
+                                                                               table.Value.Select(t => t).ToList()));
             }
 
             /// XFS YAML isn't right on preview 4
@@ -51,7 +51,7 @@ namespace XFS4IoTFramework.Dispenser
                                                                          null,
                                                                          CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].MixNumber,
                                                                          CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].Name,
-                                                                         mixTable.Cols.Select(c => (double?)c).ToList(),
+                                                                         mixTable.Cols.Select(c => c).ToList(),
                                                                          mixRows));
         }
     }

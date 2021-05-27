@@ -18,24 +18,24 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.SetMixTable")]
     public sealed class SetMixTableCompletion : Completion<SetMixTableCompletion.PayloadData>
     {
-        public SetMixTableCompletion(string RequestId, SetMixTableCompletion.PayloadData Payload)
+        public SetMixTableCompletion(int RequestId, SetMixTableCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                InvalidMixNumber,
-                InvalidMixTable,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                InvalidMixNumber,
+                InvalidMixTable
             }
 
             /// <summary>
@@ -44,7 +44,7 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```invalidMixNumber``` - The *mixNumber* is reserved for a predefined mix algorithm.
             /// * ```invalidMixTable``` - The contents of at least one of the defined rows of the mix table is incorrect.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

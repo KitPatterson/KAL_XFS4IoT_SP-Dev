@@ -18,13 +18,20 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.CashUnitCount")]
     public sealed class CashUnitCountCompletion : Completion<CashUnitCountCompletion.PayloadData>
     {
-        public CashUnitCountCompletion(string RequestId, CashUnitCountCompletion.PayloadData Payload)
+        public CashUnitCountCompletion(int RequestId, CashUnitCountCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
             public enum ErrorCodeEnum
             {
                 InvalidCashUnit,
@@ -32,14 +39,7 @@ namespace XFS4IoT.CashAcceptor.Completions
                 ExchangeActive,
                 TooManyItemsToCount,
                 CountPositionNotEmpty,
-                CashUnitError,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
+                CashUnitError
             }
 
             /// <summary>
@@ -58,7 +58,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"cashUnitError\": A cash unit caused a problem. A CashManagement.CashUnitErrorEvent will be posted with the details.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

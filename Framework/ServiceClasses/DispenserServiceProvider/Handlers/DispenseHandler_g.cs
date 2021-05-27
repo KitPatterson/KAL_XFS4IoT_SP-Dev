@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.Dispenser
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var dispenseCmd = command.IsA<DispenseCommand>($"Invalid parameter in the Dispense Handle method. {nameof(DispenseCommand)}");
-            
-            IDispenseEvents events = new DispenseEvents(Connection, dispenseCmd.Headers.RequestId);
+            dispenseCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IDispenseEvents events = new DispenseEvents(Connection, dispenseCmd.Headers.RequestId.Value);
 
             var result = await HandleDispense(events, dispenseCmd, cancel);
-            await Connection.SendMessageAsync(new DispenseCompletion(dispenseCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new DispenseCompletion(dispenseCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var dispensecommand = command.IsA<DispenseCommand>();
+            dispensecommand.Headers.RequestId.HasValue.IsTrue();
 
             DispenseCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.Dispenser
                 _ => DispenseCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new DispenseCompletion(dispensecommand.Headers.RequestId, new DispenseCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new DispenseCompletion(dispensecommand.Headers.RequestId.Value, new DispenseCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

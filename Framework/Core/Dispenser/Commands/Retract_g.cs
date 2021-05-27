@@ -19,13 +19,22 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.Retract")]
     public sealed class RetractCommand : Command<RetractCommand.PayloadData>
     {
-        public RetractCommand(string RequestId, RetractCommand.PayloadData Payload)
+        public RetractCommand(int RequestId, RetractCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, OutputPositionEnum? OutputPosition = null, RetractAreaEnum? RetractArea = null, int? Index = null)
+                : base(Timeout)
+            {
+                this.OutputPosition = OutputPosition;
+                this.RetractArea = RetractArea;
+                this.Index = Index;
+            }
+
             public enum OutputPositionEnum
             {
                 Default,
@@ -35,25 +44,7 @@ namespace XFS4IoT.Dispenser.Commands
                 Top,
                 Bottom,
                 Front,
-                Rear,
-            }
-
-            public enum RetractAreaEnum
-            {
-                Retract,
-                Transport,
-                Stacker,
-                Reject,
-                ItemCassette,
-            }
-
-
-            public PayloadData(int Timeout, OutputPositionEnum? OutputPosition = null, RetractAreaEnum? RetractArea = null, int? Index = null)
-                : base(Timeout)
-            {
-                this.OutputPosition = OutputPosition;
-                this.RetractArea = RetractArea;
-                this.Index = Index;
+                Rear
             }
 
             /// <summary>
@@ -68,8 +59,18 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```front``` - Retract items from the front output position.
             /// * ```rear``` - Retract items from the rear output position.
             /// </summary>
-            [DataMember(Name = "outputPosition")] 
+            [DataMember(Name = "outputPosition")]
             public OutputPositionEnum? OutputPosition { get; private set; }
+
+            public enum RetractAreaEnum
+            {
+                Retract,
+                Transport,
+                Stacker,
+                Reject,
+                ItemCassette
+            }
+
             /// <summary>
             /// This value specifies the area to which the items are to be retracted. Following values are possible:
             /// 
@@ -79,8 +80,9 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```reject``` - Retract the items to a reject cash unit.
             /// * ```itemCassette``` - Retract the items to the item cassettes, i.e. cassettes that can be dispensed from.
             /// </summary>
-            [DataMember(Name = "retractArea")] 
+            [DataMember(Name = "retractArea")]
             public RetractAreaEnum? RetractArea { get; private set; }
+
             /// <summary>
             /// If *retractArea* is set to \"retract\" this field defines the position inside the retract cash units into 
             /// which the cash is to be retracted. *index* starts with a value of one (1) for the first retract position 
@@ -90,7 +92,7 @@ namespace XFS4IoT.Dispenser.Commands
             /// The maximum value of *index* is the sum of *maximum* of each retract cash unit. If *retractArea* is not 
             /// set to \"retract\" the value of this field is ignored.
             /// </summary>
-            [DataMember(Name = "index")] 
+            [DataMember(Name = "index")]
             public int? Index { get; private set; }
 
         }

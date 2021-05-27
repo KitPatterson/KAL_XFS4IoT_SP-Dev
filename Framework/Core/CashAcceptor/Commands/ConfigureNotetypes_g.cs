@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.ConfigureNotetypes")]
     public sealed class ConfigureNotetypesCommand : Command<ConfigureNotetypesCommand.PayloadData>
     {
-        public ConfigureNotetypesCommand(string RequestId, ConfigureNotetypesCommand.PayloadData Payload)
+        public ConfigureNotetypesCommand(int RequestId, ConfigureNotetypesCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -27,7 +27,7 @@ namespace XFS4IoT.CashAcceptor.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, List<int?> NoteIDs = null)
+            public PayloadData(int Timeout, List<int> NoteIDs = null)
                 : base(Timeout)
             {
                 this.NoteIDs = NoteIDs;
@@ -36,8 +36,8 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// <summary>
             /// Array of unsigned integers which contains the note IDs of the banknotes the banknote reader can accept.
             /// </summary>
-            [DataMember(Name = "noteIDs")] 
-            public List<int?> NoteIDs{ get; private set; }
+            [DataMember(Name = "noteIDs")]
+            public List<int> NoteIDs { get; private set; }
 
         }
     }

@@ -18,18 +18,13 @@ namespace XFS4IoT.CashManagement.Completions
     [Completion(Name = "CashManagement.OpenSafeDoor")]
     public sealed class OpenSafeDoorCompletion : Completion<OpenSafeDoorCompletion.PayloadData>
     {
-        public OpenSafeDoorCompletion(string RequestId, OpenSafeDoorCompletion.PayloadData Payload)
+        public OpenSafeDoorCompletion(int RequestId, OpenSafeDoorCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                ExchangeActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
@@ -37,12 +32,17 @@ namespace XFS4IoT.CashManagement.Completions
                 this.ErrorCode = ErrorCode;
             }
 
+            public enum ErrorCodeEnum
+            {
+                ExchangeActive
+            }
+
             /// <summary>
             /// Specifies the error code if applicable. Following values are possible:
             /// 
             /// * ```exchangeActive``` - The device is in an exchange state.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

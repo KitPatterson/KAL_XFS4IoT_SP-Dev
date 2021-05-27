@@ -18,53 +18,13 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.Replenish")]
     public sealed class ReplenishCompletion : Completion<ReplenishCompletion.PayloadData>
     {
-        public ReplenishCompletion(string RequestId, ReplenishCompletion.PayloadData Payload)
+        public ReplenishCompletion(int RequestId, ReplenishCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                CashUnitError,
-                InvalidCashUnit,
-                ExchangeActive,
-                CashInActive,
-            }
-
-            [DataContract]
-            public sealed class ReplenishTargetResultsClass
-            {
-                public ReplenishTargetResultsClass(string CashunitTarget = null, int? NoteID = null, int? NumberOfItemsReceived = null)
-                    : base()
-                {
-                    this.CashunitTarget = CashunitTarget;
-                    this.NoteID = NoteID;
-                    this.NumberOfItemsReceived = NumberOfItemsReceived;
-                }
-
-                /// <summary>
-                /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
-                /// command) to which items have been moved.
-                /// </summary>
-                [DataMember(Name = "cashunitTarget")] 
-                public string CashunitTarget { get; private set; }
-
-                /// <summary>
-                /// Identification of note type. The note ID represents the note identifiers reported by the CashAcceptor.BanknoteTypes command.
-                /// </summary>
-                [DataMember(Name = "noteID")] 
-                public int? NoteID { get; private set; }
-
-                /// <summary>
-                /// Total number of items received in this target cash unit of the *noteID* note type. A zero value will be returned if this target cash unit did not receive any items of this note type, for example due to a cash unit or transport jam.
-                /// </summary>
-                [DataMember(Name = "numberOfItemsReceived")] 
-                public int? NumberOfItemsReceived { get; private set; }
-
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, int? NumberOfItemsRemoved = null, int? NumberOfItemsRejected = null, List<ReplenishTargetResultsClass> ReplenishTargetResults = null)
                 : base(CompletionCode, ErrorDescription)
@@ -73,6 +33,14 @@ namespace XFS4IoT.CashAcceptor.Completions
                 this.NumberOfItemsRemoved = NumberOfItemsRemoved;
                 this.NumberOfItemsRejected = NumberOfItemsRejected;
                 this.ReplenishTargetResults = ReplenishTargetResults;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                CashUnitError,
+                InvalidCashUnit,
+                ExchangeActive,
+                CashInActive
             }
 
             /// <summary>
@@ -88,18 +56,52 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"cashInActive\": A cash-in transaction is active.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
             /// <summary>
             /// Total number of items removed from the source cash unit including rejected items during execution of this command.
             /// </summary>
-            [DataMember(Name = "numberOfItemsRemoved")] 
+            [DataMember(Name = "numberOfItemsRemoved")]
             public int? NumberOfItemsRemoved { get; private set; }
+
             /// <summary>
             /// Total number of items rejected during execution of this command.
             /// </summary>
-            [DataMember(Name = "numberOfItemsRejected")] 
+            [DataMember(Name = "numberOfItemsRejected")]
             public int? NumberOfItemsRejected { get; private set; }
+
+            [DataContract]
+            public sealed class ReplenishTargetResultsClass
+            {
+                public ReplenishTargetResultsClass(string CashunitTarget = null, int? NoteID = null, int? NumberOfItemsReceived = null)
+                {
+                    this.CashunitTarget = CashunitTarget;
+                    this.NoteID = NoteID;
+                    this.NumberOfItemsReceived = NumberOfItemsReceived;
+                }
+
+                /// <summary>
+                /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
+                /// command) to which items have been moved.
+                /// </summary>
+                [DataMember(Name = "cashunitTarget")]
+                public string CashunitTarget { get; private set; }
+
+                /// <summary>
+                /// Identification of note type. The note ID represents the note identifiers reported by the CashAcceptor.BanknoteTypes command.
+                /// </summary>
+                [DataMember(Name = "noteID")]
+                public int? NoteID { get; private set; }
+
+                /// <summary>
+                /// Total number of items received in this target cash unit of the *noteID* note type. A zero value will be returned if this target cash unit did not receive any items of this note type, for example due to a cash unit or transport jam.
+                /// </summary>
+                [DataMember(Name = "numberOfItemsReceived")]
+                public int? NumberOfItemsReceived { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of replenishTargetResult structures. In the case where one note type has several releases and these are moved, 
             /// or where items are moved from a multi denomination cash unit to a multi denomination cash unit, each target can receive several *noteID* note types. 
@@ -107,8 +109,8 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// then the *replenishTargetResults* array will have two elements. Or if two targets were specified and the first 
             /// target received two different *noteID* note types and the second target received three different *noteID* note types, then the *replenishTargetResults* array will have five elements.
             /// </summary>
-            [DataMember(Name = "replenishTargetResults")] 
-            public List<ReplenishTargetResultsClass> ReplenishTargetResults{ get; private set; }
+            [DataMember(Name = "replenishTargetResults")]
+            public List<ReplenishTargetResultsClass> ReplenishTargetResults { get; private set; }
 
         }
     }

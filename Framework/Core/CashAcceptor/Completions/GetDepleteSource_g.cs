@@ -18,18 +18,24 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.GetDepleteSource")]
     public sealed class GetDepleteSourceCompletion : Completion<GetDepleteSourceCompletion.PayloadData>
     {
-        public GetDepleteSourceCompletion(string RequestId, GetDepleteSourceCompletion.PayloadData Payload)
+        public GetDepleteSourceCompletion(int RequestId, GetDepleteSourceCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<DepleteSourcesClass> DepleteSources = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.DepleteSources = DepleteSources;
+            }
+
             [DataContract]
             public sealed class DepleteSourcesClass
             {
                 public DepleteSourcesClass(string CashunitSource = null)
-                    : base()
                 {
                     this.CashunitSource = CashunitSource;
                 }
@@ -38,23 +44,16 @@ namespace XFS4IoT.CashAcceptor.Completions
                 /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
                 /// command) that can be used as a source.
                 /// </summary>
-                [DataMember(Name = "cashunitSource")] 
+                [DataMember(Name = "cashunitSource")]
                 public string CashunitSource { get; private set; }
 
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<DepleteSourcesClass> DepleteSources = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.DepleteSources = DepleteSources;
             }
 
             /// <summary>
             /// Array of all suitable deplete sources. Empty if no suitable source was found.
             /// </summary>
-            [DataMember(Name = "depleteSources")] 
-            public List<DepleteSourcesClass> DepleteSources{ get; private set; }
+            [DataMember(Name = "depleteSources")]
+            public List<DepleteSourcesClass> DepleteSources { get; private set; }
 
         }
     }

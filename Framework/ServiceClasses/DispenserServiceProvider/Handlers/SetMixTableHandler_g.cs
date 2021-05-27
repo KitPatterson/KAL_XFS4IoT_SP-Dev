@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.Dispenser
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var setMixTableCmd = command.IsA<SetMixTableCommand>($"Invalid parameter in the SetMixTable Handle method. {nameof(SetMixTableCommand)}");
-            
-            ISetMixTableEvents events = new SetMixTableEvents(Connection, setMixTableCmd.Headers.RequestId);
+            setMixTableCmd.Headers.RequestId.HasValue.IsTrue();
+
+            ISetMixTableEvents events = new SetMixTableEvents(Connection, setMixTableCmd.Headers.RequestId.Value);
 
             var result = await HandleSetMixTable(events, setMixTableCmd, cancel);
-            await Connection.SendMessageAsync(new SetMixTableCompletion(setMixTableCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new SetMixTableCompletion(setMixTableCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var setMixTablecommand = command.IsA<SetMixTableCommand>();
+            setMixTablecommand.Headers.RequestId.HasValue.IsTrue();
 
             SetMixTableCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.Dispenser
                 _ => SetMixTableCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new SetMixTableCompletion(setMixTablecommand.Headers.RequestId, new SetMixTableCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SetMixTableCompletion(setMixTablecommand.Headers.RequestId.Value, new SetMixTableCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

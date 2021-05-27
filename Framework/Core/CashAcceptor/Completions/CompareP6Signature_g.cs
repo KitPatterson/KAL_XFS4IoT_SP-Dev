@@ -18,58 +18,27 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.CompareP6Signature")]
     public sealed class CompareP6SignatureCompletion : Completion<CompareP6SignatureCompletion.PayloadData>
     {
-        public CompareP6SignatureCompletion(string RequestId, CompareP6SignatureCompletion.PayloadData Payload)
+        public CompareP6SignatureCompletion(int RequestId, CompareP6SignatureCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                CashInActive,
-                ExchangeActive,
-                InvalidReferenceSignature,
-                InvalidTransactionSignature,
-            }
-
-            [DataContract]
-            public sealed class P6SignaturesIndexClass
-            {
-                public P6SignaturesIndexClass(int? Index = null, int? ConfidenceLevel = null, string ComparisonData = null)
-                    : base()
-                {
-                    this.Index = Index;
-                    this.ConfidenceLevel = ConfidenceLevel;
-                    this.ComparisonData = ComparisonData;
-                }
-
-                /// <summary>
-                /// Specifies the index (zero to #*p6Signatures* - 1) of the matching signature from the input parameter *p6Signatures*.
-                /// </summary>
-                [DataMember(Name = "index")] 
-                public int? Index { get; private set; }
-
-                /// <summary>
-                /// Specifies the level of confidence for the match found. This value is in a scale 1 - 100, where 100 is the maximum confidence level. This value is zero if the Service does not support the confidence level factor.
-                /// </summary>
-                [DataMember(Name = "confidenceLevel")] 
-                public int? ConfidenceLevel { get; private set; }
-
-                /// <summary>
-                /// Vendor dependent comparison result data. This data may be used as justification for the signature match or confidence level. This field is omitted if no additional comparison data is returned.
-                /// </summary>
-                [DataMember(Name = "comparisonData")] 
-                public string ComparisonData { get; private set; }
-
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, List<P6SignaturesIndexClass> P6SignaturesIndex = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
                 this.P6SignaturesIndex = P6SignaturesIndex;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                CashInActive,
+                ExchangeActive,
+                InvalidReferenceSignature,
+                InvalidTransactionSignature
             }
 
             /// <summary>
@@ -84,15 +53,46 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"invalidTransactionSignature\": At least one of the transaction signatures is invalid.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
+            [DataContract]
+            public sealed class P6SignaturesIndexClass
+            {
+                public P6SignaturesIndexClass(int? Index = null, int? ConfidenceLevel = null, string ComparisonData = null)
+                {
+                    this.Index = Index;
+                    this.ConfidenceLevel = ConfidenceLevel;
+                    this.ComparisonData = ComparisonData;
+                }
+
+                /// <summary>
+                /// Specifies the index (zero to #*p6Signatures* - 1) of the matching signature from the input parameter *p6Signatures*.
+                /// </summary>
+                [DataMember(Name = "index")]
+                public int? Index { get; private set; }
+
+                /// <summary>
+                /// Specifies the level of confidence for the match found. This value is in a scale 1 - 100, where 100 is the maximum confidence level. This value is zero if the Service does not support the confidence level factor.
+                /// </summary>
+                [DataMember(Name = "confidenceLevel")]
+                public int? ConfidenceLevel { get; private set; }
+
+                /// <summary>
+                /// Vendor dependent comparison result data. This data may be used as justification for the signature match or confidence level. This field is omitted if no additional comparison data is returned.
+                /// </summary>
+                [DataMember(Name = "comparisonData")]
+                public string ComparisonData { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of compare results. This array is empty when the compare operation completes with no match found.
             /// If there are matches found, *p6SignaturesIndex* contains the indexes of the matching signatures from the input parameter *p6Signatures*.
             /// If there is a match found but the Service does not support the confidence level factor, *p6SignaturesIndex* contains a single index with confidenceLevel set to zero.
             /// </summary>
-            [DataMember(Name = "p6SignaturesIndex")] 
-            public List<P6SignaturesIndexClass> P6SignaturesIndex{ get; private set; }
+            [DataMember(Name = "p6SignaturesIndex")]
+            public List<P6SignaturesIndexClass> P6SignaturesIndex { get; private set; }
 
         }
     }

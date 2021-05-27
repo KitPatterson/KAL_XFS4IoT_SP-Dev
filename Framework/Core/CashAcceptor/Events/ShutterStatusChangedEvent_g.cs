@@ -29,6 +29,13 @@ namespace XFS4IoT.CashAcceptor.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
+            public PayloadData(PositionEnum? Position = null, ShutterEnum? Shutter = null)
+                : base()
+            {
+                this.Position = Position;
+                this.Shutter = Shutter;
+            }
+
             public enum PositionEnum
             {
                 InLeft,
@@ -44,23 +51,7 @@ namespace XFS4IoT.CashAcceptor.Events
                 OutTop,
                 OutBottom,
                 OutFront,
-                OutRear,
-            }
-
-            public enum ShutterEnum
-            {
-                Closed,
-                Open,
-                Jammed,
-                Unknown,
-            }
-
-
-            public PayloadData(PositionEnum? Position = null, ShutterEnum? Shutter = null)
-                : base()
-            {
-                this.Position = Position;
-                this.Shutter = Shutter;
+                OutRear
             }
 
             /// <summary>
@@ -94,8 +85,17 @@ namespace XFS4IoT.CashAcceptor.Events
             /// 
             /// \"outRear\": Rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
+            public enum ShutterEnum
+            {
+                Closed,
+                Open,
+                Jammed,
+                Unknown
+            }
+
             /// <summary>
             /// Specifies the new state of the shutter. Following values are possible:
             /// 
@@ -107,8 +107,9 @@ namespace XFS4IoT.CashAcceptor.Events
             /// 
             /// \"unknown\": Due to a hardware error or other condition, the state of the shutter cannot be determined.
             /// </summary>
-            [DataMember(Name = "shutter")] 
+            [DataMember(Name = "shutter")]
             public ShutterEnum? Shutter { get; private set; }
+
         }
 
     }

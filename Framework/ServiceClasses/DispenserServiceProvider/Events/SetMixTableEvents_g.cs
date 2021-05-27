@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class SetMixTableEvents : DispenserEvents, ISetMixTableEvents
     {
 
-        public SetMixTableEvents(IConnection connection, string requestId)
+        public SetMixTableEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

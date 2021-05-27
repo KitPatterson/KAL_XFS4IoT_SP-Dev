@@ -18,24 +18,24 @@ namespace XFS4IoT.CashManagement.Completions
     [Completion(Name = "CashManagement.EndExchange")]
     public sealed class EndExchangeCompletion : Completion<EndExchangeCompletion.PayloadData>
     {
-        public EndExchangeCompletion(string RequestId, EndExchangeCompletion.PayloadData Payload)
+        public EndExchangeCompletion(int RequestId, EndExchangeCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                CashUnitError,
-                NoExchangeActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                CashUnitError,
+                NoExchangeActive
             }
 
             /// <summary>
@@ -44,7 +44,7 @@ namespace XFS4IoT.CashManagement.Completions
             /// * ```cashUnitError``` - A cash unit problem occurred that meant no cash units could be updated. One or more CashManagement.CashUnitErrorEvents will be sent with the details.
             /// * ```noExchangeActive``` - There is no exchange active.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

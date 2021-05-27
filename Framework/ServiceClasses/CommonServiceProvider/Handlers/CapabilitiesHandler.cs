@@ -220,9 +220,9 @@ namespace XFS4IoTFramework.Common
                 // Store internal object for other interfaces can be used
                 CommonService.CashDispenserCapabilities = new CashDispenserCapabilitiesClass(result.CashDispenser.Type switch
                                                                                              {
-                                                                                                 CapabilitiesCompletion.PayloadData.CashDispenserClass.TypeEnum.SelfServiceBill => CashDispenserCapabilitiesClass.TypeEnum.selfServiceBill,
-                                                                                                 CapabilitiesCompletion.PayloadData.CashDispenserClass.TypeEnum.SelfServiceCoin => CashDispenserCapabilitiesClass.TypeEnum.selfServiceCoin,
-                                                                                                 CapabilitiesCompletion.PayloadData.CashDispenserClass.TypeEnum.TellerBill => CashDispenserCapabilitiesClass.TypeEnum.tellerBill,
+                                                                                                 XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceBill => CashDispenserCapabilitiesClass.TypeEnum.selfServiceBill,
+                                                                                                 XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceCoin => CashDispenserCapabilitiesClass.TypeEnum.selfServiceCoin,
+                                                                                                 XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.TellerBill => CashDispenserCapabilitiesClass.TypeEnum.tellerBill,
                                                                                                  _ => CashDispenserCapabilitiesClass.TypeEnum.tellerCoin
                                                                                              },
                                                                                              result.CashDispenser.MaxDispenseItems is null ? 0 : (int)result.CashDispenser.MaxDispenseItems,

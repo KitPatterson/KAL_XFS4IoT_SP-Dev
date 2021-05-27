@@ -18,24 +18,24 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.ConfigureNotetypes")]
     public sealed class ConfigureNotetypesCompletion : Completion<ConfigureNotetypesCompletion.PayloadData>
     {
-        public ConfigureNotetypesCompletion(string RequestId, ConfigureNotetypesCompletion.PayloadData Payload)
+        public ConfigureNotetypesCompletion(int RequestId, ConfigureNotetypesCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                ExchangeActive,
-                CashInActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                ExchangeActive,
+                CashInActive
             }
 
             /// <summary>
@@ -45,7 +45,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"cashInActive\": A cash-in transaction is active. This device requires that no cash-in transaction is active in order to perform the command.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

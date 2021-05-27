@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.CashManagement
     internal class SetClassificationListEvents : CashManagementEvents, ISetClassificationListEvents
     {
 
-        public SetClassificationListEvents(IConnection connection, string requestId)
+        public SetClassificationListEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

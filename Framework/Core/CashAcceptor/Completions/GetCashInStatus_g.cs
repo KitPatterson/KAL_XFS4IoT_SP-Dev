@@ -18,94 +18,13 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.GetCashInStatus")]
     public sealed class GetCashInStatusCompletion : Completion<GetCashInStatusCompletion.PayloadData>
     {
-        public GetCashInStatusCompletion(string RequestId, GetCashInStatusCompletion.PayloadData Payload)
+        public GetCashInStatusCompletion(int RequestId, GetCashInStatusCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum StatusEnum
-            {
-                Ok,
-                Rollback,
-                Active,
-                Retract,
-                Unknown,
-                Reset,
-            }
-
-            /// <summary>
-            /// List of banknote types that were inserted, identified and accepted during the currently active or most recently ended cash-in transaction period. 
-            /// If items have been rolled back (status is \"rollback\") they will be included in this list. If status is \"retract\" or \"reset\" 
-            /// then identified and accepted items moved to Cash-In or Recycle cash units are included in this list, but items moved to the Retract or Reject cash units 
-            /// are not included. noteNumberList includes any level 2 or level 3 notes, and all level 4 fit and unfit notes.
-            /// </summary>
-            public class NoteNumberListClass
-            {
-                
-                /// <summary>
-                /// Array of banknote numbers the cash unit contains.
-                /// </summary>
-                public class NoteNumberClass 
-                {
-                    [DataMember(Name = "noteID")] 
-                    public int? NoteID { get; private set; }
-                    [DataMember(Name = "count")] 
-                    public int? Count { get; private set; }
-
-                    public NoteNumberClass (int? NoteID, int? Count)
-                    {
-                        this.NoteID = NoteID;
-                        this.Count = Count;
-                    }
-                }
-                [DataMember(Name = "noteNumber")] 
-                public NoteNumberClass NoteNumber { get; private set; }
-
-                public NoteNumberListClass (NoteNumberClass NoteNumber)
-                {
-                    this.NoteNumber = NoteNumber;
-                }
-
-
-            }
-
-            /// <summary>
-            /// List of level 4 unfit banknote types that were inserted, identified and accepted during the currently active or most recently ended cash-in transaction period.  
-            /// If items have been rolled back (status is \"rollback\") they will be included in this list. If status is \"retract\" or \"reset\" then identified 
-            /// and accepted items moved to Cash-In units are included in this list, but items moved to the Retract or Reject cash units are not included. 
-            /// </summary>
-            public class UnfitNoteNumberListClass
-            {
-                
-                /// <summary>
-                /// Array of banknote numbers the cash unit contains.
-                /// </summary>
-                public class NoteNumberClass 
-                {
-                    [DataMember(Name = "noteID")] 
-                    public int? NoteID { get; private set; }
-                    [DataMember(Name = "count")] 
-                    public int? Count { get; private set; }
-
-                    public NoteNumberClass (int? NoteID, int? Count)
-                    {
-                        this.NoteID = NoteID;
-                        this.Count = Count;
-                    }
-                }
-                [DataMember(Name = "noteNumber")] 
-                public NoteNumberClass NoteNumber { get; private set; }
-
-                public UnfitNoteNumberListClass (NoteNumberClass NoteNumber)
-                {
-                    this.NoteNumber = NoteNumber;
-                }
-
-
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, StatusEnum? Status = null, int? NumOfRefused = null, NoteNumberListClass NoteNumberList = null, UnfitNoteNumberListClass UnfitNoteNumberList = null)
                 : base(CompletionCode, ErrorDescription)
@@ -114,6 +33,16 @@ namespace XFS4IoT.CashAcceptor.Completions
                 this.NumOfRefused = NumOfRefused;
                 this.NoteNumberList = NoteNumberList;
                 this.UnfitNoteNumberList = UnfitNoteNumberList;
+            }
+
+            public enum StatusEnum
+            {
+                Ok,
+                Rollback,
+                Active,
+                Retract,
+                Unknown,
+                Reset
             }
 
             /// <summary>
@@ -131,27 +60,112 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"reset\": The cash-in transaction ended with a Reset command call.
             /// </summary>
-            [DataMember(Name = "status")] 
+            [DataMember(Name = "status")]
             public StatusEnum? Status { get; private set; }
+
             /// <summary>
             /// Specifies the number of items refused during the currently active or most recently ended cash-in transaction period.
             /// </summary>
-            [DataMember(Name = "numOfRefused")] 
+            [DataMember(Name = "numOfRefused")]
             public int? NumOfRefused { get; private set; }
+
+            [DataContract]
+            public sealed class NoteNumberListClass
+            {
+                public NoteNumberListClass(List<NoteNumberClass> NoteNumber = null)
+                {
+                    this.NoteNumber = NoteNumber;
+                }
+
+                [DataContract]
+                public sealed class NoteNumberClass
+                {
+                    public NoteNumberClass(int? NoteID = null, int? Count = null)
+                    {
+                        this.NoteID = NoteID;
+                        this.Count = Count;
+                    }
+
+                    /// <summary>
+                    /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
+                    /// If this value is zero then the note type is unknown.
+                    /// </summary>
+                    [DataMember(Name = "noteID")]
+                    public int? NoteID { get; private set; }
+
+                    /// <summary>
+                    /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
+                    /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
+                    /// </summary>
+                    [DataMember(Name = "count")]
+                    public int? Count { get; private set; }
+
+                }
+
+                /// <summary>
+                /// Array of banknote numbers the cash unit contains.
+                /// </summary>
+                [DataMember(Name = "noteNumber")]
+                public List<NoteNumberClass> NoteNumber { get; private set; }
+
+            }
+
             /// <summary>
             /// List of banknote types that were inserted, identified and accepted during the currently active or most recently ended cash-in transaction period. 
             /// If items have been rolled back (status is \"rollback\") they will be included in this list. If status is \"retract\" or \"reset\" 
             /// then identified and accepted items moved to Cash-In or Recycle cash units are included in this list, but items moved to the Retract or Reject cash units 
             /// are not included. noteNumberList includes any level 2 or level 3 notes, and all level 4 fit and unfit notes.
             /// </summary>
-            [DataMember(Name = "noteNumberList")] 
+            [DataMember(Name = "noteNumberList")]
             public NoteNumberListClass NoteNumberList { get; private set; }
+
+            [DataContract]
+            public sealed class UnfitNoteNumberListClass
+            {
+                public UnfitNoteNumberListClass(List<NoteNumberClass> NoteNumber = null)
+                {
+                    this.NoteNumber = NoteNumber;
+                }
+
+                [DataContract]
+                public sealed class NoteNumberClass
+                {
+                    public NoteNumberClass(int? NoteID = null, int? Count = null)
+                    {
+                        this.NoteID = NoteID;
+                        this.Count = Count;
+                    }
+
+                    /// <summary>
+                    /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
+                    /// If this value is zero then the note type is unknown.
+                    /// </summary>
+                    [DataMember(Name = "noteID")]
+                    public int? NoteID { get; private set; }
+
+                    /// <summary>
+                    /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
+                    /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
+                    /// </summary>
+                    [DataMember(Name = "count")]
+                    public int? Count { get; private set; }
+
+                }
+
+                /// <summary>
+                /// Array of banknote numbers the cash unit contains.
+                /// </summary>
+                [DataMember(Name = "noteNumber")]
+                public List<NoteNumberClass> NoteNumber { get; private set; }
+
+            }
+
             /// <summary>
             /// List of level 4 unfit banknote types that were inserted, identified and accepted during the currently active or most recently ended cash-in transaction period.  
             /// If items have been rolled back (status is \"rollback\") they will be included in this list. If status is \"retract\" or \"reset\" then identified 
             /// and accepted items moved to Cash-In units are included in this list, but items moved to the Retract or Reject cash units are not included. 
             /// </summary>
-            [DataMember(Name = "unfitNoteNumberList")] 
+            [DataMember(Name = "unfitNoteNumberList")]
             public UnfitNoteNumberListClass UnfitNoteNumberList { get; private set; }
 
         }

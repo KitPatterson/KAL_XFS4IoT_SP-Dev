@@ -18,27 +18,27 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.PresentMedia")]
     public sealed class PresentMediaCompletion : Completion<PresentMediaCompletion.PayloadData>
     {
-        public PresentMediaCompletion(string RequestId, PresentMediaCompletion.PayloadData Payload)
+        public PresentMediaCompletion(int RequestId, PresentMediaCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
             public enum ErrorCodeEnum
             {
                 UnsupportedPosition,
                 ShutterNotOpen,
                 NoItems,
                 ExchangeActive,
-                ForeignItemsDetected,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
+                ForeignItemsDetected
             }
 
             /// <summary>
@@ -54,7 +54,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"foreignItemsDetected\": Foreign items have been detected in the input position.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

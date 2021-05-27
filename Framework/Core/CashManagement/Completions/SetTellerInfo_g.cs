@@ -18,26 +18,26 @@ namespace XFS4IoT.CashManagement.Completions
     [Completion(Name = "CashManagement.SetTellerInfo")]
     public sealed class SetTellerInfoCompletion : Completion<SetTellerInfoCompletion.PayloadData>
     {
-        public SetTellerInfoCompletion(string RequestId, SetTellerInfoCompletion.PayloadData Payload)
+        public SetTellerInfoCompletion(int RequestId, SetTellerInfoCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                InvalidCurrency,
-                InvalidTellerId,
-                UnsupportedPosition,
-                ExchangeActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                InvalidCurrency,
+                InvalidTellerId,
+                UnsupportedPosition,
+                ExchangeActive
             }
 
             /// <summary>
@@ -48,7 +48,7 @@ namespace XFS4IoT.CashManagement.Completions
             /// * ```unsupportedPosition``` - The position specified is not supported.
             /// * ```exchangeActive``` - The target teller is currently in the middle of an exchange operation.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

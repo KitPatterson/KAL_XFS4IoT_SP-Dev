@@ -19,40 +19,15 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.SetMixTable")]
     public sealed class SetMixTableCommand : Command<SetMixTableCommand.PayloadData>
     {
-        public SetMixTableCommand(string RequestId, SetMixTableCommand.PayloadData Payload)
+        public SetMixTableCommand(int RequestId, SetMixTableCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            [DataContract]
-            public sealed class MixRowsClass
-            {
-                public MixRowsClass(double? Amount = null, List<int?> Mixture = null)
-                    : base()
-                {
-                    this.Amount = Amount;
-                    this.Mixture = Mixture;
-                }
 
-                /// <summary>
-                /// Amount denominated by this mix row.
-                /// </summary>
-                [DataMember(Name = "amount")] 
-                public double? Amount { get; private set; }
-
-                /// <summary>
-                /// A mix row, an array of integers; each element defines the quantity of each item denomination in the mix used in the denomination of *amount*. 
-                /// The value of each array element is defined by the *mixHeader*.
-                /// </summary>
-                [DataMember(Name = "mixture")] 
-                public List<int?> Mixture { get; private set; }
-
-            }
-
-
-            public PayloadData(int Timeout, int? MixNumber = null, string Name = null, List<double?> MixHeader = null, List<MixRowsClass> MixRows = null)
+            public PayloadData(int Timeout, int? MixNumber = null, string Name = null, List<double> MixHeader = null, List<MixRowsClass> MixRows = null)
                 : base(Timeout)
             {
                 this.MixNumber = MixNumber;
@@ -64,23 +39,50 @@ namespace XFS4IoT.Dispenser.Commands
             /// <summary>
             /// Number identifying the house mix table.
             /// </summary>
-            [DataMember(Name = "mixNumber")] 
+            [DataMember(Name = "mixNumber")]
             public int? MixNumber { get; private set; }
+
             /// <summary>
             /// Name of the house mix table.
             /// </summary>
-            [DataMember(Name = "name")] 
+            [DataMember(Name = "name")]
             public string Name { get; private set; }
+
             /// <summary>
             /// Array of floating point numbers; each element defines the value of the item corresponding to its respective column.
             /// </summary>
-            [DataMember(Name = "mixHeader")] 
-            public List<double?> MixHeader{ get; private set; }
+            [DataMember(Name = "mixHeader")]
+            public List<double> MixHeader { get; private set; }
+
+            [DataContract]
+            public sealed class MixRowsClass
+            {
+                public MixRowsClass(double? Amount = null, List<int> Mixture = null)
+                {
+                    this.Amount = Amount;
+                    this.Mixture = Mixture;
+                }
+
+                /// <summary>
+                /// Amount denominated by this mix row.
+                /// </summary>
+                [DataMember(Name = "amount")]
+                public double? Amount { get; private set; }
+
+                /// <summary>
+                /// A mix row, an array of integers; each element defines the quantity of each item denomination in the mix used in the denomination of *amount*. 
+                /// The value of each array element is defined by the *mixHeader*.
+                /// </summary>
+                [DataMember(Name = "mixture")]
+                public List<int> Mixture { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of rows of the mix table.
             /// </summary>
-            [DataMember(Name = "mixRows")] 
-            public List<MixRowsClass> MixRows{ get; private set; }
+            [DataMember(Name = "mixRows")]
+            public List<MixRowsClass> MixRows { get; private set; }
 
         }
     }

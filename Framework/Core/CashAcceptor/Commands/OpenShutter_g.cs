@@ -19,13 +19,20 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.OpenShutter")]
     public sealed class OpenShutterCommand : Command<OpenShutterCommand.PayloadData>
     {
-        public OpenShutterCommand(string RequestId, OpenShutterCommand.PayloadData Payload)
+        public OpenShutterCommand(int RequestId, OpenShutterCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, PositionEnum? Position = null)
+                : base(Timeout)
+            {
+                this.Position = Position;
+            }
+
             public enum PositionEnum
             {
                 Null,
@@ -42,14 +49,7 @@ namespace XFS4IoT.CashAcceptor.Commands
                 OutTop,
                 OutBottom,
                 OutFront,
-                OutRear,
-            }
-
-
-            public PayloadData(int Timeout, PositionEnum? Position = null)
-                : base(Timeout)
-            {
-                this.Position = Position;
+                OutRear
             }
 
             /// <summary>
@@ -87,7 +87,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// \"outRear\": Open the shutter of the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
 
         }

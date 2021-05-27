@@ -18,6 +18,10 @@ namespace XFS4IoTFramework.Dispenser
 
         Task CashUnitErrorEvent(XFS4IoT.CashManagement.Events.CashUnitErrorEvent.PayloadData Payload);
 
+        Task NoteErrorEvent(XFS4IoT.CashManagement.Events.NoteErrorEvent.PayloadData Payload);
+
+        Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload);
+
         Task DelayedDispenseEvent(XFS4IoT.Dispenser.Events.DelayedDispenseEvent.PayloadData Payload);
 
         Task StartDispenseEvent(XFS4IoT.Dispenser.Events.StartDispenseEvent.PayloadData Payload);
@@ -27,10 +31,6 @@ namespace XFS4IoTFramework.Dispenser
         Task SubDispenseOkEvent(XFS4IoT.Dispenser.Events.SubDispenseOkEvent.PayloadData Payload);
 
         Task IncompleteDispenseEvent(XFS4IoT.Dispenser.Events.IncompleteDispenseEvent.PayloadData Payload);
-
-        Task NoteErrorEvent(XFS4IoT.CashManagement.Events.NoteErrorEvent.PayloadData Payload);
-
-        Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload);
 
     }
 }

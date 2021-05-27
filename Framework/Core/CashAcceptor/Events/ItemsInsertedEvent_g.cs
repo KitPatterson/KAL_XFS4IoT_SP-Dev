@@ -29,6 +29,12 @@ namespace XFS4IoT.CashAcceptor.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
+            public PayloadData(PositionEnum? Position = null)
+                : base()
+            {
+                this.Position = Position;
+            }
+
             public enum PositionEnum
             {
                 InLeft,
@@ -44,14 +50,7 @@ namespace XFS4IoT.CashAcceptor.Events
                 OutTop,
                 OutBottom,
                 OutFront,
-                OutRear,
-            }
-
-
-            public PayloadData(PositionEnum? Position = null)
-                : base()
-            {
-                this.Position = Position;
+                OutRear
             }
 
             /// <summary>
@@ -85,8 +84,9 @@ namespace XFS4IoT.CashAcceptor.Events
             /// 
             /// \"outRear\": Items detected in the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
         }
 
     }

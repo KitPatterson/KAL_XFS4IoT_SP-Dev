@@ -18,18 +18,24 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.GetReplenishTarget")]
     public sealed class GetReplenishTargetCompletion : Completion<GetReplenishTargetCompletion.PayloadData>
     {
-        public GetReplenishTargetCompletion(string RequestId, GetReplenishTargetCompletion.PayloadData Payload)
+        public GetReplenishTargetCompletion(int RequestId, GetReplenishTargetCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<ReplenishTargetsClass> ReplenishTargets = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ReplenishTargets = ReplenishTargets;
+            }
+
             [DataContract]
             public sealed class ReplenishTargetsClass
             {
                 public ReplenishTargetsClass(string CashunitTarget = null)
-                    : base()
                 {
                     this.CashunitTarget = CashunitTarget;
                 }
@@ -38,23 +44,16 @@ namespace XFS4IoT.CashAcceptor.Completions
                 /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
                 /// command) that can be used as a target.
                 /// </summary>
-                [DataMember(Name = "cashunitTarget")] 
+                [DataMember(Name = "cashunitTarget")]
                 public string CashunitTarget { get; private set; }
 
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<ReplenishTargetsClass> ReplenishTargets = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ReplenishTargets = ReplenishTargets;
             }
 
             /// <summary>
             /// Array of all suitable replenish targets. Empty if no suitable target was found.
             /// </summary>
-            [DataMember(Name = "replenishTargets")] 
-            public List<ReplenishTargetsClass> ReplenishTargets{ get; private set; }
+            [DataMember(Name = "replenishTargets")]
+            public List<ReplenishTargetsClass> ReplenishTargets { get; private set; }
 
         }
     }

@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var setClassificationListCmd = command.IsA<SetClassificationListCommand>($"Invalid parameter in the SetClassificationList Handle method. {nameof(SetClassificationListCommand)}");
-            
-            ISetClassificationListEvents events = new SetClassificationListEvents(Connection, setClassificationListCmd.Headers.RequestId);
+            setClassificationListCmd.Headers.RequestId.HasValue.IsTrue();
+
+            ISetClassificationListEvents events = new SetClassificationListEvents(Connection, setClassificationListCmd.Headers.RequestId.Value);
 
             var result = await HandleSetClassificationList(events, setClassificationListCmd, cancel);
-            await Connection.SendMessageAsync(new SetClassificationListCompletion(setClassificationListCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new SetClassificationListCompletion(setClassificationListCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var setClassificationListcommand = command.IsA<SetClassificationListCommand>();
+            setClassificationListcommand.Headers.RequestId.HasValue.IsTrue();
 
             SetClassificationListCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => SetClassificationListCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new SetClassificationListCompletion(setClassificationListcommand.Headers.RequestId, new SetClassificationListCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SetClassificationListCompletion(setClassificationListcommand.Headers.RequestId.Value, new SetClassificationListCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

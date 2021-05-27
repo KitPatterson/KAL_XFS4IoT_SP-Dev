@@ -18,13 +18,20 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.Reset")]
     public sealed class ResetCompletion : Completion<ResetCompletion.PayloadData>
     {
-        public ResetCompletion(string RequestId, ResetCompletion.PayloadData Payload)
+        public ResetCompletion(int RequestId, ResetCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
             public enum ErrorCodeEnum
             {
                 CashUnitError,
@@ -32,14 +39,7 @@ namespace XFS4IoT.CashAcceptor.Completions
                 InvalidCashUnit,
                 InvalidRetractPosition,
                 NotRetractArea,
-                ForeignItemsDetected,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
+                ForeignItemsDetected
             }
 
             /// <summary>
@@ -57,7 +57,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"foreignItemsDetected\": Foreign items have been detected in the input position.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

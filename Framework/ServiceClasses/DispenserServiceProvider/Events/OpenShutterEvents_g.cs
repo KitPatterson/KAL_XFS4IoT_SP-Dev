@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class OpenShutterEvents : DispenserEvents, IOpenShutterEvents
     {
 
-        public OpenShutterEvents(IConnection connection, string requestId)
+        public OpenShutterEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

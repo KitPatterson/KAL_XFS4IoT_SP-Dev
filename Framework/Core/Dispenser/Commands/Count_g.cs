@@ -19,26 +19,13 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.Count")]
     public sealed class CountCommand : Command<CountCommand.PayloadData>
     {
-        public CountCommand(string RequestId, CountCommand.PayloadData Payload)
+        public CountCommand(int RequestId, CountCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum PositionEnum
-            {
-                Default,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear,
-                Reject,
-            }
-
 
             public PayloadData(int Timeout, bool? EmptyAll = null, PositionEnum? Position = null, string PhysicalPositionName = null)
                 : base(Timeout)
@@ -51,8 +38,22 @@ namespace XFS4IoT.Dispenser.Commands
             /// <summary>
             /// Specifies whether all cash units are to be emptied. If this value is TRUE then physicalPositionName is ignored.
             /// </summary>
-            [DataMember(Name = "emptyAll")] 
+            [DataMember(Name = "emptyAll")]
             public bool? EmptyAll { get; private set; }
+
+            public enum PositionEnum
+            {
+                Default,
+                Left,
+                Right,
+                Center,
+                Top,
+                Bottom,
+                Front,
+                Rear,
+                Reject
+            }
+
             /// <summary>
             /// Specifies the location to which items should be moved. Following values are possible:
             /// 
@@ -66,13 +67,14 @@ namespace XFS4IoT.Dispenser.Commands
             /// *  ```rear``` - Present items to the rear output position.
             /// * ```reject``` - Reject bin is used as output location.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
             /// <summary>
             /// Specifies which cash unit to empty and count. This name is the same as the 
             /// *physicalPositionName* in the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) completion message.
             /// </summary>
-            [DataMember(Name = "physicalPositionName")] 
+            [DataMember(Name = "physicalPositionName")]
             public string PhysicalPositionName { get; private set; }
 
         }

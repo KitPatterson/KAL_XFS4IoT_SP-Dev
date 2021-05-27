@@ -18,13 +18,23 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.Dispense")]
     public sealed class DispenseCompletion : Completion<DispenseCompletion.PayloadData>
     {
-        public DispenseCompletion(string RequestId, DispenseCompletion.PayloadData Payload)
+        public DispenseCompletion(int RequestId, DispenseCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, Dictionary<string, double> Currencies = null, Dictionary<string, int> Values = null, int? CashBox = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+                this.Currencies = Currencies;
+                this.Values = Values;
+                this.CashBox = CashBox;
+            }
+
             public enum ErrorCodeEnum
             {
                 InvalidCurrency,
@@ -41,54 +51,7 @@ namespace XFS4IoT.Dispenser.Completions
                 AmountNotInMixTable,
                 ItemsNotTaken,
                 ItemsLeft,
-                ShutterOpen,
-            }
-
-            /// <summary>
-            /// \"List of currency and amount combinations for denomination. There will be one entry for each currency
-            /// in the denomination. The property name is the currency name in ISO format (e.g. \"EUR\").
-            /// </summary>
-            public class CurrenciesClass
-            {
-                [DataMember(Name = "additionalProperties")] 
-                public double? AdditionalProperties { get; private set; }
-
-                public CurrenciesClass (double? AdditionalProperties)
-                {
-                    this.AdditionalProperties = AdditionalProperties;
-                }
-
-
-            }
-
-            /// <summary>
-            /// This list specifies the number of items to take from the cash units. 
-            /// Each entry uses a cashunit object name as stated by the 
-            /// [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) command. The value of the entry is the 
-            /// number of items to take from that unit.
-            /// If the application does not wish to specify a denomination, it should omit the values property.
-            /// </summary>
-            public class ValuesClass
-            {
-                [DataMember(Name = "additionalProperties")] 
-                public int? AdditionalProperties { get; private set; }
-
-                public ValuesClass (int? AdditionalProperties)
-                {
-                    this.AdditionalProperties = AdditionalProperties;
-                }
-
-
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, CurrenciesClass Currencies = null, ValuesClass Values = null, int? CashBox = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.Currencies = Currencies;
-                this.Values = Values;
-                this.CashBox = CashBox;
+                ShutterOpen
             }
 
             /// <summary>
@@ -111,14 +74,16 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```itemsLeft``` - Items have been left in the transport or exit slot as a result of a prior dispense, present or recycler cash-in operation.
             /// * ```shutterOpen``` - The Service cannot dispense items with an open output shutter.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
             /// <summary>
             /// \"List of currency and amount combinations for denomination. There will be one entry for each currency
             /// in the denomination. The property name is the currency name in ISO format (e.g. \"EUR\").
             /// </summary>
-            [DataMember(Name = "currencies")] 
-            public CurrenciesClass Currencies { get; private set; }
+            [DataMember(Name = "currencies")]
+            public Dictionary<string, double> Currencies { get; private set; }
+
             /// <summary>
             /// This list specifies the number of items to take from the cash units. 
             /// Each entry uses a cashunit object name as stated by the 
@@ -126,12 +91,13 @@ namespace XFS4IoT.Dispenser.Completions
             /// number of items to take from that unit.
             /// If the application does not wish to specify a denomination, it should omit the values property.
             /// </summary>
-            [DataMember(Name = "values")] 
-            public ValuesClass Values { get; private set; }
+            [DataMember(Name = "values")]
+            public Dictionary<string, int> Values { get; private set; }
+
             /// <summary>
             /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.
             /// </summary>
-            [DataMember(Name = "cashBox")] 
+            [DataMember(Name = "cashBox")]
             public int? CashBox { get; private set; }
 
         }

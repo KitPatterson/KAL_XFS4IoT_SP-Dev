@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.CashInRollback")]
     public sealed class CashInRollbackCommand : Command<CashInRollbackCommand.PayloadData>
     {
-        public CashInRollbackCommand(string RequestId, CashInRollbackCommand.PayloadData Payload)
+        public CashInRollbackCommand(int RequestId, CashInRollbackCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashAcceptor.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

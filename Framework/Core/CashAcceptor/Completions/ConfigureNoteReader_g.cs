@@ -18,26 +18,26 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.ConfigureNoteReader")]
     public sealed class ConfigureNoteReaderCompletion : Completion<ConfigureNoteReaderCompletion.PayloadData>
     {
-        public ConfigureNoteReaderCompletion(string RequestId, ConfigureNoteReaderCompletion.PayloadData Payload)
+        public ConfigureNoteReaderCompletion(int RequestId, ConfigureNoteReaderCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                ExchangeActive,
-                CashInActive,
-                LoadFailed,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, bool? RebootNecessary = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
                 this.RebootNecessary = RebootNecessary;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                ExchangeActive,
+                CashInActive,
+                LoadFailed
             }
 
             /// <summary>
@@ -50,12 +50,13 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// \"loadFailed\": The load failed because the device is in a state that will not allow the configuration data to be loaded 
             /// at this time, for example on some devices there may be notes present in the cash units when they should not be.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
             /// <summary>
             /// If set to TRUE, the machine needs a reboot before the note reader can be accessed again.
             /// </summary>
-            [DataMember(Name = "rebootNecessary")] 
+            [DataMember(Name = "rebootNecessary")]
             public bool? RebootNecessary { get; private set; }
 
         }

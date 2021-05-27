@@ -18,13 +18,21 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.CashIn")]
     public sealed class CashInCompletion : Completion<CashInCompletion.PayloadData>
     {
-        public CashInCompletion(string RequestId, CashInCompletion.PayloadData Payload)
+        public CashInCompletion(int RequestId, CashInCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, List<NoteNumberClass> NoteNumber = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+                this.NoteNumber = NoteNumber;
+            }
+
             public enum ErrorCodeEnum
             {
                 CashUnitError,
@@ -36,41 +44,7 @@ namespace XFS4IoT.CashAcceptor.Completions
                 PositionNotempty,
                 SafeDoorOpen,
                 ForeignItemsDetected,
-                ShutterNotOpen,
-            }
-
-            [DataContract]
-            public sealed class NoteNumberClass
-            {
-                public NoteNumberClass(int? NoteID = null, int? Count = null)
-                    : base()
-                {
-                    this.NoteID = NoteID;
-                    this.Count = Count;
-                }
-
-                /// <summary>
-                /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
-                /// If this value is zero then the note type is unknown.
-                /// </summary>
-                [DataMember(Name = "noteID")] 
-                public int? NoteID { get; private set; }
-
-                /// <summary>
-                /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
-                /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
-                /// </summary>
-                [DataMember(Name = "count")] 
-                public int? Count { get; private set; }
-
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, List<NoteNumberClass> NoteNumber = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.NoteNumber = NoteNumber;
+                ShutterNotOpen
             }
 
             /// <summary>
@@ -97,13 +71,39 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"shutterNotOpen\": Shutter failed to open.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
+            [DataContract]
+            public sealed class NoteNumberClass
+            {
+                public NoteNumberClass(int? NoteID = null, int? Count = null)
+                {
+                    this.NoteID = NoteID;
+                    this.Count = Count;
+                }
+
+                /// <summary>
+                /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
+                /// If this value is zero then the note type is unknown.
+                /// </summary>
+                [DataMember(Name = "noteID")]
+                public int? NoteID { get; private set; }
+
+                /// <summary>
+                /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
+                /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
+                /// </summary>
+                [DataMember(Name = "count")]
+                public int? Count { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of banknote numbers the cash unit contains.
             /// </summary>
-            [DataMember(Name = "noteNumber")] 
-            public List<NoteNumberClass> NoteNumber{ get; private set; }
+            [DataMember(Name = "noteNumber")]
+            public List<NoteNumberClass> NoteNumber { get; private set; }
 
         }
     }

@@ -29,6 +29,14 @@ namespace XFS4IoT.CashAcceptor.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
+            public PayloadData(PositionEnum? Position = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null)
+                : base()
+            {
+                this.Position = Position;
+                this.AdditionalBunches = AdditionalBunches;
+                this.BunchesRemaining = BunchesRemaining;
+            }
+
             public enum PositionEnum
             {
                 InLeft,
@@ -44,23 +52,7 @@ namespace XFS4IoT.CashAcceptor.Events
                 OutTop,
                 OutBottom,
                 OutFront,
-                OutRear,
-            }
-
-            public enum AdditionalBunchesEnum
-            {
-                None,
-                OneMore,
-                Unknown,
-            }
-
-
-            public PayloadData(PositionEnum? Position = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null)
-                : base()
-            {
-                this.Position = Position;
-                this.AdditionalBunches = AdditionalBunches;
-                this.BunchesRemaining = BunchesRemaining;
+                OutRear
             }
 
             /// <summary>
@@ -94,8 +86,16 @@ namespace XFS4IoT.CashAcceptor.Events
             /// 
             /// \"outRear\": Items presented at the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
+            public enum AdditionalBunchesEnum
+            {
+                None,
+                OneMore,
+                Unknown
+            }
+
             /// <summary>
             /// Specifies whether or not additional bunches of items are remaining to be presented as a result of the current operation. Following values are possible:
             /// 
@@ -105,15 +105,17 @@ namespace XFS4IoT.CashAcceptor.Events
             /// 
             /// \"unknown\": It is unknown whether additional bunches remain.
             /// </summary>
-            [DataMember(Name = "additionalBunches")] 
+            [DataMember(Name = "additionalBunches")]
             public AdditionalBunchesEnum? AdditionalBunches { get; private set; }
+
             /// <summary>
             /// If *additionalBunches* is \"oneMore\", specifies the number of additional bunches of items remaining to be presented as a result of the current operation. 
             /// If the number of additional bunches is at least one, but the precise number is unknown, *bunchesRemaining* will be 255 (TODO: Check if there is a better way to represent this state). 
             /// For any other value of *additionalBunches*, *bunchesRemaining* will be zero.
             /// </summary>
-            [DataMember(Name = "bunchesRemaining")] 
+            [DataMember(Name = "bunchesRemaining")]
             public int? BunchesRemaining { get; private set; }
+
         }
 
     }

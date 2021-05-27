@@ -19,7 +19,7 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.Reject")]
     public sealed class RejectCommand : Command<RejectCommand.PayloadData>
     {
-        public RejectCommand(string RequestId, RejectCommand.PayloadData Payload)
+        public RejectCommand(int RequestId, RejectCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.Dispenser.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

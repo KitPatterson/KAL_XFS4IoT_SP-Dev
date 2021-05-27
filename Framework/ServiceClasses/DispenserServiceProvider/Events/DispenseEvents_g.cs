@@ -17,11 +17,15 @@ namespace XFS4IoTFramework.Dispenser
     internal class DispenseEvents : DispenserEvents, IDispenseEvents
     {
 
-        public DispenseEvents(IConnection connection, string requestId)
+        public DispenseEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 
         public async Task CashUnitErrorEvent(XFS4IoT.CashManagement.Events.CashUnitErrorEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CashManagement.Events.CashUnitErrorEvent(requestId, Payload));
+
+        public async Task NoteErrorEvent(XFS4IoT.CashManagement.Events.NoteErrorEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CashManagement.Events.NoteErrorEvent(requestId, Payload));
+
+        public async Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CashManagement.Events.InfoAvailableEvent(requestId, Payload));
 
         public async Task DelayedDispenseEvent(XFS4IoT.Dispenser.Events.DelayedDispenseEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.Dispenser.Events.DelayedDispenseEvent(requestId, Payload));
 
@@ -32,10 +36,6 @@ namespace XFS4IoTFramework.Dispenser
         public async Task SubDispenseOkEvent(XFS4IoT.Dispenser.Events.SubDispenseOkEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.Dispenser.Events.SubDispenseOkEvent(requestId, Payload));
 
         public async Task IncompleteDispenseEvent(XFS4IoT.Dispenser.Events.IncompleteDispenseEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.Dispenser.Events.IncompleteDispenseEvent(requestId, Payload));
-
-        public async Task NoteErrorEvent(XFS4IoT.CashManagement.Events.NoteErrorEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CashManagement.Events.NoteErrorEvent(requestId, Payload));
-
-        public async Task InfoAvailableEvent(XFS4IoT.CashManagement.Events.InfoAvailableEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.CashManagement.Events.InfoAvailableEvent(requestId, Payload));
 
     }
 }

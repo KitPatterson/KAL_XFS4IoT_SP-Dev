@@ -18,27 +18,27 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.CashInStart")]
     public sealed class CashInStartCompletion : Completion<CashInStartCompletion.PayloadData>
     {
-        public CashInStartCompletion(string RequestId, CashInStartCompletion.PayloadData Payload)
+        public CashInStartCompletion(int RequestId, CashInStartCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+            }
+
             public enum ErrorCodeEnum
             {
                 InvalidTellerId,
                 UnsupportedPosition,
                 ExchangeActive,
                 CashInActive,
-                SafeDoorOpen,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
+                SafeDoorOpen
             }
 
             /// <summary>
@@ -54,7 +54,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"safeDoorOpen\": The safe door is open. This device requires the safe door to be closed in order to perform a CashAcceptor.CashInStart command.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

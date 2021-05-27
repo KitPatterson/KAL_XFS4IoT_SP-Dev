@@ -18,28 +18,24 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.GetMixTypes")]
     public sealed class GetMixTypesCompletion : Completion<GetMixTypesCompletion.PayloadData>
     {
-        public GetMixTypesCompletion(string RequestId, GetMixTypesCompletion.PayloadData Payload)
+        public GetMixTypesCompletion(int RequestId, GetMixTypesCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<MixTypesClass> MixTypes = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.MixTypes = MixTypes;
+            }
+
             [DataContract]
             public sealed class MixTypesClass
             {
-                /// <summary>
-                /// Specifies whether the mix type is an algorithm or a house mix table. Possible values are ```mixAlgorithm``` and
-                /// ```mixTable```.
-                /// </summary>
-                public enum MixTypeEnum
-                {
-                    MixAlgorithm,
-                    MixTable,
-                }
-
                 public MixTypesClass(int? MixNumber = null, MixTypeEnum? MixType = null, int? SubType = null, string Name = null)
-                    : base()
                 {
                     this.MixNumber = MixNumber;
                     this.MixType = MixType;
@@ -51,14 +47,20 @@ namespace XFS4IoT.Dispenser.Completions
                 /// Number identifying the mix algorithm or the house mix table. 
                 /// This number can be passed to the Dispenser.MixTable, Dispenser.Dispense and Dispenser.Denominate commands.
                 /// </summary>
-                [DataMember(Name = "mixNumber")] 
+                [DataMember(Name = "mixNumber")]
                 public int? MixNumber { get; private set; }
+
+                public enum MixTypeEnum
+                {
+                    MixAlgorithm,
+                    MixTable
+                }
 
                 /// <summary>
                 /// Specifies whether the mix type is an algorithm or a house mix table. Possible values are ```mixAlgorithm``` and
                 /// ```mixTable```.
                 /// </summary>
-                [DataMember(Name = "mixType")] 
+                [DataMember(Name = "mixType")]
                 public MixTypeEnum? MixType { get; private set; }
 
                 /// <summary>
@@ -68,29 +70,22 @@ namespace XFS4IoT.Dispenser.Completions
                 /// Application defined mix algorithms start at hexadecimal 9000. All numbers below 8000 hexadecimal are reserved. 
                 /// If *mixType* is \"mixTable\", this value will be zero.
                 /// </summary>
-                [DataMember(Name = "subType")] 
+                [DataMember(Name = "subType")]
                 public int? SubType { get; private set; }
 
                 /// <summary>
                 /// Name of the table/algorithm used.
                 /// </summary>
-                [DataMember(Name = "name")] 
+                [DataMember(Name = "name")]
                 public string Name { get; private set; }
 
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<MixTypesClass> MixTypes = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.MixTypes = MixTypes;
             }
 
             /// <summary>
             /// Array of mix type objects.
             /// </summary>
-            [DataMember(Name = "mixTypes")] 
-            public List<MixTypesClass> MixTypes{ get; private set; }
+            [DataMember(Name = "mixTypes")]
+            public List<MixTypesClass> MixTypes { get; private set; }
 
         }
     }

@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.GetBanknoteTypes")]
     public sealed class GetBanknoteTypesCommand : Command<GetBanknoteTypesCommand.PayloadData>
     {
-        public GetBanknoteTypesCommand(string RequestId, GetBanknoteTypesCommand.PayloadData Payload)
+        public GetBanknoteTypesCommand(int RequestId, GetBanknoteTypesCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashAcceptor.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

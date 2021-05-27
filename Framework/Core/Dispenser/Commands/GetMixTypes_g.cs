@@ -19,7 +19,7 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.GetMixTypes")]
     public sealed class GetMixTypesCommand : Command<GetMixTypesCommand.PayloadData>
     {
-        public GetMixTypesCommand(string RequestId, GetMixTypesCommand.PayloadData Payload)
+        public GetMixTypesCommand(int RequestId, GetMixTypesCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.Dispenser.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

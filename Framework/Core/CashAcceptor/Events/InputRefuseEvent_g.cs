@@ -20,7 +20,7 @@ namespace XFS4IoT.CashAcceptor.Events
     public sealed class InputRefuseEvent : Event<InputRefuseEvent.PayloadData>
     {
 
-        public InputRefuseEvent(string RequestId, PayloadData Payload)
+        public InputRefuseEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -28,6 +28,12 @@ namespace XFS4IoT.CashAcceptor.Events
         [DataContract]
         public sealed class PayloadData : MessagePayloadBase
         {
+
+            public PayloadData(ReasonEnum? Reason = null)
+                : base()
+            {
+                this.Reason = Reason;
+            }
 
             public enum ReasonEnum
             {
@@ -41,14 +47,7 @@ namespace XFS4IoT.CashAcceptor.Events
                 InvalidBunch,
                 Counterfeit,
                 LimitOverTotalItems,
-                LimitOverAmount,
-            }
-
-
-            public PayloadData(ReasonEnum? Reason = null)
-                : base()
-            {
-                this.Reason = Reason;
+                LimitOverAmount
             }
 
             /// <summary>
@@ -76,8 +75,9 @@ namespace XFS4IoT.CashAcceptor.Events
             /// 
             /// \"limitOverAmount\": Amount exceeded the limitation set with the CashAcceptor.SetCashInLimit command.
             /// </summary>
-            [DataMember(Name = "reason")] 
+            [DataMember(Name = "reason")]
             public ReasonEnum? Reason { get; private set; }
+
         }
 
     }

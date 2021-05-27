@@ -29,6 +29,12 @@ namespace XFS4IoT.Dispenser.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
+            public PayloadData(PositionEnum? Position = null)
+                : base()
+            {
+                this.Position = Position;
+            }
+
             public enum PositionEnum
             {
                 Default,
@@ -38,14 +44,7 @@ namespace XFS4IoT.Dispenser.Events
                 Top,
                 Bottom,
                 Front,
-                Rear,
-            }
-
-
-            public PayloadData(PositionEnum? Position = null)
-                : base()
-            {
-                this.Position = Position;
+                Rear
             }
 
             /// <summary>
@@ -60,8 +59,9 @@ namespace XFS4IoT.Dispenser.Events
             /// * ```front``` - The front output position.
             /// * ```rear``` - The rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
         }
 
     }

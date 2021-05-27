@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class DenominateEvents : DispenserEvents, IDenominateEvents
     {
 
-        public DenominateEvents(IConnection connection, string requestId)
+        public DenominateEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

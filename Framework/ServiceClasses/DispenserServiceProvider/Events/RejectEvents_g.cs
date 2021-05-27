@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class RejectEvents : DispenserEvents, IRejectEvents
     {
 
-        public RejectEvents(IConnection connection, string requestId)
+        public RejectEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

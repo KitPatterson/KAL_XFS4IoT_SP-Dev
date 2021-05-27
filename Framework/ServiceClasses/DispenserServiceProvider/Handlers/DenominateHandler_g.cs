@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.Dispenser
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var denominateCmd = command.IsA<DenominateCommand>($"Invalid parameter in the Denominate Handle method. {nameof(DenominateCommand)}");
-            
-            IDenominateEvents events = new DenominateEvents(Connection, denominateCmd.Headers.RequestId);
+            denominateCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IDenominateEvents events = new DenominateEvents(Connection, denominateCmd.Headers.RequestId.Value);
 
             var result = await HandleDenominate(events, denominateCmd, cancel);
-            await Connection.SendMessageAsync(new DenominateCompletion(denominateCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new DenominateCompletion(denominateCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var denominatecommand = command.IsA<DenominateCommand>();
+            denominatecommand.Headers.RequestId.HasValue.IsTrue();
 
             DenominateCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.Dispenser
                 _ => DenominateCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new DenominateCompletion(denominatecommand.Headers.RequestId, new DenominateCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new DenominateCompletion(denominatecommand.Headers.RequestId.Value, new DenominateCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

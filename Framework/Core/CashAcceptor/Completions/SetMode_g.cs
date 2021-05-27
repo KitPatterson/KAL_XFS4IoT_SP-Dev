@@ -18,24 +18,24 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.SetMode")]
     public sealed class SetModeCompletion : Completion<SetModeCompletion.PayloadData>
     {
-        public SetModeCompletion(string RequestId, SetModeCompletion.PayloadData Payload)
+        public SetModeCompletion(int RequestId, SetModeCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                CashInActive,
-                MediaInActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                CashInActive,
+                MediaInActive
             }
 
             /// <summary>
@@ -45,7 +45,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"mediaInActive\": An item processing transaction is active.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

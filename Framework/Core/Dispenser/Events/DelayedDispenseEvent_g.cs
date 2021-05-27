@@ -20,7 +20,7 @@ namespace XFS4IoT.Dispenser.Events
     public sealed class DelayedDispenseEvent : Event<DelayedDispenseEvent.PayloadData>
     {
 
-        public DelayedDispenseEvent(string RequestId, PayloadData Payload)
+        public DelayedDispenseEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -28,7 +28,6 @@ namespace XFS4IoT.Dispenser.Events
         [DataContract]
         public sealed class PayloadData : MessagePayloadBase
         {
-
 
             public PayloadData(int? Delay = null)
                 : base()
@@ -39,8 +38,9 @@ namespace XFS4IoT.Dispenser.Events
             /// <summary>
             /// The time in milliseconds by which the dispense operation will be delayed.
             /// </summary>
-            [DataMember(Name = "delay")] 
+            [DataMember(Name = "delay")]
             public int? Delay { get; private set; }
+
         }
 
     }

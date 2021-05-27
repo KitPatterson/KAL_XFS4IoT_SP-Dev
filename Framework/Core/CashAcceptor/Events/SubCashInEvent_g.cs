@@ -20,7 +20,7 @@ namespace XFS4IoT.CashAcceptor.Events
     public sealed class SubCashInEvent : Event<SubCashInEvent.PayloadData>
     {
 
-        public SubCashInEvent(string RequestId, PayloadData Payload)
+        public SubCashInEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -29,11 +29,16 @@ namespace XFS4IoT.CashAcceptor.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
+            public PayloadData(List<NoteNumberClass> NoteNumber = null)
+                : base()
+            {
+                this.NoteNumber = NoteNumber;
+            }
+
             [DataContract]
             public sealed class NoteNumberClass
             {
                 public NoteNumberClass(int? NoteID = null, int? Count = null)
-                    : base()
                 {
                     this.NoteID = NoteID;
                     this.Count = Count;
@@ -43,30 +48,24 @@ namespace XFS4IoT.CashAcceptor.Events
                 /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
                 /// If this value is zero then the note type is unknown.
                 /// </summary>
-                [DataMember(Name = "noteID")] 
+                [DataMember(Name = "noteID")]
                 public int? NoteID { get; private set; }
 
                 /// <summary>
                 /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
                 /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
                 /// </summary>
-                [DataMember(Name = "count")] 
+                [DataMember(Name = "count")]
                 public int? Count { get; private set; }
 
-            }
-
-
-            public PayloadData(List<NoteNumberClass> NoteNumber = null)
-                : base()
-            {
-                this.NoteNumber = NoteNumber;
             }
 
             /// <summary>
             /// Array of banknote numbers the cash unit contains.
             /// </summary>
-            [DataMember(Name = "noteNumber")] 
+            [DataMember(Name = "noteNumber")]
             public List<NoteNumberClass> NoteNumber { get; private set; }
+
         }
 
     }

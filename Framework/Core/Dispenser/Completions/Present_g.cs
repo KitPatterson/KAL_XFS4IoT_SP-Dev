@@ -18,13 +18,23 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.Present")]
     public sealed class PresentCompletion : Completion<PresentCompletion.PayloadData>
     {
-        public PresentCompletion(string RequestId, PresentCompletion.PayloadData Payload)
+        public PresentCompletion(int RequestId, PresentCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, PositionEnum? Position = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+                this.Position = Position;
+                this.AdditionalBunches = AdditionalBunches;
+                this.BunchesRemaining = BunchesRemaining;
+            }
+
             public enum ErrorCodeEnum
             {
                 ShutterNotOpen,
@@ -34,36 +44,7 @@ namespace XFS4IoT.Dispenser.Completions
                 PresentErrorNoItems,
                 PresentErrorItems,
                 PresentErrorUnknown,
-                UnsupportedPosition,
-            }
-
-            public enum PositionEnum
-            {
-                Default,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear,
-            }
-
-            public enum AdditionalBunchesEnum
-            {
-                None,
-                OneMore,
-                Unknown,
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, PositionEnum? Position = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.Position = Position;
-                this.AdditionalBunches = AdditionalBunches;
-                this.BunchesRemaining = BunchesRemaining;
+                UnsupportedPosition
             }
 
             /// <summary>
@@ -78,8 +59,21 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```presentErrorUnknown``` - There was an error during the present operation - the position of the items is unknown. Intervention may be required to reconcile the cash amount totals.
             /// * ```unsupportedPosition``` - The position specified is not supported.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
+            public enum PositionEnum
+            {
+                Default,
+                Left,
+                Right,
+                Center,
+                Top,
+                Bottom,
+                Front,
+                Rear
+            }
+
             /// <summary>
             /// Specifies the position where the items have been presented. Following values are possible:
             /// 
@@ -91,8 +85,16 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```front``` - Items presented at the front output position.
             /// * ```rear``` - Items presented at the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
+
+            public enum AdditionalBunchesEnum
+            {
+                None,
+                OneMore,
+                Unknown
+            }
+
             /// <summary>
             /// Specifies whether or not additional bunches of items are remaining to be presented as a result of the current operation. Following values are possible:
             /// 
@@ -100,14 +102,15 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```oneMore``` - At least one additional bunch remains.
             /// * ```unknown``` - It is unknown whether additional bunches remain.
             /// </summary>
-            [DataMember(Name = "additionalBunches")] 
+            [DataMember(Name = "additionalBunches")]
             public AdditionalBunchesEnum? AdditionalBunches { get; private set; }
+
             /// <summary>
             /// If *additionalBunches* is \"oneMore\", specifies the number of additional bunches of items remaining to be presented as a result of the current operation. 
             /// If the number of additional bunches is at least one, but the precise number is unknown, *bunchesRemaining* will be 255 (TODO: Check if there is a better way to represent this state). 
             /// For any other value of *additionalBunches*, *bunchesRemaining* will be zero.
             /// </summary>
-            [DataMember(Name = "bunchesRemaining")] 
+            [DataMember(Name = "bunchesRemaining")]
             public int? BunchesRemaining { get; private set; }
 
         }

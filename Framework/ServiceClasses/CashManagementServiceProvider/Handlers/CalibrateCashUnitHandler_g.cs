@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var calibrateCashUnitCmd = command.IsA<CalibrateCashUnitCommand>($"Invalid parameter in the CalibrateCashUnit Handle method. {nameof(CalibrateCashUnitCommand)}");
-            
-            ICalibrateCashUnitEvents events = new CalibrateCashUnitEvents(Connection, calibrateCashUnitCmd.Headers.RequestId);
+            calibrateCashUnitCmd.Headers.RequestId.HasValue.IsTrue();
+
+            ICalibrateCashUnitEvents events = new CalibrateCashUnitEvents(Connection, calibrateCashUnitCmd.Headers.RequestId.Value);
 
             var result = await HandleCalibrateCashUnit(events, calibrateCashUnitCmd, cancel);
-            await Connection.SendMessageAsync(new CalibrateCashUnitCompletion(calibrateCashUnitCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new CalibrateCashUnitCompletion(calibrateCashUnitCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var calibrateCashUnitcommand = command.IsA<CalibrateCashUnitCommand>();
+            calibrateCashUnitcommand.Headers.RequestId.HasValue.IsTrue();
 
             CalibrateCashUnitCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => CalibrateCashUnitCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new CalibrateCashUnitCompletion(calibrateCashUnitcommand.Headers.RequestId, new CalibrateCashUnitCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new CalibrateCashUnitCompletion(calibrateCashUnitcommand.Headers.RequestId.Value, new CalibrateCashUnitCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

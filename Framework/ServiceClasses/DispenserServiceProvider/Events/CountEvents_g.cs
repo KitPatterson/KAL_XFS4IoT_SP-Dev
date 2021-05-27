@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class CountEvents : DispenserEvents, ICountEvents
     {
 
-        public CountEvents(IConnection connection, string requestId)
+        public CountEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class RetractEvents : DispenserEvents, IRetractEvents
     {
 
-        public RetractEvents(IConnection connection, string requestId)
+        public RetractEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

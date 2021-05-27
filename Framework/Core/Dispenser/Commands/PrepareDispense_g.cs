@@ -19,24 +19,24 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.PrepareDispense")]
     public sealed class PrepareDispenseCommand : Command<PrepareDispenseCommand.PayloadData>
     {
-        public PrepareDispenseCommand(string RequestId, PrepareDispenseCommand.PayloadData Payload)
+        public PrepareDispenseCommand(int RequestId, PrepareDispenseCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ActionEnum
-            {
-                Start,
-                Stop,
-            }
-
 
             public PayloadData(int Timeout, ActionEnum? Action = null)
                 : base(Timeout)
             {
                 this.Action = Action;
+            }
+
+            public enum ActionEnum
+            {
+                Start,
+                Stop
             }
 
             /// <summary>
@@ -47,7 +47,7 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```stop``` - Stops the previously activated dispense preparation. For example the motor of the transport will be stopped. 
             /// This should be used if for some reason the subsequent dispense operation is no longer required.
             /// </summary>
-            [DataMember(Name = "action")] 
+            [DataMember(Name = "action")]
             public ActionEnum? Action { get; private set; }
 
         }

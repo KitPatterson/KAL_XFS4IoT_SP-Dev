@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var openSafeDoorCmd = command.IsA<OpenSafeDoorCommand>($"Invalid parameter in the OpenSafeDoor Handle method. {nameof(OpenSafeDoorCommand)}");
-            
-            IOpenSafeDoorEvents events = new OpenSafeDoorEvents(Connection, openSafeDoorCmd.Headers.RequestId);
+            openSafeDoorCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IOpenSafeDoorEvents events = new OpenSafeDoorEvents(Connection, openSafeDoorCmd.Headers.RequestId.Value);
 
             var result = await HandleOpenSafeDoor(events, openSafeDoorCmd, cancel);
-            await Connection.SendMessageAsync(new OpenSafeDoorCompletion(openSafeDoorCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new OpenSafeDoorCompletion(openSafeDoorCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var openSafeDoorcommand = command.IsA<OpenSafeDoorCommand>();
+            openSafeDoorcommand.Headers.RequestId.HasValue.IsTrue();
 
             OpenSafeDoorCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => OpenSafeDoorCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new OpenSafeDoorCompletion(openSafeDoorcommand.Headers.RequestId, new OpenSafeDoorCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new OpenSafeDoorCompletion(openSafeDoorcommand.Headers.RequestId.Value, new OpenSafeDoorCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

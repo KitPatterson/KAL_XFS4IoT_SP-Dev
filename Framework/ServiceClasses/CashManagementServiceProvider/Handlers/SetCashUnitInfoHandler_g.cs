@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var setCashUnitInfoCmd = command.IsA<SetCashUnitInfoCommand>($"Invalid parameter in the SetCashUnitInfo Handle method. {nameof(SetCashUnitInfoCommand)}");
-            
-            ISetCashUnitInfoEvents events = new SetCashUnitInfoEvents(Connection, setCashUnitInfoCmd.Headers.RequestId);
+            setCashUnitInfoCmd.Headers.RequestId.HasValue.IsTrue();
+
+            ISetCashUnitInfoEvents events = new SetCashUnitInfoEvents(Connection, setCashUnitInfoCmd.Headers.RequestId.Value);
 
             var result = await HandleSetCashUnitInfo(events, setCashUnitInfoCmd, cancel);
-            await Connection.SendMessageAsync(new SetCashUnitInfoCompletion(setCashUnitInfoCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new SetCashUnitInfoCompletion(setCashUnitInfoCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var setCashUnitInfocommand = command.IsA<SetCashUnitInfoCommand>();
+            setCashUnitInfocommand.Headers.RequestId.HasValue.IsTrue();
 
             SetCashUnitInfoCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => SetCashUnitInfoCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new SetCashUnitInfoCompletion(setCashUnitInfocommand.Headers.RequestId, new SetCashUnitInfoCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SetCashUnitInfoCompletion(setCashUnitInfocommand.Headers.RequestId.Value, new SetCashUnitInfoCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

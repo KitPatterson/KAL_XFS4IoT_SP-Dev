@@ -19,7 +19,7 @@ namespace XFS4IoT.CashManagement.Commands
     [Command(Name = "CashManagement.GetTellerInfo")]
     public sealed class GetTellerInfoCommand : Command<GetTellerInfoCommand.PayloadData>
     {
-        public GetTellerInfoCommand(string RequestId, GetTellerInfoCommand.PayloadData Payload)
+        public GetTellerInfoCommand(int RequestId, GetTellerInfoCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -37,12 +37,13 @@ namespace XFS4IoT.CashManagement.Commands
             /// <summary>
             /// Identification of the teller. If the value of *tellerID* is not valid the error *invalidTellerID* is reported.
             /// </summary>
-            [DataMember(Name = "tellerID")] 
+            [DataMember(Name = "tellerID")]
             public int? TellerID { get; private set; }
+
             /// <summary>
             /// Three character ISO format currency identifier [Ref 2].
             /// </summary>
-            [DataMember(Name = "currencyID")] 
+            [DataMember(Name = "currencyID")]
             public string CurrencyID { get; private set; }
 
         }

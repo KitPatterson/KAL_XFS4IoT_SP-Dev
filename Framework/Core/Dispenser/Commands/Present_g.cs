@@ -19,13 +19,20 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.Present")]
     public sealed class PresentCommand : Command<PresentCommand.PayloadData>
     {
-        public PresentCommand(string RequestId, PresentCommand.PayloadData Payload)
+        public PresentCommand(int RequestId, PresentCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, PositionEnum? Position = null)
+                : base(Timeout)
+            {
+                this.Position = Position;
+            }
+
             public enum PositionEnum
             {
                 Default,
@@ -35,14 +42,7 @@ namespace XFS4IoT.Dispenser.Commands
                 Top,
                 Bottom,
                 Front,
-                Rear,
-            }
-
-
-            public PayloadData(int Timeout, PositionEnum? Position = null)
-                : base(Timeout)
-            {
-                this.Position = Position;
+                Rear
             }
 
             /// <summary>
@@ -57,7 +57,7 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```front``` - The front output position.
             /// * ```rear``` - The rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
 
         }

@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var setTellerInfoCmd = command.IsA<SetTellerInfoCommand>($"Invalid parameter in the SetTellerInfo Handle method. {nameof(SetTellerInfoCommand)}");
-            
-            ISetTellerInfoEvents events = new SetTellerInfoEvents(Connection, setTellerInfoCmd.Headers.RequestId);
+            setTellerInfoCmd.Headers.RequestId.HasValue.IsTrue();
+
+            ISetTellerInfoEvents events = new SetTellerInfoEvents(Connection, setTellerInfoCmd.Headers.RequestId.Value);
 
             var result = await HandleSetTellerInfo(events, setTellerInfoCmd, cancel);
-            await Connection.SendMessageAsync(new SetTellerInfoCompletion(setTellerInfoCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new SetTellerInfoCompletion(setTellerInfoCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var setTellerInfocommand = command.IsA<SetTellerInfoCommand>();
+            setTellerInfocommand.Headers.RequestId.HasValue.IsTrue();
 
             SetTellerInfoCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => SetTellerInfoCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new SetTellerInfoCompletion(setTellerInfocommand.Headers.RequestId, new SetTellerInfoCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new SetTellerInfoCompletion(setTellerInfocommand.Headers.RequestId.Value, new SetTellerInfoCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

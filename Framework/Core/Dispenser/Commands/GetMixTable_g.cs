@@ -19,7 +19,7 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.GetMixTable")]
     public sealed class GetMixTableCommand : Command<GetMixTableCommand.PayloadData>
     {
-        public GetMixTableCommand(string RequestId, GetMixTableCommand.PayloadData Payload)
+        public GetMixTableCommand(int RequestId, GetMixTableCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -36,7 +36,7 @@ namespace XFS4IoT.Dispenser.Commands
             /// <summary>
             /// Number of the requested house mix table.
             /// </summary>
-            [DataMember(Name = "mixNumber")] 
+            [DataMember(Name = "mixNumber")]
             public int? MixNumber { get; private set; }
 
         }

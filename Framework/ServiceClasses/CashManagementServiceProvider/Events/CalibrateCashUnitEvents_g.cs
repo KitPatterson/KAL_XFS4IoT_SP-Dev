@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.CashManagement
     internal class CalibrateCashUnitEvents : CashManagementEvents, ICalibrateCashUnitEvents
     {
 
-        public CalibrateCashUnitEvents(IConnection connection, string requestId)
+        public CalibrateCashUnitEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

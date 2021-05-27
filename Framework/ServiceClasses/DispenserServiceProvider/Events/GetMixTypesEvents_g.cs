@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class GetMixTypesEvents : DispenserEvents, IGetMixTypesEvents
     {
 
-        public GetMixTypesEvents(IConnection connection, string requestId)
+        public GetMixTypesEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

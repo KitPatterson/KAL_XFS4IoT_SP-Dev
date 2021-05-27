@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class GetPresentStatusEvents : DispenserEvents, IGetPresentStatusEvents
     {
 
-        public GetPresentStatusEvents(IConnection connection, string requestId)
+        public GetPresentStatusEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

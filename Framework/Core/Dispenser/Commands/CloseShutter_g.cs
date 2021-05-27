@@ -19,13 +19,20 @@ namespace XFS4IoT.Dispenser.Commands
     [Command(Name = "Dispenser.CloseShutter")]
     public sealed class CloseShutterCommand : Command<CloseShutterCommand.PayloadData>
     {
-        public CloseShutterCommand(string RequestId, CloseShutterCommand.PayloadData Payload)
+        public CloseShutterCommand(int RequestId, CloseShutterCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, PositionEnum? Position = null)
+                : base(Timeout)
+            {
+                this.Position = Position;
+            }
+
             public enum PositionEnum
             {
                 Default,
@@ -35,14 +42,7 @@ namespace XFS4IoT.Dispenser.Commands
                 Top,
                 Bottom,
                 Front,
-                Rear,
-            }
-
-
-            public PayloadData(int Timeout, PositionEnum? Position = null)
-                : base(Timeout)
-            {
-                this.Position = Position;
+                Rear
             }
 
             /// <summary>
@@ -59,7 +59,7 @@ namespace XFS4IoT.Dispenser.Commands
             /// * ```front``` - Close the shutter at the front output position.
             /// * ```rear``` - Close the shutter at the rear output position.
             /// </summary>
-            [DataMember(Name = "position")] 
+            [DataMember(Name = "position")]
             public PositionEnum? Position { get; private set; }
 
         }

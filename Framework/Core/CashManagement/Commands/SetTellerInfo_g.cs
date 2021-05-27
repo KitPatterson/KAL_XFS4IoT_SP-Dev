@@ -19,117 +19,26 @@ namespace XFS4IoT.CashManagement.Commands
     [Command(Name = "CashManagement.SetTellerInfo")]
     public sealed class SetTellerInfoCommand : Command<SetTellerInfoCommand.PayloadData>
     {
-        public SetTellerInfoCommand(string RequestId, SetTellerInfoCommand.PayloadData Payload)
+        public SetTellerInfoCommand(int RequestId, SetTellerInfoCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ActionEnum
-            {
-                CreateTeller,
-                ModifyTeller,
-                DeleteTeller,
-            }
 
-            /// <summary>
-            /// Teller details object.
-            /// </summary>
-            public class TellerDetailsClass
-            {
-                [DataMember(Name = "tellerID")] 
-                public int? TellerID { get; private set; }
-                public enum InputPositionEnum
-                {
-                    None,
-                    Left,
-                    Right,
-                    Center,
-                    Top,
-                    Bottom,
-                    Front,
-                    Rear,
-                }
-                [DataMember(Name = "inputPosition")] 
-                public InputPositionEnum? InputPosition { get; private set; }
-                public enum OutputPositionEnum
-                {
-                    None,
-                    Left,
-                    Right,
-                    Center,
-                    Top,
-                    Bottom,
-                    Front,
-                    Rear,
-                }
-                [DataMember(Name = "outputPosition")] 
-                public OutputPositionEnum? OutputPosition { get; private set; }
-                
-                /// <summary>
-                /// List of teller total objects. There is one object per currency.
-                /// </summary>
-                public class TellerTotalsClass 
-                {
-                    
-                    /// <summary>
-                    /// The object name is the three 
-                    /// character ISO format currency identifier [Ref 2].
-                    /// </summary>
-                    public class AdditionalPropertiesClass 
-                    {
-                        [DataMember(Name = "itemsReceived")] 
-                        public double? ItemsReceived { get; private set; }
-                        [DataMember(Name = "itemsDispensed")] 
-                        public double? ItemsDispensed { get; private set; }
-                        [DataMember(Name = "coinsReceived")] 
-                        public double? CoinsReceived { get; private set; }
-                        [DataMember(Name = "coinsDispensed")] 
-                        public double? CoinsDispensed { get; private set; }
-                        [DataMember(Name = "cashBoxReceived")] 
-                        public double? CashBoxReceived { get; private set; }
-                        [DataMember(Name = "cashBoxDispensed")] 
-                        public double? CashBoxDispensed { get; private set; }
-
-                        public AdditionalPropertiesClass (double? ItemsReceived, double? ItemsDispensed, double? CoinsReceived, double? CoinsDispensed, double? CashBoxReceived, double? CashBoxDispensed)
-                        {
-                            this.ItemsReceived = ItemsReceived;
-                            this.ItemsDispensed = ItemsDispensed;
-                            this.CoinsReceived = CoinsReceived;
-                            this.CoinsDispensed = CoinsDispensed;
-                            this.CashBoxReceived = CashBoxReceived;
-                            this.CashBoxDispensed = CashBoxDispensed;
-                        }
-                    }
-                    [DataMember(Name = "additionalProperties")] 
-                    public AdditionalPropertiesClass AdditionalProperties { get; private set; }
-
-                    public TellerTotalsClass (AdditionalPropertiesClass AdditionalProperties)
-                    {
-                        this.AdditionalProperties = AdditionalProperties;
-                    }
-                }
-                [DataMember(Name = "tellerTotals")] 
-                public TellerTotalsClass TellerTotals { get; private set; }
-
-                public TellerDetailsClass (int? TellerID, InputPositionEnum? InputPosition, OutputPositionEnum? OutputPosition, TellerTotalsClass TellerTotals)
-                {
-                    this.TellerID = TellerID;
-                    this.InputPosition = InputPosition;
-                    this.OutputPosition = OutputPosition;
-                    this.TellerTotals = TellerTotals;
-                }
-
-
-            }
-
-
-            public PayloadData(int Timeout, ActionEnum? Action = null, object TellerDetails = null)
+            public PayloadData(int Timeout, ActionEnum? Action = null, TellerDetailsClass TellerDetails = null)
                 : base(Timeout)
             {
                 this.Action = Action;
                 this.TellerDetails = TellerDetails;
+            }
+
+            public enum ActionEnum
+            {
+                CreateTeller,
+                ModifyTeller,
+                DeleteTeller
             }
 
             /// <summary>
@@ -139,13 +48,150 @@ namespace XFS4IoT.CashManagement.Commands
             /// * ```modifyTeller``` - Information about an existing teller is to be modified.
             /// * ```deleteTeller``` - A teller is to be removed.
             /// </summary>
-            [DataMember(Name = "action")] 
+            [DataMember(Name = "action")]
             public ActionEnum? Action { get; private set; }
+
+            [DataContract]
+            public sealed class TellerDetailsClass
+            {
+                public TellerDetailsClass(int? TellerID = null, InputPositionEnum? InputPosition = null, OutputPositionEnum? OutputPosition = null, Dictionary<string, TellerTotalsClass> TellerTotals = null)
+                {
+                    this.TellerID = TellerID;
+                    this.InputPosition = InputPosition;
+                    this.OutputPosition = OutputPosition;
+                    this.TellerTotals = TellerTotals;
+                }
+
+                /// <summary>
+                /// Identification of the teller.
+                /// </summary>
+                [DataMember(Name = "tellerID")]
+                public int? TellerID { get; private set; }
+
+                public enum InputPositionEnum
+                {
+                    None,
+                    Left,
+                    Right,
+                    Center,
+                    Top,
+                    Bottom,
+                    Front,
+                    Rear
+                }
+
+                /// <summary>
+                /// The input position assigned to the teller for cash entry. Following values are possible:
+                /// 
+                /// * ```none``` - No position is assigned to the teller.
+                /// * ```left``` - Left position is assigned to the teller.
+                /// * ```right``` - Right position is assigned to the teller.
+                /// * ```center``` - Center position is assigned to the teller.
+                /// * ```top``` - Top position is assigned to the teller.
+                /// * ```bottom``` - Bottom position is assigned to the teller.
+                /// * ```front``` - Front position is assigned to the teller.
+                /// * ```rear``` - Rear position is assigned to the teller.
+                /// </summary>
+                [DataMember(Name = "inputPosition")]
+                public InputPositionEnum? InputPosition { get; private set; }
+
+                public enum OutputPositionEnum
+                {
+                    None,
+                    Left,
+                    Right,
+                    Center,
+                    Top,
+                    Bottom,
+                    Front,
+                    Rear
+                }
+
+                /// <summary>
+                /// The output position from which cash is presented to the teller. Following values are possible:
+                /// 
+                /// * ```none``` - No position is assigned to the teller.
+                /// * ```left``` - Left position is assigned to the teller.
+                /// * ```right``` - Right position is assigned to the teller.
+                /// * ```center``` - Center position is assigned to the teller.
+                /// * ```top``` - Top position is assigned to the teller.
+                /// * ```bottom``` - Bottom position is assigned to the teller.
+                /// * ```front``` - Front position is assigned to the teller.
+                /// * ```rear``` - Rear position is assigned to the teller.
+                /// </summary>
+                [DataMember(Name = "outputPosition")]
+                public OutputPositionEnum? OutputPosition { get; private set; }
+
+                [DataContract]
+                public sealed class TellerTotalsClass
+                {
+                    public TellerTotalsClass(double? ItemsReceived = null, double? ItemsDispensed = null, double? CoinsReceived = null, double? CoinsDispensed = null, double? CashBoxReceived = null, double? CashBoxDispensed = null)
+                    {
+                        this.ItemsReceived = ItemsReceived;
+                        this.ItemsDispensed = ItemsDispensed;
+                        this.CoinsReceived = CoinsReceived;
+                        this.CoinsDispensed = CoinsDispensed;
+                        this.CashBoxReceived = CashBoxReceived;
+                        this.CashBoxDispensed = CashBoxDispensed;
+                    }
+
+                    /// <summary>
+                    /// The total amount of items (other than coins) of the specified currency accepted.
+                    /// The amount is expressed as floating point value.
+                    /// </summary>
+                    [DataMember(Name = "itemsReceived")]
+                    public double? ItemsReceived { get; private set; }
+
+                    /// <summary>
+                    /// The total amount of items (other than coins) of the specified currency dispensed. 
+                    /// The amount is expressed as floating point value.
+                    /// </summary>
+                    [DataMember(Name = "itemsDispensed")]
+                    public double? ItemsDispensed { get; private set; }
+
+                    /// <summary>
+                    /// The total amount of coin currency accepted. 
+                    /// The amount is expressed as floating point value.
+                    /// </summary>
+                    [DataMember(Name = "coinsReceived")]
+                    public double? CoinsReceived { get; private set; }
+
+                    /// <summary>
+                    /// The total amount of coin currency dispensed. 
+                    /// The amount is expressed as floating point value.
+                    /// </summary>
+                    [DataMember(Name = "coinsDispensed")]
+                    public double? CoinsDispensed { get; private set; }
+
+                    /// <summary>
+                    /// The total amount of cash box currency accepted. 
+                    /// The amount is expressed as floating point value.
+                    /// </summary>
+                    [DataMember(Name = "cashBoxReceived")]
+                    public double? CashBoxReceived { get; private set; }
+
+                    /// <summary>
+                    /// The total amount of cash box currency dispensed. 
+                    /// The amount is expressed as floating point value.
+                    /// </summary>
+                    [DataMember(Name = "cashBoxDispensed")]
+                    public double? CashBoxDispensed { get; private set; }
+
+                }
+
+                /// <summary>
+                /// List of teller total objects. There is one object per currency.
+                /// </summary>
+                [DataMember(Name = "tellerTotals")]
+                public Dictionary<string, TellerTotalsClass> TellerTotals { get; private set; }
+
+            }
+
             /// <summary>
             /// Teller details object.
             /// </summary>
-            [DataMember(Name = "tellerDetails")] 
-            public object TellerDetails { get; private set; }
+            [DataMember(Name = "tellerDetails")]
+            public TellerDetailsClass TellerDetails { get; private set; }
 
         }
     }

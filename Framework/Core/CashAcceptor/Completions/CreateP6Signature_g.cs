@@ -18,13 +18,23 @@ namespace XFS4IoT.CashAcceptor.Completions
     [Completion(Name = "CashAcceptor.CreateP6Signature")]
     public sealed class CreateP6SignatureCompletion : Completion<CreateP6SignatureCompletion.PayloadData>
     {
-        public CreateP6SignatureCompletion(string RequestId, CreateP6SignatureCompletion.PayloadData Payload)
+        public CreateP6SignatureCompletion(int RequestId, CreateP6SignatureCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, int? NoteId = null, OrientationClass Orientation = null, string Signature = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+                this.NoteId = NoteId;
+                this.Orientation = Orientation;
+                this.Signature = Signature;
+            }
+
             public enum ErrorCodeEnum
             {
                 TooManyItems,
@@ -34,48 +44,7 @@ namespace XFS4IoT.CashAcceptor.Completions
                 PositionNotEmpty,
                 ShutterNotOpen,
                 ShutterNotClosed,
-                ForeignItemsDetected,
-            }
-
-            /// <summary>
-            /// Orientation of the entered banknote.
-            /// </summary>
-            public class OrientationClass
-            {
-                [DataMember(Name = "frontTop")] 
-                public bool? FrontTop { get; private set; }
-                [DataMember(Name = "frontBottom")] 
-                public bool? FrontBottom { get; private set; }
-                [DataMember(Name = "backTop")] 
-                public bool? BackTop { get; private set; }
-                [DataMember(Name = "backBottom")] 
-                public bool? BackBottom { get; private set; }
-                [DataMember(Name = "unknown")] 
-                public bool? Unknown { get; private set; }
-                [DataMember(Name = "notSupported")] 
-                public bool? NotSupported { get; private set; }
-
-                public OrientationClass (bool? FrontTop, bool? FrontBottom, bool? BackTop, bool? BackBottom, bool? Unknown, bool? NotSupported)
-                {
-                    this.FrontTop = FrontTop;
-                    this.FrontBottom = FrontBottom;
-                    this.BackTop = BackTop;
-                    this.BackBottom = BackBottom;
-                    this.Unknown = Unknown;
-                    this.NotSupported = NotSupported;
-                }
-
-
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, int? NoteId = null, OrientationClass Orientation = null, string Signature = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.NoteId = NoteId;
-                this.Orientation = Orientation;
-                this.Signature = Signature;
+                ForeignItemsDetected
             }
 
             /// <summary>
@@ -97,22 +66,84 @@ namespace XFS4IoT.CashAcceptor.Completions
             /// 
             /// \"foreignItemsDetected\": Foreign items have been detected in the input position.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
             /// <summary>
             /// Identification of note type.
             /// </summary>
-            [DataMember(Name = "noteId")] 
+            [DataMember(Name = "noteId")]
             public int? NoteId { get; private set; }
+
+            [DataContract]
+            public sealed class OrientationClass
+            {
+                public OrientationClass(bool? FrontTop = null, bool? FrontBottom = null, bool? BackTop = null, bool? BackBottom = null, bool? Unknown = null, bool? NotSupported = null)
+                {
+                    this.FrontTop = FrontTop;
+                    this.FrontBottom = FrontBottom;
+                    this.BackTop = BackTop;
+                    this.BackBottom = BackBottom;
+                    this.Unknown = Unknown;
+                    this.NotSupported = NotSupported;
+                }
+
+                /// <summary>
+                /// If note is inserted wide side as the leading edge, the note was inserted with the front image 
+                /// facing up and the top edge of the note was inserted first. If the note is inserted short side 
+                /// as the leading edge, the note was inserted with the front image face up and the left edge was inserted first.
+                /// </summary>
+                [DataMember(Name = "frontTop")]
+                public bool? FrontTop { get; private set; }
+
+                /// <summary>
+                /// If note is inserted wide side as the leading edge, the note was inserted with the front image 
+                /// facing up and the bottom edge of the note was inserted first. If the note is inserted short side 
+                /// as the leading edge, the note was inserted with the front image face up and the right edge was inserted first.
+                /// </summary>
+                [DataMember(Name = "frontBottom")]
+                public bool? FrontBottom { get; private set; }
+
+                /// <summary>
+                /// If note is inserted wide side as the leading edge, the note was inserted with the back image facing up and 
+                /// the top edge of the note was inserted first. If the note is inserted short side as the leading edge, the note 
+                /// was inserted with the back image face up and the left edge was inserted first.
+                /// </summary>
+                [DataMember(Name = "backTop")]
+                public bool? BackTop { get; private set; }
+
+                /// <summary>
+                /// If note is inserted wide side as the leading edge, the note was inserted with the back image facing up and the 
+                /// bottom edge of the note was inserted first. If the note is inserted short side as the leading edge, the note was 
+                /// inserted with the back image face up and the right edge was inserted first.
+                /// </summary>
+                [DataMember(Name = "backBottom")]
+                public bool? BackBottom { get; private set; }
+
+                /// <summary>
+                /// The orientation for the inserted note can not be determined.
+                /// </summary>
+                [DataMember(Name = "unknown")]
+                public bool? Unknown { get; private set; }
+
+                /// <summary>
+                /// The hardware is not capable to determine the orientation.
+                /// </summary>
+                [DataMember(Name = "notSupported")]
+                public bool? NotSupported { get; private set; }
+
+            }
+
             /// <summary>
             /// Orientation of the entered banknote.
             /// </summary>
-            [DataMember(Name = "orientation")] 
+            [DataMember(Name = "orientation")]
             public OrientationClass Orientation { get; private set; }
+
             /// <summary>
             /// Base64 encoded signature data.
             /// </summary>
-            [DataMember(Name = "signature")] 
+            [DataMember(Name = "signature")]
             public string Signature { get; private set; }
 
         }

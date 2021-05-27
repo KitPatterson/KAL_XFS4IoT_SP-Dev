@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.Dispenser
     internal class PresentEvents : DispenserEvents, IPresentEvents
     {
 
-        public PresentEvents(IConnection connection, string requestId)
+        public PresentEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

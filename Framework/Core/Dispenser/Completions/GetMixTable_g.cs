@@ -18,45 +18,15 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.GetMixTable")]
     public sealed class GetMixTableCompletion : Completion<GetMixTableCompletion.PayloadData>
     {
-        public GetMixTableCompletion(string RequestId, GetMixTableCompletion.PayloadData Payload)
+        public GetMixTableCompletion(int RequestId, GetMixTableCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                InvalidMixNumber,
-            }
 
-            [DataContract]
-            public sealed class MixRowsClass
-            {
-                public MixRowsClass(double? Amount = null, List<int?> Mixture = null)
-                    : base()
-                {
-                    this.Amount = Amount;
-                    this.Mixture = Mixture;
-                }
-
-                /// <summary>
-                /// Amount denominated by this mix row.
-                /// </summary>
-                [DataMember(Name = "amount")] 
-                public double? Amount { get; private set; }
-
-                /// <summary>
-                /// A mix row, an array of integers; each element defines the quantity of each item denomination in the mix used in the denomination of *amount*. 
-                /// The value of each array element is defined by the *mixHeader*.
-                /// </summary>
-                [DataMember(Name = "mixture")] 
-                public List<int?> Mixture { get; private set; }
-
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, int? MixNumber = null, string Name = null, List<double?> MixHeader = null, List<MixRowsClass> MixRows = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, int? MixNumber = null, string Name = null, List<double> MixHeader = null, List<MixRowsClass> MixRows = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
@@ -66,33 +36,66 @@ namespace XFS4IoT.Dispenser.Completions
                 this.MixRows = MixRows;
             }
 
+            public enum ErrorCodeEnum
+            {
+                InvalidMixNumber
+            }
+
             /// <summary>
             /// Specifies the error code if applicable. Following values are possible:
             /// 
             /// * ```invalidMixNumber``` - The *mixNumber* parameter does not correspond to a defined mix table.
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
             /// <summary>
             /// Number identifying the house mix table.
             /// </summary>
-            [DataMember(Name = "mixNumber")] 
+            [DataMember(Name = "mixNumber")]
             public int? MixNumber { get; private set; }
+
             /// <summary>
             /// Name of the house mix table.
             /// </summary>
-            [DataMember(Name = "name")] 
+            [DataMember(Name = "name")]
             public string Name { get; private set; }
+
             /// <summary>
             /// Array of floating point numbers; each element defines the value of the item corresponding to its respective column.
             /// </summary>
-            [DataMember(Name = "mixHeader")] 
-            public List<double?> MixHeader{ get; private set; }
+            [DataMember(Name = "mixHeader")]
+            public List<double> MixHeader { get; private set; }
+
+            [DataContract]
+            public sealed class MixRowsClass
+            {
+                public MixRowsClass(double? Amount = null, List<int> Mixture = null)
+                {
+                    this.Amount = Amount;
+                    this.Mixture = Mixture;
+                }
+
+                /// <summary>
+                /// Amount denominated by this mix row.
+                /// </summary>
+                [DataMember(Name = "amount")]
+                public double? Amount { get; private set; }
+
+                /// <summary>
+                /// A mix row, an array of integers; each element defines the quantity of each item denomination in the mix used in the denomination of *amount*. 
+                /// The value of each array element is defined by the *mixHeader*.
+                /// </summary>
+                [DataMember(Name = "mixture")]
+                public List<int> Mixture { get; private set; }
+
+            }
+
             /// <summary>
             /// Array of rows of the mix table.
             /// </summary>
-            [DataMember(Name = "mixRows")] 
-            public List<MixRowsClass> MixRows{ get; private set; }
+            [DataMember(Name = "mixRows")]
+            public List<MixRowsClass> MixRows { get; private set; }
 
         }
     }

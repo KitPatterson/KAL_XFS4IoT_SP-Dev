@@ -20,7 +20,7 @@ namespace XFS4IoT.Dispenser.Events
     public sealed class StartDispenseEvent : Event<StartDispenseEvent.PayloadData>
     {
 
-        public StartDispenseEvent(string RequestId, PayloadData Payload)
+        public StartDispenseEvent(int RequestId, PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -28,7 +28,6 @@ namespace XFS4IoT.Dispenser.Events
         [DataContract]
         public sealed class PayloadData : MessagePayloadBase
         {
-
 
             public PayloadData(int? ReqID = null)
                 : base()
@@ -39,8 +38,9 @@ namespace XFS4IoT.Dispenser.Events
             /// <summary>
             /// The requestId of the original dispense command.
             /// </summary>
-            [DataMember(Name = "reqID")] 
+            [DataMember(Name = "reqID")]
             public int? ReqID { get; private set; }
+
         }
 
     }

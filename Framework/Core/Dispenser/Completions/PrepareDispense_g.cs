@@ -18,7 +18,7 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.PrepareDispense")]
     public sealed class PrepareDispenseCompletion : Completion<PrepareDispenseCompletion.PayloadData>
     {
-        public PrepareDispenseCompletion(string RequestId, PrepareDispenseCompletion.PayloadData Payload)
+        public PrepareDispenseCompletion(int RequestId, PrepareDispenseCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -30,7 +30,6 @@ namespace XFS4IoT.Dispenser.Completions
                 : base(CompletionCode, ErrorDescription)
             {
             }
-
 
         }
     }

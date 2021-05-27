@@ -18,25 +18,25 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.Reject")]
     public sealed class RejectCompletion : Completion<RejectCompletion.PayloadData>
     {
-        public RejectCompletion(string RequestId, RejectCompletion.PayloadData Payload)
+        public RejectCompletion(int RequestId, RejectCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
-            public enum ErrorCodeEnum
-            {
-                CashUnitError,
-                NoItems,
-                ExchangeActive,
-            }
-
 
             public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
+            }
+
+            public enum ErrorCodeEnum
+            {
+                CashUnitError,
+                NoItems,
+                ExchangeActive
             }
 
             /// <summary>
@@ -46,7 +46,7 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```noItems``` - There were no items on the stacker.
             /// * ```exchangeActive``` - The device is in an exchange state (see CashManagement.StartExchange).
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
         }

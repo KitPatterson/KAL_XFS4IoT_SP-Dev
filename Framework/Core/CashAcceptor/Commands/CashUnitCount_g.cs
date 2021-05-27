@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.CashUnitCount")]
     public sealed class CashUnitCountCommand : Command<CashUnitCountCommand.PayloadData>
     {
-        public CashUnitCountCommand(string RequestId, CashUnitCountCommand.PayloadData Payload)
+        public CashUnitCountCommand(int RequestId, CashUnitCountCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -27,7 +27,7 @@ namespace XFS4IoT.CashAcceptor.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, List<int?> CUNumList = null)
+            public PayloadData(int Timeout, List<int> CUNumList = null)
                 : base(Timeout)
             {
                 this.CUNumList = CUNumList;
@@ -38,8 +38,8 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// If an invalid number is contained in this list, the command will fail with a CashUnitError error.
             /// 
             /// </summary>
-            [DataMember(Name = "cUNumList")] 
-            public List<int?> CUNumList{ get; private set; }
+            [DataMember(Name = "cUNumList")]
+            public List<int> CUNumList { get; private set; }
 
         }
     }

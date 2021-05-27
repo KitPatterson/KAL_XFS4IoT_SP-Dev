@@ -18,82 +18,27 @@ namespace XFS4IoT.Dispenser.Completions
     [Completion(Name = "Dispenser.Count")]
     public sealed class CountCompletion : Completion<CountCompletion.PayloadData>
     {
-        public CountCompletion(string RequestId, CountCompletion.PayloadData Payload)
+        public CountCompletion(int RequestId, CountCompletion.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, Dictionary<string, CountedCashUnitsClass> CountedCashUnits = null)
+                : base(CompletionCode, ErrorDescription)
+            {
+                this.ErrorCode = ErrorCode;
+                this.CountedCashUnits = CountedCashUnits;
+            }
+
             public enum ErrorCodeEnum
             {
                 CashUnitError,
                 UnsupportedPosition,
                 SafeDoorOpen,
-                ExchangeActive,
-            }
-
-            /// <summary>
-            /// List of counted cash unit objects.
-            /// </summary>
-            public class CountedCashUnitsClass
-            {
-                
-                /// <summary>
-                /// Counted cash unit object. Object name is the same as used in [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo).
-                /// </summary>
-                public class AdditionalPropertiesClass 
-                {
-                    [DataMember(Name = "physicalPositionName")] 
-                    public string PhysicalPositionName { get; private set; }
-                    [DataMember(Name = "unitId")] 
-                    public string UnitId { get; private set; }
-                    [DataMember(Name = "dispensed")] 
-                    public int? Dispensed { get; private set; }
-                    [DataMember(Name = "counted")] 
-                    public int? Counted { get; private set; }
-                    public enum StatusEnum
-                    {
-                        Ok,
-                        Full,
-                        High,
-                        Low,
-                        Empty,
-                        Inoperative,
-                        Missing,
-                        NoValue,
-                        NoReference,
-                        Manipulated,
-                    }
-                    [DataMember(Name = "status")] 
-                    public StatusEnum? Status { get; private set; }
-
-                    public AdditionalPropertiesClass (string PhysicalPositionName, string UnitId, int? Dispensed, int? Counted, StatusEnum? Status)
-                    {
-                        this.PhysicalPositionName = PhysicalPositionName;
-                        this.UnitId = UnitId;
-                        this.Dispensed = Dispensed;
-                        this.Counted = Counted;
-                        this.Status = Status;
-                    }
-                }
-                [DataMember(Name = "additionalProperties")] 
-                public AdditionalPropertiesClass AdditionalProperties { get; private set; }
-
-                public CountedCashUnitsClass (AdditionalPropertiesClass AdditionalProperties)
-                {
-                    this.AdditionalProperties = AdditionalProperties;
-                }
-
-
-            }
-
-
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, CountedCashUnitsClass CountedCashUnits = null)
-                : base(CompletionCode, ErrorDescription)
-            {
-                this.ErrorCode = ErrorCode;
-                this.CountedCashUnits = CountedCashUnits;
+                ExchangeActive
             }
 
             /// <summary>
@@ -105,13 +50,85 @@ namespace XFS4IoT.Dispenser.Completions
             /// * ```exchangeActive``` - The device is in an exchange state (see 
             /// [CashManagement.StartExchange](#cashmanagement.startexchange)).
             /// </summary>
-            [DataMember(Name = "errorCode")] 
+            [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
+
+            [DataContract]
+            public sealed class CountedCashUnitsClass
+            {
+                public CountedCashUnitsClass(string PhysicalPositionName = null, string UnitId = null, int? Dispensed = null, int? Counted = null, StatusEnum? Status = null)
+                {
+                    this.PhysicalPositionName = PhysicalPositionName;
+                    this.UnitId = UnitId;
+                    this.Dispensed = Dispensed;
+                    this.Counted = Counted;
+                    this.Status = Status;
+                }
+
+                /// <summary>
+                /// Specifies which cash unit was emptied and counted. This name is the same as the 
+                /// *physicalPositionName* in the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) completion message.
+                /// </summary>
+                [DataMember(Name = "physicalPositionName")]
+                public string PhysicalPositionName { get; private set; }
+
+                /// <summary>
+                /// Cash unit ID. This is the identifier defined in the *unitID* field in the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) completion message.
+                /// </summary>
+                [DataMember(Name = "unitId")]
+                public string UnitId { get; private set; }
+
+                /// <summary>
+                /// The number of items that were dispensed during the emptying of the cash unit.
+                /// </summary>
+                [DataMember(Name = "dispensed")]
+                public int? Dispensed { get; private set; }
+
+                /// <summary>
+                /// The number of items that were counted during the emptying of the cash unit.
+                /// </summary>
+                [DataMember(Name = "counted")]
+                public int? Counted { get; private set; }
+
+                public enum StatusEnum
+                {
+                    Ok,
+                    Full,
+                    High,
+                    Low,
+                    Empty,
+                    Inoperative,
+                    Missing,
+                    NoValue,
+                    NoReference,
+                    Manipulated
+                }
+
+                /// <summary>
+                /// Supplies the status of the cash unit. Following values are possible:
+                /// 
+                /// * ```ok``` - The cash unit is in a good state.
+                /// * ```full``` - The cash unit is full.
+                /// * ```high``` - The cash unit is almost full (i.e. reached or exceeded the threshold defined by *maximum*). 
+                /// * ```low``` - The cash unit is almost empty (i.e. reached or below the threshold defined by *minimum*). 
+                /// * ```empty``` - The cash unit is empty, or insufficient items in the cash unit are preventing further dispense operations.
+                /// * ```inoperative``` - The cash unit is inoperative.
+                /// * ```missing``` - The cash unit is missing.
+                /// * ```noValue``` - The values of the specified cash unit are not available.
+                /// * ```noReference``` - There is no reference value available for the notes in this cash unit. The cash unit has not been calibrated.
+                /// * ```manipulated``` - The cash unit has been inserted (including removal followed by a reinsertion) when the device 
+                /// was not in the exchange state. This cash unit cannot be dispensed from.
+                /// </summary>
+                [DataMember(Name = "status")]
+                public StatusEnum? Status { get; private set; }
+
+            }
+
             /// <summary>
             /// List of counted cash unit objects.
             /// </summary>
-            [DataMember(Name = "countedCashUnits")] 
-            public CountedCashUnitsClass CountedCashUnits { get; private set; }
+            [DataMember(Name = "countedCashUnits")]
+            public Dictionary<string, CountedCashUnitsClass> CountedCashUnits { get; private set; }
 
         }
     }

@@ -38,16 +38,18 @@ namespace XFS4IoTFramework.CashManagement
         public async Task Handle(IConnection Connection, object command, CancellationToken cancel)
         {
             var getItemInfoCmd = command.IsA<GetItemInfoCommand>($"Invalid parameter in the GetItemInfo Handle method. {nameof(GetItemInfoCommand)}");
-            
-            IGetItemInfoEvents events = new GetItemInfoEvents(Connection, getItemInfoCmd.Headers.RequestId);
+            getItemInfoCmd.Headers.RequestId.HasValue.IsTrue();
+
+            IGetItemInfoEvents events = new GetItemInfoEvents(Connection, getItemInfoCmd.Headers.RequestId.Value);
 
             var result = await HandleGetItemInfo(events, getItemInfoCmd, cancel);
-            await Connection.SendMessageAsync(new GetItemInfoCompletion(getItemInfoCmd.Headers.RequestId, result));
+            await Connection.SendMessageAsync(new GetItemInfoCompletion(getItemInfoCmd.Headers.RequestId.Value, result));
         }
 
         public async Task HandleError(IConnection connection, object command, Exception commandException)
         {
             var getItemInfocommand = command.IsA<GetItemInfoCommand>();
+            getItemInfocommand.Headers.RequestId.HasValue.IsTrue();
 
             GetItemInfoCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
@@ -56,7 +58,7 @@ namespace XFS4IoTFramework.CashManagement
                 _ => GetItemInfoCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
-            var response = new GetItemInfoCompletion(getItemInfocommand.Headers.RequestId, new GetItemInfoCompletion.PayloadData(errorCode, commandException.Message));
+            var response = new GetItemInfoCompletion(getItemInfocommand.Headers.RequestId.Value, new GetItemInfoCompletion.PayloadData(errorCode, commandException.Message));
 
             await connection.SendMessageAsync(response);
         }

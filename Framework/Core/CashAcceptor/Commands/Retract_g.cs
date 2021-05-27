@@ -19,13 +19,22 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.Retract")]
     public sealed class RetractCommand : Command<RetractCommand.PayloadData>
     {
-        public RetractCommand(string RequestId, RetractCommand.PayloadData Payload)
+        public RetractCommand(int RequestId, RetractCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, OutputPositionEnum? OutputPosition = null, RetractAreaEnum? RetractArea = null, int? Index = null)
+                : base(Timeout)
+            {
+                this.OutputPosition = OutputPosition;
+                this.RetractArea = RetractArea;
+                this.Index = Index;
+            }
+
             public enum OutputPositionEnum
             {
                 Null,
@@ -35,26 +44,7 @@ namespace XFS4IoT.CashAcceptor.Commands
                 Top,
                 Bottom,
                 Front,
-                Rear,
-            }
-
-            public enum RetractAreaEnum
-            {
-                Retract,
-                Reject,
-                Transport,
-                Stacker,
-                BillCassettes,
-                CashIn,
-            }
-
-
-            public PayloadData(int Timeout, OutputPositionEnum? OutputPosition = null, RetractAreaEnum? RetractArea = null, int? Index = null)
-                : base(Timeout)
-            {
-                this.OutputPosition = OutputPosition;
-                this.RetractArea = RetractArea;
-                this.Index = Index;
+                Rear
             }
 
             /// <summary>
@@ -76,8 +66,19 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// \"rear\": Retract items from the rear output position.
             /// </summary>
-            [DataMember(Name = "outputPosition")] 
+            [DataMember(Name = "outputPosition")]
             public OutputPositionEnum? OutputPosition { get; private set; }
+
+            public enum RetractAreaEnum
+            {
+                Retract,
+                Reject,
+                Transport,
+                Stacker,
+                BillCassettes,
+                CashIn
+            }
+
             /// <summary>
             /// This value specifies the area to which the items are to be retracted. Following values are possible:
             /// 
@@ -94,8 +95,9 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// \"cashIn\": Retract the items to a cash-in cash unit. The *itemType* of the cash-in cash unit defined in 
             /// CashManagement.CashUnitInfo must include \"all\" and \"unfit\".
             /// </summary>
-            [DataMember(Name = "retractArea")] 
+            [DataMember(Name = "retractArea")]
             public RetractAreaEnum? RetractArea { get; private set; }
+
             /// <summary>
             /// If *retractArea* is set to \"retract\" this field defines the position inside the retract cash units into which the cash is to be retracted. 
             /// *index* starts with a value of one (1) for the first retract position and increments by one for each subsequent position. The maximum value of *index* is the sum of 
@@ -107,7 +109,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// 
             /// If *retractArea* is not set to \"retract\" or \"cashIn\" then the value of this field is ignored.
             /// </summary>
-            [DataMember(Name = "index")] 
+            [DataMember(Name = "index")]
             public int? Index { get; private set; }
 
         }

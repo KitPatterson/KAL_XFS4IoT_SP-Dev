@@ -16,12 +16,11 @@ namespace XFS4IoTFramework.CashManagement
     internal abstract class CashManagementEvents
     {
         protected readonly IConnection connection;
-        protected readonly string requestId;
+        protected readonly int requestId;
 
-        public CashManagementEvents(IConnection connection, string requestId)
+        public CashManagementEvents(IConnection connection, int requestId)
         {
             this.connection = connection;
-            Contracts.IsNotNullOrWhitespace(requestId, $"Unexpected request ID is received. {requestId}");
             this.requestId = requestId;
         }
 

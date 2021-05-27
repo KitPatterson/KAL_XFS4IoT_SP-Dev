@@ -17,7 +17,7 @@ namespace XFS4IoTFramework.CashManagement
     internal class StartExchangeEvents : CashManagementEvents, IStartExchangeEvents
     {
 
-        public StartExchangeEvents(IConnection connection, string requestId)
+        public StartExchangeEvents(IConnection connection, int requestId)
             : base(connection, requestId)
         { }
 

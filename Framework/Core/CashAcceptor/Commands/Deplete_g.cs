@@ -19,18 +19,25 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.Deplete")]
     public sealed class DepleteCommand : Command<DepleteCommand.PayloadData>
     {
-        public DepleteCommand(string RequestId, DepleteCommand.PayloadData Payload)
+        public DepleteCommand(int RequestId, DepleteCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
         [DataContract]
         public sealed class PayloadData : MessagePayload
         {
+
+            public PayloadData(int Timeout, List<DepleteSourcesClass> DepleteSources = null, string CashunitTarget = null)
+                : base(Timeout)
+            {
+                this.DepleteSources = DepleteSources;
+                this.CashunitTarget = CashunitTarget;
+            }
+
             [DataContract]
             public sealed class DepleteSourcesClass
             {
                 public DepleteSourcesClass(string CashunitSource = null, int? NumberOfItemsToMove = null, bool? RemoveAll = null)
-                    : base()
                 {
                     this.CashunitSource = CashunitSource;
                     this.NumberOfItemsToMove = NumberOfItemsToMove;
@@ -41,43 +48,36 @@ namespace XFS4IoT.CashAcceptor.Commands
                 /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
                 /// command) from which items are to be removed.
                 /// </summary>
-                [DataMember(Name = "cashunitSource")] 
+                [DataMember(Name = "cashunitSource")]
                 public string CashunitSource { get; private set; }
 
                 /// <summary>
                 /// The number of items to be moved from the source cash unit. 
                 /// This must be equal to or less than the count of items reported for the cash unit specified by *numberSource*. This field will be ignored if the *removeAll* parameter is set to TRUE.
                 /// </summary>
-                [DataMember(Name = "numberOfItemsToMove")] 
+                [DataMember(Name = "numberOfItemsToMove")]
                 public int? NumberOfItemsToMove { get; private set; }
 
                 /// <summary>
                 /// Specifies if all items are to be moved from the source cash unit. 
                 /// If TRUE all items in the source will be moved, regardless of the *numberOfItemsToMove* field value. If FALSE the number of items specified with *numberOfItemsToMove* will be moved.
                 /// </summary>
-                [DataMember(Name = "removeAll")] 
+                [DataMember(Name = "removeAll")]
                 public bool? RemoveAll { get; private set; }
 
-            }
-
-
-            public PayloadData(int Timeout, List<DepleteSourcesClass> DepleteSources = null, string CashunitTarget = null)
-                : base(Timeout)
-            {
-                this.DepleteSources = DepleteSources;
-                this.CashunitTarget = CashunitTarget;
             }
 
             /// <summary>
             /// Array of DepleteSource structures. There must be at least one element in this array.
             /// </summary>
-            [DataMember(Name = "depleteSources")] 
-            public List<DepleteSourcesClass> DepleteSources{ get; private set; }
+            [DataMember(Name = "depleteSources")]
+            public List<DepleteSourcesClass> DepleteSources { get; private set; }
+
             /// <summary>
             /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
             /// command) to which items are to be moved.
             /// </summary>
-            [DataMember(Name = "cashunitTarget")] 
+            [DataMember(Name = "cashunitTarget")]
             public string CashunitTarget { get; private set; }
 
         }

@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.GetDepleteSource")]
     public sealed class GetDepleteSourceCommand : Command<GetDepleteSourceCommand.PayloadData>
     {
-        public GetDepleteSourceCommand(string RequestId, GetDepleteSourceCommand.PayloadData Payload)
+        public GetDepleteSourceCommand(int RequestId, GetDepleteSourceCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -37,7 +37,7 @@ namespace XFS4IoT.CashAcceptor.Commands
             /// Object name of the cash unit (as stated by the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) 
             /// command) which would be used as the target of the depletion operation.
             /// </summary>
-            [DataMember(Name = "cashunitTarget")] 
+            [DataMember(Name = "cashunitTarget")]
             public string CashunitTarget { get; private set; }
 
         }

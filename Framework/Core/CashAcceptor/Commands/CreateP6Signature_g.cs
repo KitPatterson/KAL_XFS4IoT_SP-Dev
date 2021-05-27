@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.CreateP6Signature")]
     public sealed class CreateP6SignatureCommand : Command<CreateP6SignatureCommand.PayloadData>
     {
-        public CreateP6SignatureCommand(string RequestId, CreateP6SignatureCommand.PayloadData Payload)
+        public CreateP6SignatureCommand(int RequestId, CreateP6SignatureCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashAcceptor.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }

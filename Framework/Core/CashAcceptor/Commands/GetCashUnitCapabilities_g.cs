@@ -19,7 +19,7 @@ namespace XFS4IoT.CashAcceptor.Commands
     [Command(Name = "CashAcceptor.GetCashUnitCapabilities")]
     public sealed class GetCashUnitCapabilitiesCommand : Command<GetCashUnitCapabilitiesCommand.PayloadData>
     {
-        public GetCashUnitCapabilitiesCommand(string RequestId, GetCashUnitCapabilitiesCommand.PayloadData Payload)
+        public GetCashUnitCapabilitiesCommand(int RequestId, GetCashUnitCapabilitiesCommand.PayloadData Payload)
             : base(RequestId, Payload)
         { }
 
@@ -31,7 +31,6 @@ namespace XFS4IoT.CashAcceptor.Commands
                 : base(Timeout)
             {
             }
-
 
         }
     }
