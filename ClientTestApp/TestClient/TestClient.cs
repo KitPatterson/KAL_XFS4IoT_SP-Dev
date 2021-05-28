@@ -68,14 +68,11 @@ namespace TestClient
                     Logger.LogLine("Connecting to the card reader");
                     XFS4IoTClient.ClientConnection cardReader = await OpenCardReader();
 
-                    Logger.LogLine("Get card reader status");
                     await GetCardReaderStatus(cardReader);
-
-                    Logger.LogLine("Doing accept card");
                     await DoAcceptCard(cardReader);
-
-                    Logger.LogLine("Doing eject card");
+                    await GetCardReaderStatus(cardReader);
                     await DoEjectCard(cardReader);
+                    await GetCardReaderStatus(cardReader);
                 }
 
                 IEnumerable<Task> tasks = from i in Enumerable.Range(0, ParallelCount)
@@ -274,8 +271,7 @@ namespace TestClient
                         Console.ForegroundColor = colour ?? defaultColour;
                     Console.Write($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
                     Console.ForegroundColor = defaultColour;
-                }
-            }
+                }            }
             public void Write(string v, ConsoleColor? colour = null)
             {
                 lock (this)
