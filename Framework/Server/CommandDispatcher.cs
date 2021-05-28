@@ -38,15 +38,21 @@ namespace XFS4IoTServer
                 where attrib.ConstructorArguments[0].ArgumentType == typeof(XFSConstants.ServiceClass) && ServiceClasses.Contains((XFSConstants.ServiceClass)attrib.ConstructorArguments[0].Value)
                 where attrib.ConstructorArguments[1].ArgumentType == typeof(Type)
                 let namedArg = attrib.ConstructorArguments[1].Value
-                select (message: namedArg as Type, handler: type)
+                let async = (
+                                from asyncAttrib in type.CustomAttributes
+                                where asyncAttrib.AttributeType == typeof(CommandHandlerAsyncAttribute)
+                                select asyncAttrib
+                            )
+                            .FirstOrDefault() != default
+                select (message: namedArg as Type, handler: type, async)
                 );
 
-            var handlers = string.Join("\n", from next in MessageHandlers select $"{next.Key} => {next.Value}");
+            var handlers = string.Join("\n", from next in MessageHandlers select $"{next.Key} => {next.Value.Type} Async:{next.Value.Async}");
             Logger.Log(Constants.Component, $"Dispatch, found Command Handler classes:\n{handlers}");
 
             // Double check that command handler classes were declared with the right constructor so that we'll be able to use them. 
             // Would be nice to be able to test this at compile time. 
-            foreach (Type handlerClass in MessageHandlers.Values)
+            foreach (Type handlerClass in from x in MessageHandlers.Values select x.Type )
             {
                 try
                 {
@@ -60,20 +66,26 @@ namespace XFS4IoTServer
             }
         }
 
-        public void Dispatch(IConnection Connection, MessageBase Command)
+        public async Task Dispatch(IConnection Connection, MessageBase Command)
         {
             Connection.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Connection)}");
             Command.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Command)}");
 
             var cts = new CancellationTokenSource();
-            ICommandHandler commandHandler = CreateHandler(Command.GetType());
-            Logger.Log("Dispatcher", $"Queing command a {commandHandler} handler for {Command.Headers.Name} id:{Command.Headers.RequestId}" );
-            CommandQueue.Post(new CommandQueueRecord ( commandHandler, Connection, Command, cts) );
+            (ICommandHandler handler, bool async) = CreateHandler(Command.GetType());
+            if (async)
+            {
+                Logger.Log("Dispatcher", $"Running {Command.Headers.Name} id:{Command.Headers.RequestId}");
+                await handler.Handle(Connection, Command, cts.Token);
+                Logger.Log("Dispatcher", $"Completed {Command.Headers.Name} id:{Command.Headers.RequestId}");
+                cts.Dispose();
+            }
+            else
+            {
+                Logger.Log("Dispatcher", $"Queing command a {handler} handler for {Command.Headers.Name} id:{Command.Headers.RequestId}");
+                CommandQueue.Post(new CommandQueueRecord(handler, Connection, Command, cts));
+            }
         }
-
-        private record CommandQueueRecord ( ICommandHandler CommandHandler, IConnection Connection, MessageBase command, CancellationTokenSource cts );
-
-        private readonly BufferBlock<CommandQueueRecord> CommandQueue = new BufferBlock<CommandQueueRecord>();
 
         public Task DispatchError(IConnection Connection, MessageBase Command, Exception CommandErrorexception)
         {
@@ -81,12 +93,14 @@ namespace XFS4IoTServer
             Command.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(Command)}");
             CommandErrorexception.IsNotNull($"Invalid parameter in the {nameof(Dispatch)} method. {nameof(CommandErrorexception)}");
 
-            return CreateHandler(Command.GetType()).HandleError( Connection, Command, CommandErrorexception ) ?? Task.CompletedTask;
+            var (handler, _) = CreateHandler(Command.GetType());
+            return handler.HandleError( Connection, Command, CommandErrorexception ) ?? Task.CompletedTask;
         }
 
-        private ICommandHandler CreateHandler(Type type)
+        private (ICommandHandler handler, bool async) CreateHandler(Type type)
         {
-            Type handlerClass = MessageHandlers[type];
+            Type handlerClass = MessageHandlers[type].Type;
+            bool async = MessageHandlers[type].Async;
             Contracts.IsTrue(
                 typeof(ICommandHandler).IsAssignableFrom(handlerClass),
                 $"Class {handlerClass.Name} is registered to handle {type.Name} but isn't a {nameof(ICommandHandler)}");
@@ -95,15 +109,19 @@ namespace XFS4IoTServer
 
             // Create a new handler object. Effectively the same as: 
             // ICommandHandler handler = new handlerClass( this, Logger );
-            return handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) })
+            var handler =  handlerClass.GetConstructor(new Type[] { typeof(ICommandDispatcher), typeof(ILogger) })
                                .IsNotNull($"Failed to find constructor for {handlerClass}")
                                .Invoke(parameters: new object[] { this, Logger })
                                .IsA<ICommandHandler>();
+            return (handler, async);
         }
 
+        private readonly BufferBlock<CommandQueueRecord> CommandQueue = new BufferBlock<CommandQueueRecord>();
+        private record CommandQueueRecord ( ICommandHandler CommandHandler, IConnection Connection, MessageBase command, CancellationTokenSource cts );
 
         public virtual async Task RunAsync()
         {
+            // Execute queued commands
             while( true )
             {
                 var (handler, connection, command, cts) = await CommandQueue.ReceiveAsync();
@@ -113,13 +131,15 @@ namespace XFS4IoTServer
                 cts.Dispose();
             }
         }
-        private void Add(IEnumerable<(Type, Type)> types)
+        private void Add(IEnumerable<(Type, Type, bool Async)> types)
         {
-            foreach (var (Message, Handler) in types)
-                MessageHandlers.Add(Message, Handler);
+            foreach (var (Message, Handler, async) in types)
+                MessageHandlers.Add(Message, new HandlerDetails(Handler, async));
         }
 
-        private readonly Dictionary<Type, Type> MessageHandlers = new();
+        private readonly Dictionary<Type, HandlerDetails > MessageHandlers = new();
+
+        private record HandlerDetails(Type Type, bool Async);
 
         private readonly ILogger Logger;
 
