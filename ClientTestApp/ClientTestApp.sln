@@ -40,29 +40,4 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {685379E1-AEF1-4AA7-A893-504DB5E6587F}
 	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://teamsystem:8080/tfs/kal-tfs-collection
-		SccProjectUniqueName0 = TestClientForms\\TestClientForms.csproj
-		SccProjectName0 = TestClientForms
-		SccAuxPath0 = http://teamsystem:8080/tfs/kal-tfs-collection
-		SccLocalPath0 = TestClientForms
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName1 = TestClient\\TestClient.csproj
-		SccProjectName1 = TestClient
-		SccAuxPath1 = http://teamsystem:8080/tfs/kal-tfs-collection
-		SccLocalPath1 = TestClient
-		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName2 = ..\\Framework\\Core\\Core.csproj
-		SccProjectName2 = ../Framework/Core
-		SccAuxPath2 = http://teamsystem:8080/tfs/kal-tfs-collection
-		SccLocalPath2 = ..\\Framework\\Core
-		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName3 = ..\\Framework\\Server\\Server.csproj
-		SccProjectName3 = ../Framework/Server
-		SccAuxPath3 = http://teamsystem:8080/tfs/kal-tfs-collection
-		SccLocalPath3 = ..\\Framework\\Server
-		SccProvider3 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-	EndGlobalSection
 EndGlobal
