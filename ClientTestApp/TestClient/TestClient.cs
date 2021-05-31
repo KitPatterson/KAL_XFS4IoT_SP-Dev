@@ -42,7 +42,7 @@ namespace TestClient
                     {
                         case "parallelcount" or "count"  : 
                             if( !int.TryParse(value, out ParallelCount ) ) 
-                                throw new Exception($"Invalid prallel count {value}"); ; 
+                                throw new Exception($"Invalid parallel count {value}"); ; 
                             break;
                         case "address"  : Address = value; break;
                         case "showjson" :
@@ -68,15 +68,26 @@ namespace TestClient
                     Logger.LogLine("Connecting to the card reader");
                     XFS4IoTClient.ClientConnection cardReader = await OpenCardReader();
 
+
+                    await GetCardReaderCapabilities(cardReader);
                     await GetCardReaderStatus(cardReader);
                     await DoAcceptCard(cardReader);
                     await GetCardReaderStatus(cardReader);
+                    await DoChipIO(cardReader);
+                    await DoChipPower(cardReader);
+                    await DoReset(cardReader);
+                    await DoRetainCard(cardReader);
+                    await DoResetCount(cardReader);
+                    await DoSetKey(cardReader);
+                    await DoWriteData(cardReader);
+                    await DoQueryIFMIdentifier(cardReader);
+                    await DoParkCard(cardReader);
                     await DoEjectCard(cardReader);
-                    await GetCardReaderStatus(cardReader);
                 }
 
                 IEnumerable<Task> tasks = from i in Enumerable.Range(0, ParallelCount)
                                           select DoCardReader();
+
 
                 Task.WaitAll(tasks.ToArray());
 
@@ -199,6 +210,19 @@ namespace TestClient
             await GetCompletionAsync(cardReader, typeof(StatusCompletion));
         }
 
+        private async Task GetCardReaderCapabilities(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new CapabilitiesCommand(RequestId++, new CapabilitiesCommand.PayloadData(Timeout: 1_000));
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(CapabilitiesCompletion));
+        }
+
 
         private async Task DoAcceptCard(XFS4IoTClient.ClientConnection cardReader)
         {
@@ -229,18 +253,162 @@ namespace TestClient
 
             await GetCompletionAsync(cardReader, typeof(ReadRawDataCompletion));
         }
-        private async Task DoEjectCard(XFS4IoTClient.ClientConnection cardReader)
-        {
-            Logger.LogLine($"{nameof(EjectCardCommand)}", ConsoleColor.Blue);
 
+        private async Task DoChipIO(XFS4IoTClient.ClientConnection cardReader)
+        {
             // Create a new command and send it to the device
-            var command = new EjectCardCommand(RequestId++, 
-                                                new(10_000)
-                                                );
+            var command = new ChipIOCommand(RequestId++,
+                new ChipIOCommand.PayloadData(10_0000, "chipT0", Convert.ToBase64String(new byte[] { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7 })));
+
+            Logger.LogMessage(command);
             await cardReader.SendCommandAsync(command);
 
             // Wait for a response from the device. 
             Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(ChipIOCompletion));
+        }
+
+        private async Task DoChipPower(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new ChipPowerCommand(RequestId++,
+                new ChipPowerCommand.PayloadData(10_000, ChipPowerCommand.PayloadData.ChipPowerEnum.Warm));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(ChipPowerCompletion));
+        }
+
+        private async Task DoReset(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new ResetCommand(RequestId++,
+                new ResetCommand.PayloadData(10_000, ResetCommand.PayloadData.ResetInEnum.Eject));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(ResetCompletion));
+        }
+
+        private async Task DoRetainCard(XFS4IoTClient.ClientConnection cardReader)
+        {
+            Logger.LogLine("Doing AcceptCard before RetainCard.");
+            await DoAcceptCard(cardReader);
+
+            // Create a new command and send it to the device
+            var command = new RetainCardCommand(RequestId++,
+                new RetainCardCommand.PayloadData(10_000));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(RetainCardCompletion));
+        }
+
+        private async Task DoResetCount(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new ResetCountCommand(RequestId++,
+                new ResetCountCommand.PayloadData(10_000));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(ResetCountCompletion));
+        }
+
+        private async Task DoSetKey(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new SetKeyCommand(RequestId++,
+                new SetKeyCommand.PayloadData(10_000, Convert.ToBase64String(new byte[] { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7 })));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(SetKeyCompletion));
+        }
+
+        private async Task DoWriteData(XFS4IoTClient.ClientConnection cardReader)
+        {
+            Logger.LogLine("Doing AcceptCard before WriteData.");
+            await DoAcceptCard(cardReader);
+
+            // Create a new command and send it to the device
+            var command = new WriteRawDataCommand(RequestId++,
+                new WriteRawDataCommand.PayloadData(10_000, new()
+                {
+                    new(WriteRawDataCommand.PayloadData.DataClass.DestinationEnum.Track1, "12345678", WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum.Auto),
+                    new(WriteRawDataCommand.PayloadData.DataClass.DestinationEnum.Track1, "12345678", WriteRawDataCommand.PayloadData.DataClass.WriteMethodEnum.Auto),
+                }));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(WriteRawDataCompletion));
+
+            Logger.LogLine("Ejecting card after WriteData.");
+            await DoEjectCard(cardReader);
+        }
+
+        private async Task DoQueryIFMIdentifier(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new QueryIFMIdentifierCommand(RequestId++,
+                new QueryIFMIdentifierCommand.PayloadData(10_000));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(QueryIFMIdentifierCompletion));
+        }
+
+        private async Task DoParkCard(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new ParkCardCommand(RequestId++,
+                new ParkCardCommand.PayloadData(10_000, ParkCardCommand.PayloadData.DirectionEnum.In, 0));
+
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
+
+            // Wait for a response from the device. 
+            Logger.LogLine("Waiting for response... ");
+
+            await GetCompletionAsync(cardReader, typeof(ParkCardCompletion));
+        }
+        private async Task DoEjectCard(XFS4IoTClient.ClientConnection cardReader)
+        {
+            // Create a new command and send it to the device
+            var command = new EjectCardCommand(RequestId++, 
+                                                new(10_000)
+                                                );
+            Logger.LogMessage(command);
+            await cardReader.SendCommandAsync(command);
 
             await GetCompletionAsync(cardReader, typeof(EjectCardCompletion));
         }
@@ -271,7 +439,8 @@ namespace TestClient
                         Console.ForegroundColor = colour ?? defaultColour;
                     Console.Write($"{DateTime.Now:hh:mm:ss.ffff} ({DateTime.Now - Start}): {v}");
                     Console.ForegroundColor = defaultColour;
-                }            }
+                }
+            }
             public void Write(string v, ConsoleColor? colour = null)
             {
                 lock (this)
@@ -319,44 +488,23 @@ namespace TestClient
             }
             public void LogMessage(object Message)
             {
-                switch (Message)
+                if (Message is not MessageBase msgBase)
                 {
-                    case GetServicesCompletion getServiceCompletion:
-                        LogMessage(nameof(GetServicesCompletion), ConsoleColor.Green, getServiceCompletion.Serialise());
-                        break;
-
-                    case ReadRawDataCompletion readRawDataCompletion:
-                        LogMessage(nameof(ReadRawDataCompletion), ConsoleColor.Green, readRawDataCompletion.Serialise());
-                        break;
-
-                    case EjectCardCompletion EjectCardCompletion:
-                        LogMessage(nameof(EjectCardCompletion), ConsoleColor.Green, EjectCardCompletion.Serialise());
-                        break;
-
-                    case StatusCompletion statusCompletion:
-                        LogMessage(nameof(StatusCompletion), ConsoleColor.Green, statusCompletion.Serialise());
-                        break;
-
-                    case InsertCardEvent insertCardEvent:
-                        LogMessage(nameof(InsertCardEvent),ConsoleColor.Yellow, insertCardEvent.Serialise());
-                        break;
-
-                    case MediaInsertedEvent mediaInsertedEvent:
-                        LogMessage(nameof(MediaInsertedEvent),ConsoleColor.Yellow, mediaInsertedEvent.Serialise());
-                        break;
-
-                    case MediaRemovedEvent mediaRemovedEvent:
-                        LogMessage(nameof(MediaRemovedEvent),ConsoleColor.Yellow, mediaRemovedEvent.Serialise());
-                        break;
-
-                    case null:
-                        LogError($"Invalid response to {nameof(GetServicesCompletion)}");
-                        break;
-
-                    case object message:
-                        LogError($"Invalid type of response {message.GetType()}");
-                        break;
+                    LogError($"Invalid type of response {Message.GetType()}");
+                    return;
                 }
+
+                ConsoleColor msgColour = msgBase.Headers.Type switch
+                {
+                    MessageHeader.TypeEnum.Command => ConsoleColor.Blue,
+                    MessageHeader.TypeEnum.Acknowledgement => ConsoleColor.DarkGray,
+                    MessageHeader.TypeEnum.Event => ConsoleColor.Yellow,
+                    MessageHeader.TypeEnum.Completion => ConsoleColor.Green,
+                    MessageHeader.TypeEnum.Unsolicited => ConsoleColor.DarkYellow,
+                    _ => throw new NotImplementedException($"Unknown message type {msgBase.Headers.Type}"),
+                };
+
+                LogMessage(Message.GetType().Name, msgColour, msgBase.Serialise());
             }
 
             private void LogMessage(string name, ConsoleColor colour, string JSON )
