@@ -5,6 +5,7 @@
 \***********************************************************************************************/
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoTServer;
@@ -18,6 +19,14 @@ namespace Server
             ConsoleLogger Logger = new();
             try
             {
+                ErrorHandling.ErrorHandler = (message) =>
+                {
+                    Logger.Warning(message);
+                    Debug.WriteLine(message);
+                    if (Debugger.IsAttached) Debugger.Break();
+                    Environment.Exit(256);
+                };
+
                 Logger.Log($"Running ServiceProvider Server");
 
                 var Publisher = new ServicePublisher(Logger);

@@ -244,22 +244,25 @@ namespace XFS4IoTFramework.CardReader
                 }
             }
 
-            return new ReadRawDataCompletion.PayloadData(readCardDataResult.CompletionCode,
-                                                         readCardDataResult.ErrorDescription,
-                                                         readCardDataResult.ErrorCode,
-                                                         track1,
-                                                         track2,
-                                                         track3,
-                                                         chip,
-                                                         security,
-                                                         watermark,
-                                                         memoryChip,
-                                                         track1Front,
-                                                         frontImage,
-                                                         backImage,
-                                                         track1JIS,
-                                                         track3JIS,
-                                                         ddi);
+            ReadRawDataCompletion.PayloadData payloadData = new ReadRawDataCompletion.PayloadData(readCardDataResult.CompletionCode,
+                                                                     readCardDataResult.ErrorDescription,
+                                                                     readCardDataResult.ErrorCode,
+                                                                     track1,
+                                                                     track2,
+                                                                     track3,
+                                                                     chip,
+                                                                     security,
+                                                                     watermark,
+                                                                     memoryChip,
+                                                                     track1Front,
+                                                                     frontImage,
+                                                                     backImage,
+                                                                     track1JIS,
+                                                                     track3JIS,
+                                                                     ddi);
+
+            payloadData.KALErrorDetails = "Details of what happened";
+            return payloadData;
         }
     }
 }

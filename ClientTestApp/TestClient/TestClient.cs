@@ -16,6 +16,7 @@ using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
 using XFS4IoT.CardReader.Events;
 using System.Text.RegularExpressions;
+using KAL.XFS4IoTSP.CardReader.Sample;
 
 namespace TestClient
 {
@@ -64,6 +65,9 @@ namespace TestClient
 
                 Logger.LogLine("Doing accept card");
                 await DoAcceptCard();
+
+                Logger.LogLine("Doing custom command");
+                await DoKALCustomCommand();
 
                 Logger.LogLine($"Done");
 
@@ -210,6 +214,19 @@ namespace TestClient
 
             await GetCompletionAsync(typeof(ReadRawDataCompletion));
         }
+        private async Task DoKALCustomCommand()
+        {
+            Logger.LogLine($"{nameof(KALCustomCommand)}", ConsoleColor.Blue);
+
+            //MessageBox((IntPtr)0, "Send CardReader ReadRawData command to read chip card", "XFS4IoT Test Client", 0);
+            // Create a new command and send it to the device
+            var command = new KALCustomCommand(Guid.NewGuid().ToString(),
+                                                 new KALCustomCommand.PayloadData(
+                                                        60_000 ));
+            await cardReader.SendCommandAsync(command);
+
+            await GetCompletionAsync(typeof(KALCustomCompletion));
+        }
 
         private async Task GetCompletionAsync( Type CompletionType )
         {
@@ -288,6 +305,10 @@ namespace TestClient
 
                     case MediaInsertedEvent mediaInsertedEvent:
                         LogMessage(nameof(MediaInsertedEvent),ConsoleColor.Yellow, mediaInsertedEvent.Serialise());
+                        break;
+
+                    case KALCustomCompletion KALCustomCompletion:
+                        LogMessage(nameof(KALCustomCompletion), ConsoleColor.Green, KALCustomCompletion.Serialise());
                         break;
 
                     case null:

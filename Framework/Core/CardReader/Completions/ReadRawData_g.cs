@@ -583,6 +583,9 @@ namespace XFS4IoT.CardReader.Completions
             [DataMember(Name = "ddi")] 
             public DdiClass Ddi { get; private set; }
 
+            [DataMember(Name ="KALErrorDetail")]
+            public string KALErrorDetails { get; set; }
+
         }
     }
 }
