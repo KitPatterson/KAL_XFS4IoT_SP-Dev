@@ -9,6 +9,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using XFS4IoT;
 using XFS4IoTFramework.Dispenser;
 
@@ -20,7 +21,7 @@ namespace XFS4IoTServer
         {
             this.ServiceProvider = ServiceProvider.IsNotNull();
             this.Logger = logger;
-            this.ServiceProvider.Device.IsNotNull($"Invalid parameter received in the {nameof(CashManagementServiceClass)} constructor. {nameof(ServiceProvider.Device)}").IsA<IDispenserDevice>();
+            this.ServiceProvider.Device.IsNotNull($"Invalid parameter received in the {nameof(DispenserServiceClass)} constructor. {nameof(ServiceProvider.Device)}").IsA<IDispenserDevice>();
         }
         public async Task ItemsTakenEvent(XFS4IoT.Dispenser.Events.ItemsTakenEvent.PayloadData Payload)
             => await ServiceProvider.BroadcastEvent(new XFS4IoT.Dispenser.Events.ItemsTakenEvent(Payload));

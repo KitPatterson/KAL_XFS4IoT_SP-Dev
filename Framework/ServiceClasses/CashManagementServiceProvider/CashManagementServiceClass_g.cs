@@ -9,6 +9,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using XFS4IoT;
 using XFS4IoTFramework.CashManagement;
 
