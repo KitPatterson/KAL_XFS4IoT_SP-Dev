@@ -40,8 +40,7 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
             CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
             if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
@@ -53,14 +52,12 @@ namespace XFS4IoTFramework.Dispenser
 
             CashDispenserService.LastPresentStatus.ContainsKey(position).IsTrue($"Unexpected position is specified. {position}");
 
-
-            // Additional properties are not handled by the generator
-            // TODO NEED TO HANDLE AdditionalProperties so can't set values
-
             return Task.FromResult(new GetPresentStatusCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                               null,
                                                                               null,
-                                                                              null,
+                                                                              new GetPresentStatusCompletion.PayloadData.DenominationClass(
+                                                                                  CashDispenserService.LastPresentStatus[position].LastDenomination.CurrencyAmounts, 
+                                                                                  CashDispenserService.LastPresentStatus[position].LastDenomination.Values),
                                                                               CashDispenserService.LastPresentStatus[position].Status switch
                                                                               {
                                                                                   PresentStatus.PresentStatusEnum.NotPresented => GetPresentStatusCompletion.PayloadData.PresentStateEnum.NotPresented,

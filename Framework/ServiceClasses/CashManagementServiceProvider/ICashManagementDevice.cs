@@ -2,98 +2,98 @@
  * (C) KAL ATM Software GmbH, 2021
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
- *
- * This file was created automatically as part of the XFS4IoT CashManagement interface.
- * ICashManagementDevice.cs uses automatically generated parts.
+ * 
 \***********************************************************************************************/
 
 
 using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XFS4IoTServer;
+using XFS4IoTServer.CashManagement;
 
 // KAL specific implementation of cashmanagement. 
 namespace XFS4IoTFramework.CashManagement
 {
     public interface ICashManagementDevice : IDevice
     {
+        /// <summary>
+        /// This method is called when the client application send CashUnitInfo command first time since executable runs or while exchange is in progress.
+        /// Return true if the cash unit configuration is being changed since last call, otherwise false
+        /// The key representing physical position name associated with the CashUnit structure.
+        /// The key name should be unique to identify Physical Cash Unit
+        /// </summary>
+        bool GetCashUnitConfiguration(out Dictionary<string, CashUnitConfiguration> CashUnits);
 
         /// <summary>
-        /// {}
+        /// This method is called after device operation is completed involving cash movement
+        /// returning false if the device doesn't support maintaining counters and framework will maintain counters.
+        /// However if the device doesn't support maintaining counters, the counts are not guaranteed.
+        /// The key name should be used for the GetCashUnitConfiguration output.
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.GetCashUnitInfoCompletion.PayloadData> GetCashUnitInfo(IGetCashUnitInfoEvents events, 
-                                                                                                       XFS4IoT.CashManagement.Commands.GetCashUnitInfoCommand.PayloadData payload, 
-                                                                                                       CancellationToken cancellation);
+        Dictionary<string, CashUnitAccounting> GetCashUnitAccounting();
 
         /// <summary>
-        /// This command only applies to Teller devices. It allows theapplication to obtain counts for each currency assigned to the teller.These counts represent the total amount of currency dispensed by theteller in all transactions.This command also enables the application to obtain the positionassigned to each teller. If the input parameter is NULL, this commandwill return information for all tellers and all currencies. The tellerinformation is persistent.
+        /// This method is called after device operation is completed involving cash movement
+        /// Return false if the device doesn't support handware sensor to detect cash unit status.
+        /// The framework will use decide the cash unit status from the counts maintained by the framework.
+        /// The key name should be used for the GetCashUnitConfiguration output.
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.GetTellerInfoCompletion.PayloadData> GetTellerInfo(IGetTellerInfoEvents events, 
-                                                                                                   XFS4IoT.CashManagement.Commands.GetTellerInfoCommand.PayloadData payload, 
-                                                                                                   CancellationToken cancellation);
+        Dictionary<string, CashUnit.StatusEnum> GetCashUnitStatus();
+
 
         /// <summary>
-        /// {}
+        /// This method is used to adjust information about the status and contents of the cash units present in the CashDispenser or CashAcceptor device.
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.GetItemInfoCompletion.PayloadData> GetItemInfo(IGetItemInfoEvents events, 
-                                                                                               XFS4IoT.CashManagement.Commands.GetItemInfoCommand.PayloadData payload, 
-                                                                                               CancellationToken cancellation);
+        Task<SetCashUnitInfoResult> SetCashUnitInfoAsync(ISetCashUnitInfoEvents events, 
+                                                         SetCashUnitInfoRequest setCashUnitInfo, 
+                                                         CancellationToken cancellation);
 
         /// <summary>
-        /// This command is used to retrieve the entire note classification information pre-set inside the device or set via the CashManagement.SetClassificationList command.This provides the functionality to blacklist notes and allows additional flexibility, for example to specify that notes can be taken out of circulation by specifying them as unfit. Any items not returned in this list will be handled according to normal classification rules.
+        /// This method unlocks the safe door or starts the timedelay count down prior to unlocking the safe door, 
+        /// if the device supports it. The command completes when the door is unlocked or the timer has started.
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.GetClassificationListCompletion.PayloadData> GetClassificationList(IGetClassificationListEvents events, 
-                                                                                                                   XFS4IoT.CashManagement.Commands.GetClassificationListCommand.PayloadData payload, 
-                                                                                                                   CancellationToken cancellation);
+        Task<UnlockSafeResult> UnlockSafeAsync(CancellationToken cancellation);
 
         /// <summary>
-        /// This command allows the application to initialize countsfor each currency assigned to the teller. The values set by this commandare persistent. This command only applies to Teller ATMs.
+        /// InitiateExchange
+        /// This method is called when the application initiated cash unit exchange by hand
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.SetTellerInfoCompletion.PayloadData> SetTellerInfo(ISetTellerInfoEvents events, 
-                                                                                                   XFS4IoT.CashManagement.Commands.SetTellerInfoCommand.PayloadData payload, 
-                                                                                                   CancellationToken cancellation);
+        Task<InitiateExchangeResult> InitiateExchangeAsync(IStartExchangeEvents events,
+                                                           InitiateExchangeRequest exchangeInfo, 
+                                                           CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// InitiateClearRecyclerRequest
+        /// This method is called when the application initiated to empty recycler units
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.SetCashUnitInfoCompletion.PayloadData> SetCashUnitInfo(ISetCashUnitInfoEvents events, 
-                                                                                                       XFS4IoT.CashManagement.Commands.SetCashUnitInfoCommand.PayloadData payload, 
-                                                                                                       CancellationToken cancellation);
+        Task<InitiateExchangeResult> InitiateExchangeClearRecyclerAsync(IStartExchangeEvents events,
+                                                                        InitiateClearRecyclerRequest exchangeInfo,
+                                                                        CancellationToken cancellation);
+
 
         /// <summary>
-        /// This command unlocks the safe door or starts the timedelay count down prior to unlocking the safe door, if the devicesupports it. The command completes when the door is unlocked or thetimer has started.
+        /// InitiateExchangeDepositIntoAsync
+        /// This method is called when the application initiated to filling cash into the cash units via cash-in operation.
+        /// Items will be moved from the deposit entrance to the bill cash units.
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.OpenSafeDoorCompletion.PayloadData> OpenSafeDoor(IOpenSafeDoorEvents events, 
-                                                                                                 XFS4IoT.CashManagement.Commands.OpenSafeDoorCommand.PayloadData payload, 
-                                                                                                 CancellationToken cancellation);
+        Task<InitiateExchangeResult> InitiateExchangeDepositIntoAsync(IStartExchangeEvents events,
+                                                                      CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// CompleteExchangeAsync
+        /// This method will end the exchange state
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.StartExchangeCompletion.PayloadData> StartExchange(IStartExchangeEvents events, 
-                                                                                                   XFS4IoT.CashManagement.Commands.StartExchangeCommand.PayloadData payload, 
-                                                                                                   CancellationToken cancellation);
+        Task<CompleteExchangeResult> CompleteExchangeAsync(IEndExchangeEvents events, 
+                                                           CompleteExchangeRequest exchangeInfo, 
+                                                           CancellationToken cancellation);
 
         /// <summary>
-        /// {}
+        /// This method will cause a vendor dependent sequence of hardware events which will calibrate one or more physical cash units associated with a logical cash unit.
         /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.EndExchangeCompletion.PayloadData> EndExchange(IEndExchangeEvents events, 
-                                                                                               XFS4IoT.CashManagement.Commands.EndExchangeCommand.PayloadData payload, 
-                                                                                               CancellationToken cancellation);
-
-        /// <summary>
-        /// {}
-        /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.CalibrateCashUnitCompletion.PayloadData> CalibrateCashUnit(ICalibrateCashUnitEvents events, 
-                                                                                                           XFS4IoT.CashManagement.Commands.CalibrateCashUnitCommand.PayloadData payload, 
-                                                                                                           CancellationToken cancellation);
-
-        /// <summary>
-        /// This command is used to specify the entire note classification list. Any items not specified in this list will be handled according to normal classification rules. This information is persistent. Information set by this command overrides any existingclassification list.If a note is reclassified, it is handled as though it was a note of the new classification. For example, a fit note reclassified as unfit would be treated as though it were unfit, which may mean that the note is not dispensed.Reclassification cannot be used to change a note’s classification to a higher level, for example, a note recognized as counterfeit by the device cannot be reclassified as genuine. In addition, it is not possible to re-classify a level 2 note as level 1.If two or more classification elements specify overlapping note definitions, but different *level* values then the first one takes priority.
-        /// </summary>
-        Task<XFS4IoT.CashManagement.Completions.SetClassificationListCompletion.PayloadData> SetClassificationList(ISetClassificationListEvents events, 
-                                                                                                                   XFS4IoT.CashManagement.Commands.SetClassificationListCommand.PayloadData payload, 
-                                                                                                                   CancellationToken cancellation);
+        Task<CalibrateCashUnitResult> CalibrateCashUnitAsync(ICalibrateCashUnitEvents events, 
+                                                             CalibrateCashUnitRequest calibrationInfo, 
+                                                             CancellationToken cancellation);
 
     }
 }

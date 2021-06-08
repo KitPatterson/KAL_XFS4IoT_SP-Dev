@@ -41,9 +41,11 @@ namespace DispenserServiceProvider
             CashManagement = new CashManagementServiceClass(this, logger);
             Common = new CommonServiceClass(this, logger);
 
-            // CashDispenser class needs to access to the cash unit information
+            // CashDispenser class needs to access to the cash unit information and capabilites
             Dispenser.CommonService = Common;
             Dispenser.CashManagementService = CashManagement;
+            // CashManagement class needs to access to the capabilites of the Cash Dispenser
+            CashManagement.CommonService = Common;
         }
 
         private readonly DispenserServiceClass Dispenser;

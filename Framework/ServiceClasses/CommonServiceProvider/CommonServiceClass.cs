@@ -18,10 +18,15 @@ namespace XFS4IoTServer
 {
     public partial class CommonServiceClass
     {
-        
+
         /// <summary>
-        /// Stores CashDispenser capabilites internally
+        /// Stores CashDispenser interface capabilites internally
         /// </summary>
         public CashDispenserCapabilitiesClass CashDispenserCapabilities { get; internal set; } = null;
+
+        /// <summary>
+        /// Stores CashManagement interface capabilites internally
+        /// </summary>
+        public CashManagementCapabilitiesClass CashManagementCapabilities { get; internal set; } = null;
     }
 }

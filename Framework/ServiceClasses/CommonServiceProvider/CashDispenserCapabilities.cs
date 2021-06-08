@@ -144,59 +144,59 @@ namespace XFS4IoTServer.Common
         /// <summary>
         /// Supplies the type of CDM
         /// </summary>
-        public TypeEnum Type { get; private set; }
+        public TypeEnum Type { get; init; }
 
         /// <summary>
         /// Supplies the maximum number of items that can be dispensed in a single dispense operation. 
         /// </summary>
-        public int MaxDispenseItems { get; private set; }
+        public int MaxDispenseItems { get; init; }
 
         /// <summary>
         /// Specifies whether or not the commands Dispenser.OpenShutter and Dispenser.CloseShutter are supported.
         /// </summary>
-        public bool Shutter { get; private set; }
+        public bool Shutter { get; init; }
 
         /// <summary>
         /// If set to TRUE the shutter is controlled implicitly by the Service. 
         /// If set to FALSE the shutter must be controlled explicitly by the application
         /// using the Dispenser.OpenShutter and the Dispenser.CloseShutter commands.
         /// </summary>
-        public bool ShutterControl { get; private set; }
+        public bool ShutterControl { get; init; }
 
         /// <summary>
         /// Retract areas support of this device
         /// </summary>
-        public Dictionary<RetractAreaEnum, bool> RetractAreas { get; private set; }
+        public Dictionary<RetractAreaEnum, bool> RetractAreas { get; init; }
 
         /// <summary>
         /// Action support on retracting cash to the transport
         /// </summary>
-        public Dictionary<RetractTransportActionEnum, bool> RetractTransportActions { get; private set; }
+        public Dictionary<RetractTransportActionEnum, bool> RetractTransportActions { get; init; }
 
         /// <summary>
         /// Action support on retracting cash to the stacker
         /// </summary>
-        public Dictionary<RetractStackerActionEnum, bool> RetractStackerActions { get; private set; }
+        public Dictionary<RetractStackerActionEnum, bool> RetractStackerActions { get; init; }
 
         /// <summary>
         /// Specifies whether or not the Dispenser supports stacking items to an intermediate position before the items are moved to the exit position.
         /// </summary>
-        public bool IntermediateStacker { get; private set; }
+        public bool IntermediateStacker { get; init; }
 
         /// <summary>
         ///  Specifies whether the Dispenser can detect when items at the exit position are taken by the user. 
         /// </summary>
-        public bool ItemsTakenSensor { get; private set; }
+        public bool ItemsTakenSensor { get; init; }
 
         /// <summary>
         /// Supported output positions
         /// </summary>
-        public Dictionary<OutputPositionEnum, bool> OutputPositons { get; private set; }
+        public Dictionary<OutputPositionEnum, bool> OutputPositons { get; init; }
 
         /// <summary>
         /// Move items from stacker or transport to the unit
         /// </summary>
-        public Dictionary<MoveItemEnum, bool> MoveItems { get; private set; }
+        public Dictionary<MoveItemEnum, bool> MoveItems { get; init; }
 
         /// <summary>
         /// On some hardware it can take a significant amount of time for the dispenser to get ready to dispense media. 
@@ -204,6 +204,6 @@ namespace XFS4IoTServer.Common
         /// This flag indicates if the hardware requires the application to use the Dispenser.PrepareDispense command
         /// to maximize transaction performance.
         /// </summary>
-        public bool PrepareDispense { get; private set; }
+        public bool PrepareDispense { get; init; }
     }
 }

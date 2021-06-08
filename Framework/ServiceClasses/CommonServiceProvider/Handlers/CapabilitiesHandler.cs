@@ -238,6 +238,40 @@ namespace XFS4IoTFramework.Common
                                                                                              result.CashDispenser.PrepareDispense is not null && (bool)result.CashDispenser.PrepareDispense);
             }
 
+            if (result.CashManagement is not null)
+            {
+                CashManagementCapabilitiesClass.ExchangeTypesEnum exchangeType = CashManagementCapabilitiesClass.ExchangeTypesEnum.NotSupported;
+                if (result.CashManagement.ExchangeType is not null)
+                {
+                    if (result.CashManagement.ExchangeType.ByHand is not null && (bool)result.CashManagement.ExchangeType.ByHand)
+                        exchangeType |= CashManagementCapabilitiesClass.ExchangeTypesEnum.ByHand;
+                    if (result.CashManagement.ExchangeType.ClearRecycler is not null && (bool)result.CashManagement.ExchangeType.ClearRecycler)
+                        exchangeType |= CashManagementCapabilitiesClass.ExchangeTypesEnum.ClearRecycler;
+                    if (result.CashManagement.ExchangeType.DepositInto is not null && (bool)result.CashManagement.ExchangeType.DepositInto)
+                        exchangeType |= CashManagementCapabilitiesClass.ExchangeTypesEnum.DepositInto;
+                    if (result.CashManagement.ExchangeType.ToCassettes is not null && (bool)result.CashManagement.ExchangeType.ToCassettes)
+                        exchangeType |= CashManagementCapabilitiesClass.ExchangeTypesEnum.ToCassettes;
+                }
+
+                CashManagementCapabilitiesClass.ItemInfoTypesEnum itemInfo = CashManagementCapabilitiesClass.ItemInfoTypesEnum.NotSupported;
+                if (result.CashManagement.ItemInfoTypes is not null)
+                {
+                    if (result.CashManagement.ItemInfoTypes.SerialNumber is not null && (bool)result.CashManagement.ItemInfoTypes.SerialNumber)
+                        itemInfo |= CashManagementCapabilitiesClass.ItemInfoTypesEnum.SerialNumber;
+                    if (result.CashManagement.ItemInfoTypes.Signature is not null && (bool)result.CashManagement.ItemInfoTypes.Signature)
+                        itemInfo |= CashManagementCapabilitiesClass.ItemInfoTypesEnum.Signature;
+                    if (result.CashManagement.ItemInfoTypes.ImageFile is not null && (bool)result.CashManagement.ItemInfoTypes.ImageFile)
+                        itemInfo |= CashManagementCapabilitiesClass.ItemInfoTypesEnum.ImageFile;
+                }
+
+                CommonService.CashManagementCapabilities = new CashManagementCapabilitiesClass(exchangeType,
+                                                                                                itemInfo,
+                                                                                                result.CashManagement.SafeDoor is not null && (bool)result.CashManagement.SafeDoor,
+                                                                                                result.CashManagement.CashBox is not null && (bool)result.CashManagement.CashBox,
+                                                                                                result.CashManagement.ClassificationList is not null && (bool)result.CashManagement.ClassificationList,
+                                                                                                result.CashManagement.PhysicalNoteList is not null && (bool)result.CashManagement.PhysicalNoteList);
+            }
+
             return Task.FromResult(result);
         }
     }

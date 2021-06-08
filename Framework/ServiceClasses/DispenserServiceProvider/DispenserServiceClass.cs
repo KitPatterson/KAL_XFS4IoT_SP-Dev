@@ -20,11 +20,11 @@ namespace XFS4IoTServer
     {
 
         /// <summary>
-        /// Supported mix in the framework
+        /// Supported mix in the framework and the device specific class can add vendor specific mix algorithm
         /// </summary>
-        internal Dictionary<int, Mix> Mixes = new()
+        public Dictionary<int, Mix> Mixes = new()
         {
-            { 1, new MinNumberMix(1, Mix.TypeEnum.Algorithm, Mix.SubTypeEmum.MinimumNumberOfBills, "Minimum Number Of Bills") }
+            { 1, new MinNumberMix(1) }
         };
 
         /// <summary>

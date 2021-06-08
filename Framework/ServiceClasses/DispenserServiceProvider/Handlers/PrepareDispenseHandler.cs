@@ -39,21 +39,11 @@ namespace XFS4IoTFramework.Dispenser
 
             var result = await Device.PrepareDispenseAsync(new PrepareDispenseRequest((prepareDispense.Payload.Action == PrepareDispenseCommand.PayloadData.ActionEnum.Start) ? PrepareDispenseRequest.ActionEnum.Start : PrepareDispenseRequest.ActionEnum.Start), cancel);
 
-            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.PrepareDispenseAsync() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.PrepareDispenseAsync() -> {result.CompletionCode}");
 
-            // PrepareDispenseCompletion payload doesn't have a error ExchangeActive, it should be there.
-            /*
-            PrepareDispenseCompletion.PayloadData.ErrorCodeEnum? errorCode = null;
-            if (result.ErrorCode is not null)
-            {
-                errorCode = result.ErrorCode switch
-                {
-                    _ => ResetCompletion.PayloadData.ErrorCodeEnum.ExchangeActive,
-                };
-            }
-            */
 
-            return new PrepareDispenseCompletion.PayloadData(result.CompletionCode, result.ErrorDescription);
+            return new PrepareDispenseCompletion.PayloadData(result.CompletionCode, 
+                                                             result.ErrorDescription);
         }
 
     }

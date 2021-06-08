@@ -18,8 +18,18 @@ namespace XFS4IoTServer.CashDispenser
     /// PresentStatus
     /// Representing the last dispense / presented status
     /// </summary>
+    [Serializable()]
     public class PresentStatus
     {
+        public PresentStatus(PresentStatusEnum Status = PresentStatusEnum.Unknown,
+                             Denomination LastDenomination = null,
+                             string Token = null)
+        {
+            this.Status = Status;
+            this.LastDenomination = LastDenomination;
+            this.Token = Token;
+        }
+
         /// <summary>
         /// Last dispense status
         /// </summary>
@@ -30,22 +40,19 @@ namespace XFS4IoTServer.CashDispenser
             Unknown
         }
 
-        public PresentStatus()
-        { }
-
         /// <summary>
         /// Supplies the status of the last dispense or present operation
         /// </summary>
-        public PresentStatusEnum Status { get; set; } = PresentStatusEnum.Unknown;
+        public PresentStatusEnum Status { get; set; }
 
         /// <summary>
         /// Key is cash unit name and the value is the number of cash to be used
         /// </summary>
-        public Denomination LastDenomination { get; private set; } = null;
+        public Denomination LastDenomination { get; set; }
 
         /// <summary>
         /// E2E token used last
         /// </summary>
-        public string Token { get; set; } = null;
+        public string Token { get; set; }
     }
 }

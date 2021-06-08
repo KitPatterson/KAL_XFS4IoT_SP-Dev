@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using XFS4IoTServer;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Dispenser.Commands;
+using XFS4IoTServer.Common;
+using XFS4IoTServer.CashDispenser;
 
 // KAL specific implementation of dispenser. 
 namespace XFS4IoTFramework.Dispenser
@@ -19,11 +21,22 @@ namespace XFS4IoTFramework.Dispenser
     public interface IDispenserDevice : IDevice
     {
         /// <summary>
+        /// This method provides a denomination. A denomination specifies the number of items which are required from each cash unit in order to satisfy a given amount.
+        /// This method is called if the application doesn't specify mix algorithm and device specific class can decide items picked from each cash units.
+        /// The framwork handles Denominate command if the device specific class doesn't need to process specific denomination to use. 
+        /// In this case, the device class can throw a NotImplementedException and the framework process command.
+        /// </summary>
+        /// <returns></returns>
+        Task<DenominateResult> DenominateAsync(IDenominateEvents events,
+                                               DenominateRequest denominateinfo,
+                                               CancellationToken cancellation);
+
+        /// <summary>
         /// This method performs the dispensing of items to the customer. 
         /// </summary>
-        Task<DispenseCompletion.PayloadData> Dispense(IDispenseEvents events, 
-                                                      DispenseCommand.PayloadData payload, 
-                                                      CancellationToken cancellation);
+        Task<DispenseResult> DispenseAsync(IDispenseEvents events, 
+                                           DispenseRequest dispenseInfo, 
+                                           CancellationToken cancellation);
 
         /// <summary>
         /// PresentCashAsync
@@ -48,9 +61,9 @@ namespace XFS4IoTFramework.Dispenser
         /// Retracted items will be moved to either a retract cash unit, a reject cash unit, item cash units, the transport or the intermediate stacker. 
         /// After the items are retracted the shutter is closed automatically, even if the ShutterControl capability is set to false.
         /// </summary>
-        Task<RetractCompletion.PayloadData> Retract(IRetractEvents events, 
-                                                    RetractCommand.PayloadData payload, 
-                                                    CancellationToken cancellation);
+        Task<RetractResult> RetractAsync(IRetractEvents events, 
+                                         RetractRequest retractInfo, 
+                                         CancellationToken cancellation);
 
         /// <summary>
         /// OpenCloseShutterAsync
@@ -75,9 +88,9 @@ namespace XFS4IoTFramework.Dispenser
         /// The method completes with success if the device successfully manages to test all of the testable cash units regardless of the outcome of the test. 
         /// This is the case if all testable cash units could be tested and a dispense was possible from at least one of the cash units.
         /// </summary>
-        Task<TestCashUnitsCompletion.PayloadData> TestCashUnits(ITestCashUnitsEvents events, 
-                                                                TestCashUnitsCommand.PayloadData payload, 
-                                                                CancellationToken cancellation);
+        Task<TestCashUnitsResult> TestCashUnitsAsync(ITestCashUnitsEvents events, 
+                                                     TestCashUnitsRequest testCashUnitsInfo, 
+                                                     CancellationToken cancellation);
 
         /// <summary>
         /// CountAsync
@@ -96,5 +109,12 @@ namespace XFS4IoTFramework.Dispenser
         Task<PrepareDispenseResult> PrepareDispenseAsync(PrepareDispenseRequest prepareDispenseInfo,
                                                          CancellationToken cancellation);
 
+
+        /// <summary>
+        /// GetPresentStatus
+        /// This method returns the status of the most recent attempt to dispense and/or present items to the customer from a specified output position.
+        /// Throw NotImplementedException if the device specific class doesn't support to manage present status.
+        /// </summary>
+       PresentStatus GetPresentStatus(CashDispenserCapabilitiesClass.OutputPositionEnum position);
     }
 }

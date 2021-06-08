@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT CashManagement interface.
- * SetTellerInfoHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -15,6 +13,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.CashManagement.Commands;
 using XFS4IoT.CashManagement.Completions;
+using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.CashManagement
 {
@@ -23,14 +22,8 @@ namespace XFS4IoTFramework.CashManagement
 
         private Task<SetTellerInfoCompletion.PayloadData> HandleSetTellerInfo(ISetTellerInfoEvents events, SetTellerInfoCommand setTellerInfo, CancellationToken cancel)
         {
-            //ToDo: Implement HandleSetTellerInfo for CashManagement.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleSetTellerInfo for CashManagement is not implemented in SetTellerInfoHandler.cs");
-            #else
-                #error HandleSetTellerInfo for CashManagement is not implemented in SetTellerInfoHandler.cs
-            #endif
+            // NOT SUPPORTED
+            return Task.FromResult(new SetTellerInfoCompletion.PayloadData(MessagePayload.CompletionCodeEnum.UnsupportedCommand, null));
         }
-
     }
 }

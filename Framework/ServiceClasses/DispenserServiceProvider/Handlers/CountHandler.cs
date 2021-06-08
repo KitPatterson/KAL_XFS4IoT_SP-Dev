@@ -39,8 +39,7 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
@@ -62,7 +61,11 @@ namespace XFS4IoTFramework.Dispenser
 
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.CountAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
-            return new CountCompletion.PayloadData(result.CompletionCode, result.ErrorDescription, result.ErrorCode);
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
+
+            return new CountCompletion.PayloadData(result.CompletionCode, 
+                                                   result.ErrorDescription, 
+                                                   result.ErrorCode);
         }
     }
 }

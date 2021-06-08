@@ -22,8 +22,7 @@ namespace XFS4IoTFramework.Dispenser
     {
         private Task<GetMixTypesCompletion.PayloadData> HandleGetMixTypes(IGetMixTypesEvents events, GetMixTypesCommand getMixTypes, CancellationToken cancel)
         {
-            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             List<GetMixTypesCompletion.PayloadData.MixTypesClass> mixes = new();
 
@@ -35,10 +34,10 @@ namespace XFS4IoTFramework.Dispenser
                     _ => GetMixTypesCompletion.PayloadData.MixTypesClass.MixTypeEnum.MixTable
                 };
 
-                // FIX REQUIRED IN THE YAML, subtype must be string
-                int subType = (int)mix.Value.SubType;
-
-                mixes.Add(new GetMixTypesCompletion.PayloadData.MixTypesClass(mix.Value.MixNumber, type, subType, mix.Value.Name));
+                mixes.Add(new GetMixTypesCompletion.PayloadData.MixTypesClass(mix.Value.MixNumber, 
+                                                                              type, 
+                                                                              (int)mix.Value.SubType, 
+                                                                              mix.Value.Name));
             }
 
             return Task.FromResult(new GetMixTypesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,

@@ -23,8 +23,7 @@ namespace XFS4IoTFramework.Dispenser
     {
         private Task<GetMixTableCompletion.PayloadData> HandleGetMixTable(IGetMixTableEvents events, GetMixTableCommand getMixTable, CancellationToken cancel)
         {
-            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             if (getMixTable.Payload.MixNumber is null ||
                 !CashDispenserService.Mixes.ContainsKey((int)getMixTable.Payload.MixNumber) ||
@@ -45,7 +44,6 @@ namespace XFS4IoTFramework.Dispenser
                                                                                table.Value.Select(t => t).ToList()));
             }
 
-            /// XFS YAML isn't right on preview 4
             return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                          null,
                                                                          null,

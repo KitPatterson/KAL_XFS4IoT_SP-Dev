@@ -13,7 +13,9 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoTServer.Common;
+using XFS4IoTServer.CashDispenser;
 using XFS4IoT.Completions;
+
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -38,8 +40,7 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
@@ -55,6 +56,43 @@ namespace XFS4IoTFramework.Dispenser
 
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.PresentCashAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
+
+            PresentStatus presentStatus = null;
+            try
+            {
+                Logger.Log(Constants.DeviceClass, "CashDispenserDev.GetPresentStatus()");
+
+                presentStatus = Device.GetPresentStatus(position);
+
+                Logger.Log(Constants.DeviceClass, $"CashDispenserDev.GetPresentStatus() -> {presentStatus}");
+            }
+            catch (NotImplementedException)
+            {
+                Logger.Log(Constants.DeviceClass, $"CashDispenserDev.GetPresentStatus() -> Not implemented");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            // Update an internal present status
+            CashDispenserService.LastPresentStatus[position].Status = result.CompletionCode switch
+            {
+                MessagePayload.CompletionCodeEnum.Success => PresentStatus.PresentStatusEnum.Presented,
+                _ => PresentStatus.PresentStatusEnum.Unknown
+            };
+
+            if (presentStatus is not null)
+            {
+                CashDispenserService.LastPresentStatus[position].Status = (PresentStatus.PresentStatusEnum)presentStatus.Status;
+
+                if (presentStatus.LastDenomination is not null)
+                    CashDispenserService.LastPresentStatus[position].LastDenomination = presentStatus.LastDenomination;
+
+                CashDispenserService.LastPresentStatus[position].Token = presentStatus.Token;
+            }
+
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
 
             PresentCompletion.PayloadData.PositionEnum resPosition = position switch
             {

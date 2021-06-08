@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT CashManagement interface.
- * OpenSafeDoorHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -15,22 +13,32 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.CashManagement.Commands;
 using XFS4IoT.CashManagement.Completions;
+using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.CashManagement
 {
     public partial class OpenSafeDoorHandler
     {
-
-        private Task<OpenSafeDoorCompletion.PayloadData> HandleOpenSafeDoor(IOpenSafeDoorEvents events, OpenSafeDoorCommand openSafeDoor, CancellationToken cancel)
+        private async Task<OpenSafeDoorCompletion.PayloadData> HandleOpenSafeDoor(IOpenSafeDoorEvents events, OpenSafeDoorCommand openSafeDoor, CancellationToken cancel)
         {
-            //ToDo: Implement HandleOpenSafeDoor for CashManagement.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleOpenSafeDoor for CashManagement is not implemented in OpenSafeDoorHandler.cs");
-            #else
-                #error HandleOpenSafeDoor for CashManagement is not implemented in OpenSafeDoorHandler.cs
-            #endif
-        }
+            CashManagement.IsA<CashManagementServiceClass>($"Unexpected object is specified. {nameof(CashManagement)}.");
+            CashManagementServiceClass CashManagementService = CashManagement as CashManagementServiceClass;
 
+            if (!CashManagementService.CommonService.CashManagementCapabilities.SafeDoor)
+            {
+                return new OpenSafeDoorCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                              $"OpenSafeDoor command received when the SP reported SafeDoor capability {CashManagementService.CommonService.CashManagementCapabilities.SafeDoor}");
+            }
+
+            Logger.Log(Constants.DeviceClass, "CashManagementDev.UnlockSafeAsync()");
+
+            var result = await Device.UnlockSafeAsync(cancel);
+
+            Logger.Log(Constants.DeviceClass, $"CashDispenserDev.UnlockSafeAsync() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new OpenSafeDoorCompletion.PayloadData(result.CompletionCode,
+                                                          result.ErrorDescription,
+                                                          result.ErrorCode);
+        }
     }
 }
