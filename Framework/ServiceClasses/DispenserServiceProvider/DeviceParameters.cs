@@ -6,6 +6,7 @@
 \***********************************************************************************************/
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
@@ -27,95 +28,45 @@ namespace XFS4IoTFramework.Dispenser
     /// </summary>
     public sealed class Denomination
     {
-        public sealed class IsDispensableResult
+        public enum DispensableResultEnum
         {
-            public enum ResultEnum
-            {
-                Good,
-                CashUnitError,
-                CashUnitNotEnough,
-                CashUnitLocked,
-                InvalidCurrency,
-                InvalidDenomination,
-            }
-
-            public IsDispensableResult(ResultEnum Result)
-            {
-                this.Result = Result;
-                this.CashUnitIndex = null;
-            }
-
-            public IsDispensableResult(ResultEnum Result, KeyValuePair<string, int> CashUnitIndex)
-            {
-                this.Result = Result;
-                this.CashUnitIndex = CashUnitIndex;
-            }
-
-            public ResultEnum Result { get; init; }
-
-            public KeyValuePair<string, int>? CashUnitIndex { get; init; }
+            Good,
+            CashUnitError,
+            CashUnitNotEnough,
+            CashUnitLocked,
+            InvalidCurrency,
+            InvalidDenomination,
         }
 
         public Denomination(Dictionary<string, double> CurrencyAmounts,
-                            Dictionary<string, int> Values,
-                            ILogger Logger)
+                            Dictionary<string, int> Values = null)
         {
             this.CurrencyAmounts = CurrencyAmounts;
             this.Values = Values;
-            this.Logger = Logger.IsNotNull($"Invalid logger reference passed in. " + nameof(Denomination));
         }
 
         /// <summary>
         /// Currencies to use for dispensing cash
         /// </summary>
-        public Dictionary<string, double> CurrencyAmounts { get; init; }
+        public Dictionary<string, double> CurrencyAmounts { get; set; }
 
         /// <summary>
         /// Key is cash unit name and the value is the number of cash to be used
         /// </summary>
-        public Dictionary<string, int> Values { get; init; }
+        public Dictionary<string, int> Values { get; set; }
 
         /// <summary>
         /// Check there are enough notes to be dispensed
         /// </summary>
-        /// <returns></returns>
-        public IsDispensableResult IsDispensable(double Amount, Dictionary<string, CashUnit> CashUnits)
+        public DispensableResultEnum IsDispensable(Dictionary<string, CashUnit> CashUnits, ILogger Logger)
         {
-            double internalAmount = TotalAmountToDispense(CashUnits, out IsDispensableResult.ResultEnum result);
-            if (internalAmount == 0)
-                return new IsDispensableResult(result);
-
-            bool invalidAmount = false;
-            if (Amount != 0)
-            {
-                // If amount is zero, no need to check total amount of cash units
-                double totalAmount = 0;
-                foreach (var val in CurrencyAmounts)
-                    totalAmount += val.Value;
-                invalidAmount = internalAmount != totalAmount;
-                if (invalidAmount)
-                    Logger.Warning(Constants.Framework, $"Total amount to dispanse doesn't match with requested. Amount specified to dispense each units {internalAmount}, Amount to dispense {totalAmount} " + nameof(IsDispensable));
-            }
-
-            return new IsDispensableResult(invalidAmount ?  IsDispensableResult.ResultEnum.InvalidDenomination : IsDispensableResult.ResultEnum.Good);
-        }
-
-        /// <summary>
-        /// Sort out the total amount to dispense from the Values property 
-        /// </summary>
-        /// <returns></returns>
-        public double TotalAmountToDispense(Dictionary<string, CashUnit> CashUnits, out IsDispensableResult.ResultEnum Result)
-        {
-            Result = IsDispensableResult.ResultEnum.Good;
-
             if (Values.Count == 0)
             {
                 Logger.Warning(Constants.Framework, "The Value of the cash units are empty to check amount is dispensable.");
-                Result = IsDispensableResult.ResultEnum.InvalidDenomination;
-                return 0;
+                return DispensableResultEnum.InvalidDenomination;
             }
 
-            double internalAmount = 0.0;
+            double internalAmount = 0;
 
             foreach (var unit in Values)
             {
@@ -125,8 +76,7 @@ namespace XFS4IoTFramework.Dispenser
                 if (!CashUnits.ContainsKey(unit.Key))
                 {
                     Logger.Warning(Constants.Framework, $"No cash unit key name find. {unit.Key} " + nameof(IsDispensable));
-                    Result = IsDispensableResult.ResultEnum.CashUnitError;
-                    return 0;
+                    return DispensableResultEnum.CashUnitError;
                 }
 
                 if (CashUnits[unit.Key].Type != CashUnit.TypeEnum.BillCassette &&
@@ -135,16 +85,14 @@ namespace XFS4IoTFramework.Dispenser
                     CashUnits[unit.Key].Type != CashUnit.TypeEnum.Recycling)
                 {
                     Logger.Warning(Constants.Framework, $"Invalid counts to pick from none dispensable unit. {unit.Key}, {CashUnits[unit.Key].Type}" + nameof(IsDispensable));
-                    Result = IsDispensableResult.ResultEnum.CashUnitError; 
-                    return 0;
+                    return DispensableResultEnum.CashUnitError; 
                 }
 
                 // Check counts first
                 if (CashUnits[unit.Key].Count < unit.Value)
                 {
                     Logger.Warning(Constants.Framework, $"Not enough cash to dispense item. {unit.Key}, {CashUnits[unit.Key].Count}" + nameof(IsDispensable));
-                    Result = IsDispensableResult.ResultEnum.CashUnitNotEnough; 
-                    return 0;
+                    return DispensableResultEnum.CashUnitNotEnough; 
                 }
 
                 // Check status
@@ -154,8 +102,7 @@ namespace XFS4IoTFramework.Dispenser
                     CashUnits[unit.Key].Status != CashUnit.StatusEnum.Full)
                 {
                     Logger.Warning(Constants.Framework, $"Not good cash unit status to dispense item. {unit.Key}, {CashUnits[unit.Key].Count}, {CashUnits[unit.Key].Status}" + nameof(IsDispensable));
-                    Result = IsDispensableResult.ResultEnum.CashUnitError; 
-                    return 0;
+                    return DispensableResultEnum.CashUnitError; 
                 }
 
                 // Check currency
@@ -172,17 +119,49 @@ namespace XFS4IoTFramework.Dispenser
                 if (!currencyOK)
                 {
                     Logger.Warning(Constants.Framework, $"Specified currency ID not found to dispense. {unit.Key}, {CashUnits[unit.Key].Count}, {CashUnits[unit.Key].CurrencyID}" + nameof(IsDispensable));
-                    Result = IsDispensableResult.ResultEnum.InvalidCurrency;
-                    return 0;
+                    return DispensableResultEnum.InvalidCurrency;
                 }
 
                 internalAmount += CashUnits[unit.Key].Value * unit.Value;
             }
 
-            return internalAmount;
+            double total = 0;
+            if (CurrencyAmounts is not null)
+                total = CurrencyAmounts.Select(c => c.Value).Sum();
+            if (total != 0)
+            {
+                // If amount is zero, no need to check total amount of cash units
+                bool invalidAmount = internalAmount != total;
+                if (invalidAmount)
+                {
+                    Logger.Warning(Constants.Framework, $"Total amount to dispanse doesn't match with requested. Amount specified to dispense each units {internalAmount}, Amount to dispense {total} " + nameof(IsDispensable));
+                    return DispensableResultEnum.InvalidDenomination;
+                }
+            }
+
+            return DispensableResultEnum.Good;
         }
 
-        private ILogger Logger { get; init; }
+        /// <summary>
+        /// Check given amount and total of cash unit denomination is equal.
+        /// </summary>
+        public bool CheckTotalAmount(Dictionary<string, CashUnit> CashUnits)
+        {
+            double total = 0;
+            foreach (var currency in CurrencyAmounts)
+            {
+                foreach (var unit in CashUnits)
+                {
+                    if (unit.Value.CurrencyID == currency.Key &&
+                        Values.ContainsKey(unit.Key))
+                    {
+                        total += Values[unit.Key] * unit.Value.Value;
+                    }
+                }
+            }
+
+            return (total == CurrencyAmounts.Select(c =>c.Value).Sum());
+        }
     }
 
     /// <summary>
