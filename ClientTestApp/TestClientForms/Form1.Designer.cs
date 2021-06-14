@@ -61,6 +61,10 @@ namespace TestClientForms
             this.testClientTabControl = new System.Windows.Forms.TabControl();
             this.CardReaderTab = new System.Windows.Forms.TabPage();
             this.DispenserTab = new System.Windows.Forms.TabPage();
+            this.DispenserPresent = new System.Windows.Forms.Button();
+            this.DispenserEndExchange = new System.Windows.Forms.Button();
+            this.DispenserStartExchange = new System.Windows.Forms.Button();
+            this.DispenserReset = new System.Windows.Forms.Button();
             this.DispenserGetPresentStatus = new System.Windows.Forms.Button();
             this.DispenserDeviceType = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -80,6 +84,8 @@ namespace TestClientForms
             this.DispenserDispURI = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.DispenserDenominate = new System.Windows.Forms.Button();
+            this.DispenserDispense = new System.Windows.Forms.Button();
             this.testClientTabControl.SuspendLayout();
             this.CardReaderTab.SuspendLayout();
             this.DispenserTab.SuspendLayout();
@@ -373,6 +379,12 @@ namespace TestClientForms
             // 
             // DispenserTab
             // 
+            this.DispenserTab.Controls.Add(this.DispenserDispense);
+            this.DispenserTab.Controls.Add(this.DispenserDenominate);
+            this.DispenserTab.Controls.Add(this.DispenserPresent);
+            this.DispenserTab.Controls.Add(this.DispenserEndExchange);
+            this.DispenserTab.Controls.Add(this.DispenserStartExchange);
+            this.DispenserTab.Controls.Add(this.DispenserReset);
             this.DispenserTab.Controls.Add(this.DispenserGetPresentStatus);
             this.DispenserTab.Controls.Add(this.DispenserDeviceType);
             this.DispenserTab.Controls.Add(this.label14);
@@ -400,9 +412,53 @@ namespace TestClientForms
             this.DispenserTab.Text = "Dispenser";
             this.DispenserTab.UseVisualStyleBackColor = true;
             // 
+            // DispenserPresent
+            // 
+            this.DispenserPresent.Location = new System.Drawing.Point(1048, 78);
+            this.DispenserPresent.Margin = new System.Windows.Forms.Padding(1);
+            this.DispenserPresent.Name = "DispenserPresent";
+            this.DispenserPresent.Size = new System.Drawing.Size(111, 22);
+            this.DispenserPresent.TabIndex = 37;
+            this.DispenserPresent.Text = "Present";
+            this.DispenserPresent.UseVisualStyleBackColor = true;
+            this.DispenserPresent.Click += new System.EventHandler(this.DispenserPresent_Click);
+            // 
+            // DispenserEndExchange
+            // 
+            this.DispenserEndExchange.Location = new System.Drawing.Point(1048, 47);
+            this.DispenserEndExchange.Margin = new System.Windows.Forms.Padding(1);
+            this.DispenserEndExchange.Name = "DispenserEndExchange";
+            this.DispenserEndExchange.Size = new System.Drawing.Size(111, 22);
+            this.DispenserEndExchange.TabIndex = 36;
+            this.DispenserEndExchange.Text = "EndExchange";
+            this.DispenserEndExchange.UseVisualStyleBackColor = true;
+            this.DispenserEndExchange.Click += new System.EventHandler(this.DispenserEndExchange_Click);
+            // 
+            // DispenserStartExchange
+            // 
+            this.DispenserStartExchange.Location = new System.Drawing.Point(1048, 18);
+            this.DispenserStartExchange.Margin = new System.Windows.Forms.Padding(1);
+            this.DispenserStartExchange.Name = "DispenserStartExchange";
+            this.DispenserStartExchange.Size = new System.Drawing.Size(111, 22);
+            this.DispenserStartExchange.TabIndex = 35;
+            this.DispenserStartExchange.Text = "StartExchange";
+            this.DispenserStartExchange.UseVisualStyleBackColor = true;
+            this.DispenserStartExchange.Click += new System.EventHandler(this.DispenserStartExchange_Click);
+            // 
+            // DispenserReset
+            // 
+            this.DispenserReset.Location = new System.Drawing.Point(934, 110);
+            this.DispenserReset.Margin = new System.Windows.Forms.Padding(1);
+            this.DispenserReset.Name = "DispenserReset";
+            this.DispenserReset.Size = new System.Drawing.Size(111, 22);
+            this.DispenserReset.TabIndex = 34;
+            this.DispenserReset.Text = "Reset";
+            this.DispenserReset.UseVisualStyleBackColor = true;
+            this.DispenserReset.Click += new System.EventHandler(this.DispenserReset_Click);
+            // 
             // DispenserGetPresentStatus
             // 
-            this.DispenserGetPresentStatus.Location = new System.Drawing.Point(1000, 78);
+            this.DispenserGetPresentStatus.Location = new System.Drawing.Point(934, 78);
             this.DispenserGetPresentStatus.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserGetPresentStatus.Name = "DispenserGetPresentStatus";
             this.DispenserGetPresentStatus.Size = new System.Drawing.Size(111, 22);
@@ -413,7 +469,7 @@ namespace TestClientForms
             // 
             // DispenserDeviceType
             // 
-            this.DispenserDeviceType.Location = new System.Drawing.Point(729, 73);
+            this.DispenserDeviceType.Location = new System.Drawing.Point(692, 60);
             this.DispenserDeviceType.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserDeviceType.Name = "DispenserDeviceType";
             this.DispenserDeviceType.ReadOnly = true;
@@ -423,7 +479,7 @@ namespace TestClientForms
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(641, 73);
+            this.label14.Location = new System.Drawing.Point(609, 60);
             this.label14.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(68, 15);
@@ -433,7 +489,7 @@ namespace TestClientForms
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(641, 23);
+            this.label13.Location = new System.Drawing.Point(609, 25);
             this.label13.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(76, 15);
@@ -442,7 +498,7 @@ namespace TestClientForms
             // 
             // DispenserStDevice
             // 
-            this.DispenserStDevice.Location = new System.Drawing.Point(729, 20);
+            this.DispenserStDevice.Location = new System.Drawing.Point(692, 22);
             this.DispenserStDevice.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserStDevice.Name = "DispenserStDevice";
             this.DispenserStDevice.ReadOnly = true;
@@ -451,7 +507,7 @@ namespace TestClientForms
             // 
             // DispenserGetMixTypes
             // 
-            this.DispenserGetMixTypes.Location = new System.Drawing.Point(1000, 42);
+            this.DispenserGetMixTypes.Location = new System.Drawing.Point(934, 47);
             this.DispenserGetMixTypes.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserGetMixTypes.Name = "DispenserGetMixTypes";
             this.DispenserGetMixTypes.Size = new System.Drawing.Size(111, 22);
@@ -462,7 +518,7 @@ namespace TestClientForms
             // 
             // DispenserCapabilities
             // 
-            this.DispenserCapabilities.Location = new System.Drawing.Point(853, 73);
+            this.DispenserCapabilities.Location = new System.Drawing.Point(816, 58);
             this.DispenserCapabilities.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserCapabilities.Name = "DispenserCapabilities";
             this.DispenserCapabilities.Size = new System.Drawing.Size(84, 27);
@@ -473,7 +529,7 @@ namespace TestClientForms
             // 
             // DispenserStatus
             // 
-            this.DispenserStatus.Location = new System.Drawing.Point(853, 17);
+            this.DispenserStatus.Location = new System.Drawing.Point(816, 22);
             this.DispenserStatus.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserStatus.Name = "DispenserStatus";
             this.DispenserStatus.Size = new System.Drawing.Size(84, 26);
@@ -484,7 +540,7 @@ namespace TestClientForms
             // 
             // DispenserGetCashUnitInfo
             // 
-            this.DispenserGetCashUnitInfo.Location = new System.Drawing.Point(1000, 13);
+            this.DispenserGetCashUnitInfo.Location = new System.Drawing.Point(934, 18);
             this.DispenserGetCashUnitInfo.Margin = new System.Windows.Forms.Padding(1);
             this.DispenserGetCashUnitInfo.Name = "DispenserGetCashUnitInfo";
             this.DispenserGetCashUnitInfo.Size = new System.Drawing.Size(111, 22);
@@ -596,6 +652,28 @@ namespace TestClientForms
             this.label12.TabIndex = 24;
             this.label12.Text = "Service URI";
             // 
+            // DispenserDenominate
+            // 
+            this.DispenserDenominate.Location = new System.Drawing.Point(1048, 110);
+            this.DispenserDenominate.Margin = new System.Windows.Forms.Padding(1);
+            this.DispenserDenominate.Name = "DispenserDenominate";
+            this.DispenserDenominate.Size = new System.Drawing.Size(111, 22);
+            this.DispenserDenominate.TabIndex = 38;
+            this.DispenserDenominate.Text = "Denominate";
+            this.DispenserDenominate.UseVisualStyleBackColor = true;
+            this.DispenserDenominate.Click += new System.EventHandler(this.DispenserDenominate_Click);
+            // 
+            // DispenserDispense
+            // 
+            this.DispenserDispense.Location = new System.Drawing.Point(820, 110);
+            this.DispenserDispense.Margin = new System.Windows.Forms.Padding(1);
+            this.DispenserDispense.Name = "DispenserDispense";
+            this.DispenserDispense.Size = new System.Drawing.Size(111, 22);
+            this.DispenserDispense.TabIndex = 39;
+            this.DispenserDispense.Text = "Dispense";
+            this.DispenserDispense.UseVisualStyleBackColor = true;
+            this.DispenserDispense.Click += new System.EventHandler(this.DispenserDispense_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -667,6 +745,12 @@ namespace TestClientForms
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox DispenserStDevice;
         private System.Windows.Forms.Button DispenserGetPresentStatus;
+        private System.Windows.Forms.Button DispenserReset;
+        private System.Windows.Forms.Button DispenserStartExchange;
+        private System.Windows.Forms.Button DispenserEndExchange;
+        private System.Windows.Forms.Button DispenserPresent;
+        private System.Windows.Forms.Button DispenserDispense;
+        private System.Windows.Forms.Button DispenserDenominate;
     }
 }
 

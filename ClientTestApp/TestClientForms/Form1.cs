@@ -16,22 +16,6 @@ namespace TestClientForms
 {
     public partial class Form1 : Form
     {
-        static int[] PortRanges = new int[]
-            {
-                80,  // Only for HTTP
-                443, // Only for HTTPS
-                5846,
-                5847,
-                5848,
-                5849,
-                5850,
-                5851,
-                5852,
-                5853,
-                5854,
-                5855,
-                5856
-            };
 
         public Form1()
         {
@@ -126,9 +110,40 @@ namespace TestClientForms
         {
             await DispenserDev.GetMixTypes();
         }
+
         private async void DispenserGetPresentStatus_Click(object sender, EventArgs e)
         {
             await DispenserDev.GetPresentStatus();
+        }
+
+        private async void DispenserReset_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.Reset();
+        }
+
+        private async void DispenserStartExchange_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.StartExchange();
+        }
+
+        private async void DispenserEndExchange_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.EndExchange();
+        }
+
+        private async void DispenserPresent_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.Present();
+        }
+
+        private async void DispenserDenominate_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.Denominate();
+        }
+
+        private async void DispenserDispense_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.Dispense();
         }
 
         #endregion
