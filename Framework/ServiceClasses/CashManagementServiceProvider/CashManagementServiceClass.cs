@@ -58,7 +58,7 @@ namespace XFS4IoTServer
                         break;
                     }
 
-                    identical = (CashUnits[unit.Key].Configuration == unit.Value);
+                    identical = CashUnits[unit.Key].Configuration == unit.Value;
                     if (!identical)
                     {
                         Logger.Warning(Constants.Framework, $"Existing cash unit information doesn't have an identical cash unit structure information specified by the device class. {unit.Key}. Construct new cash unit infomation.");
