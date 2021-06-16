@@ -168,17 +168,44 @@ namespace XFS4IoTFramework.Dispenser
             double total = 0;
             foreach (var currency in CurrencyAmounts)
             {
-                foreach (var unit in CashUnits)
-                {
-                    if (unit.Value.CurrencyID == currency.Key &&
-                        Values.ContainsKey(unit.Key))
-                    {
-                        total += Values[unit.Key] * unit.Value.Value;
-                    }
-                }
+                total += GetTotalAmount(currency.Key, Values, CashUnits);
             }
 
             return (total == CurrencyAmounts.Select(c =>c.Value).Sum());
+        }
+
+        /// <summary>
+        /// Return total amount from given currency and denomination based on the cash unit information
+        /// </summary>
+        /// <param name="Currency"></param>
+        /// <param name="Denom"></param>
+        /// <param name="CashUnits"></param>
+        /// <returns></returns>
+        public static double GetTotalAmount(string Currency, Dictionary<string, int> Denom, Dictionary<string, CashUnit> CashUnits)
+        {
+            if (Denom is null &&
+                CashUnits is null)
+            {
+                return 0;
+            }
+
+            if (Denom is null ||
+                CashUnits is null)
+            {
+                return 0;
+            }
+
+            double total = 0;
+            foreach (var unit in CashUnits)
+            {
+                if (unit.Value.CurrencyID == Currency &&
+                    Denom.ContainsKey(unit.Key))
+                {
+                    total += Denom[unit.Key] * unit.Value.Value;
+                }
+            }
+
+            return total;
         }
     }
 

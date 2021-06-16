@@ -21,17 +21,6 @@ namespace XFS4IoTFramework.Dispenser
     public interface IDispenserDevice : IDevice
     {
         /// <summary>
-        /// This method provides a denomination. A denomination specifies the number of items which are required from each cash unit in order to satisfy a given amount.
-        /// This method is called if the application doesn't specify mix algorithm and device specific class can decide items picked from each cash units.
-        /// The framwork handles Denominate command if the device specific class doesn't need to process specific denomination to use. 
-        /// In this case, the device class can throw a NotImplementedException and the framework process command.
-        /// </summary>
-        /// <returns></returns>
-        Task<DenominateResult> DenominateAsync(IDenominateEvents events,
-                                               DenominateRequest denominateinfo,
-                                               CancellationToken cancellation);
-
-        /// <summary>
         /// This method performs the dispensing of items to the customer. 
         /// </summary>
         Task<DispenseResult> DispenseAsync(IDispenseEvents events, 

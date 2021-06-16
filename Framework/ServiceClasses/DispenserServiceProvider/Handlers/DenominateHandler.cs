@@ -49,34 +49,6 @@ namespace XFS4IoTFramework.Dispenser
             if (denominate.Payload.Denomination.Currencies is not null)
                 totalAmount= denominate.Payload.Denomination.Currencies.Select(c => c.Value).Sum();
 
-            if (mixNumber == 0)
-            {
-                try
-                {
-                    Logger.Log(Constants.DeviceClass, "CashDispenserDev.DenominateAsync()");
-
-                    var result = await Device.DenominateAsync(events, 
-                                                              new DenominateRequest(denominate.Payload.Denomination.Currencies,
-                                                                                    denominate.Payload.Denomination.Values),
-                                                              cancel);
-
-                    Logger.Log(Constants.DeviceClass, $"CashDispenserDev.DenominateAsync() -> {result.CompletionCode}, {result.ErrorCode}");
-
-                    return new DenominateCompletion.PayloadData(result.CompletionCode,
-                                                                result.ErrorDescription,
-                                                                result.ErrorCode,
-                                                                denominate.Payload.Denomination.Currencies,
-                                                                result.Values);
-                }
-                catch (NotImplementedException)
-                {
-                    Logger.Log(Constants.DeviceClass, $"CashDispenserDev.DenominateAsync() -> Not implemented");
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
 
             Denomination denomToDispense = new(denominate.Payload.Denomination.Currencies, denominate.Payload.Denomination.Values);
 

@@ -41,6 +41,19 @@ namespace XFS4IoTFramework.Dispenser
 
             DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
+            // Check the shutter capabilites
+            if (!CashDispenserService.CommonService.CashDispenserCapabilities.Shutter)
+            {
+                return new CloseShutterCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                              $"The shutter command is not supported by the device.");
+            }
+
+            if (CashDispenserService.CommonService.CashDispenserCapabilities.Shutter &&
+                CashDispenserService.CommonService.CashDispenserCapabilities.ShutterControl)
+            {
+                Logger.Log(Constants.Framework, "The application requested shutter command even if the device support implicit shutter control.");
+            }
+
             CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
             if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
