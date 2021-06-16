@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XFS4IoT;
+using XFS4IoTServer;
 using XFS4IoTFramework.Dispenser;
 using XFS4IoTServer.CashManagement;
 
@@ -428,10 +429,13 @@ namespace XFS4IoTServer.CashDispenser
         /// <returns>denominate to dispense</returns>
         public override Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems, ILogger Logger)
         {
+            CurrencyAmounts.IsNotNull($"Currency and amounts should be provided to calculate mix.");
+            CashUnits.IsNotNull($"Cash unit information should be provided to calculate mix.");
+
             //Array to make sure use cassettes only once
             List<string> CassetteUsed = new();
 
-            Dictionary<string, int> totalSmallest = new Dictionary<string, int>();
+            Dictionary<string, int> totalSmallest = new();
 
             foreach (var ca in CurrencyAmounts)
             {
@@ -545,7 +549,7 @@ namespace XFS4IoTServer.CashDispenser
         /// <param name="UnitsUsed">List of used cash units on mixing</param>
         /// <param name="Denom">Denomination to dispense</param>
         /// <returns></returns>
-        bool CalculateR(double Amount, string Currency, string LastCashUnit, Dictionary<string, CashUnit> CashUnits, ref List<string> UnitsUsed, ref Dictionary<string, int> Denom)
+        public static bool CalculateR(double Amount, string Currency, string LastCashUnit, Dictionary<string, CashUnit> CashUnits, ref List<string> UnitsUsed, ref Dictionary<string, int> Denom)
         {
             Contracts.Assert(Amount != 0, "Invalid parameter used for amount in CalculateR.");
 
@@ -626,8 +630,7 @@ namespace XFS4IoTServer.CashDispenser
             else
                 Denom.Add(currentCashUnit, currentSmallestNumNotes);
 
-            Denomination testDenom = new(new Dictionary<string, double>() { { Currency, Amount } }, Denom);
-            if (testDenom.CheckTotalAmount(CashUnits))
+            if (new Denomination(new Dictionary<string, double>() { { Currency, Amount } }, Denom).CheckTotalAmount(CashUnits))
             {
                 if (UnitsUsed.Contains(currentCashUnit))
                     UnitsUsed.Remove(currentCashUnit);
@@ -635,6 +638,304 @@ namespace XFS4IoTServer.CashDispenser
             }
 
             return true;
+        }
+    }
+
+    /// <summary>
+    /// EqualEmptyingMix
+    /// Mix notes to give equal use of each logical cash unit.
+    /// </summary>
+    [Serializable()]
+    public sealed class EqualEmptyingMix : Mix
+    {
+        public EqualEmptyingMix(int MixNumber)
+            : base(MixNumber,
+                   TypeEnum.Algorithm,
+                   (int)SubTypeEmum.EqualEmptyingOfCashUnits,
+                   "Equal emptying of cash units")
+        { }
+
+        /// <summary>
+        /// Calculate a denomination with the given value, such that each cash unit will have equal usage.
+        ///
+        /// Algorithm:	Calculate sum of cash unit values.
+        ///             If the amount is smaller than this sum, use a special case.
+        ///             Otherwise, divide the amount by the sum, take that many notes from each cash unit.
+        ///             Use the minnotes algorithm to make up the remainder.
+        ///             Currently the low case also uses the minnotes algorithm.
+        ///             
+        /// </summary>
+        /// <param name="CurrencyAmounts">Value to denominate and Currency to denominate in.</param>
+        /// <param name="CashUnits">cash units to denominate from.</param>
+        /// <param name="Logger"></param>
+        /// <returns>denominate to dispense</returns>
+        public override Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems, ILogger Logger)
+        {
+            CurrencyAmounts.IsNotNull($"Currency and amounts should be provided to calculate mix.");
+            CashUnits.IsNotNull($"Cash unit information should be provided to calculate mix.");
+
+            //Array to make sure use cassettes only once
+            List<string> CassetteUsed = new();
+            Dictionary<string, int> totalEqualEmptying = new();
+            foreach (var ca in CurrencyAmounts)
+            {
+                Dictionary<string, int> newDenom = new();
+
+                string biggestCashUnit = FindNextGreatest(0, ca.Key, CashUnits, ref CassetteUsed);
+                string smallestCashUnit = FindNextLeast(0, ca.Key, CashUnits, ref CassetteUsed);
+
+
+                if (string.IsNullOrEmpty(biggestCashUnit))
+                {
+                    Logger.Warning(Constants.Framework, "Unable to find upper bounds cash unit.");
+                    return new Denomination(CurrencyAmounts);
+                }
+                if (string.IsNullOrEmpty(smallestCashUnit))
+                {
+                    Logger.Warning(Constants.Framework, "Unable to find lower bounds cash unit.");
+                    return new Denomination(CurrencyAmounts);
+                }
+
+                // Find the sum of the cash unit values.
+                double sum = 0;
+                foreach (var unit in CashUnits)
+                {
+                    // If this cash unit isn't valid, skip it.
+                    if ((unit.Value.Type != CashUnit.TypeEnum.BillCassette &&
+                         unit.Value.Type != CashUnit.TypeEnum.CoinCylinder &&
+                         unit.Value.Type != CashUnit.TypeEnum.CoinDispenser &&
+                         unit.Value.Type != CashUnit.TypeEnum.Recycling)
+                       || unit.Value.CurrencyID != ca.Key
+                       || (unit.Value.Status != CashUnit.StatusEnum.Ok &&
+                           unit.Value.Status != CashUnit.StatusEnum.Low &&
+                           unit.Value.Status != CashUnit.StatusEnum.High &&
+                           unit.Value.Status != CashUnit.StatusEnum.Full)
+                       || unit.Value.AppLock)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        sum += unit.Value.Value;
+                    }
+                }
+
+                if (ca.Value < sum)
+                {
+                    // If the amount is equal to the biggest cash unit, try to deliver this with smaller
+                    // notes first.
+                    if (ca.Value == CashUnits[biggestCashUnit].Value)
+                    {
+                        if (!CalculateLow(ca.Value, ca.Key, biggestCashUnit, CashUnits, ref CassetteUsed, ref newDenom, Logger))
+                        {
+                            CalculateLow(ca.Value, ca.Key, string.Empty, CashUnits, ref CassetteUsed, ref newDenom, Logger);
+                        }
+                    }
+                    else
+                    {
+                        CalculateLow(ca.Value, ca.Key, string.Empty, CashUnits, ref CassetteUsed, ref newDenom, Logger);
+                    }
+
+                }
+                else
+                {
+                    int equalNumNotes = (int)(ca.Value / sum);
+                    double remainder = 0;
+                    bool mixFailure = false;
+
+                    do
+                    {
+                        mixFailure = false;
+                        newDenom.Clear();
+                        // Attempt to remove this number of notes from each cash unit.  If a cash unit
+                        // contains fewer notes, take all of them.
+                        foreach (var unit in CashUnits)
+                        {
+                            // If this cash unit isn't valid, skip it.
+                            if ((unit.Value.Type != CashUnit.TypeEnum.BillCassette &&
+                             unit.Value.Type != CashUnit.TypeEnum.CoinCylinder &&
+                             unit.Value.Type != CashUnit.TypeEnum.CoinDispenser &&
+                             unit.Value.Type != CashUnit.TypeEnum.Recycling)
+                           || unit.Value.CurrencyID != ca.Key
+                           || (unit.Value.Status != CashUnit.StatusEnum.Ok &&
+                               unit.Value.Status != CashUnit.StatusEnum.Low &&
+                               unit.Value.Status != CashUnit.StatusEnum.High &&
+                               unit.Value.Status != CashUnit.StatusEnum.Full)
+                           || unit.Value.AppLock)
+                            {
+                                continue;
+                            }
+                            else if (equalNumNotes > unit.Value.Count)
+                            {
+                                if (newDenom.ContainsKey(unit.Key))
+                                    newDenom[unit.Key] = unit.Value.Count;
+                                else
+                                    newDenom.Add(unit.Key, unit.Value.Count);
+                            }
+                            else
+                            {
+                                if (newDenom.ContainsKey(unit.Key))
+                                    newDenom[unit.Key] = equalNumNotes;
+                                else
+                                    newDenom.Add(unit.Key, equalNumNotes);
+                            }
+                        }
+
+                        if (Denomination.GetTotalAmount(ca.Key, newDenom, CashUnits) > ca.Value)
+                        {
+                            mixFailure = true;
+                            // Check to ensure the Remainder is not negative
+                            if (equalNumNotes > 0)
+                            {
+                                equalNumNotes--;
+                                continue;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        // Find the amount remaining to be allocated.  Don't use EqualNumNotes * sum, because
+                        // some of the cash units might have fewer notes than EqualNumNotes
+                        remainder = ca.Value - Denomination.GetTotalAmount(ca.Key, newDenom, CashUnits);
+
+
+                        // Use the Low algorithm for the remainder
+                        if (!CalculateLow(remainder, ca.Key, string.Empty, CashUnits, ref CassetteUsed, ref newDenom, Logger))
+                        {
+                            if (equalNumNotes > 0)
+                            {
+                                equalNumNotes--;
+                            }
+                            mixFailure = true;
+                        }
+
+                        // Check that this denomination can actually be dispensed.
+                        if (mixFailure == false &&
+                            new Denomination(new Dictionary<string, double>() { { ca.Key, ca.Value } }, newDenom).IsDispensable(CashUnits, Logger) != Denomination.DispensableResultEnum.Good)
+                        {
+                            if (equalNumNotes > 0)
+                            {
+                                equalNumNotes--;
+                            }
+                            mixFailure = true;
+                        }
+
+                        // Consistency check
+                        if (Denomination.GetTotalAmount(ca.Key, newDenom, CashUnits) != ca.Value)
+                        {
+                            if (equalNumNotes > 0)
+                            {
+                                equalNumNotes--;
+                            }
+                            mixFailure = true;
+                        }
+
+                    } while (equalNumNotes > 0 && mixFailure == true);
+
+                    if (mixFailure)
+                    {
+                        // We can't allocate notes based on the Equal mix.  Bail out and try the MinNotes
+                        // algorithm for the entire amount.
+                        Denomination tempDenom = new MinNumberMix(1).Calculate(new Dictionary<string, double>() { { ca.Key, ca.Value } }, CashUnits, MaxDispensableItems, Logger);
+                        newDenom = tempDenom?.Values;
+                    }
+                }
+
+                // Check that this denomination can actually be dispensed.
+                if (new Denomination(new Dictionary<string, double>(){ { ca.Key, ca.Value } }, newDenom).IsDispensable(CashUnits, Logger) != Denomination.DispensableResultEnum.Good)
+                {
+                    return new Denomination(CurrencyAmounts);
+                }
+
+                foreach (var d in newDenom)
+                {
+                    if (totalEqualEmptying.ContainsKey(d.Key))
+                        totalEqualEmptying[d.Key] += d.Value;
+                    else
+                        totalEqualEmptying.Add(d.Key, d.Value);
+                }
+            }
+
+            // At this point. CurrentSmallestNumNotes is the number of notes from cash unit we should use
+            // and CurrentSmallest is the smallest denomination required from the rest of the cash units
+            // Add the notes from this cash unit to the denomination and return it.
+            Denomination denom = new(CurrencyAmounts, totalEqualEmptying);
+
+            // Check that this denomination can actually be dispensed.
+            if (denom.IsDispensable(CashUnits, Logger) != Denomination.DispensableResultEnum.Good)
+            {
+                return new Denomination(CurrencyAmounts);
+            }
+
+            return denom;
+        }
+
+        private bool CalculateLow(double Amount, string Currency, string LastCashUnit, Dictionary<string, CashUnit> CashUnits, ref List<string> UnitsUsed, ref Dictionary<string, int> Denom, ILogger Logger)
+        {
+            CashUnits.IsNotNull($"Cash unit information should be provided to calculate mix.");
+            Denom.IsNotNull($"An empty denomination passed in. " + nameof(CalculateLow));
+
+            Dictionary<string, int> originalTotalDenomination = new(Denom);
+
+            // Find the greatest value note of this currency. This will be the first 
+            // note used.
+            string currentCashUnit;
+            if (string.IsNullOrEmpty(LastCashUnit))
+                currentCashUnit = FindNextGreatest(0, Currency, CashUnits, ref UnitsUsed);
+            else
+                currentCashUnit = FindNextGreatest(CashUnits[LastCashUnit].Value, Currency, CashUnits, ref UnitsUsed);
+            if (string.IsNullOrEmpty(currentCashUnit))
+            {
+                Logger.Warning(Constants.Framework, "Failed to find cash unit to denominate in " + nameof(CalculateLow));
+                return false;
+            }
+
+            double remainingAmount = Amount;
+
+            //Find the cash unit with the next biggest value of bill of the correct 
+            // currency in it.
+            do
+            {
+                CashUnits.ContainsKey(currentCashUnit).IsTrue($"");
+
+                // Find the number of notes of this value which are needed.
+                int numNotes = (int)(remainingAmount / CashUnits[currentCashUnit].Value);
+                // If we can't dispense this many notes, dispence what we can and make up the rest from 
+                // the other cash units.
+                if (Denom.ContainsKey(currentCashUnit) &&
+                    (CashUnits[currentCashUnit].Count + Denom[currentCashUnit] < numNotes))
+                {
+                    numNotes = CashUnits[currentCashUnit].Count;
+                }
+
+                if (Denom.ContainsKey(currentCashUnit))
+                    Denom[currentCashUnit] += numNotes;
+                else
+                    Denom.Add(currentCashUnit, numNotes);
+
+                // Find how much will be left after these notes are included.
+                remainingAmount -= numNotes * CashUnits[currentCashUnit].Value;
+                currentCashUnit = FindNextGreatest(CashUnits[currentCashUnit].Value, Currency, CashUnits, ref UnitsUsed);
+            }
+            while (!string.IsNullOrEmpty(currentCashUnit));
+
+            // If the amount remaining isn't zero, then we can't dispense this value.
+            if (remainingAmount != 0)
+            {
+                MinNumberMix.CalculateR(Amount, Currency, LastCashUnit, CashUnits, ref UnitsUsed, ref Denom);
+                foreach (var oriDenom in originalTotalDenomination)
+                {
+                    if (Denom.ContainsKey(oriDenom.Key))
+                        Denom[oriDenom.Key] += oriDenom.Value;
+                    else
+                        Denom.Add(oriDenom.Key, oriDenom.Value);
+                }
+            }
+
+            // Don't check the total value of the Denomination, because we do that in the caller.
+            return Denom.Select(c => c.Value).Sum() != 0;
         }
     }
 }

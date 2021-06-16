@@ -18,11 +18,11 @@ namespace XFS4IoTServer
 {
     public partial class DispenserServiceClass
     {
+
         /// <summary>
         /// Add vendor specific mix algorithm
         /// </summary>
-        /// <param name="mixNumber">mix number</param>
-        /// <param name="mix">Mix algorithm implemented</param>
+        /// <param name="mix">new mix algorithm to support for a customization</param>
         public void AddMix(int mixNumber, Mix mix)
         {
             if (Mixes.ContainsKey(mixNumber))
@@ -35,7 +35,8 @@ namespace XFS4IoTServer
         /// </summary>
         internal Dictionary<int, Mix> Mixes = new()
         {
-            { 1, new MinNumberMix(1) }
+            { 1, new MinNumberMix(1)     },
+            { 2, new EqualEmptyingMix(2) }
         };
 
         /// <summary>
