@@ -60,7 +60,8 @@ namespace XFS4IoTFramework.Dispenser
         /// </summary>
         public DispensableResultEnum IsDispensable(Dictionary<string, CashUnit> CashUnits, ILogger Logger)
         {
-            if (Values.Count == 0)
+            if (Values is null ||
+                Values.Count == 0)
             {
                 Logger.Warning(Constants.Framework, "The Value of the cash units are empty to check amount is dispensable.");
                 return DispensableResultEnum.InvalidDenomination;
@@ -85,14 +86,14 @@ namespace XFS4IoTFramework.Dispenser
                     CashUnits[unit.Key].Type != CashUnit.TypeEnum.Recycling)
                 {
                     Logger.Warning(Constants.Framework, $"Invalid counts to pick from none dispensable unit. {unit.Key}, {CashUnits[unit.Key].Type}" + nameof(IsDispensable));
-                    return DispensableResultEnum.CashUnitError; 
+                    return DispensableResultEnum.CashUnitError;
                 }
 
                 // Check counts first
                 if (CashUnits[unit.Key].Count < unit.Value)
                 {
                     Logger.Warning(Constants.Framework, $"Not enough cash to dispense item. {unit.Key}, {CashUnits[unit.Key].Count}" + nameof(IsDispensable));
-                    return DispensableResultEnum.CashUnitNotEnough; 
+                    return DispensableResultEnum.CashUnitNotEnough;
                 }
 
                 // Check status
@@ -102,27 +103,31 @@ namespace XFS4IoTFramework.Dispenser
                     CashUnits[unit.Key].Status != CashUnit.StatusEnum.Full)
                 {
                     Logger.Warning(Constants.Framework, $"Not good cash unit status to dispense item. {unit.Key}, {CashUnits[unit.Key].Count}, {CashUnits[unit.Key].Status}" + nameof(IsDispensable));
-                    return DispensableResultEnum.CashUnitError; 
+                    return DispensableResultEnum.CashUnitError;
                 }
 
-                // Check currency
-                bool currencyOK = false;
-                foreach (var currency in CurrencyAmounts)
+                // No need to check amounts if CurrencyAmounts is not set
+                if (CurrencyAmounts is not null)
                 {
-                    if (CashUnits[unit.Key].CurrencyID == currency.Key)
+                    // Check currency
+                    bool currencyOK = false;
+                    foreach (var currency in CurrencyAmounts)
                     {
-                        currencyOK = true;
-                        break;
+                        if (CashUnits[unit.Key].CurrencyID == currency.Key)
+                        {
+                            currencyOK = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!currencyOK)
-                {
-                    Logger.Warning(Constants.Framework, $"Specified currency ID not found to dispense. {unit.Key}, {CashUnits[unit.Key].Count}, {CashUnits[unit.Key].CurrencyID}" + nameof(IsDispensable));
-                    return DispensableResultEnum.InvalidCurrency;
-                }
+                    if (!currencyOK)
+                    {
+                        Logger.Warning(Constants.Framework, $"Specified currency ID not found to dispense. {unit.Key}, {CashUnits[unit.Key].Count}, {CashUnits[unit.Key].CurrencyID}" + nameof(IsDispensable));
+                        return DispensableResultEnum.InvalidCurrency;
+                    }
 
-                internalAmount += CashUnits[unit.Key].Value * unit.Value;
+                    internalAmount += CashUnits[unit.Key].Value * unit.Value;
+                }
             }
 
             double total = 0;
@@ -147,6 +152,19 @@ namespace XFS4IoTFramework.Dispenser
         /// </summary>
         public bool CheckTotalAmount(Dictionary<string, CashUnit> CashUnits)
         {
+            if (CurrencyAmounts is null &&
+                CashUnits is null)
+            {
+                // Not sure why this method is called
+                return true;
+            }
+
+            if (CurrencyAmounts is null ||
+                CashUnits is null)
+            {
+                return false;
+            }
+
             double total = 0;
             foreach (var currency in CurrencyAmounts)
             {
