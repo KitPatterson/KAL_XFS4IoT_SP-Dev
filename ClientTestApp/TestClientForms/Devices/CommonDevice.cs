@@ -60,7 +60,6 @@ namespace TestClientForms.Devices
         protected TextBox PortBox { get; init; }
         protected TextBox ServiceUriBox { get; init; }
 
-        internal RequestId RequestId { get; set; }
         private int? ServicePort { get; set; }
 
         public static readonly int CommandTimeout = 60000;
