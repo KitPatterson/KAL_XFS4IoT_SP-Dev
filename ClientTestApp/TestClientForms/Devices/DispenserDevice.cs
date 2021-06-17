@@ -1,4 +1,10 @@
-﻿using System;
+﻿/***********************************************************************************************\
+ * (C) KAL ATM Software GmbH, 2021
+ * KAL ATM Software GmbH licenses this file to you under the MIT license.
+ * See the LICENSE file in the project root for more information.
+\***********************************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +39,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var getCashUnitInfoCmd = new GetCashUnitInfoCommand(RequestId++, new(CommandTimeout));
+            var getCashUnitInfoCmd = new GetCashUnitInfoCommand(RequestId.NewID(), new(CommandTimeout));
 
             CmdBox.Text = getCashUnitInfoCmd.Serialise();
 
@@ -62,7 +68,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var getMixTypesCmd = new GetMixTypesCommand(RequestId++, new(CommandTimeout));
+            var getMixTypesCmd = new GetMixTypesCommand(RequestId.NewID(), new(CommandTimeout));
 
             CmdBox.Text = getMixTypesCmd.Serialise();
 
@@ -91,7 +97,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var getPresentStatusCmd = new GetPresentStatusCommand(RequestId++, new(CommandTimeout, GetPresentStatusCommand.PayloadData.PositionEnum.Default));
+            var getPresentStatusCmd = new GetPresentStatusCommand(RequestId.NewID(), new(CommandTimeout, GetPresentStatusCommand.PayloadData.PositionEnum.Default));
 
             CmdBox.Text = getPresentStatusCmd.Serialise();
 
@@ -120,7 +126,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var denominateCmd = new DenominateCommand(RequestId++, new(CommandTimeout, null, 1, 
+            var denominateCmd = new DenominateCommand(RequestId.NewID(), new(CommandTimeout, null, 1, 
                 new( new Dictionary<string, double>() {
                     { "EUR", 50 } 
                 })));
@@ -163,7 +169,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var getPresentStatusCmd = new DispenseCommand(RequestId++, 
+            var getPresentStatusCmd = new DispenseCommand(RequestId.NewID(), 
                 new(CommandTimeout, null, 1, DispenseCommand.PayloadData.PositionEnum.Default, 
                 new DispenseCommand.PayloadData.DenominationClass(new Dictionary<string, double>() {
                     { "EUR", 50 }
@@ -197,7 +203,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var startExchangeCmd = new StartExchangeCommand(RequestId++, 
+            var startExchangeCmd = new StartExchangeCommand(RequestId.NewID(), 
                                         new(CommandTimeout, StartExchangeCommand.PayloadData.ExchangeTypeEnum.ByHand, null, new() { "1", "2", "3"}));
 
             CmdBox.Text = startExchangeCmd.Serialise();
@@ -247,7 +253,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var endExchangeCmd = new EndExchangeCommand(RequestId++, new(CommandTimeout));
+            var endExchangeCmd = new EndExchangeCommand(RequestId.NewID(), new(CommandTimeout));
 
             CmdBox.Text = endExchangeCmd.Serialise();
 
@@ -296,7 +302,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var presentCmd = new PresentCommand(RequestId++, new(CommandTimeout));
+            var presentCmd = new PresentCommand(RequestId.NewID(), new(CommandTimeout));
 
             CmdBox.Text = presentCmd.Serialise();
 
@@ -336,7 +342,7 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var resetCmd = new ResetCommand(RequestId++, new(CommandTimeout, null, null, ResetCommand.PayloadData.OutputPositionEnum.Default));
+            var resetCmd = new ResetCommand(RequestId.NewID(), new(CommandTimeout, null, null, ResetCommand.PayloadData.OutputPositionEnum.Default));
 
             CmdBox.Text = resetCmd.Serialise();
 

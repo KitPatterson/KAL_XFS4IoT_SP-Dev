@@ -1,4 +1,10 @@
-﻿using System;
+﻿/***********************************************************************************************\
+ * (C) KAL ATM Software GmbH, 2021
+ * KAL ATM Software GmbH licenses this file to you under the MIT license.
+ * See the LICENSE file in the project root for more information.
+\***********************************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +36,7 @@ namespace TestClientForms.Devices
             }
 
             var readRawDataCmd = new ReadRawDataCommand(
-                RequestId++,
+                RequestId.NewID(),
                 new ReadRawDataCommand.PayloadData(
                     Timeout: CommandTimeout,
                     Track1: true,
@@ -92,7 +98,7 @@ namespace TestClientForms.Devices
             }
 
             var ejectCmd = new EjectCardCommand(
-                RequestId++, new EjectCardCommand.PayloadData(
+                RequestId.NewID(), new EjectCardCommand.PayloadData(
                     Timeout: CommandTimeout,
                     EjectPosition: EjectCardCommand.PayloadData.EjectPositionEnum.ExitPosition));
 
@@ -138,7 +144,7 @@ namespace TestClientForms.Devices
             }
 
             var captureCmd = new RetainCardCommand(
-                RequestId++, new RetainCardCommand.PayloadData(
+                RequestId.NewID(), new RetainCardCommand.PayloadData(
                     Timeout: CommandTimeout));
 
             CmdBox.Text = captureCmd.Serialise();
