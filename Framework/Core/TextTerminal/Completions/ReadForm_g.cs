@@ -47,14 +47,14 @@ namespace XFS4IoT.TextTerminal.Completions
             /// * ```formNotFound``` - The specified form definition cannot be found.
             /// * ```formInvalid``` - The specified form definition is invalid.
             /// * ```fieldSpecFailure``` - The syntax of the lpszFields member is invalid.
-            /// * ```keyCanceled``` - The read operation was terminated by pressing the <CANCEL> key.
+            /// * ```keyCanceled``` - The read operation was terminated by pressing the &lt;CANCEL&gt; key.
             /// * ```fieldError``` - An error occurred while processing a field.
             /// </summary>
             [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
             /// <summary>
-            /// Specifies \"<fieldName>=<fieldValue>\" string. e.g. Field1=123. The <fieldValue> 
+            /// Specifies "&lt;fieldName&gt;=&lt;fieldValue&gt;" string. e.g. Field1=123. The &lt;fieldValue&gt; 
             /// stands for a string containing all the printable characters (numeric and alphanumeric) 
             /// read from the text terminal unit key pad for this field.
             /// </summary>

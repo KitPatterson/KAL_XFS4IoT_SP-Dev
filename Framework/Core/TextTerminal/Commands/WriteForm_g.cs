@@ -48,8 +48,8 @@ namespace XFS4IoT.TextTerminal.Commands
             public bool? ClearScreen { get; private set; }
 
             /// <summary>
-            /// Specifies \"<fieldName>=<fieldValue>\" string. e.g. Field1=123. 
-            /// The <fieldValue> stands for a string containing all the printable characters (numeric and alphanumeric) 
+            /// Specifies "&lt;fieldName&gt;=&lt;fieldValue&gt;" string. e.g. Field1=123. 
+            /// The &lt;fieldValue&gt; stands for a string containing all the printable characters (numeric and alphanumeric) 
             /// to display on the text terminal unit key pad for this field.
             /// </summary>
             [DataMember(Name = "fields")]
