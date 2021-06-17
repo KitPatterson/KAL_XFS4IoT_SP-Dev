@@ -144,15 +144,15 @@ namespace XFS4IoT.TextTerminal.Commands
 
             /// <summary>
             /// String which specifies the numeric and alphanumeric keys on the Text Terminal Unit,
-            /// e.g. \"12ABab\", to be active during the execution of the command. Devices having a shift key interpret 
+            /// e.g. "12ABab", to be active during the execution of the command. Devices having a shift key interpret 
             /// this parameter differently from those that do not have a shift key. For devices having a shift key, 
             /// specifying only the upper case of a particular letter enables both upper and lower case of that key, 
             /// but the device converts lower case letters to upper case in the output parameter. To enable both 
             /// upper and lower case keys, and have both upper and lower case letters returned, specify both the 
-            /// upper and lower case of the letter (e.g. \"12AaBb\"). For devices not having a shift key, specifying 
-            /// either the upper case only (e.g. \"12AB\"), or specifying both the upper and lower case of a particular letter 
-            /// (e.g. \"12AaBb\"), enables that key and causes the device to return the upper case of the letter in the output parameter. 
-            /// For both types of device, specifying only lower case letters (e.g. \"12ab\") produces a key invalid error. 
+            /// upper and lower case of the letter (e.g. "12AaBb"). For devices not having a shift key, specifying 
+            /// either the upper case only (e.g. "12AB"), or specifying both the upper and lower case of a particular letter 
+            /// (e.g. "12AaBb"), enables that key and causes the device to return the upper case of the letter in the output parameter. 
+            /// For both types of device, specifying only lower case letters (e.g. "12ab") produces a key invalid error. 
             /// This parameter is a NULL if no keys of this type are active keys. activeKeys and activeUnicodeKeys are 
             /// mutually exclusive, so activeKeys field must not be set  if activeUnicodeKeys field is not set.
             /// </summary>

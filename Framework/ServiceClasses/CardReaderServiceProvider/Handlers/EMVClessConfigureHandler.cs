@@ -18,7 +18,7 @@ namespace XFS4IoTFramework.CardReader
     { 
         private async Task<EMVClessConfigureCompletion.PayloadData> HandleEMVClessConfigure(IEMVClessConfigureEvents events, EMVClessConfigureCommand eMVClessConfigure, CancellationToken cancel)
         {
-            /// Data check
+            // Data check
             if ((eMVClessConfigure.Payload.AidData is null || eMVClessConfigure.Payload.AidData.Count == 0) &&
                 eMVClessConfigure.Payload.TerminalData is null &&
                 (eMVClessConfigure.Payload.KeyData is null || eMVClessConfigure.Payload.KeyData.Count == 0))
@@ -66,7 +66,7 @@ namespace XFS4IoTFramework.CardReader
                                                                        "No CA Public Key is supplied.");
                 }
 
-                /// MISSING PKs.CaPublicKey structure
+                // MISSING PKs.CaPublicKey structure
                 PublicKeys.Add(new PublicKeyInfo(new List<byte>(Convert.FromBase64String(PKs.Rid)),
                                                  null));
             }
