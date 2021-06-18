@@ -26,7 +26,7 @@ namespace XFS4IoT.TextTerminal.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, List<string> Fields = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, Dictionary<string, string> Fields = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
@@ -54,12 +54,11 @@ namespace XFS4IoT.TextTerminal.Completions
             public ErrorCodeEnum? ErrorCode { get; private set; }
 
             /// <summary>
-            /// Specifies "&lt;fieldName&gt;=&lt;fieldValue&gt;" string. e.g. Field1=123. The &lt;fieldValue&gt; 
-            /// stands for a string containing all the printable characters (numeric and alphanumeric) 
+            /// Details of the field(s) requested. The key is the field name and value is file value containing all the printable characters (numeric and alphanumeric) 
             /// read from the text terminal unit key pad for this field.
             /// </summary>
             [DataMember(Name = "fields")]
-            public List<string> Fields { get; private set; }
+            public Dictionary<string, string> Fields { get; private set; }
 
         }
     }

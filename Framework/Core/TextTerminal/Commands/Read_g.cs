@@ -51,9 +51,7 @@ namespace XFS4IoT.TextTerminal.Commands
             [DataMember(Name = "numOfChars")]
             public int? NumOfChars { get; private set; }
 
-            /// <summary>
-            /// Specifies where the cursor is positioned for the read operation.
-            /// </summary>
+
             [DataMember(Name = "mode")]
             public ModesEnum? Mode { get; private set; }
 
@@ -81,7 +79,10 @@ namespace XFS4IoT.TextTerminal.Commands
             }
 
             /// <summary>
-            /// Specifies how the user input is echoed to the screen.
+            /// Specifies how the user input is echoed to the screen as one of the following flags:
+            /// * ```text``` - The user input is echoed to the screen.
+            /// * ```invisible``` - The user input is not echoed to the screen.
+            /// * ```password``` - The keys entered by the user are echoed as the replace character on the screen.
             /// </summary>
             [DataMember(Name = "echoMode")]
             public EchoModeEnum? EchoMode { get; private set; }
@@ -124,13 +125,13 @@ namespace XFS4IoT.TextTerminal.Commands
             public EchoAttrClass EchoAttr { get; private set; }
 
             /// <summary>
-            /// Specifies whether the cursor is visible(TRUE) or invisible(FALSE).
+            /// Specifies whether the cursor is visible(true) or invisible(false).
             /// </summary>
             [DataMember(Name = "echo")]
             public bool? Echo { get; private set; }
 
             /// <summary>
-            /// Specifies whether the keyboard input buffer is cleared before allowing for user input(TRUE) or not (FALSE).
+            /// Specifies whether the keyboard input buffer is cleared before allowing for user input(true) or not (false).
             /// </summary>
             [DataMember(Name = "flush")]
             public bool? Flush { get; private set; }
