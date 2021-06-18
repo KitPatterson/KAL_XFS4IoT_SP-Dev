@@ -324,75 +324,131 @@ namespace XFS4IoTServer.CashDispenser
     [Serializable()]
     public sealed class MixTable : Mix
     {
-        public sealed class MixRow
+        public sealed class Table
         {
-            public MixRow(double Amount, List<int> Values)
+            public Table(double Amount, List<double> Values, List<int> Counts)
             {
-                this.Amount = Amount;
-                this.Values = Values;
+                Contracts.Assert(Values.Count == Counts.Count, $"Supplied size for the Values and Counts are different. {Values.Count} {Counts.Count}");
+
+                Amount = 0;
+                this.Counts = new();
+                for (int i=0; i<Values.Count; i++)
+                {
+                    Amount += Values[i] * Counts[i];
+                    this.Counts.Add(Values[i], Counts[i]);
+                }
             }
 
             public double Amount { get; init; }
 
-            public List<int> Values { get; init; }
+            public Dictionary<double, int> Counts { get; init; }
         }
 
         public MixTable(int MixNumber,
-                        string Name, 
+                        string Name,
                         List<double> Cols,
-                        List<MixRow> Rows)
+                        Dictionary<double, List<Table>> Mixes)
             : base(MixNumber, 
                    TypeEnum.Table,
                    (int)SubTypeEmum.Table, 
                    Name)
         {
-            this.Cols = Cols;
-            this.Rows = Rows;
-
-            foreach (MixRow row in Rows)
-            {
-                double mixAmount = 0;
-                for (int i=0; i<Cols.Count; i++)
-                {
-                    mixAmount += Cols[i] * row.Values[i];
-                }
-
-                if ((double)row.Amount != mixAmount)
-                {
-                    TableValid = false;
-                    break;
-                }
-                else
-                {
-                    Mixes.Add(mixAmount, row.Values);
-                }
-                
-                if (!TableValid)
-                    break;
-            }
-
-            if (!TableValid)
-                Mixes.Clear();
+            this.Values = Cols;
+            this.Mixes = Mixes;
         }
 
         public override Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems, ILogger Logger)
         {
-            Contracts.Assert(false, "Table mix is not supported yet.");
-            throw new NotImplementedException();
+            // Loop through the table looking for a mix with the given value.
+            Dictionary<string, int> denom = new();
+
+            foreach (var ca in CurrencyAmounts)
+            {
+                // Loop through all the mixes
+                foreach (var mix in Mixes)
+                {
+                    // Check if this mix specifies the required amount.
+                    if (mix.Key != ca.Value)
+                        continue;
+
+                    // Found a matching amount. 
+                    // Now find the denomination for this mix, and check that it can be dispensed.
+                    Dictionary<string, int> newDenom = new();
+                    foreach (var value in mix.Value)
+                    {
+                        foreach (var count in value.Counts)
+                        {
+                            // Loop through cash units
+                            foreach (var unit in CashUnits)
+                            {
+                                if (unit.Value.CurrencyID == ca.Key &&
+                                    unit.Value.Value == count.Key)
+                                {
+                                    // Found one and check there is enough cash
+                                    if (count.Value > unit.Value.Count)
+                                    {
+                                        // Maybe there are another units has save value
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        if (newDenom.ContainsKey(unit.Key))
+                                        {
+                                            Logger.Warning(Constants.Framework, $"Invalid cash unit key. the key representing cash unit must be unique. {unit.Key}");
+                                            return new Denomination(CurrencyAmounts);
+                                        }
+                                        newDenom.Add(unit.Key, count.Value);
+                                    }
+                                }
+                            }
+                        }
+                        // Check the table is find or not
+                        if (newDenom.Select(d => d.Value).Sum() == value.Counts.Select(v => v.Value).Sum())
+                        {
+                            // Found one
+                            break;
+                        }
+
+                        newDenom.Clear();
+                    }
+
+                    if (newDenom.Count == 0)
+                    {
+                        // Could not find table can be dispensable for this amount
+                        return new Denomination(CurrencyAmounts);
+                    }
+
+                    if (new Denomination(CurrencyAmounts, newDenom).IsDispensable(CashUnits, Logger) == Denomination.DispensableResultEnum.Good)
+                    {
+                        // Go to next currency and amount
+                        foreach (var d in newDenom)
+                        {
+                            if (denom.ContainsKey(d.Key))
+                                denom[d.Key] += d.Value;
+                            else
+                                denom.Add(d.Key, d.Value);
+                        }
+
+                        break;
+                    }
+                    else
+                    {
+                        // One of cash unit is not available to dispense
+                        return new Denomination(CurrencyAmounts);
+                    }
+                }
+            }
+
+            return new Denomination(CurrencyAmounts, denom);
         }
 
-        public bool TableValid { get; init; } = false;
-
-        public List<double> Cols { get; init; }
-                        
-        public List<MixRow> Rows { get; init; }
+        public List<double> Values { get; init; }
 
         /// <summary>
         /// Key is a amount and value is a table of conbination of the mixes
-        /// Key   - Amount
-        /// Value - The quantity of each item denomination in the mix for the key
+        /// Value - The quantity of each item denomination in the mix
         /// </summary>
-        public Dictionary<double, List<int>> Mixes { get; init; } = new();
+        public Dictionary<double, List<Table>> Mixes { get; init; }
     }
 
     /// <summary>

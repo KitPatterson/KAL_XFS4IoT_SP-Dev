@@ -69,7 +69,7 @@ namespace XFS4IoTFramework.Dispenser
                 mixNumber = (int)dispense.Payload.MixNumber;
 
             if (mixNumber != 0 &&
-                CashDispenserService.Mixes.ContainsKey((int)dispense.Payload.MixNumber))
+                CashDispenserService.GetMix((int)dispense.Payload.MixNumber) is null)
             {
                 return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
                                                           $"Invalid MixNumber specified. {mixNumber}", 
@@ -143,7 +143,7 @@ namespace XFS4IoTFramework.Dispenser
                                                               $"Specified amount is zero to dispense, but number of notes from each cash unit is not specified as well.");
                 }
 
-                denomToDispense = CashDispenserService.Mixes[mixNumber].Calculate(denomToDispense.CurrencyAmounts, CashDispenserService.CashManagementService.CashUnits, CashDispenserService.CommonService.CashDispenserCapabilities.MaxDispenseItems, Logger);
+                denomToDispense = CashDispenserService.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, CashDispenserService.CashManagementService.CashUnits, CashDispenserService.CommonService.CashDispenserCapabilities.MaxDispenseItems, Logger);
             }
             ////////////////////////////////////////////////////////////////////////////
             //  3) Complete a partially specified denomination for a given amount.
@@ -156,7 +156,7 @@ namespace XFS4IoTFramework.Dispenser
                                                               $"Specified amount is zero to dispense, but number of notes from each cash unit is not specified as well.");
                 }
 
-                Denomination mixDenom = CashDispenserService.Mixes[mixNumber].Calculate(denomToDispense.CurrencyAmounts, CashDispenserService.CashManagementService.CashUnits, CashDispenserService.CommonService.CashDispenserCapabilities.MaxDispenseItems, Logger);
+                Denomination mixDenom = CashDispenserService.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, CashDispenserService.CashManagementService.CashUnits, CashDispenserService.CommonService.CashDispenserCapabilities.MaxDispenseItems, Logger);
                 if (mixDenom.Values != denomToDispense.Values)
                 {
                     return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 

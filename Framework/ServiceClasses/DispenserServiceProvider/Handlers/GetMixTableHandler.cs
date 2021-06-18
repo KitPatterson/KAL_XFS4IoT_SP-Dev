@@ -25,31 +25,41 @@ namespace XFS4IoTFramework.Dispenser
         {
             DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
-            if (getMixTable.Payload.MixNumber is null ||
-                !CashDispenserService.Mixes.ContainsKey((int)getMixTable.Payload.MixNumber) ||
-                CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].Type != Mix.TypeEnum.Table)
+            
+            if (getMixTable.Payload.MixNumber is null)
             {
                 return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
                                                                              $"Invalid mix number supplied. {getMixTable.Payload.MixNumber}",
                                                                              GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
             }
 
-            CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].IsA<MixTable>($"Unexpected internal mix type received. {CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].GetType()}");
-            MixTable mixTable = CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber] as MixTable;
+            Mix mix = CashDispenserService.GetMix((int)getMixTable.Payload.MixNumber);
+            if (mix is null ||
+                mix.Type != Mix.TypeEnum.Table)
+            {
+                return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                             $"Supplied mix number is not a MixTable. {getMixTable.Payload.MixNumber}",
+                                                                             GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
+            }
+
+            MixTable mixTable = CashDispenserService.GetMix((int)getMixTable.Payload.MixNumber).IsA<MixTable>($"Unexpected mix type. {mix.GetType()}");
 
             List<GetMixTableCompletion.PayloadData.MixRowsClass> mixRows = new();
             foreach (var table in mixTable.Mixes)
             {
-                mixRows.Add(new GetMixTableCompletion.PayloadData.MixRowsClass(table.Key,
-                                                                               table.Value.Select(t => t).ToList()));
+                List<int> cols = new();
+                foreach (var col in table.Value)
+                    cols.AddRange(col.Counts.Select(v=>v.Value).ToList());
+
+                mixRows.Add(new GetMixTableCompletion.PayloadData.MixRowsClass(table.Key, cols));
             }
 
             return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                          null,
                                                                          null,
-                                                                         CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].MixNumber,
-                                                                         CashDispenserService.Mixes[(int)getMixTable.Payload.MixNumber].Name,
-                                                                         mixTable.Cols.Select(c => c).ToList(),
+                                                                         mixTable.MixNumber,
+                                                                         mixTable.Name,
+                                                                         mixTable.Values.Select(c => c).ToList(),
                                                                          mixRows));
         }
     }

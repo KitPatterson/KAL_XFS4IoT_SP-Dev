@@ -5,7 +5,7 @@
  *
 \***********************************************************************************************/
 
-
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
@@ -26,18 +26,20 @@ namespace XFS4IoTFramework.Dispenser
 
             List<GetMixTypesCompletion.PayloadData.MixTypesClass> mixes = new();
 
-            foreach (var mix in CashDispenserService.Mixes)
+            IEnumerator mixAlgorithms = CashDispenserService.GetMixAlgorithms();
+            while (mixAlgorithms.MoveNext())
             {
-                GetMixTypesCompletion.PayloadData.MixTypesClass.MixTypeEnum type = mix.Value.Type switch
+                Mix mix = ((Mix)mixAlgorithms.Current);
+                GetMixTypesCompletion.PayloadData.MixTypesClass.MixTypeEnum type = mix.Type switch
                 {
                     Mix.TypeEnum.Algorithm => GetMixTypesCompletion.PayloadData.MixTypesClass.MixTypeEnum.MixAlgorithm,
                     _ => GetMixTypesCompletion.PayloadData.MixTypesClass.MixTypeEnum.MixTable
                 };
 
-                mixes.Add(new GetMixTypesCompletion.PayloadData.MixTypesClass(mix.Value.MixNumber, 
+                mixes.Add(new GetMixTypesCompletion.PayloadData.MixTypesClass(mix.MixNumber, 
                                                                               type, 
-                                                                              (int)mix.Value.SubType, 
-                                                                              mix.Value.Name));
+                                                                              (int)mix.SubType,
+                                                                              mix.Name));
             }
 
             return Task.FromResult(new GetMixTypesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,

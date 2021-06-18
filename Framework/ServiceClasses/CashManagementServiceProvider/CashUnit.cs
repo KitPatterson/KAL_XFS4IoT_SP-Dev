@@ -17,7 +17,7 @@ namespace XFS4IoTServer.CashManagement
     /// Breakdown item counters associated with the BankNoteID
     /// </summary>
     [Serializable()]
-    public sealed class BankNoteNumber : ICloneable, IEquatable<BankNoteNumber>
+    public sealed record BankNoteNumber
     {
         public BankNoteNumber()
         {
@@ -30,45 +30,6 @@ namespace XFS4IoTServer.CashManagement
         {
             this.NoteID = NoteID;
             this.Count = Count;
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as BankNoteNumber);
-        }
-
-        public bool Equals(BankNoteNumber obj)
-        {
-            if (obj is null)
-                return false;
-
-            if (object.ReferenceEquals(this, obj))
-                return true;
-
-            return (NoteID == obj.NoteID &&
-                    Count == obj.Count);
-        }
-
-        public override int GetHashCode()
-        {
-            return NoteID.GetHashCode() ^ Count.GetHashCode();
-        }
-
-        public static bool operator ==(BankNoteNumber lBankNoteNumber, BankNoteNumber rBankNoteNumber)
-        {
-            if (lBankNoteNumber is null)
-                return rBankNoteNumber is null;
-            return lBankNoteNumber.Equals(rBankNoteNumber);
-        }
-
-        public static bool operator !=(BankNoteNumber lBankNoteNumber, BankNoteNumber rBankNoteNumber)
-        {
-            return !(lBankNoteNumber == rBankNoteNumber);
         }
 
         /// <summary>
@@ -88,7 +49,7 @@ namespace XFS4IoTServer.CashManagement
     /// Cash Unit strcuture the device class supports
     /// </summary>
     [Serializable()]
-    public sealed class CashUnit : ICloneable, IEquatable<CashUnit>
+    public sealed record CashUnit
     {
         [Flags]
         public enum ItemTypesEnum
@@ -233,138 +194,6 @@ namespace XFS4IoTServer.CashManagement
             this.CashInCount = 0;
             this.BankNoteNumberList = new List<BankNoteNumber>();
             this.BanknoteIDs = Unit.BanknoteIDs;
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as CashUnit);
-        }
-
-        public bool Equals(CashUnit obj)
-        {
-            if (obj is null)
-                return false;
-
-            if (object.ReferenceEquals(this, obj))
-                return true;
-
-            if (obj.BankNoteNumberList is not null &&
-                BankNoteNumberList is not null &&
-                obj.BankNoteNumberList.Count > 0 &&
-                BankNoteNumberList.Count > 0)
-            {
-                foreach (var _ in from BankNoteNumber bk in obj.BankNoteNumberList
-                                  where !BankNoteNumberList.Contains(bk)
-                                  select new { })
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!(obj.BankNoteNumberList is null &&
-                      BankNoteNumberList is null))
-                {
-                    return false;
-                }
-                if (obj.BankNoteNumberList.Count != BankNoteNumberList.Count)
-                    return false;
-            }
-
-            if (obj.BanknoteIDs is not null &&
-                BanknoteIDs is not null &&
-                obj.BanknoteIDs.Count > 0 &&
-                BanknoteIDs.Count > 0)
-            {
-                foreach (var _ in from int id in obj.BanknoteIDs
-                                  where !BanknoteIDs.Contains(id)
-                                  select new { })
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!(obj.BanknoteIDs is null &&
-                      BanknoteIDs is null))
-                {
-                    return false;
-                }
-                if (obj.BanknoteIDs.Count != BanknoteIDs.Count)
-                    return false;
-            }
-
-            return (Status == obj.Status &&
-                    Type == obj.Type &&
-                    CurrencyID == obj.CurrencyID &&
-                    Value == obj.Value &&
-                    LogicalCount == obj.LogicalCount &&
-                    Maximum == obj.Maximum &&
-                    AppLock == obj.AppLock &&
-                    CashUnitName == obj.CashUnitName &&
-                    InitialCount == obj.InitialCount &&
-                    DispensedCount == obj.DispensedCount &&
-                    PresentedCount == obj.PresentedCount &&
-                    RetractedCount == obj.RetractedCount &&
-                    RejectCount == obj.RejectCount &&
-                    Minimum == obj.Minimum &&
-                    PhysicalPositionName == obj.PhysicalPositionName &&
-                    UnitID == obj.UnitID &&
-                    Count == obj.Count &&
-                    MaximumCapacity == obj.MaximumCapacity &&
-                    HardwareSensor == obj.HardwareSensor &&
-                    ItemTypes == obj.ItemTypes &&
-                    CashInCount == obj.CashInCount);
-        }
-
-        public override int GetHashCode()
-        {
-            int hash = Status.GetHashCode() ^
-                       Type.GetHashCode() ^
-                       CurrencyID.GetHashCode() ^
-                       Value.GetHashCode() ^
-                       LogicalCount.GetHashCode() ^
-                       Maximum.GetHashCode() ^
-                       AppLock.GetHashCode() ^
-                       CashUnitName.GetHashCode() ^
-                       InitialCount.GetHashCode() ^
-                       DispensedCount.GetHashCode() ^
-                       PresentedCount.GetHashCode() ^
-                       RetractedCount.GetHashCode() ^
-                       RejectCount.GetHashCode() ^
-                       Minimum.GetHashCode() ^
-                       PhysicalPositionName.GetHashCode() ^
-                       UnitID.GetHashCode() ^
-                       Count.GetHashCode() ^
-                       MaximumCapacity.GetHashCode() ^
-                       HardwareSensor.GetHashCode() ^
-                       ItemTypes.GetHashCode() ^
-                       CashInCount.GetHashCode();
-
-            if (BankNoteNumberList is not null)
-                hash ^= BankNoteNumberList.GetHashCode();
-
-            if (BanknoteIDs is not null)
-                hash ^= BanknoteIDs.GetHashCode();
-
-            return hash;
-        }
-
-        public static bool operator ==(CashUnit lCashUnit, CashUnit rCashUnit)
-        {
-            if (lCashUnit is null)
-                return rCashUnit is null;
-            return lCashUnit.Equals(rCashUnit);
-        }
-
-        public static bool operator !=(CashUnit lCashUnit, CashUnit rCashUnit)
-        {
-            return !(lCashUnit == rCashUnit);
         }
 
         /// <summary>
@@ -641,7 +470,7 @@ namespace XFS4IoTServer.CashManagement
     /// CashUnitAccounting
     /// The device specific class update counts after device operation is completed
     /// </summary>
-    public sealed class CashUnitAccounting : ICloneable
+    public sealed record CashUnitAccounting
     {
         public CashUnitAccounting()
         {
@@ -675,11 +504,6 @@ namespace XFS4IoTServer.CashManagement
             this.Count = Count;
             this.CashInCount = CashInCount;
             this.BankNoteNumberList = BankNoteNumberList;
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
         }
 
         /// <summary>
@@ -764,7 +588,7 @@ namespace XFS4IoTServer.CashManagement
     /// <summary>
     /// Cash Unit configuration the device supports
     /// </summary>
-    public sealed class CashUnitConfiguration : ICloneable, IEquatable<CashUnitConfiguration>
+    public sealed record CashUnitConfiguration
     {
         public CashUnitConfiguration(CashUnit.TypeEnum Type,
                                      string CurrencyID,
@@ -793,95 +617,6 @@ namespace XFS4IoTServer.CashManagement
             this.HardwareSensor = HardwareSensor;
             this.ItemTypes = ItemTypes;
             this.BanknoteIDs = BanknoteIDs;
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as CashUnitConfiguration);
-        }
-
-        public bool Equals(CashUnitConfiguration obj)
-        {
-            if (obj is null)
-                return false;
-
-            if (object.ReferenceEquals(this, obj))
-                return true;
-
-            if (obj.BanknoteIDs is not null &&
-                BanknoteIDs is not null &&
-                obj.BanknoteIDs.Count > 0 &&
-                BanknoteIDs.Count > 0)
-            {
-                foreach (var _ in from int id in obj.BanknoteIDs
-                                  where !BanknoteIDs.Contains(id)
-                                  select new { })
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!(obj.BanknoteIDs is null &&
-                     BanknoteIDs is null))
-                {
-                    return false;
-                }
-                if (obj.BanknoteIDs.Count != BanknoteIDs.Count)
-                    return false;
-            }
-
-            return (Type == obj.Type &&
-                    CurrencyID == obj.CurrencyID &&
-                    Value == obj.Value &&
-                    Maximum == obj.Maximum &&
-                    AppLock == obj.AppLock &&
-                    CashUnitName == obj.CashUnitName &&
-                    Minimum == obj.Minimum &&
-                    PhysicalPositionName == obj.PhysicalPositionName &&
-                    UnitID == obj.UnitID &&
-                    MaximumCapacity == obj.MaximumCapacity &&
-                    HardwareSensor == obj.HardwareSensor &&
-                    ItemTypes == obj.ItemTypes);
-        }
-
-        public override int GetHashCode()
-        {
-            int hash = Type.GetHashCode() ^
-                       CurrencyID.GetHashCode() ^
-                       Value.GetHashCode() ^
-                       Maximum.GetHashCode() ^
-                       AppLock.GetHashCode() ^
-                       CashUnitName.GetHashCode() ^
-                       Minimum.GetHashCode() ^
-                       PhysicalPositionName.GetHashCode() ^
-                       UnitID.GetHashCode() ^
-                       MaximumCapacity.GetHashCode() ^
-                       HardwareSensor.GetHashCode() ^
-                       ItemTypes.GetHashCode();
-
-            if (BanknoteIDs is not null)
-                hash ^= BanknoteIDs.GetHashCode();
-
-            return hash;
-        }
-
-        public static bool operator ==(CashUnitConfiguration lCashUnitConfig, CashUnitConfiguration rCashUnitConfig)
-        {
-            if (lCashUnitConfig is null)
-                return rCashUnitConfig is null;
-            return lCashUnitConfig.Equals(rCashUnitConfig);
-        }
-
-        public static bool operator !=(CashUnitConfiguration lCashUnitConfig, CashUnitConfiguration rCashUnitConfig)
-        {
-            return !(lCashUnitConfig == rCashUnitConfig);
         }
 
         /// <summary>
@@ -984,5 +719,6 @@ namespace XFS4IoTServer.CashManagement
         /// List of banknote IDs can be stored in this unit
         /// </summary>
         public List<int> BanknoteIDs { get; init; }
+
     }
 }

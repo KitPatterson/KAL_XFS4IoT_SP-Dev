@@ -22,14 +22,26 @@ namespace XFS4IoTServer
 {
     public partial class CashManagementServiceClass
     {
+        public CashManagementServiceClass(IServiceProvider ServiceProvider, ILogger logger, IPersistentData PersistentData) 
+            : this(ServiceProvider, logger)
+        {
+            this.PersistentData = PersistentData.IsNotNull($"No persistent data interface is set. " + nameof(CashManagementServiceClass));
+
+            // Load persistent data
+            CashUnits = PersistentData.Load<Dictionary<string, CashUnit>>(typeof(CashUnit).FullName);
+            if (CashUnits is null)
+            {
+                Logger.Warning(Constants.Framework, "Failed to load persistent data. It could be a first run and no persistent exists on the file system.");
+                CashUnits = new Dictionary<string, CashUnit>();
+            }
+        }
+
         /// <summary>
         /// ConstructCashUnits
         /// The method retreive cash unit structures from the device class. The device class must provide cash unit structure info
         /// </summary>
         internal void ConstructCashUnits()
-        { 
-            //TODO Load Persistent data
-
+        {
             Logger.Log(Constants.DeviceClass, "CashManagementDev.GetCashUnitConfiguration()");
 
             bool newConfiguration = Device.GetCashUnitConfiguration(out Dictionary<string, CashUnitConfiguration> newCashUnits);
@@ -76,7 +88,10 @@ namespace XFS4IoTServer
                 }
             }
 
-            //TODO Save persistent data
+            if (!PersistentData.Store(typeof(CashUnit).FullName, CashUnits))
+            {
+                Logger.Warning(Constants.Framework, "Failed to save persistent data.");
+            }
         }
 
         /// <summary>
@@ -213,7 +228,10 @@ namespace XFS4IoTServer
                 }
             }
 
-            //TODO Save cash unit info persistently
+            if (!PersistentData.Store(typeof(CashUnit).FullName, CashUnits))
+            {
+                Logger.Warning(Constants.Framework, "Failed to save persistent data.");
+            }
         }
 
         /// <summary>
@@ -231,5 +249,10 @@ namespace XFS4IoTServer
         /// True when the SP process gets started and return false once the first CashUnitInfo command is handled.
         /// </summary>
         internal bool FirstCashUnitInfoCommand { get; set; } = true;
+
+        /// <summary>
+        /// Persistent data storage access
+        /// </summary>
+        private readonly IPersistentData PersistentData;
     }
 }

@@ -49,28 +49,19 @@ namespace XFS4IoTFramework.Dispenser
 
             Dictionary<List<string>, Dictionary<double, Denomination>> mixes = new();
 
-            foreach (double? d in setMixTable.Payload.MixHeader)
-            {
-                if (d is null)
-                {
-                    return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                                 "Supplied value in the MixHeader is null."));
-                }
-            }
-
-            List<MixTable.MixRow> mixRow = new();
+            Dictionary<double, List<MixTable.Table>> mixTables = new();
             foreach (SetMixTableCommand.PayloadData.MixRowsClass row in setMixTable.Payload.MixRows)
             {
                 if (row.Amount is null)
                 {
                     return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                                 "Supplied amount in the MixRows is null."));
+                                                                                    "Supplied amount in the MixRows is null."));
                 }
 
                 if (setMixTable.Payload.MixHeader.Count != row.Mixture.Count)
                 {
                     return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                                 "Supplied mixHeader and the mixRow.Mixture size is different."));
+                                                                                    "Supplied mixHeader and the mixRow.Mixture size is different."));
                 }
 
                 foreach (int? v in row.Mixture)
@@ -78,25 +69,28 @@ namespace XFS4IoTFramework.Dispenser
                     if (v is null)
                     {
                         return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                                     "Supplied value in the Mixture is null."));
+                                                                                        "Supplied value in the Mixture is null."));
                     }
                 }
 
-                mixRow.Add(new MixTable.MixRow((double)row.Amount, row.Mixture.Select(r => (int)r).ToList()));
+                MixTable.Table mixTable = new((double)row.Amount, setMixTable.Payload.MixHeader, row.Mixture);
+                if (row.Amount != mixTable.Amount)
+                {
+                    return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                                 "Amount supplied in Cols is different with the "));
+                }
+
+                if (mixTables.ContainsKey((double)row.Amount))
+                    mixTables[(double)row.Amount].Add(mixTable);
+                else
+                    mixTables.Add((double)row.Amount, new List<MixTable.Table>() { mixTable });
             }
 
-            MixTable mixTable = new((int)setMixTable.Payload.MixNumber,
-                                    setMixTable.Payload.Name,
-                                    setMixTable.Payload.MixHeader.Select(c => (double)c).ToList(),
-                                    mixRow);
-
-            if (!mixTable.TableValid)
-            {
-                return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                       "Supplied amount and mixture are not identical."));
-            }
-
-            CashDispenserService.Mixes.Add(mixTable.MixNumber, mixTable);
+            CashDispenserService.AddMix((int)setMixTable.Payload.MixNumber, 
+                                        new MixTable((int)setMixTable.Payload.MixNumber,
+                                                     setMixTable.Payload.Name,
+                                                     setMixTable.Payload.MixHeader,
+                                                     mixTables));
 
             return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null));
         }
