@@ -1,4 +1,10 @@
-﻿using System;
+﻿/***********************************************************************************************\
+ * (C) KAL ATM Software GmbH, 2021
+ * KAL ATM Software GmbH licenses this file to you under the MIT license.
+ * See the LICENSE file in the project root for more information.
+\***********************************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
@@ -54,7 +60,6 @@ namespace TestClientForms.Devices
         protected TextBox PortBox { get; init; }
         protected TextBox ServiceUriBox { get; init; }
 
-        protected int RequestId { get; set; }
         private int? ServicePort { get; set; }
 
         public static readonly int CommandTimeout = 60000;
@@ -101,7 +106,7 @@ namespace TestClientForms.Devices
                             continue;
                         }
 
-                        var getServiceCommand = new GetServicesCommand(RequestId++, new GetServicesCommand.PayloadData(CommandTimeout));
+                        var getServiceCommand = new GetServicesCommand(RequestId.NewID(), new GetServicesCommand.PayloadData(CommandTimeout));
                         commandString = getServiceCommand.Serialise();
                         await Discovery.SendCommandAsync(getServiceCommand);
 
@@ -156,7 +161,7 @@ namespace TestClientForms.Devices
                 return null;
             }
 
-            var statusCmd = new StatusCommand(RequestId++, new StatusCommand.PayloadData(CommandTimeout));
+            var statusCmd = new StatusCommand(RequestId.NewID(), new StatusCommand.PayloadData(CommandTimeout));
             CmdBox.Text = statusCmd.Serialise();
 
             await device.SendCommandAsync(statusCmd);
@@ -186,7 +191,7 @@ namespace TestClientForms.Devices
                 return null;
             }
 
-            var capabilitiesCmd = new CapabilitiesCommand(RequestId++, new CapabilitiesCommand.PayloadData(CommandTimeout));
+            var capabilitiesCmd = new CapabilitiesCommand(RequestId.NewID(), new CapabilitiesCommand.PayloadData(CommandTimeout));
             CmdBox.Text = capabilitiesCmd.Serialise();
 
             await device.SendCommandAsync(capabilitiesCmd);
@@ -202,6 +207,12 @@ namespace TestClientForms.Devices
             }
             return null;
         }
+    }
 
+    internal class RequestId
+    {
+        internal static int NewID() => Interlocked.Increment(ref id);
+
+        private static int id = 1;
     }
 }
