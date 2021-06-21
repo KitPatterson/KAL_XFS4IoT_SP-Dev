@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DispenserServiceProvider", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashManagementServiceProvider", "..\Framework\ServiceClasses\CashManagementServiceProvider\CashManagementServiceProvider.csproj", "{356274F7-D826-40CA-BADA-FD9719ECB358}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashDispenserSample", "SampleCashDispenser\CashDispenserSample.csproj", "{0FD5CA11-864E-46EA-85C2-41F43D5ABD41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{356274F7-D826-40CA-BADA-FD9719ECB358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{356274F7-D826-40CA-BADA-FD9719ECB358}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{356274F7-D826-40CA-BADA-FD9719ECB358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FD5CA11-864E-46EA-85C2-41F43D5ABD41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD5CA11-864E-46EA-85C2-41F43D5ABD41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD5CA11-864E-46EA-85C2-41F43D5ABD41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD5CA11-864E-46EA-85C2-41F43D5ABD41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

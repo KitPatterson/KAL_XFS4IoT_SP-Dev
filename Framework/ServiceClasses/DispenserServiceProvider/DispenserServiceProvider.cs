@@ -17,7 +17,7 @@ using XFS4IoT.Dispenser.Events;
 using XFS4IoTServer;
 using XFS4IoTFramework.Dispenser;
 
-namespace DispenserServiceProvider
+namespace XFS4IoTServer
 {
     /// <summary>
     /// Default implimentation of a dispenser service provider. 
@@ -27,7 +27,7 @@ namespace DispenserServiceProvider
     /// It's possible to create other service provider types by combining multiple service classes in the 
     /// same way. 
     /// </remarks>
-    class DispenserServiceProvider : ServiceProvider, IDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass
+    public class DispenserServiceProvider : ServiceProvider, IDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass
     {
         public DispenserServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger, IPersistentData persistentData)
             :
