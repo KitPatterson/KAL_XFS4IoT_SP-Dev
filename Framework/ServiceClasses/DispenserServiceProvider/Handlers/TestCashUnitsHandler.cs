@@ -14,7 +14,8 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTFramework.Common;
+using XFS4IoTServer.Common;
+using XFS4IoTServer.CashManagement;
 using XFS4IoTFramework.CashManagement;
 
 namespace XFS4IoTFramework.Dispenser
@@ -23,7 +24,7 @@ namespace XFS4IoTFramework.Dispenser
     {
         private async Task<TestCashUnitsCompletion.PayloadData> HandleTestCashUnits(ITestCashUnitsEvents events, TestCashUnitsCommand testCashUnits, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             ItemPosition itemPosition = null;
 
@@ -36,7 +37,7 @@ namespace XFS4IoTFramework.Dispenser
             else
             {
                 if (!string.IsNullOrEmpty(testCashUnits.Payload.Cashunit) &&
-                    !Dispenser.CashUnits.ContainsKey(testCashUnits.Payload.Cashunit))
+                    !CashDispenserService.CashManagementService.CashUnits.ContainsKey(testCashUnits.Payload.Cashunit))
                 {
                     return new TestCashUnitsCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                    $"Specified CashUnit location is unknown.");
@@ -73,7 +74,7 @@ namespace XFS4IoTFramework.Dispenser
                                 _ => CashDispenserCapabilitiesClass.RetractAreaEnum.Default
                             };
 
-                            if (!Dispenser.CashDispenserCapabilities.RetractAreas[retractArea])
+                            if (!CashDispenserService.CommonService.CashDispenserCapabilities.RetractAreas[retractArea])
                             {
                                 return new TestCashUnitsCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                                $"Specified unsupported retract area. {retractArea}",
@@ -105,7 +106,7 @@ namespace XFS4IoTFramework.Dispenser
 
                         };
 
-                        if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
+                        if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
                         {
                             return new TestCashUnitsCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                            $"Specified unsupported output position. {position}");
@@ -125,7 +126,7 @@ namespace XFS4IoTFramework.Dispenser
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.TestCashUnitsAsync() -> {result.CompletionCode}, {result.ErrorCode}");
             
 
-            Dispenser.UpdateCashUnitAccounting(result.MovementResult);
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
 
             Dictionary<string, TestCashUnitsCompletion.PayloadData.CashunitsClass> xfsUnits = null;
             if (result.MovementResult is not null &&
@@ -136,10 +137,10 @@ namespace XFS4IoTFramework.Dispenser
                 foreach (var movement in result.MovementResult)
                 {
                     if (string.IsNullOrEmpty(movement.Key) ||
-                       !Dispenser.CashUnits.ContainsKey(movement.Key))
+                       !CashDispenserService.CashManagementService.CashUnits.ContainsKey(movement.Key))
                         continue; // it's not moved into cash unit
 
-                    CashUnit unit = Dispenser.CashUnits[movement.Key];
+                    CashUnit unit = CashDispenserService.CashManagementService.CashUnits[movement.Key];
 
                     TestCashUnitsCompletion.PayloadData.CashunitsClass.StatusEnum xfsStatus = unit.Status switch
                     {

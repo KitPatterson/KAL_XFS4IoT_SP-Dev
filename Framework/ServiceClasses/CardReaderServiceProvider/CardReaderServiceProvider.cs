@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoT.CardReader.Events;
 using XFS4IoT.Common.Events;
-using XFS4IoTFramework.Common;
 
 namespace XFS4IoTServer
 {
@@ -38,11 +37,11 @@ namespace XFS4IoTServer
                  logger)
         {
             CardReader = new CardReaderServiceClass(this, logger);
-            CommonService = new CommonServiceClass(this, logger);
+            Common = new CommonServiceClass(this, logger);
         }
 
         private readonly CardReaderServiceClass CardReader;
-        public CommonServiceClass CommonService { get; init; }
+        private readonly CommonServiceClass Common;
 
         #region CardReader unsolicited events
         public Task MediaRemovedEvent() => CardReader.MediaRemovedEvent();
@@ -53,9 +52,9 @@ namespace XFS4IoTServer
         #endregion
 
         #region Common unsolicited events
-        public Task PowerSaveChangeEvent(PowerSaveChangeEvent.PayloadData Payload) => CommonService.PowerSaveChangeEvent(Payload);
+        public Task PowerSaveChangeEvent(PowerSaveChangeEvent.PayloadData Payload) => Common.PowerSaveChangeEvent(Payload);
 
-        public Task DevicePositionEvent(DevicePositionEvent.PayloadData Payload) => CommonService.DevicePositionEvent(Payload);
+        public Task DevicePositionEvent(DevicePositionEvent.PayloadData Payload) => Common.DevicePositionEvent(Payload);
         #endregion
 
     }

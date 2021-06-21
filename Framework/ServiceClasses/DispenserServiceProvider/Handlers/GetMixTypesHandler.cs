@@ -14,6 +14,7 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
+using XFS4IoTServer.CashDispenser;
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -21,11 +22,11 @@ namespace XFS4IoTFramework.Dispenser
     {
         private Task<GetMixTypesCompletion.PayloadData> HandleGetMixTypes(IGetMixTypesEvents events, GetMixTypesCommand getMixTypes, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             List<GetMixTypesCompletion.PayloadData.MixTypesClass> mixes = new();
 
-            IEnumerator mixAlgorithms = Dispenser.GetMixAlgorithms();
+            IEnumerator mixAlgorithms = CashDispenserService.GetMixAlgorithms();
             while (mixAlgorithms.MoveNext())
             {
                 Mix mix = ((Mix)mixAlgorithms.Current);

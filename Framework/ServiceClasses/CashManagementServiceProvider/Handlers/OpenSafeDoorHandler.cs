@@ -21,10 +21,13 @@ namespace XFS4IoTFramework.CashManagement
     {
         private async Task<OpenSafeDoorCompletion.PayloadData> HandleOpenSafeDoor(IOpenSafeDoorEvents events, OpenSafeDoorCommand openSafeDoor, CancellationToken cancel)
         {
-            if (!CashManagement.CashManagementCapabilities.SafeDoor)
+            CashManagement.IsA<CashManagementServiceClass>($"Unexpected object is specified. {nameof(CashManagement)}.");
+            CashManagementServiceClass CashManagementService = CashManagement as CashManagementServiceClass;
+
+            if (!CashManagementService.CommonService.CashManagementCapabilities.SafeDoor)
             {
                 return new OpenSafeDoorCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                              $"OpenSafeDoor command received when the SP reported SafeDoor capability {CashManagement.CashManagementCapabilities.SafeDoor}");
+                                                              $"OpenSafeDoor command received when the SP reported SafeDoor capability {CashManagementService.CommonService.CashManagementCapabilities.SafeDoor}");
             }
 
             Logger.Log(Constants.DeviceClass, "CashManagementDev.UnlockSafeAsync()");

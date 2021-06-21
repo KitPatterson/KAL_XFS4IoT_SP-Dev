@@ -14,7 +14,7 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTFramework.Common;
+using XFS4IoTServer.Common;
 using XFS4IoTFramework.CashManagement;
 
 namespace XFS4IoTFramework.Dispenser
@@ -23,7 +23,7 @@ namespace XFS4IoTFramework.Dispenser
     {
         private async Task<ResetCompletion.PayloadData> HandleReset(IResetEvents events, ResetCommand reset, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             ItemPosition itemPosition = null;
 
@@ -36,7 +36,7 @@ namespace XFS4IoTFramework.Dispenser
             else
             {
                 if (!string.IsNullOrEmpty(reset.Payload.Cashunit) &&
-                    !Dispenser.CashUnits.ContainsKey(reset.Payload.Cashunit))
+                    !CashDispenserService.CashManagementService.CashUnits.ContainsKey(reset.Payload.Cashunit))
                 {
                     return new ResetCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                            $"Specified CashUnit location is unknown.");
@@ -73,7 +73,7 @@ namespace XFS4IoTFramework.Dispenser
                                 _ => CashDispenserCapabilitiesClass.RetractAreaEnum.Default
                             };
 
-                            if (!Dispenser.CashDispenserCapabilities.RetractAreas[retractArea])
+                            if (!CashDispenserService.CommonService.CashDispenserCapabilities.RetractAreas[retractArea])
                             {
                                 return new ResetCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                        $"Specified unsupported retract area. {retractArea}",
@@ -105,7 +105,7 @@ namespace XFS4IoTFramework.Dispenser
 
                         };
 
-                        if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
+                        if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
                         {
                             return new ResetCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                    $"Specified unsupported output position. {position}");
@@ -124,7 +124,7 @@ namespace XFS4IoTFramework.Dispenser
 
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.ResetDeviceAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
-            Dispenser.UpdateCashUnitAccounting(result.MovementResult);
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
 
             return new ResetCompletion.PayloadData(result.CompletionCode, 
                                                    result.ErrorDescription, 

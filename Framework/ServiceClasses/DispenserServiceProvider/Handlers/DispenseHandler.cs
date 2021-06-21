@@ -14,7 +14,8 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
-using XFS4IoTFramework.Common;
+using XFS4IoTServer.Common;
+using XFS4IoTServer.CashDispenser;
 using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.Dispenser
@@ -23,7 +24,7 @@ namespace XFS4IoTFramework.Dispenser
     {
         private async Task<DispenseCompletion.PayloadData> HandleDispense(IDispenseEvents events, DispenseCommand dispense, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             CashDispenserCapabilitiesClass.OutputPositionEnum position = CashDispenserCapabilitiesClass.OutputPositionEnum.Default;
             if (dispense.Payload.Position is not null)
@@ -42,9 +43,9 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            Dispenser.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
+            CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
-            if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
+            if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
             {
                 return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                           $"Unsupported position. {position}",
@@ -52,8 +53,8 @@ namespace XFS4IoTFramework.Dispenser
             }
 
             // Reset an internal present status
-            Dispenser.LastPresentStatus[position].Status = PresentStatus.PresentStatusEnum.NotPresented;
-            Dispenser.LastPresentStatus[position].LastDenomination = new (new Dictionary<string, double>(), new Dictionary<string, int>());
+            CashDispenserService.LastPresentStatus[position].Status = PresentStatus.PresentStatusEnum.NotPresented;
+            CashDispenserService.LastPresentStatus[position].LastDenomination = new (new Dictionary<string, double>(), new Dictionary<string, int>());
 
             if (dispense.Payload.Denomination.Currencies is null &&
                 dispense.Payload.Denomination.Values is null)
@@ -68,7 +69,7 @@ namespace XFS4IoTFramework.Dispenser
                 mixNumber = (int)dispense.Payload.MixNumber;
 
             if (mixNumber != 0 &&
-                Dispenser.GetMix((int)dispense.Payload.MixNumber) is null)
+                CashDispenserService.GetMix((int)dispense.Payload.MixNumber) is null)
             {
                 return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
                                                           $"Invalid MixNumber specified. {mixNumber}", 
@@ -79,64 +80,62 @@ namespace XFS4IoTFramework.Dispenser
             if (dispense.Payload.Denomination.Currencies is not null)
                 totalAmount = dispense.Payload.Denomination.Currencies.Select(c => c.Value).Sum();
 
-            Denominate denomToDispense = new(dispense.Payload.Denomination.Currencies, 
-                                             dispense.Payload.Denomination.Values);
+            Denomination denomToDispense = new(dispense.Payload.Denomination.Currencies, 
+                                               dispense.Payload.Denomination.Values);
 
             ////////////////////////////////////////////////////////////////////////////
             // 1) Check that a given denomination can currently be paid out or test that a given amount matches a given denomination.
             if (mixNumber == 0)
             {
                 if (totalAmount == 0 &&
-                    (dispense.Payload.Denomination.Values is null ||
-                     dispense.Payload.Denomination.Values.Count == 0))
+                    dispense.Payload.Denomination.Values.Count == 0)
                 {
                     return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
                                                               "No counts specified to dispense items from the cash units.");
                 }
 
-                Denominate.DispensableResultEnum Result = denomToDispense.IsDispensable(Dispenser.CashUnits, Logger);
+                Denomination.DispensableResultEnum Result = denomToDispense.IsDispensable(CashDispenserService.CashManagementService.CashUnits, Logger);
                 switch (Result)
                 {
-                    case Denominate.DispensableResultEnum.CashUnitError:
+                    case Denomination.DispensableResultEnum.CashUnitError:
                         {
                             return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError, 
                                                                       $"Invalid Cash Unit specified to dispense.",
                                                                       DispenseCompletion.PayloadData.ErrorCodeEnum.CashUnitError);
                         }
-                    case Denominate.DispensableResultEnum.CashUnitLocked:
+                    case Denomination.DispensableResultEnum.CashUnitLocked:
                         {
                             return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError, 
                                                                       $"Cash unit is locked.",
                                                                       DispenseCompletion.PayloadData.ErrorCodeEnum.CashUnitError);
                         }
-                    case Denominate.DispensableResultEnum.CashUnitNotEnough:
+                    case Denomination.DispensableResultEnum.CashUnitNotEnough:
                         {
                             return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError,
                                                                       $"Cash unit doesn't have enough notes to dispense.",
                                                                       DispenseCompletion.PayloadData.ErrorCodeEnum.TooManyItems);
                         }
-                    case Denominate.DispensableResultEnum.InvalidCurrency:
+                    case Denomination.DispensableResultEnum.InvalidCurrency:
                         {
                             return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                       "Invalid currency specified. ",
                                                                       DispenseCompletion.PayloadData.ErrorCodeEnum.InvalidCurrency);
                         }
-                    case Denominate.DispensableResultEnum.InvalidDenomination:
+                    case Denomination.DispensableResultEnum.InvalidDenomination:
                         {
                             return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                       "Invalid denimination specified. ",
                                                                       DispenseCompletion.PayloadData.ErrorCodeEnum.InvalidDenomination);
                         }
                     default:
-                        Contracts.Assert(Result == Denominate.DispensableResultEnum.Good, $"Unexpected result received after an internal IsDispense call. {Result}");
+                        Contracts.Assert(Result == Denomination.DispensableResultEnum.Good, $"Unexpected result received after an internal IsDispense call. {Result}");
                         break;
                 }
             }
             ////////////////////////////////////////////////////////////////////////////
             //  2) Calculate the denomination, given an amount and mix number.
             else if (mixNumber != 0 &&
-                     (dispense.Payload.Denomination.Values is null ||
-                      dispense.Payload.Denomination.Values.Count == 0))
+                     dispense.Payload.Denomination.Values.Count == 0)
             {
                 if (totalAmount == 0)
                 {
@@ -144,7 +143,7 @@ namespace XFS4IoTFramework.Dispenser
                                                               $"Specified amount is zero to dispense, but number of notes from each cash unit is not specified as well.");
                 }
 
-                denomToDispense.Denomination = Dispenser.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, Dispenser.CashUnits, Dispenser.CashDispenserCapabilities.MaxDispenseItems, Logger);
+                denomToDispense = CashDispenserService.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, CashDispenserService.CashManagementService.CashUnits, CashDispenserService.CommonService.CashDispenserCapabilities.MaxDispenseItems, Logger);
             }
             ////////////////////////////////////////////////////////////////////////////
             //  3) Complete a partially specified denomination for a given amount.
@@ -157,7 +156,7 @@ namespace XFS4IoTFramework.Dispenser
                                                               $"Specified amount is zero to dispense, but number of notes from each cash unit is not specified as well.");
                 }
 
-                Denomination mixDenom = Dispenser.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, Dispenser.CashUnits, Dispenser.CashDispenserCapabilities.MaxDispenseItems, Logger);
+                Denomination mixDenom = CashDispenserService.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, CashDispenserService.CashManagementService.CashUnits, CashDispenserService.CommonService.CashDispenserCapabilities.MaxDispenseItems, Logger);
                 if (mixDenom.Values != denomToDispense.Values)
                 {
                     return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
@@ -202,21 +201,21 @@ namespace XFS4IoTFramework.Dispenser
 
             // Update an internal present status
             if (result.CompletionCode != MessagePayload.CompletionCodeEnum.Success)
-                Dispenser.LastPresentStatus[position].Status = PresentStatus.PresentStatusEnum.Unknown;
+                CashDispenserService.LastPresentStatus[position].Status = PresentStatus.PresentStatusEnum.Unknown;
             else
-                Dispenser.LastPresentStatus[position].LastDenomination = denomToDispense.Denomination;
+                CashDispenserService.LastPresentStatus[position].LastDenomination = denomToDispense;
 
             if (presentStatus is not null)
             {
-                Dispenser.LastPresentStatus[position].Status = (PresentStatus.PresentStatusEnum)presentStatus.Status;
+                CashDispenserService.LastPresentStatus[position].Status = (PresentStatus.PresentStatusEnum)presentStatus.Status;
 
                 if (presentStatus.LastDenomination is not null)
-                    Dispenser.LastPresentStatus[position].LastDenomination = presentStatus.LastDenomination;
+                    CashDispenserService.LastPresentStatus[position].LastDenomination = presentStatus.LastDenomination;
 
-                Dispenser.LastPresentStatus[position].Token = presentStatus.Token;
+                CashDispenserService.LastPresentStatus[position].Token = presentStatus.Token;
             }
 
-            Dispenser.UpdateCashUnitAccounting(result.MovementResult);
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
 
             return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                       null,

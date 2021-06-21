@@ -25,9 +25,9 @@ namespace XFS4IoTFramework.Dispenser
 
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.RejectAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(Dispenser)}.");
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
-            Dispenser.UpdateCashUnitAccounting(result.MovementResult);
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
 
             return new RejectCompletion.PayloadData(result.CompletionCode, 
                                                     result.ErrorDescription, 

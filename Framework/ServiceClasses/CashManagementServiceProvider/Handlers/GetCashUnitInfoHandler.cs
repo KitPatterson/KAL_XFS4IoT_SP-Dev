@@ -14,6 +14,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.CashManagement.Commands;
 using XFS4IoT.CashManagement.Completions;
+using XFS4IoTServer.CashManagement;
 using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.CashManagement
@@ -22,16 +23,19 @@ namespace XFS4IoTFramework.CashManagement
     {
         private Task<GetCashUnitInfoCompletion.PayloadData> HandleGetCashUnitInfo(IGetCashUnitInfoEvents events, GetCashUnitInfoCommand getCashUnitInfo, CancellationToken cancel)
         {
-            if (CashManagement.FirstCashUnitInfoCommand)
+            CashManagement.IsA<CashManagementServiceClass>($"Unexpected object is specified. {nameof(CashManagement)}.");
+            CashManagementServiceClass CashManagementService = CashManagement as CashManagementServiceClass;
+
+            if (CashManagementService.FirstCashUnitInfoCommand)
             {
-                CashManagement.ConstructCashUnits();
-                CashManagement.FirstCashUnitInfoCommand = false;
+                CashManagementService.ConstructCashUnits();
+                CashManagementService.FirstCashUnitInfoCommand = false;
             }
 
-            CashManagement.UpdateCashUnitAccounting();
+            CashManagementService.UpdateCashUnitAccounting();
 
             Dictionary<string, GetCashUnitInfoCompletion.PayloadData.CashunitsClass> xfsUnits = new();
-            foreach (var unit in CashManagement.CashUnits)
+            foreach (var unit in CashManagementService.CashUnits)
             {
                 GetCashUnitInfoCompletion.PayloadData.CashunitsClass.StatusEnum xfsStatus = unit.Value.Status switch
                 {

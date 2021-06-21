@@ -12,8 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XFS4IoT;
-using XFS4IoTFramework.Common;
+using XFS4IoTServer.Common;
 
 namespace XFS4IoTServer
 {
@@ -23,11 +22,11 @@ namespace XFS4IoTServer
         /// <summary>
         /// Stores CashDispenser interface capabilites internally
         /// </summary>
-        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get; set; }
+        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get; internal set; } = null;
 
         /// <summary>
         /// Stores CashManagement interface capabilites internally
         /// </summary>
-        public CashManagementCapabilitiesClass CashManagementCapabilities { get; set; }
+        public CashManagementCapabilitiesClass CashManagementCapabilities { get; internal set; } = null;
     }
 }

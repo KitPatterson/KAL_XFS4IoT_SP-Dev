@@ -15,7 +15,8 @@ using XFS4IoTServer;
 using XFS4IoT.CashManagement.Commands;
 using XFS4IoT.CashManagement.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTFramework.Common;
+using XFS4IoTServer.Common;
+using XFS4IoTServer.CashManagement;
 using XFS4IoTFramework.CashManagement;
 
 namespace XFS4IoTFramework.CashManagement
@@ -30,6 +31,8 @@ namespace XFS4IoTFramework.CashManagement
                 return new SetCashUnitInfoCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                  $"No cash unit information is set in the payload to update cash unit counts or configuration.");
             }
+
+            CashManagementServiceClass CashManagementService = CashManagement.IsA<CashManagementServiceClass>($"Unexpected object is specified. {nameof(CashManagement)}.");
 
             Dictionary<string, SetCashUnitInfoRequest.SetCashUnitConfiguration> cashUnitConfigs = new();
             Dictionary<string, SetCashUnitInfoRequest.SetCashUnitAccounting> cashUnitAccountings = new();
@@ -135,7 +138,7 @@ namespace XFS4IoTFramework.CashManagement
 
             // Keep old accounts
             Dictionary<string, CashUnitAccounting> oldAccounting = new();
-            foreach (var unit in CashManagement.CashUnits)
+            foreach (var unit in CashManagementService.CashUnits)
             {
                 oldAccounting.Add(unit.Key, unit.Value.Accounting);
             }
@@ -150,7 +153,7 @@ namespace XFS4IoTFramework.CashManagement
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.SetCashUnitInfoAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             // Update cash unit configuration updated
-            CashManagement.ConstructCashUnits();
+            CashManagementService.ConstructCashUnits();
 
             if (cashUnitAccountings is not null &&
                 cashUnitAccountings.Count > 0)
@@ -193,12 +196,12 @@ namespace XFS4IoTFramework.CashManagement
 
                 foreach (var unit in newAccounting)
                 {
-                    if (!CashManagement.CashUnits.ContainsKey(unit.Key))
+                    if (!CashManagementService.CashUnits.ContainsKey(unit.Key))
                         continue;
-                    CashManagement.CashUnits[unit.Key].Accounting = unit.Value;
+                    CashManagementService.CashUnits[unit.Key].Accounting = unit.Value;
                 }
 
-                CashManagement.UpdateCashUnitAccounting();
+                CashManagementService.UpdateCashUnitAccounting();
             }
 
             return new SetCashUnitInfoCompletion.PayloadData(result.CompletionCode,

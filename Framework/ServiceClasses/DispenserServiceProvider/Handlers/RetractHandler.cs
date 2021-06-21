@@ -15,7 +15,8 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTFramework.Common;
+using XFS4IoTServer.Common;
+using XFS4IoTServer.CashManagement;
 using XFS4IoTFramework.CashManagement;
 
 namespace XFS4IoTFramework.Dispenser
@@ -31,7 +32,7 @@ namespace XFS4IoTFramework.Dispenser
                                                          $"Specified both RetractArea and OutputPosition properties, the Service Provider doesn't know where the items to be moved.");
             }
 
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
+            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
 
             ItemPosition itemPosition = null;
 
@@ -50,7 +51,7 @@ namespace XFS4IoTFramework.Dispenser
                     _ => CashDispenserCapabilitiesClass.RetractAreaEnum.Default
                 };
 
-                if (!Dispenser.CashDispenserCapabilities.RetractAreas[retractArea])
+                if (!CashDispenserService.CommonService.CashDispenserCapabilities.RetractAreas[retractArea])
                 {
                     return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                              $"Specified unsupported retract area. {retractArea}",
@@ -81,7 +82,7 @@ namespace XFS4IoTFramework.Dispenser
 
                 };
 
-                if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
+                if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
                 {
                     return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                 $"Specified unsupported output position. {position}");
@@ -114,7 +115,7 @@ namespace XFS4IoTFramework.Dispenser
                                                                                      movement.Count,
                                                                                      movement.CashUnit));
                     if (string.IsNullOrEmpty(movement.CashUnit) ||
-                        !Dispenser.CashUnits.ContainsKey(movement.CashUnit))
+                        !CashDispenserService.CashManagementService.CashUnits.ContainsKey(movement.CashUnit))
                     {
                         continue; // it's not moved into cash unit
                     }
@@ -130,7 +131,7 @@ namespace XFS4IoTFramework.Dispenser
                 }
             }
 
-            Dispenser.UpdateCashUnitAccounting(itemMovementResult);
+            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(itemMovementResult);
 
             return new RetractCompletion.PayloadData(result.CompletionCode, 
                                                      result.ErrorDescription, 
