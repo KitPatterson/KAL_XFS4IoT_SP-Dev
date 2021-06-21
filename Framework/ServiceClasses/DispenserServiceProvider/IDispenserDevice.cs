@@ -12,8 +12,7 @@ using System.Threading.Tasks;
 using XFS4IoTServer;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Dispenser.Commands;
-using XFS4IoTServer.Common;
-using XFS4IoTServer.CashDispenser;
+using XFS4IoTFramework.Common;
 
 // KAL specific implementation of dispenser. 
 namespace XFS4IoTFramework.Dispenser

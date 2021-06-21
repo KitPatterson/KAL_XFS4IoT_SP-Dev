@@ -15,7 +15,6 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTServer.CashDispenser;
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -23,9 +22,6 @@ namespace XFS4IoTFramework.Dispenser
     {
         private Task<GetMixTableCompletion.PayloadData> HandleGetMixTable(IGetMixTableEvents events, GetMixTableCommand getMixTable, CancellationToken cancel)
         {
-            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-
-            
             if (getMixTable.Payload.MixNumber is null)
             {
                 return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
@@ -33,7 +29,7 @@ namespace XFS4IoTFramework.Dispenser
                                                                              GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
             }
 
-            Mix mix = CashDispenserService.GetMix((int)getMixTable.Payload.MixNumber);
+            Mix mix = Dispenser.GetMix((int)getMixTable.Payload.MixNumber);
             if (mix is null ||
                 mix.Type != Mix.TypeEnum.Table)
             {
@@ -42,7 +38,7 @@ namespace XFS4IoTFramework.Dispenser
                                                                              GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
             }
 
-            MixTable mixTable = CashDispenserService.GetMix((int)getMixTable.Payload.MixNumber).IsA<MixTable>($"Unexpected mix type. {mix.GetType()}");
+            MixTable mixTable = Dispenser.GetMix((int)getMixTable.Payload.MixNumber).IsA<MixTable>($"Unexpected mix type. {mix.GetType()}");
 
             List<GetMixTableCompletion.PayloadData.MixRowsClass> mixRows = new();
             foreach (var table in mixTable.Mixes)

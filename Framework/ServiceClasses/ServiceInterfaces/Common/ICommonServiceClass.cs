@@ -3,31 +3,30 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Common interface.
- * CommonServiceProvider.cs.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using XFS4IoT;
 using XFS4IoTFramework.Common;
+using XFS4IoT.Common.Events;
 
-namespace XFS4IoTServer
+namespace XFS4IoTFramework.Common
 {
-    public partial class CommonServiceClass
+    public interface ICommonService
     {
-
         /// <summary>
         /// Stores CashDispenser interface capabilites internally
         /// </summary>
-        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get; set; }
+        CashDispenserCapabilitiesClass CashDispenserCapabilities { get => null; set { } }
 
         /// <summary>
         /// Stores CashManagement interface capabilites internally
         /// </summary>
-        public CashManagementCapabilitiesClass CashManagementCapabilities { get; set; }
+        CashManagementCapabilitiesClass CashManagementCapabilities { get => null; set { } }
+    }
+
+    public interface ICommonServiceClass : ICommonService, ICommonUnsolicitedEvents
+    {
     }
 }

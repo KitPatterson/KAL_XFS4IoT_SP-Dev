@@ -24,4 +24,16 @@
     <ProjectReference Include="..\..\Server\Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="CashManagement\ICashManagementServiceClass.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('_g', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="Common\ICommonServiceClass.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('_g', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="Dispenser\IDispenserServiceClass.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('_g', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

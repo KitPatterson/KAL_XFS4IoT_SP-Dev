@@ -16,7 +16,7 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTServer.CashDispenser;
+using XFS4IoTFramework.Common;
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -45,7 +45,7 @@ namespace XFS4IoTFramework.Dispenser
                                                                              "Supplied MixRows is empty."));
             }
 
-            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
+            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
 
             Dictionary<List<string>, Dictionary<double, Denomination>> mixes = new();
 
@@ -86,11 +86,11 @@ namespace XFS4IoTFramework.Dispenser
                     mixTables.Add((double)row.Amount, new List<MixTable.Table>() { mixTable });
             }
 
-            CashDispenserService.AddMix((int)setMixTable.Payload.MixNumber, 
-                                        new MixTable((int)setMixTable.Payload.MixNumber,
-                                                     setMixTable.Payload.Name,
-                                                     setMixTable.Payload.MixHeader,
-                                                     mixTables));
+            Dispenser.AddMix((int)setMixTable.Payload.MixNumber, 
+                             new MixTable((int)setMixTable.Payload.MixNumber,
+                                          setMixTable.Payload.Name,
+                                          setMixTable.Payload.MixHeader,
+                                          mixTables));
 
             return Task.FromResult(new SetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null));
         }

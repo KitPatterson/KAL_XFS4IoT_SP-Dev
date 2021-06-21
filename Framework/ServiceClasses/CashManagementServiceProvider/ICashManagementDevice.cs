@@ -10,7 +10,6 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XFS4IoTServer;
-using XFS4IoTServer.CashManagement;
 
 // KAL specific implementation of cashmanagement. 
 namespace XFS4IoTFramework.CashManagement

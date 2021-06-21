@@ -32,4 +32,10 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="CashManagementServiceClass_g.cs">
+        <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('_g', '.cs'))</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

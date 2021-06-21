@@ -12,17 +12,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
-using XFS4IoTServer.CashManagement;
+using XFS4IoTFramework.Common;
 using XFS4IoTFramework.CashManagement;
 using XFS4IoT;
-
-[assembly: InternalsVisibleTo("XFS4IoT.SP.Framework.Dispenser")]
+using XFS4IoTServer;
 
 namespace XFS4IoTServer
 {
     public partial class CashManagementServiceClass
     {
-        public CashManagementServiceClass(IServiceProvider ServiceProvider, ILogger logger, IPersistentData PersistentData) 
+        public CashManagementServiceClass(IServiceProvider ServiceProvider,
+                                          ICommonService CommonService,
+                                          ILogger logger, 
+                                          IPersistentData PersistentData) 
             : this(ServiceProvider, logger)
         {
             this.PersistentData = PersistentData.IsNotNull($"No persistent data interface is set. " + nameof(CashManagementServiceClass));
@@ -34,13 +36,31 @@ namespace XFS4IoTServer
                 Logger.Warning(Constants.Framework, "Failed to load persistent data. It could be a first run and no persistent exists on the file system.");
                 CashUnits = new Dictionary<string, CashUnit>();
             }
+
+            FirstCashUnitInfoCommand = true;
+            this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(CashManagementServiceClass));
         }
+
+        /// <summary>
+        /// Common service interface
+        /// </summary>
+        public ICommonService CommonService { get; init; }
+
+        /// <summary>
+        /// Stores CashDispenser interface capabilites internally
+        /// </summary>
+        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get => CommonService.CashDispenserCapabilities; set => CommonService.CashDispenserCapabilities = value; }
+
+        /// <summary>
+        /// Stores CashManagement interface capabilites internally
+        /// </summary>
+        public CashManagementCapabilitiesClass CashManagementCapabilities { get => CommonService.CashManagementCapabilities; set => CommonService.CashManagementCapabilities = value; }
 
         /// <summary>
         /// ConstructCashUnits
         /// The method retreive cash unit structures from the device class. The device class must provide cash unit structure info
         /// </summary>
-        internal void ConstructCashUnits()
+        public void ConstructCashUnits()
         {
             Logger.Log(Constants.DeviceClass, "CashManagementDev.GetCashUnitConfiguration()");
 
@@ -98,7 +118,7 @@ namespace XFS4IoTServer
         /// UpdateCashUnitAccounting
         /// Update cash unit status and counts managed by the device specific class.
         /// </summary>
-        internal void UpdateCashUnitAccounting(Dictionary<string, ItemMovement> MovementResult = null)
+        public void UpdateCashUnitAccounting(Dictionary<string, ItemMovement> MovementResult = null)
         {
             // First to update item movement reported by the device class, then update entire counts if the device class maintains cash unit counts.
             if (MovementResult is not null)
@@ -237,18 +257,12 @@ namespace XFS4IoTServer
         /// <summary>
         /// Cash unit structure information of this device
         /// </summary>
-        internal Dictionary<string, CashUnit> CashUnits { get; private set; }
-
-        /// <summary>
-        /// Common service provider service class to access capabilites
-        /// </summary>
-
-        internal CommonServiceClass CommonService { get; set; }
+        public Dictionary<string, CashUnit> CashUnits { get; set; }
 
         /// <summary>
         /// True when the SP process gets started and return false once the first CashUnitInfo command is handled.
         /// </summary>
-        internal bool FirstCashUnitInfoCommand { get; set; } = true;
+        public bool FirstCashUnitInfoCommand { get; set; }
 
         /// <summary>
         /// Persistent data storage access
