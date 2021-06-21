@@ -29,7 +29,7 @@ namespace DispenserServiceProvider
     /// </remarks>
     class DispenserServiceProvider : ServiceProvider, IDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass
     {
-        public DispenserServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger)
+        public DispenserServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger, IPersistentData persistentData)
             :
             base(endpointDetails,
                  ServiceName,
@@ -37,8 +37,8 @@ namespace DispenserServiceProvider
                  device,
                  logger)
         {
-            Dispenser = new DispenserServiceClass(this, logger);
-            CashManagement = new CashManagementServiceClass(this, logger);
+            Dispenser = new DispenserServiceClass(this, logger, persistentData);
+            CashManagement = new CashManagementServiceClass(this, logger, persistentData);
             Common = new CommonServiceClass(this, logger);
 
             // CashDispenser class needs to access to the cash unit information and capabilites
