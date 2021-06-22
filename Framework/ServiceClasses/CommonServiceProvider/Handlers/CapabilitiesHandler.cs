@@ -13,7 +13,6 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
-using XFS4IoTServer.Common;
 
 namespace XFS4IoTFramework.Common
 {
@@ -22,9 +21,6 @@ namespace XFS4IoTFramework.Common
 
         private Task<CapabilitiesCompletion.PayloadData> HandleCapabilities(ICapabilitiesEvents events, CapabilitiesCommand capabilities, CancellationToken cancel)
         {
-            Common.IsA<CommonServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            CommonServiceClass CommonService = Common as CommonServiceClass;
-
             Logger.Log(Constants.DeviceClass, "CommonDev.Capabilities()");
             var result = Device.Capabilities();
             Logger.Log(Constants.DeviceClass, $"CommonDev.Capabilities() -> {result.CompletionCode}");
@@ -218,24 +214,24 @@ namespace XFS4IoTFramework.Common
                 }
 
                 // Store internal object for other interfaces can be used
-                CommonService.CashDispenserCapabilities = new CashDispenserCapabilitiesClass(result.CashDispenser.Type switch
-                                                                                             {
-                                                                                                 XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceBill => CashDispenserCapabilitiesClass.TypeEnum.selfServiceBill,
-                                                                                                 XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceCoin => CashDispenserCapabilitiesClass.TypeEnum.selfServiceCoin,
-                                                                                                 XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.TellerBill => CashDispenserCapabilitiesClass.TypeEnum.tellerBill,
-                                                                                                 _ => CashDispenserCapabilitiesClass.TypeEnum.tellerCoin
-                                                                                             },
-                                                                                             result.CashDispenser.MaxDispenseItems is null ? 0 : (int)result.CashDispenser.MaxDispenseItems,
-                                                                                             result.CashDispenser.Shutter is not null && (bool)result.CashDispenser.Shutter,
-                                                                                             result.CashDispenser.ShutterControl is not null && (bool)result.CashDispenser.ShutterControl,
-                                                                                             retractAreas,
-                                                                                             retractTransportActions,
-                                                                                             retractStackerActions,
-                                                                                             result.CashDispenser.IntermediateStacker is not null && (bool)result.CashDispenser.IntermediateStacker,
-                                                                                             result.CashDispenser.ItemsTakenSensor is not null && (bool)result.CashDispenser.ItemsTakenSensor,
-                                                                                             outputPositions,
-                                                                                             moveItems,
-                                                                                             result.CashDispenser.PrepareDispense is not null && (bool)result.CashDispenser.PrepareDispense);
+                Common.CashDispenserCapabilities = new CashDispenserCapabilitiesClass(result.CashDispenser.Type switch
+                                                                                      {
+                                                                                          XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceBill => CashDispenserCapabilitiesClass.TypeEnum.selfServiceBill,
+                                                                                          XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceCoin => CashDispenserCapabilitiesClass.TypeEnum.selfServiceCoin,
+                                                                                          XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.TellerBill => CashDispenserCapabilitiesClass.TypeEnum.tellerBill,
+                                                                                          _ => CashDispenserCapabilitiesClass.TypeEnum.tellerCoin
+                                                                                      },
+                                                                                      result.CashDispenser.MaxDispenseItems is null ? 0 : (int)result.CashDispenser.MaxDispenseItems,
+                                                                                      result.CashDispenser.Shutter is not null && (bool)result.CashDispenser.Shutter,
+                                                                                      result.CashDispenser.ShutterControl is not null && (bool)result.CashDispenser.ShutterControl,
+                                                                                      retractAreas,
+                                                                                      retractTransportActions,
+                                                                                      retractStackerActions,
+                                                                                      result.CashDispenser.IntermediateStacker is not null && (bool)result.CashDispenser.IntermediateStacker,
+                                                                                      result.CashDispenser.ItemsTakenSensor is not null && (bool)result.CashDispenser.ItemsTakenSensor,
+                                                                                      outputPositions,
+                                                                                      moveItems,
+                                                                                      result.CashDispenser.PrepareDispense is not null && (bool)result.CashDispenser.PrepareDispense);
             }
 
             if (result.CashManagement is not null)
@@ -264,12 +260,12 @@ namespace XFS4IoTFramework.Common
                         itemInfo |= CashManagementCapabilitiesClass.ItemInfoTypesEnum.ImageFile;
                 }
 
-                CommonService.CashManagementCapabilities = new CashManagementCapabilitiesClass(exchangeType,
-                                                                                                itemInfo,
-                                                                                                result.CashManagement.SafeDoor is not null && (bool)result.CashManagement.SafeDoor,
-                                                                                                result.CashManagement.CashBox is not null && (bool)result.CashManagement.CashBox,
-                                                                                                result.CashManagement.ClassificationList is not null && (bool)result.CashManagement.ClassificationList,
-                                                                                                result.CashManagement.PhysicalNoteList is not null && (bool)result.CashManagement.PhysicalNoteList);
+                Common.CashManagementCapabilities = new CashManagementCapabilitiesClass(exchangeType,
+                                                                                        itemInfo,
+                                                                                        result.CashManagement.SafeDoor is not null && (bool)result.CashManagement.SafeDoor,
+                                                                                        result.CashManagement.CashBox is not null && (bool)result.CashManagement.CashBox,
+                                                                                        result.CashManagement.ClassificationList is not null && (bool)result.CashManagement.ClassificationList,
+                                                                                        result.CashManagement.PhysicalNoteList is not null && (bool)result.CashManagement.PhysicalNoteList);
             }
 
             return Task.FromResult(result);

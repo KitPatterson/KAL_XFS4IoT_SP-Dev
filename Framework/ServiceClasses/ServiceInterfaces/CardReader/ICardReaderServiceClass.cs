@@ -6,7 +6,7 @@
 
 using XFS4IoTFramework.CardReader;
 
-namespace XFS4IoTServer
+namespace XFS4IoTFramework.CardReader
 {
     public interface ICardReaderServiceClass : ICardReaderUnsolicitedEvents
     {

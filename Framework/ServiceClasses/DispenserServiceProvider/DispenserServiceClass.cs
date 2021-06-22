@@ -12,15 +12,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XFS4IoT;
-using XFS4IoTServer.CashDispenser;
 using XFS4IoTFramework.Dispenser;
-using XFS4IoTServer.Common;
+using XFS4IoTFramework.Common;
+using XFS4IoTFramework.CashManagement;
 
 namespace XFS4IoTServer
 {
     public partial class DispenserServiceClass
     {
-        public DispenserServiceClass(IServiceProvider ServiceProvider, ILogger logger, IPersistentData PersistentData)
+        public DispenserServiceClass(IServiceProvider ServiceProvider,
+                                     ICashManagementService CashManagementService,
+                                     ICommonService CommonService,
+                                     ILogger logger, 
+                                     IPersistentData PersistentData)
             : this(ServiceProvider, logger)
         {
             this.PersistentData = PersistentData.IsNotNull($"No persistent data interface is set. " + typeof(Mix).FullName);
@@ -33,7 +37,52 @@ namespace XFS4IoTServer
                 foreach (var t in tableMixes)
                     AddMix(t.Key, t.Value);
             }
+
+            this.CashManagementService = CashManagementService.IsNotNull($"Unexpected parameter set in the " + nameof(DispenserServiceClass));
+            this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(DispenserServiceClass));
         }
+
+        /// <summary>
+        /// Common service interface
+        /// </summary>
+        public ICashManagementService CashManagementService { get; init; }
+
+        /// <summary>
+        /// ConstructCashUnits
+        /// The method retreive cash unit structures from the device class. The device class must provide cash unit structure info
+        /// </summary>
+        public void ConstructCashUnits() => CashManagementService.ConstructCashUnits();
+        /// <summary>
+        /// UpdateCashUnitAccounting
+        /// Update cash unit status and counts managed by the device specific class.
+        /// </summary>
+        public void UpdateCashUnitAccounting(Dictionary<string, ItemMovement> MovementResult = null) => CashManagementService.UpdateCashUnitAccounting(MovementResult);
+
+        /// <summary>
+        /// Cash unit structure information of this device
+        /// </summary>
+        public Dictionary<string, CashUnit> CashUnits { get => CashManagementService.CashUnits; set => CashManagementService.CashUnits = value; }
+
+        /// <summary>
+        /// True when the SP process gets started and return false once the first CashUnitInfo command is handled.
+        /// </summary>
+        public bool FirstCashUnitInfoCommand { get => CashManagementService.FirstCashUnitInfoCommand; set => CashManagementService.FirstCashUnitInfoCommand = value; }
+
+        /// <summary>
+        /// Common service interface
+        /// </summary>
+        public ICommonService CommonService { get; init; }
+
+        /// <summary>
+        /// Stores CashDispenser interface capabilites internally
+        /// </summary>
+        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get => CommonService.CashDispenserCapabilities; set => CommonService.CashDispenserCapabilities = value; }
+
+        /// <summary>
+        /// Stores CashManagement interface capabilites internally
+        /// </summary>
+        public CashManagementCapabilitiesClass CashManagementCapabilities { get => CommonService.CashManagementCapabilities; set => CommonService.CashManagementCapabilities = value; }
+
 
         /// <summary>
         /// Add vendor specific mix algorithm
@@ -77,9 +126,14 @@ namespace XFS4IoTServer
         public IEnumerator GetMixAlgorithms() => Mixes.Values.GetEnumerator();
 
         /// <summary>
+        /// Keep last present status
+        /// </summary>
+        public Dictionary<CashDispenserCapabilitiesClass.OutputPositionEnum, PresentStatus> LastPresentStatus { get => _LastPresentStatus; set => _LastPresentStatus = value; }
+
+        /// <summary>
         /// Keep last present status per position
         /// </summary>
-        internal Dictionary<CashDispenserCapabilitiesClass.OutputPositionEnum, PresentStatus> LastPresentStatus = new()
+        private Dictionary<CashDispenserCapabilitiesClass.OutputPositionEnum, PresentStatus> _LastPresentStatus = new()
         {
             { CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom,  new PresentStatus() },
             { CashDispenserCapabilitiesClass.OutputPositionEnum.Center,  new PresentStatus() },
@@ -90,9 +144,6 @@ namespace XFS4IoTServer
             { CashDispenserCapabilitiesClass.OutputPositionEnum.Right,   new PresentStatus() },
             { CashDispenserCapabilitiesClass.OutputPositionEnum.Top,     new PresentStatus() }
         };
-
-        internal CommonServiceClass CommonService { get; set; }
-        internal CashManagementServiceClass CashManagementService { get; set; }
 
         /// <summary>
         /// Persistent data storage access

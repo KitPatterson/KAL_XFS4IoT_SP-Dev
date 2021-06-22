@@ -13,7 +13,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
-using XFS4IoTServer.Common;
+using XFS4IoTFramework.Common;
 using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.Dispenser
@@ -39,11 +39,9 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            DispenserServiceClass CashDispenserService = Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
+            Dispenser.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
-            CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
-
-            if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
+            if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
             {
                 return new CountCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                        $"Unsupported position. {position}");
@@ -61,7 +59,7 @@ namespace XFS4IoTFramework.Dispenser
 
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.CountAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
-            CashDispenserService.CashManagementService.UpdateCashUnitAccounting(result.MovementResult);
+            Dispenser.UpdateCashUnitAccounting(result.MovementResult);
 
             return new CountCompletion.PayloadData(result.CompletionCode, 
                                                    result.ErrorDescription, 

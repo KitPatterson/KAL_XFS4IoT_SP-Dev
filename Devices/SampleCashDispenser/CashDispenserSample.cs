@@ -23,10 +23,6 @@ using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
 using XFS4IoTServer;
-using XFS4IoTServer.CashDispenser;
-using XFS4IoTServer.CashManagement;
-using XFS4IoTServer.Common;
-using XFS4IoT.CashManagement;
 
 namespace KAL.XFS4IoTSP.CashDispenser.Sample
 {

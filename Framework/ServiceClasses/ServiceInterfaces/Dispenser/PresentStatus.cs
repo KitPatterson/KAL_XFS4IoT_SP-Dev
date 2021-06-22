@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XFS4IoTFramework.Dispenser;
 
-namespace XFS4IoTServer.CashDispenser
+namespace XFS4IoTFramework.Dispenser
 {
     /// <summary>
     /// PresentStatus

@@ -10,41 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XFS4IoTFramework.CashManagement;
 
-namespace XFS4IoTServer.CashManagement
+namespace XFS4IoTFramework.CashManagement
 {
-    /// <summary>
-    /// Breakdown item counters associated with the BankNoteID
-    /// </summary>
-    [Serializable()]
-    public sealed record BankNoteNumber
-    {
-        public BankNoteNumber()
-        {
-            this.NoteID = int.MinValue;
-            this.Count = int.MinValue;
-        }
-
-        public BankNoteNumber(int NoteID,
-                              int Count)
-        {
-            this.NoteID = NoteID;
-            this.Count = Count;
-        }
-
-        /// <summary>
-        /// Identification of note type. The Note ID represents the note identifiers reported by the *CashAcceptor.BanknoteTypes* command. 
-        /// If this value is zero then the note type is unknown.
-        /// </summary>
-        public int NoteID { get; init; }
-
-        /// <summary>
-        /// Actual count of cash items. The value is incremented each time cash items are moved to a cash unit. 
-        /// In the case of recycle cash units this count is decremented as defined in the description of the *logicalCount* field.
-        /// </summary>
-        public int Count { get; set; }
-    }
-
     /// <summary>
     /// Cash Unit strcuture the device class supports
     /// </summary>

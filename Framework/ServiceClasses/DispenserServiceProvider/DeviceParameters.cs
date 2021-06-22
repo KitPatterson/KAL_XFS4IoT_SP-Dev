@@ -14,9 +14,7 @@ using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
-using XFS4IoTServer.Common;
-using XFS4IoTServer.CashManagement;
-using XFS4IoTServer.CashDispenser;
+using XFS4IoTFramework.Common;
 using XFS4IoTFramework.CashManagement;
 using XFS4IoT;
 
@@ -26,7 +24,7 @@ namespace XFS4IoTFramework.Dispenser
     /// Denomination
     /// Representing output data of the Denominate and PresentStatus
     /// </summary>
-    public sealed class Denomination
+    public sealed class Denominate
     {
         public enum DispensableResultEnum
         {
@@ -38,8 +36,8 @@ namespace XFS4IoTFramework.Dispenser
             InvalidDenomination,
         }
 
-        public Denomination(Dictionary<string, double> CurrencyAmounts,
-                            Dictionary<string, int> Values = null)
+        public Denominate(Dictionary<string, double> CurrencyAmounts,
+                          Dictionary<string, int> Values = null)
         {
             this.CurrencyAmounts = CurrencyAmounts;
             this.Values = Values;
@@ -55,6 +53,15 @@ namespace XFS4IoTFramework.Dispenser
         /// </summary>
         public Dictionary<string, int> Values { get; set; }
 
+        public Denomination Denomination 
+        { 
+            get => new(CurrencyAmounts, Values); 
+            set 
+            { 
+                CurrencyAmounts = value.CurrencyAmounts;
+                Values = value.Values;
+            }
+        }
         /// <summary>
         /// Check there are enough notes to be dispensed
         /// </summary>

@@ -14,7 +14,7 @@ using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
 using XFS4IoT.Completions;
-using XFS4IoTServer.Common;
+using XFS4IoTFramework.Common;
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -39,26 +39,25 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            Dispenser.IsA<DispenserServiceClass>($"Unexpected object is specified. {nameof(Dispenser)}.");
-            DispenserServiceClass CashDispenserService = Dispenser as DispenserServiceClass;
+            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
 
             // Check the shutter capabilites
-            if (!CashDispenserService.CommonService.CashDispenserCapabilities.Shutter)
+            if (!Dispenser.CashDispenserCapabilities.Shutter)
             {
                 return new OpenShutterCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                              $"The shutter command is not supported by the device.");
             }
 
-            if (CashDispenserService.CommonService.CashDispenserCapabilities.Shutter &&
-                CashDispenserService.CommonService.CashDispenserCapabilities.ShutterControl)
+            if (Dispenser.CashDispenserCapabilities.Shutter &&
+                Dispenser.CashDispenserCapabilities.ShutterControl)
             {
                 Logger.Log(Constants.Framework, "The application requested shutter command even if the device support implicit shutter control.");
             }
 
             // Check supported position for this device
-            CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
+            Dispenser.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
-            if (!CashDispenserService.CommonService.CashDispenserCapabilities.OutputPositons[position])
+            if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
             {
                 return new OpenShutterCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                              $"Specified unsupported position {position}",

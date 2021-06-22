@@ -13,8 +13,8 @@ using XFS4IoTServer;
 using XFS4IoT.Completions;
 using XFS4IoT.CashManagement.Commands;
 using XFS4IoT.CashManagement.Completions;
-using XFS4IoTServer.Common;
-using XFS4IoTServer.CashManagement;
+using XFS4IoTFramework.Common;
+using XFS4IoTFramework.CashManagement;
 
 namespace XFS4IoTFramework.CashManagement
 {
