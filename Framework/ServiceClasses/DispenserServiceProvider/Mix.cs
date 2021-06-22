@@ -653,7 +653,7 @@ namespace XFS4IoTFramework.Dispenser
             // currency in it.
             do
             {
-                CashUnits.ContainsKey(currentCashUnit).IsTrue($"");
+                CashUnits.ContainsKey(currentCashUnit).IsTrue($"Unexpected value of key for the cash unit found. {currentCashUnit}");
 
                 // Find the number of notes of this value which are needed.
                 int numNotes = (int)(remainingAmount / CashUnits[currentCashUnit].Value);

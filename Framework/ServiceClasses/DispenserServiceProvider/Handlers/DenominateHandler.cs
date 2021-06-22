@@ -65,6 +65,8 @@ namespace XFS4IoTFramework.Dispenser
                 Denominate.DispensableResultEnum Result = denomToDispense.IsDispensable(Dispenser.CashUnits, Logger);
                 switch (Result)
                 {
+                    case Denominate.DispensableResultEnum.Good:
+                        break;
                     case Denominate.DispensableResultEnum.CashUnitError:
                         {
                             return Task.FromResult(new DenominateCompletion.PayloadData(MessagePayload.CompletionCodeEnum.HardwareError,

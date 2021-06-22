@@ -35,8 +35,6 @@ namespace XFS4IoTFramework.Dispenser
 
             if (retract.Payload.RetractArea is not null)
             {
-                int? index = null;
-
                 CashDispenserCapabilitiesClass.RetractAreaEnum retractArea = CashDispenserCapabilitiesClass.RetractAreaEnum.Default;
                 retractArea = retract.Payload.RetractArea switch
                 {
@@ -55,14 +53,29 @@ namespace XFS4IoTFramework.Dispenser
                                                              RetractCompletion.PayloadData.ErrorCodeEnum.InvalidRetractPosition);
                 }
 
-                if (retractArea == CashDispenserCapabilitiesClass.RetractAreaEnum.Retract &&
-                    retract.Payload.Index is null)
+                if (retractArea == CashDispenserCapabilitiesClass.RetractAreaEnum.Retract)
                 {
-                    return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                             $"Index property is set to null where the retract area is specified to retract position.");
-                }
+                    if (retract.Payload.Index is null)
+                    {
+                        return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                 $"Index property is set to null where the retract area is specified to retract position.");
+                    }
 
-                itemPosition = new ItemPosition(new Retract(retractArea, index));
+                    int index = (int)retract.Payload.Index;
+
+                    // Check the index is valid
+                    int totalRetractUnits = (from unit in Dispenser.CashUnits
+                                             where unit.Value.Type == CashUnit.TypeEnum.RetractCassette
+                                             select unit).Count();
+                    if ((int)index > totalRetractUnits)
+                    {
+                        return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                 $"Unexpected index property value is set where the retract area is specified to retract position. " +
+                                                                 $"The value of index one is the first retract position and increments by one for each subsequent position. {index}");
+                    }
+
+                    itemPosition = new ItemPosition(new Retract(retractArea, index));
+                }
             }
             else if (retract.Payload.OutputPosition is not null)
             {

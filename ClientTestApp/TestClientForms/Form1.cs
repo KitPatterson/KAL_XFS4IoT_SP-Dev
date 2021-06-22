@@ -146,8 +146,26 @@ namespace TestClientForms
             await DispenserDev.Dispense();
         }
 
+        private async void DispenserOpenShutter_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.OpenShutter();
+        }
+
+        private async void DispenserCloseShutter_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.CloseShutter();
+        }
+
         #endregion
 
+        private async void DispenserReject_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.Reject();
+        }
 
+        private async void DispenserRetract_Click(object sender, EventArgs e)
+        {
+            await DispenserDev.Retract();
+        }
     }
 }

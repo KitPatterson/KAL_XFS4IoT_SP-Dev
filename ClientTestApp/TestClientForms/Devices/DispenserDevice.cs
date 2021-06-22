@@ -126,10 +126,8 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var denominateCmd = new DenominateCommand(RequestId.NewID(), new(CommandTimeout, null, 2, 
-                new( new Dictionary<string, double>() {
-                    { "EUR", 400 } 
-                })));
+            var denominateCmd = new DenominateCommand(RequestId.NewID(), new(CommandTimeout, null, null, 
+                new( null, new Dictionary<string, int>() { { "PHP3", 1 }, { "PHP4", 2 } })));
 
             CmdBox.Text = denominateCmd.Serialise();
 
@@ -355,6 +353,174 @@ namespace TestClientForms.Devices
             {
                 object cmdResponse = await dispenser.ReceiveMessageAsync();
                 if (cmdResponse is ResetCompletion response)
+                {
+                    RspBox.Text = response.Serialise();
+                    break;
+                }
+                else if (cmdResponse is CashUnitErrorEvent cashUnitErrorEv)
+                {
+                    EvtBox.Text = cashUnitErrorEv.Serialise();
+                }
+                else if (cmdResponse is InfoAvailableEvent infoAvailableEv)
+                {
+                    EvtBox.Text = infoAvailableEv.Serialise();
+                }
+                else if (cmdResponse is IncompleteRetractEvent incompleteRetractEv)
+                {
+                    EvtBox.Text = incompleteRetractEv.Serialise();
+                }
+                else
+                {
+                    EvtBox.Text += "<Unknown Event>";
+                }
+            }
+        }
+
+        public async Task OpenShutter()
+        {
+            var dispenser = new XFS4IoTClient.ClientConnection(new Uri($"{ServiceUriBox.Text}"));
+
+            try
+            {
+                await dispenser.ConnectAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            var cmd = new OpenShutterCommand(RequestId.NewID(), new(CommandTimeout, OpenShutterCommand.PayloadData.PositionEnum.Default));
+
+            CmdBox.Text = cmd.Serialise();
+
+            await dispenser.SendCommandAsync(cmd);
+
+            RspBox.Text = string.Empty;
+            EvtBox.Text = string.Empty;
+
+            for (; ; )
+            {
+                object cmdResponse = await dispenser.ReceiveMessageAsync();
+                if (cmdResponse is OpenShutterCompletion response)
+                {
+                    RspBox.Text = response.Serialise();
+                    break;
+                }
+                else
+                {
+                    EvtBox.Text += "<Unknown Event>";
+                }
+            }
+        }
+
+        public async Task CloseShutter()
+        {
+            var dispenser = new XFS4IoTClient.ClientConnection(new Uri($"{ServiceUriBox.Text}"));
+
+            try
+            {
+                await dispenser.ConnectAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            var cmd = new CloseShutterCommand(RequestId.NewID(), new(CommandTimeout, CloseShutterCommand.PayloadData.PositionEnum.Default));
+
+            CmdBox.Text = cmd.Serialise();
+
+            await dispenser.SendCommandAsync(cmd);
+
+            RspBox.Text = string.Empty;
+            EvtBox.Text = string.Empty;
+
+            for (; ; )
+            {
+                object cmdResponse = await dispenser.ReceiveMessageAsync();
+                if (cmdResponse is CloseShutterCompletion response)
+                {
+                    RspBox.Text = response.Serialise();
+                    break;
+                }
+                else
+                {
+                    EvtBox.Text += "<Unknown Event>";
+                }
+            }
+        }
+
+        public async Task Reject()
+        {
+            var dispenser = new XFS4IoTClient.ClientConnection(new Uri($"{ServiceUriBox.Text}"));
+
+            try
+            {
+                await dispenser.ConnectAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            var cmd = new RejectCommand(RequestId.NewID(), new(CommandTimeout));
+
+            CmdBox.Text = cmd.Serialise();
+
+            await dispenser.SendCommandAsync(cmd);
+
+            RspBox.Text = string.Empty;
+            EvtBox.Text = string.Empty;
+
+            for (; ; )
+            {
+                object cmdResponse = await dispenser.ReceiveMessageAsync();
+                if (cmdResponse is RejectCompletion response)
+                {
+                    RspBox.Text = response.Serialise();
+                    break;
+                }
+                else if (cmdResponse is CashUnitErrorEvent cashUnitErrorEv)
+                {
+                    EvtBox.Text = cashUnitErrorEv.Serialise();
+                }
+                else if (cmdResponse is InfoAvailableEvent infoAvailableEv)
+                {
+                    EvtBox.Text = infoAvailableEv.Serialise();
+                }
+                else
+                {
+                    EvtBox.Text += "<Unknown Event>";
+                }
+            }
+        }
+
+        public async Task Retract()
+        {
+            var dispenser = new XFS4IoTClient.ClientConnection(new Uri($"{ServiceUriBox.Text}"));
+
+            try
+            {
+                await dispenser.ConnectAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            var cmd = new RetractCommand(RequestId.NewID(), new(CommandTimeout, null, RetractCommand.PayloadData.RetractAreaEnum.Retract, 1));
+
+            CmdBox.Text = cmd.Serialise();
+
+            await dispenser.SendCommandAsync(cmd);
+
+            RspBox.Text = string.Empty;
+            EvtBox.Text = string.Empty;
+
+            for (; ; )
+            {
+                object cmdResponse = await dispenser.ReceiveMessageAsync();
+                if (cmdResponse is RetractCompletion response)
                 {
                     RspBox.Text = response.Serialise();
                     break;

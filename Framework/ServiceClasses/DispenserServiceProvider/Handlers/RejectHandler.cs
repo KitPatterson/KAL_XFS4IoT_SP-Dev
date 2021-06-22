@@ -12,6 +12,9 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Dispenser.Commands;
 using XFS4IoT.Dispenser.Completions;
+using XFS4IoT.Completions;
+using XFS4IoTFramework.CashManagement;
+using System.Linq;
 
 namespace XFS4IoTFramework.Dispenser
 {
@@ -20,6 +23,21 @@ namespace XFS4IoTFramework.Dispenser
         private async Task<RejectCompletion.PayloadData> HandleReject(IRejectEvents events, RejectCommand reject, CancellationToken cancel)
         {
             Logger.Log(Constants.DeviceClass, "CashDispenserDev.RejectAsync()");
+
+            // Find reject unit
+            bool foundDestination = false;
+            foreach (var _ in from unit in Dispenser.CashUnits
+                              where unit.Value.Type == CashUnit.TypeEnum.RejectCassette
+                              select new { })
+            {
+                foundDestination = true;
+            }
+
+            if (!foundDestination)
+            {
+                return new RejectCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                        $"No reject units supported for this device.");
+            }
 
             var result = await Device.RejectAsync(events, cancel);
 
