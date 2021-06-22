@@ -386,7 +386,7 @@ namespace XFS4IoTFramework.Dispenser
             else
                 Denom.Add(currentCashUnit, currentSmallestNumNotes);
 
-            if (new Denominate(new Dictionary<string, double>() { { Currency, Amount } }, Denom).CheckTotalAmount(CashUnits))
+            if (!new Denominate(new Dictionary<string, double>() { { Currency, Amount } }, Denom).CheckTotalAmount(CashUnits))
             {
                 if (UnitsUsed.Contains(currentCashUnit))
                     UnitsUsed.Remove(currentCashUnit);
@@ -439,7 +439,6 @@ namespace XFS4IoTFramework.Dispenser
 
                 string biggestCashUnit = FindNextGreatest(0, ca.Key, CashUnits, ref CassetteUsed);
                 string smallestCashUnit = FindNextLeast(0, ca.Key, CashUnits, ref CassetteUsed);
-
 
                 if (string.IsNullOrEmpty(biggestCashUnit))
                 {

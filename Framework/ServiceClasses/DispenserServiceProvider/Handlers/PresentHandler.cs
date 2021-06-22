@@ -39,8 +39,6 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             Dispenser.CashDispenserCapabilities.OutputPositons.ContainsKey(position).IsTrue($"Unsupported position specified. {position}");
 
             if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])

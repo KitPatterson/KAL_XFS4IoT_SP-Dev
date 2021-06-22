@@ -23,8 +23,6 @@ namespace XFS4IoTFramework.Dispenser
     {
         private async Task<ResetCompletion.PayloadData> HandleReset(IResetEvents events, ResetCommand reset, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             ItemPosition itemPosition = null;
 
             if (string.IsNullOrEmpty(reset.Payload.Cashunit) &&

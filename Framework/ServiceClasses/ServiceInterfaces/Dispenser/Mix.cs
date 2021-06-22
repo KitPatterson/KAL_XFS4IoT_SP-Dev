@@ -179,7 +179,7 @@ namespace XFS4IoTFramework.Dispenser
         /// <returns></returns>
         protected static string FindNextLeast(double CurrentLeast, string CurrencyID, Dictionary<string, CashUnit> CashUnits, ref List<string> UnitsUsed)
         {
-            double currentSmallest = -1;
+            double currentSmallest = double.MaxValue;
             string smallestCashUnit = string.Empty;
 
             // Find the greatest value note of this currency. This will be the first 

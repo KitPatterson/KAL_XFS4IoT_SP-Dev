@@ -23,8 +23,6 @@ namespace XFS4IoTFramework.Dispenser
     {
         private async Task<TestCashUnitsCompletion.PayloadData> HandleTestCashUnits(ITestCashUnitsEvents events, TestCashUnitsCommand testCashUnits, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             ItemPosition itemPosition = null;
 
             if (string.IsNullOrEmpty(testCashUnits.Payload.Cashunit) &&

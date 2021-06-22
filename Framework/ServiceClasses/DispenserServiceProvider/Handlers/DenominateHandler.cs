@@ -23,8 +23,6 @@ namespace XFS4IoTFramework.Dispenser
     {
         private Task<DenominateCompletion.PayloadData> HandleDenominate(IDenominateEvents events, DenominateCommand denominate, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             int mixNumber = 0;
             if (denominate.Payload.MixNumber is not null)
                 mixNumber = (int)denominate.Payload.MixNumber;
@@ -142,7 +140,7 @@ namespace XFS4IoTFramework.Dispenser
 
             return Task.FromResult(new DenominateCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                         null,
-                                                                        null,
+                                                                        denomToDispense.Values is null ? DenominateCompletion.PayloadData.ErrorCodeEnum.NotDispensable : null,
                                                                         denomToDispense.CurrencyAmounts,
                                                                         denomToDispense.Values,
                                                                         denominate.Payload.Denomination.CashBox));

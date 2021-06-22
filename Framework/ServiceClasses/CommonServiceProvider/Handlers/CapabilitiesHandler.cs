@@ -134,7 +134,7 @@ namespace XFS4IoTFramework.Common
                 {
                     { CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom, false },
                     { CashDispenserCapabilitiesClass.OutputPositionEnum.Center, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Default, false },
+                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Default, true },
                     { CashDispenserCapabilitiesClass.OutputPositionEnum.Front, false },
                     { CashDispenserCapabilitiesClass.OutputPositionEnum.Left, false },
                     { CashDispenserCapabilitiesClass.OutputPositionEnum.Rear, false },

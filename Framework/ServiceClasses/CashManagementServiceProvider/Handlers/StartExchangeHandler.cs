@@ -129,75 +129,79 @@ namespace XFS4IoTFramework.CashManagement
                                                                result.ErrorCode);
             }
 
-            Dictionary<string, StartExchangeCompletion.PayloadData.CashunitsClass> xfsUnits = new();
+            Dictionary<string, StartExchangeCompletion.PayloadData.CashunitsClass> xfsUnits = null;
 
-            foreach (string unit in result.CashUnits)
+            if (result.CashUnits is not null)
             {
-                if (!CashManagement.CashUnits.ContainsKey(unit))
-                    continue;
-                StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum xfsStatus = CashManagement.CashUnits[unit].Status switch
+                xfsUnits = new();
+                foreach (string unit in result.CashUnits)
                 {
-                    CashUnit.StatusEnum.Empty => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Empty,
-                    CashUnit.StatusEnum.Full => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Full,
-                    CashUnit.StatusEnum.High => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.High,
-                    CashUnit.StatusEnum.Inoperative => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Inoperative,
-                    CashUnit.StatusEnum.Low => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Low,
-                    CashUnit.StatusEnum.Manipulated => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Manipulated,
-                    CashUnit.StatusEnum.Missing => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Missing,
-                    CashUnit.StatusEnum.NoReference => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.NoReference,
-                    CashUnit.StatusEnum.Ok => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Ok,
-                    _ => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.NoValue,
-                };
+                    if (!CashManagement.CashUnits.ContainsKey(unit))
+                        continue;
+                    StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum xfsStatus = CashManagement.CashUnits[unit].Status switch
+                    {
+                        CashUnit.StatusEnum.Empty => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Empty,
+                        CashUnit.StatusEnum.Full => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Full,
+                        CashUnit.StatusEnum.High => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.High,
+                        CashUnit.StatusEnum.Inoperative => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Inoperative,
+                        CashUnit.StatusEnum.Low => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Low,
+                        CashUnit.StatusEnum.Manipulated => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Manipulated,
+                        CashUnit.StatusEnum.Missing => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Missing,
+                        CashUnit.StatusEnum.NoReference => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.NoReference,
+                        CashUnit.StatusEnum.Ok => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.Ok,
+                        _ => StartExchangeCompletion.PayloadData.CashunitsClass.StatusEnum.NoValue,
+                    };
 
-                StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum xfsType = CashManagement.CashUnits[unit].Type switch
-                {
-                    CashUnit.TypeEnum.BillCassette => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.BillCassette,
-                    CashUnit.TypeEnum.CashIn => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.CashIn,
-                    CashUnit.TypeEnum.CoinCylinder => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.CoinCylinder,
-                    CashUnit.TypeEnum.CoinDispenser => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.CoinDispenser,
-                    CashUnit.TypeEnum.Coupon => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.Coupon,
-                    CashUnit.TypeEnum.Document => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.Document,
-                    CashUnit.TypeEnum.Recycling => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.Recycling,
-                    CashUnit.TypeEnum.RejectCassette => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.RejectCassette,
-                    CashUnit.TypeEnum.ReplenishmentContainer => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.ReplenishmentContainer,
-                    CashUnit.TypeEnum.RetractCassette => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.RetractCassette,
-                    _ => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.NotApplicable,
-                };
+                    StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum xfsType = CashManagement.CashUnits[unit].Type switch
+                    {
+                        CashUnit.TypeEnum.BillCassette => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.BillCassette,
+                        CashUnit.TypeEnum.CashIn => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.CashIn,
+                        CashUnit.TypeEnum.CoinCylinder => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.CoinCylinder,
+                        CashUnit.TypeEnum.CoinDispenser => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.CoinDispenser,
+                        CashUnit.TypeEnum.Coupon => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.Coupon,
+                        CashUnit.TypeEnum.Document => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.Document,
+                        CashUnit.TypeEnum.Recycling => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.Recycling,
+                        CashUnit.TypeEnum.RejectCassette => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.RejectCassette,
+                        CashUnit.TypeEnum.ReplenishmentContainer => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.ReplenishmentContainer,
+                        CashUnit.TypeEnum.RetractCassette => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.RetractCassette,
+                        _ => StartExchangeCompletion.PayloadData.CashunitsClass.TypeEnum.NotApplicable,
+                    };
 
-                List<StartExchangeCompletion.PayloadData.CashunitsClass.NoteNumberListClass.NoteNumberClass> xfsNoteNumber = new();
-                foreach (BankNoteNumber bn in CashManagement.CashUnits[unit].BankNoteNumberList)
-                    xfsNoteNumber.Add(new StartExchangeCompletion.PayloadData.CashunitsClass.NoteNumberListClass.NoteNumberClass(bn.NoteID, bn.Count));
+                    List<StartExchangeCompletion.PayloadData.CashunitsClass.NoteNumberListClass.NoteNumberClass> xfsNoteNumber = new();
+                    foreach (BankNoteNumber bn in CashManagement.CashUnits[unit].BankNoteNumberList)
+                        xfsNoteNumber.Add(new StartExchangeCompletion.PayloadData.CashunitsClass.NoteNumberListClass.NoteNumberClass(bn.NoteID, bn.Count));
 
-                xfsUnits.Add(unit, new StartExchangeCompletion.PayloadData.CashunitsClass(xfsStatus,
-                                                                                          xfsType,
-                                                                                          CashManagement.CashUnits[unit].CurrencyID,
-                                                                                          CashManagement.CashUnits[unit].Value,
-                                                                                          CashManagement.CashUnits[unit].LogicalCount,
-                                                                                          CashManagement.CashUnits[unit].Maximum,
-                                                                                          CashManagement.CashUnits[unit].AppLock,
-                                                                                          CashManagement.CashUnits[unit].CashUnitName,
-                                                                                          CashManagement.CashUnits[unit].InitialCount,
-                                                                                          CashManagement.CashUnits[unit].DispensedCount,
-                                                                                          CashManagement.CashUnits[unit].PresentedCount,
-                                                                                          CashManagement.CashUnits[unit].RetractedCount,
-                                                                                          CashManagement.CashUnits[unit].RejectCount,
-                                                                                          CashManagement.CashUnits[unit].Minimum,
-                                                                                          CashManagement.CashUnits[unit].PhysicalPositionName,
-                                                                                          CashManagement.CashUnits[unit].UnitID,
-                                                                                          CashManagement.CashUnits[unit].Count,
-                                                                                          CashManagement.CashUnits[unit].MaximumCapacity,
-                                                                                          CashManagement.CashUnits[unit].HardwareSensor,
-                                                                                          new StartExchangeCompletion.PayloadData.CashunitsClass.ItemTypeClass((CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.All) == CashUnit.ItemTypesEnum.All,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Unfit) == CashUnit.ItemTypesEnum.Unfit,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Individual) == CashUnit.ItemTypesEnum.Individual,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Level1) == CashUnit.ItemTypesEnum.Level1,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Level2) == CashUnit.ItemTypesEnum.Level2,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Level3) == CashUnit.ItemTypesEnum.Level3,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.ItemProcessor) == CashUnit.ItemTypesEnum.ItemProcessor,
-                                                                                                                                                               (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.UnfitIndividual) == CashUnit.ItemTypesEnum.UnfitIndividual),
-                                                                                            CashManagement.CashUnits[unit].CashInCount,
-                                                                                            new StartExchangeCompletion.PayloadData.CashunitsClass.NoteNumberListClass(xfsNoteNumber),
-                                                                                            CashManagement.CashUnits[unit].BanknoteIDs));
+                    xfsUnits.Add(unit, new StartExchangeCompletion.PayloadData.CashunitsClass(xfsStatus,
+                                                                                              xfsType,
+                                                                                              CashManagement.CashUnits[unit].CurrencyID,
+                                                                                              CashManagement.CashUnits[unit].Value,
+                                                                                              CashManagement.CashUnits[unit].LogicalCount,
+                                                                                              CashManagement.CashUnits[unit].Maximum,
+                                                                                              CashManagement.CashUnits[unit].AppLock,
+                                                                                              CashManagement.CashUnits[unit].CashUnitName,
+                                                                                              CashManagement.CashUnits[unit].InitialCount,
+                                                                                              CashManagement.CashUnits[unit].DispensedCount,
+                                                                                              CashManagement.CashUnits[unit].PresentedCount,
+                                                                                              CashManagement.CashUnits[unit].RetractedCount,
+                                                                                              CashManagement.CashUnits[unit].RejectCount,
+                                                                                              CashManagement.CashUnits[unit].Minimum,
+                                                                                              CashManagement.CashUnits[unit].PhysicalPositionName,
+                                                                                              CashManagement.CashUnits[unit].UnitID,
+                                                                                              CashManagement.CashUnits[unit].Count,
+                                                                                              CashManagement.CashUnits[unit].MaximumCapacity,
+                                                                                              CashManagement.CashUnits[unit].HardwareSensor,
+                                                                                              new StartExchangeCompletion.PayloadData.CashunitsClass.ItemTypeClass((CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.All) == CashUnit.ItemTypesEnum.All,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Unfit) == CashUnit.ItemTypesEnum.Unfit,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Individual) == CashUnit.ItemTypesEnum.Individual,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Level1) == CashUnit.ItemTypesEnum.Level1,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Level2) == CashUnit.ItemTypesEnum.Level2,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.Level3) == CashUnit.ItemTypesEnum.Level3,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.ItemProcessor) == CashUnit.ItemTypesEnum.ItemProcessor,
+                                                                                                                                                                   (CashManagement.CashUnits[unit].ItemTypes & CashUnit.ItemTypesEnum.UnfitIndividual) == CashUnit.ItemTypesEnum.UnfitIndividual),
+                                                                                                CashManagement.CashUnits[unit].CashInCount,
+                                                                                                new StartExchangeCompletion.PayloadData.CashunitsClass.NoteNumberListClass(xfsNoteNumber),
+                                                                                                CashManagement.CashUnits[unit].BanknoteIDs));
+                }
             }
 
             return new StartExchangeCompletion.PayloadData(result.CompletionCode,

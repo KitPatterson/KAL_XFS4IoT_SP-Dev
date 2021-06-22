@@ -52,8 +52,8 @@ namespace XFS4IoTFramework.Dispenser
                                                                               null,
                                                                               null,
                                                                               new GetPresentStatusCompletion.PayloadData.DenominationClass(
-                                                                                  Dispenser.LastPresentStatus[position].LastDenomination.CurrencyAmounts, 
-                                                                                  Dispenser.LastPresentStatus[position].LastDenomination.Values),
+                                                                                  Dispenser.LastPresentStatus[position].LastDenomination?.CurrencyAmounts, 
+                                                                                  Dispenser.LastPresentStatus[position].LastDenomination?.Values),
                                                                               Dispenser.LastPresentStatus[position].Status switch
                                                                               {
                                                                                   PresentStatus.PresentStatusEnum.NotPresented => GetPresentStatusCompletion.PayloadData.PresentStateEnum.NotPresented,

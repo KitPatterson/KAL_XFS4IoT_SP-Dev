@@ -126,9 +126,9 @@ namespace TestClientForms.Devices
                 return;
             }
 
-            var denominateCmd = new DenominateCommand(RequestId.NewID(), new(CommandTimeout, null, 1, 
+            var denominateCmd = new DenominateCommand(RequestId.NewID(), new(CommandTimeout, null, 2, 
                 new( new Dictionary<string, double>() {
-                    { "EUR", 50 } 
+                    { "EUR", 400 } 
                 })));
 
             CmdBox.Text = denominateCmd.Serialise();
@@ -184,7 +184,7 @@ namespace TestClientForms.Devices
             EvtBox.Text = string.Empty;
 
             object cmdResponse = await dispenser.ReceiveMessageAsync();
-            if (cmdResponse is GetPresentStatusCompletion response)
+            if (cmdResponse is DispenseCompletion response)
             {
                 RspBox.Text = response.Serialise();
             }

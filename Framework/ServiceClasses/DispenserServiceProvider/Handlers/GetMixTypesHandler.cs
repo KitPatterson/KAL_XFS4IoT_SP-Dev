@@ -21,8 +21,6 @@ namespace XFS4IoTFramework.Dispenser
     {
         private Task<GetMixTypesCompletion.PayloadData> HandleGetMixTypes(IGetMixTypesEvents events, GetMixTypesCommand getMixTypes, CancellationToken cancel)
         {
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             List<GetMixTypesCompletion.PayloadData.MixTypesClass> mixes = new();
 
             IEnumerator mixAlgorithms = Dispenser.GetMixAlgorithms();

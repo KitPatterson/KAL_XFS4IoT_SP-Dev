@@ -66,33 +66,33 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
         public StatusCompletion.PayloadData Status() 
         {
             StatusPropertiesClass common = new(
-                DeviceStatus,
-                new List<string>(),
-                new List<StatusPropertiesClass.GuideLightsClass>(){ new StatusPropertiesClass.GuideLightsClass(
+                Device: DeviceStatus,
+                Extra: new List<string>(),
+                GuideLights: new List<StatusPropertiesClass.GuideLightsClass>(){ new StatusPropertiesClass.GuideLightsClass(
                     StatusPropertiesClass.GuideLightsClass.FlashRateEnum.Off,
                     StatusPropertiesClass.GuideLightsClass.ColorEnum.Green,
                     StatusPropertiesClass.GuideLightsClass.DirectionEnum.Off) },
-                PositionStatusEnum.Inposition,
-                0,
-                StatusPropertiesClass.AntiFraudModuleEnum.Ok);
+                DevicePosition: PositionStatusEnum.Inposition,
+                PowerSaveRecoveryTime: 0,
+                AntiFraudModule: StatusPropertiesClass.AntiFraudModuleEnum.Ok);
 
             List<OutposClass> Positions = new List<OutposClass>();
             
-            OutposClass OutPos = new(OutposClass.PositionEnum.Center,
-                                     ShutterStatus,
-                                     OutputPositionStatus,
-                                     Transport,
-                                     TransportStatus,
-                                     OutposClass.JammedShutterPositionEnum.NotSupported);
+            OutposClass OutPos = new(Position: OutposClass.PositionEnum.Center,
+                                     Shutter: ShutterStatus,
+                                     PositionStatus: OutputPositionStatus,
+                                     Transport: Transport,
+                                     TransportStatus: TransportStatus,
+                                     JammedShutterPosition: OutposClass.JammedShutterPositionEnum.NotSupported);
             Positions.Add(OutPos);
 
             XFS4IoT.Dispenser.StatusClass cashDispenser = new(
-                StackerStatus,
-                Positions);
+                                                              IntermediateStacker: StackerStatus,
+                                                              Positions: Positions);
 
             XFS4IoT.CashManagement.StatusClass cashManagement = new(
-                SafeDoorStatus,
-                DispenserStatus);
+                                                                    SafeDoor: SafeDoorStatus,
+                                                                    Dispenser: DispenserStatus);
 
             return new StatusCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                     null,
@@ -113,22 +113,22 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
             };
 
             CapabilityPropertiesClass common = new(
-                "1.0",
-                new List<DeviceInformationClass>() { new DeviceInformationClass(
-                    "Simulator",
-                    "123456-78900001",
-                    "1.0",
-                    "KAL simualtor",
-                    new List<FirmwareClass>() {new FirmwareClass(
-                    "XFS4 SP",
-                    "1.0",
-                    "1.0") },
-                    new List<SoftwareClass>(){ new SoftwareClass(
-                    "XFS4 SP",
-                    "1.0") }) },
-                new VendorModeInfoClass(
-                    true,
-                    new List<string>()
+                ServiceVersion: "1.0",
+                DeviceInformation: new List<DeviceInformationClass>() { new DeviceInformationClass(
+                    ModelName: "Simulator",
+                    SerialNumber: "123456-78900001",
+                    RevisionNumber: "1.0",
+                    ModelDescription: "KAL simualtor",
+                    Firmware: new List<FirmwareClass>() {new FirmwareClass(
+                                                                           FirmwareName: "XFS4 SP",
+                                                                           FirmwareVersion: "1.0",
+                                                                           HardwareRevision: "1.0") },
+                    Software: new List<SoftwareClass>(){ new SoftwareClass(
+                                                                           SoftwareName: "XFS4 SP",
+                                                                           SoftwareVersion: "1.0") }) },
+                VendorModeIformation: new VendorModeInfoClass(
+                    AllowOpenSessions: true,
+                    AllowedExecuteCommands: new List<string>()
                     {
                         "CashDispenser.Dispense",
                         "CashDispenser.Reset",
@@ -140,48 +140,49 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                         "CashDispenser.TestCashUnits",
                         "CashDispenser.Count",
                     }),
-                new List<string>(),
-                guideLights,
-                false,
-                false,
-                new List<string>(),
-                false,
-                false,
-                false);
+                Extra: new List<string>(),
+                GuideLights: guideLights,
+                PowerSaveControl: false,
+                AntiFraudModule: false,
+                SynchronizableCommands: new List<string>(),
+                EndToEndSecurity: false,
+                HardwareSecurityElement: false,
+                ResponseSecurityEnabled: false);
 
             XFS4IoT.Dispenser.CapabilitiesClass cashDispenser = new(
-                XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceBill,
-                200,
-                true,
-                false,
-                new XFS4IoT.Dispenser.CapabilitiesClass.RetractAreasClass(true, true, true, true, true),
-                new XFS4IoT.Dispenser.CapabilitiesClass.RetractTransportActionsClass(true, true, true, true),
-                new XFS4IoT.Dispenser.CapabilitiesClass.RetractStackerActionsClass(true, true, true, true),
-                true, true,
-                new XFS4IoT.Dispenser.CapabilitiesClass.PositionsClass(false, false, true),
-                new XFS4IoT.Dispenser.CapabilitiesClass.MoveItemsClass(true, false, false, true),
-                false);
+                Type: XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceBill,
+                MaxDispenseItems: 200,
+                Shutter: true,
+                ShutterControl: false,
+                RetractAreas: new XFS4IoT.Dispenser.CapabilitiesClass.RetractAreasClass(true, true, true, true, true),
+                RetractTransportActions: new XFS4IoT.Dispenser.CapabilitiesClass.RetractTransportActionsClass(true, true, true, true),
+                RetractStackerActions:  new XFS4IoT.Dispenser.CapabilitiesClass.RetractStackerActionsClass(true, true, true, true),
+                IntermediateStacker: true,
+                ItemsTakenSensor: true,
+                Positions: new XFS4IoT.Dispenser.CapabilitiesClass.PositionsClass(false, false, true),
+                MoveItems: new XFS4IoT.Dispenser.CapabilitiesClass.MoveItemsClass(true, false, false, true),
+                PrepareDispense: false);
 
             XFS4IoT.CashManagement.CapabilitiesClass cashManagement = new(
-                true,
-                null,
-                new(true));
+                SafeDoor: true,
+                CashBox: null,
+                ExchangeType: new(true));
 
             List<InterfaceClass> interfaces = new()
             {
                 new InterfaceClass(
-                    InterfaceClass.NameEnum.Common,
-                    new List<string>()
+                    Name: InterfaceClass.NameEnum.Common,
+                    Commands: new List<string>()
                     {
                         "Common.Status",
                         "Common.Capabilities"
                     },
-                    new List<string>(),
-                    1000,
-                    new List<string>()),
+                    Events: new List<string>(),
+                    MaximumRequests: 1000,
+                    AuthenticationRequired: new List<string>()),
                 new InterfaceClass(
-                    InterfaceClass.NameEnum.CashDispenser,
-                    new List<string>
+                    Name: InterfaceClass.NameEnum.CashDispenser,
+                    Commands: new List<string>
                     {
                         "CashDispenser.Dispense",
                         "CashDispenser.Reset",
@@ -193,16 +194,16 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                         "CashDispenser.TestCashUnits",
                         "CashDispenser.Count",
                     },
-                    new List<string>
+                    Events: new List<string>
                     {
                         "CashDispenser.CashUnitErrorEvent",
                         "CashDispenser.NoteErrorEvent",
                     },
-                    1000,
-                    new List<string>()),
+                    MaximumRequests: 1000,
+                    AuthenticationRequired: new List<string>()),
                 new InterfaceClass(
-                    InterfaceClass.NameEnum.CashManagement,
-                    new List<string>()
+                    Name: InterfaceClass.NameEnum.CashManagement,
+                    Commands: new List<string>()
                     {
                         "CashManagement.GetCashUnitStatus",
                         "CashManagement.SetCashUnitInfo",
@@ -211,14 +212,14 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                         "CashManagement.CompleteExchange",
                         "CashManagement.CalibrateCashUnit",
                     },
-                    new List<string>()
+                    Events: new List<string>()
                     {
                         "CashManagement.CashUnitErrorEvent",
                         "CashManagement.CashUnitErrorEvent",
                         "CashManagement.NoteErrorEvent",
                     },
-                    1000,
-                    new List<string>())
+                    MaximumRequests: 1000,
+                    AuthenticationRequired: new List<string>())
             };
 
             return new CapabilitiesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
@@ -265,7 +266,7 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
             foreach (var item in LastDispenseResult)
             {
                 ItemMovement movement = new(null, item.Value.DispensedCount); // set presented count.
-                LastDispenseResult.Add(item.Key, movement);
+                LastPresentResult.Add(item.Key, movement);
             }
 
             LastDispenseResult.Clear(); // Dispensed cash is now presented
@@ -316,10 +317,10 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
 
             List<RetractResult.BankNoteItem> CashMovement = new();
 
-            RetractResult.BankNoteItem NoteItem1 = new("USD", 10.00, 5, 0);
+            RetractResult.BankNoteItem NoteItem1 = new("EUR", 10.00, 5, 0);
             CashMovement.Add(NoteItem1);
 
-            RetractResult.BankNoteItem NoteItem2 = new("USD", 20.00, 8, 0);
+            RetractResult.BankNoteItem NoteItem2 = new("EUR", 20.00, 8, 0);
             CashMovement.Add(NoteItem2);
 
             RetractResult.BankNoteItem NoteItem3 = new("", 0.00, 7, 0); // Unkown item
@@ -487,7 +488,7 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
         {
             // If USD 500 was presented
             Dictionary<string, double> Amounts = new();
-            Amounts.Add("USD", 500.00);
+            Amounts.Add("EUR", 500.00);
 
             Dictionary<string, int> Values = new();
             Values.Add("PHP3", 2); // USD 50 x 2
@@ -517,7 +518,7 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                                                    "",  // CurrencyID
                                                    0,   // Value
                                                    2000,    // Maximum
-                                                   true,    // AppLock
+                                                   false,    // AppLock
                                                    "REJECT", // CashUnitName
                                                    0,   // Minimum
                                                    "PHP1",  // PhysicalPositionName
@@ -532,7 +533,7 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                                                    "",  // CurrencyID
                                                    0,   // Value
                                                    2000,    // Maximum
-                                                   true,    // AppLock
+                                                   false,    // AppLock
                                                    "RETRACT", // CashUnitName
                                                    0,   // Minimum
                                                    "PHP2",  // PhysicalPositionName
@@ -544,14 +545,14 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                 CashUnitConfig.Add("PHP2", retract);
 
                 CashUnitConfiguration usd10 = new(CashUnit.TypeEnum.BillCassette,    // Type
-                                                   "USD",  // CurrencyID
+                                                   "EUR",  // CurrencyID
                                                    10.0,   // Value
                                                    2000,    // Maximum
-                                                   true,    // AppLock
-                                                   "USD10", // CashUnitName
+                                                   false,    // AppLock
+                                                   "EUR10", // CashUnitName
                                                    0,   // Minimum
                                                    "PHP3",  // PhysicalPositionName
-                                                   "USD10",    // UnitID
+                                                   "EUR10",    // UnitID
                                                    2000, // MaximumCapacity,
                                                    true, // HardwareSensor,
                                                    CashUnit.ItemTypesEnum.Individual, // ItemTypes,
@@ -559,14 +560,14 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                 CashUnitConfig.Add("PHP3", usd10);
 
                 CashUnitConfiguration usd20 = new(CashUnit.TypeEnum.BillCassette,    // Type
-                                                   "USD",  // CurrencyID
+                                                   "EUR",  // CurrencyID
                                                    20.0,   // Value
                                                    2000,    // Maximum
-                                                   true,    // AppLock
-                                                   "USD20", // CashUnitName
+                                                   false,    // AppLock
+                                                   "EUR20", // CashUnitName
                                                    0,   // Minimum
                                                    "PHP4",  // PhysicalPositionName
-                                                   "USD20",    // UnitID
+                                                   "EUR20",    // UnitID
                                                    2000, // MaximumCapacity,
                                                    true, // HardwareSensor,
                                                    CashUnit.ItemTypesEnum.Individual, // ItemTypes,
@@ -574,14 +575,14 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                 CashUnitConfig.Add("PHP4", usd20);
 
                 CashUnitConfiguration usd50 = new(CashUnit.TypeEnum.BillCassette,    // Type
-                                                   "USD",  // CurrencyID
+                                                   "EUR",  // CurrencyID
                                                    50.0,   // Value
                                                    2000,    // Maximum
-                                                   true,    // AppLock
-                                                   "USD50", // CashUnitName
+                                                   false,    // AppLock
+                                                   "EUR50", // CashUnitName
                                                    0,   // Minimum
                                                    "PHP5",  // PhysicalPositionName
-                                                   "USD50",    // UnitID
+                                                   "EUR50",    // UnitID
                                                    2000, // MaximumCapacity,
                                                    true, // HardwareSensor,
                                                    CashUnit.ItemTypesEnum.Individual, // ItemTypes,
@@ -589,14 +590,14 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
                 CashUnitConfig.Add("PHP5", usd50);
 
                 CashUnitConfiguration usd100 = new(CashUnit.TypeEnum.BillCassette,    // Type
-                                                   "USD",  // CurrencyID
+                                                   "EUR",  // CurrencyID
                                                    100.0,   // Value
                                                    2000,    // Maximum
-                                                   true,    // AppLock
-                                                   "USD100", // CashUnitName
+                                                   false,    // AppLock
+                                                   "EUR100", // CashUnitName
                                                    0,   // Minimum
                                                    "PHP6",  // PhysicalPositionName
-                                                   "USD100",    // UnitID
+                                                   "EUR100",    // UnitID
                                                    2000, // MaximumCapacity,
                                                    true, // HardwareSensor,
                                                    CashUnit.ItemTypesEnum.Individual, // ItemTypes,
@@ -621,10 +622,10 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
             {
                 CashUnitCounts.Add("PHP1", new(0, 0, 0, 0, 0, 0, 0, 0, new List<BankNoteNumber>())); // Reject cassette
                 CashUnitCounts.Add("PHP2", new(0, 0, 0, 0, 0, 0, 0, 0, new List<BankNoteNumber>())); // Retract cassette
-                CashUnitCounts.Add("PHP3", new(1000, 2000, 1000, 1000, 0, 0, 0, 0, new List<BankNoteNumber>() { new(0x0001, 1000) })); // USD10 cassette
-                CashUnitCounts.Add("PHP4", new(1000, 2000, 1000, 1000, 0, 0, 0, 0, new List<BankNoteNumber>() { new(0x0002, 1000) })); // USD20 cassette
-                CashUnitCounts.Add("PHP5", new(1000, 2000, 1000, 1000, 0, 0, 0, 0, new List<BankNoteNumber>() { new(0x0003, 1000) })); // USD50 cassette
-                CashUnitCounts.Add("PHP6", new(1000, 2000, 1000, 1000, 0, 0, 0, 0, new List<BankNoteNumber>() { new(0x0004, 1000) })); // USD100 cassette
+                CashUnitCounts.Add("PHP3", new(1000, 2000, 1000, 1000, 0, 0, 1000, 0, new List<BankNoteNumber>() { new(0x0001, 1000) })); // USD10 cassette
+                CashUnitCounts.Add("PHP4", new(1000, 2000, 1000, 1000, 0, 0, 1000, 0, new List<BankNoteNumber>() { new(0x0002, 1000) })); // USD20 cassette
+                CashUnitCounts.Add("PHP5", new(1000, 2000, 1000, 1000, 0, 0, 1000, 0, new List<BankNoteNumber>() { new(0x0003, 1000) })); // USD50 cassette
+                CashUnitCounts.Add("PHP6", new(1000, 2000, 1000, 1000, 0, 0, 1000, 0, new List<BankNoteNumber>() { new(0x0004, 1000) })); // USD100 cassette
             }
 
             return CashUnitCounts;

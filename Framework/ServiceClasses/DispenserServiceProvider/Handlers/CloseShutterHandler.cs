@@ -39,8 +39,6 @@ namespace XFS4IoTFramework.Dispenser
                 };
             }
 
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             // Check the shutter capabilites
             if (!Dispenser.CashDispenserCapabilities.Shutter)
             {

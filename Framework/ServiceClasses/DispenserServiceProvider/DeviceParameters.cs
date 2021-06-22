@@ -40,7 +40,11 @@ namespace XFS4IoTFramework.Dispenser
                           Dictionary<string, int> Values = null)
         {
             this.CurrencyAmounts = CurrencyAmounts;
-            this.Values = Values;
+            if (Values is not null)
+            {
+                // Copy only value positive
+                this.Values = Values.Where(v => v.Value > 0).ToDictionary(v => v.Key, v => v.Value);
+            }
         }
 
         /// <summary>

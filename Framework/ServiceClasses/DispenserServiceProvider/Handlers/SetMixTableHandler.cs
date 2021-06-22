@@ -45,8 +45,6 @@ namespace XFS4IoTFramework.Dispenser
                                                                              "Supplied MixRows is empty."));
             }
 
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             Dictionary<List<string>, Dictionary<double, Denomination>> mixes = new();
 
             Dictionary<double, List<MixTable.Table>> mixTables = new();

@@ -31,8 +31,6 @@ namespace XFS4IoTFramework.Dispenser
                                                          $"Specified both RetractArea and OutputPosition properties, the Service Provider doesn't know where the items to be moved.");
             }
 
-            DispenserServiceProvider CashDispenserService = Dispenser.IsA<DispenserServiceProvider>($"Unexpected object is specified. {nameof(DispenserServiceProvider)}.");
-
             ItemPosition itemPosition = null;
 
             if (retract.Payload.RetractArea is not null)
