@@ -237,10 +237,21 @@ namespace KAL.XFS4IoTSP.CashDispenser.Sample
             
             StackerStatus = XFS4IoT.Dispenser.StatusClass.IntermediateStackerEnum.NotEmpty;
 
+            if (dispenseInfo.Values is null ||
+                dispenseInfo.Values.Count == 0)
+            {
+                return new DispenseResult(MessagePayload.CompletionCodeEnum.Success,
+                                          $"Empty denominate value received from the framework.",
+                                          DispenseCompletion.PayloadData.ErrorCodeEnum.NotDispensable);
+            }
+
             foreach (var item in dispenseInfo.Values)
             {
                 ItemMovement movement = new(item.Value); // set dispensed count. If necessary, need to set reject count too
-                LastDispenseResult.Add(item.Key, movement);
+                if (LastDispenseResult.ContainsKey(item.Key))
+                    LastDispenseResult[item.Key].DispensedCount += item.Value;
+                else
+                    LastDispenseResult.Add(item.Key, movement);
             }
 
             return new DispenseResult(MessagePayload.CompletionCodeEnum.Success, dispenseInfo.Values, LastDispenseResult);
