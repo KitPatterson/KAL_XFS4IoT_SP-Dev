@@ -38,9 +38,9 @@ namespace XFS4IoTFramework.Dispenser
                                                                              GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
             }
 
-            MixTable mixTable = Dispenser.GetMix((int)getMixTable.Payload.MixNumber).IsA<MixTable>($"Unexpected mix type. {mix.GetType()}");
-
+            MixTable mixTable = mix.IsA<MixTable>($"Unexpected mix type. {mix.GetType()}");
             List<GetMixTableCompletion.PayloadData.MixRowsClass> mixRows = new();
+
             foreach (var table in mixTable.Mixes)
             {
                 List<int> cols = new();

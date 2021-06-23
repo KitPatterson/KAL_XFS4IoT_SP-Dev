@@ -45,8 +45,6 @@ namespace XFS4IoTFramework.Dispenser
                                                                              "Supplied MixRows is empty."));
             }
 
-            Dictionary<List<string>, Dictionary<double, Denomination>> mixes = new();
-
             Dictionary<double, List<MixTable.Table>> mixTables = new();
             foreach (SetMixTableCommand.PayloadData.MixRowsClass row in setMixTable.Payload.MixRows)
             {
