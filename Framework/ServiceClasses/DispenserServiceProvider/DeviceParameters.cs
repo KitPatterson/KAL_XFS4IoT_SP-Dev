@@ -405,7 +405,6 @@ namespace XFS4IoTFramework.Dispenser
         /// If this value is specified the number of additional bunches of items remaining to be presented as a result of the current operation. 
         /// If the number of additional bunches is at least one, but the precise number is unknown, NumBunchesRemaining will be -1. 
         /// If there are no bunches remaining, set to zero
-        /// </param>
         public PresentCashResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                  string ErrorDescription = null,
                                  PresentCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null,
