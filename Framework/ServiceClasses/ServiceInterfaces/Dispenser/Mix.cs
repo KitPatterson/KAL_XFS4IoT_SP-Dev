@@ -60,6 +60,7 @@ namespace XFS4IoTFramework.Dispenser
         /// <param name="CurrencyAmounts">Currency and amounts to denominate</param>
         /// <param name="CashUnits">Cash units to go through</param>
         /// <param name="MaxDispensableItems">Maximum number of items can be dispensed to the stacker.</param>
+        /// <param name="Logger"></param>
         /// <returns></returns>
         public abstract Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems, ILogger Logger);
 
@@ -102,6 +103,7 @@ namespace XFS4IoTFramework.Dispenser
         /// <param name="CurrentGreatest">Find the next value smaller than this. If this is zero, the greatest value available.</param>
         /// <param name="CurrencyID">Currency to use. Ignore other currencies.</param>
         /// <param name="CashUnits">The cash units to search through.</param>
+        /// <param name="UnitsUsed"></param>
         /// <returns></returns>
         protected static string FindNextGreatest(double CurrentGreatest, string CurrencyID, Dictionary<string, CashUnit> CashUnits, ref List<string> UnitsUsed)
         {
@@ -176,6 +178,7 @@ namespace XFS4IoTFramework.Dispenser
         /// <param name="CurrentLeast">Find the next value smaller than this. If this is zero, find the greatest value available.</param>
         /// <param name="CurrencyID">Currency to use. Ignore other currencies.</param>
         /// <param name="CashUnits">The cash units to search through.</param>
+        /// <param name="UnitsUsed"></param>
         /// <returns></returns>
         protected static string FindNextLeast(double CurrentLeast, string CurrencyID, Dictionary<string, CashUnit> CashUnits, ref List<string> UnitsUsed)
         {
@@ -249,6 +252,7 @@ namespace XFS4IoTFramework.Dispenser
         /// <param name="LastMostFull">Find the next value smaller than this. If this is zero, find the greatest value available.</param>
         /// <param name="CurrencyID">Currency to use. Ignore other currencies.</param>
         /// <param name="CashUnits">The cash units to search through.</param>
+        /// <param name="UnitsUsed"></param>
         /// <returns></returns>
         protected static string FindNextMostFull(double LastMostFull, string CurrencyID, Dictionary<string, CashUnit> CashUnits, List<string> UnitsUsed)
         {

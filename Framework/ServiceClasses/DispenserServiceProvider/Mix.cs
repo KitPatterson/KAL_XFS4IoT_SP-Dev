@@ -181,6 +181,7 @@ namespace XFS4IoTFramework.Dispenser
         /// </summary>
         /// <param name="CurrencyAmounts">Value to denominate and Currency to denominate in.</param>
         /// <param name="CashUnits">cash units to denominate from.</param>
+        /// <param name="MaxDispensableItems"></param>
         /// <param name="Logger"></param>
         /// <returns>denominate to dispense</returns>
         public override Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems, ILogger Logger)
@@ -423,6 +424,7 @@ namespace XFS4IoTFramework.Dispenser
         /// </summary>
         /// <param name="CurrencyAmounts">Value to denominate and Currency to denominate in.</param>
         /// <param name="CashUnits">cash units to denominate from.</param>
+        /// <param name="MaxDispensableItems"></param>
         /// <param name="Logger"></param>
         /// <returns>denominate to dispense</returns>
         public override Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems, ILogger Logger)

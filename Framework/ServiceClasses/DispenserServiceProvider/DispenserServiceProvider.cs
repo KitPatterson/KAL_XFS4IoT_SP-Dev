@@ -111,6 +111,7 @@ namespace XFS4IoTServer
         /// <summary>
         /// Add vendor specific mix algorithm
         /// </summary>
+        /// <param name="mixNumber"></param>
         /// <param name="mix">new mix algorithm to support for a customization</param>
         public void AddMix(int mixNumber, Mix mix) => DispenserService.AddMix(mixNumber, mix);
 
