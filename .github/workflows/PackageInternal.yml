@@ -1,0 +1,39 @@
+name: PackageInternal
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version Number (0.0.1 Format)'
+        required: true
+        default: '0.0.1-Internal.0'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://nuget.pkg.github.com/KAL-ATM-Software/index.json
+        dotnet-version: 5.0.x
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        
+    - name: Restore dependencies
+      run: dotnet restore Framework
+      
+    - name: Build
+      run: dotnet build Framework --no-restore
+      
+    - name: Run Tests
+      run: dotnet test Framework --no-build --verbosity normal
+      
+    - name: Package
+      run: dotnet pack Framework -p:PackageVersion=${{ github.event.inputs.version }} -o nuget --no-build
+      
+    - name: Push packages to GitHub
+      run: dotnet nuget push nuget/*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate --no-symbols true
