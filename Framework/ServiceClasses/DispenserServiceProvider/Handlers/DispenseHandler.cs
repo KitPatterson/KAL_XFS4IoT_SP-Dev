@@ -231,9 +231,9 @@ namespace XFS4IoTFramework.Dispenser
 
             Dispenser.UpdateCashUnitAccounting(result.MovementResult);
 
-            return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
-                                                      null,
-                                                      null,
+            return new DispenseCompletion.PayloadData(result.CompletionCode,
+                                                      result.ErrorDescription,
+                                                      result.ErrorCode,
                                                       denomToDispense.CurrencyAmounts,
                                                       denomToDispense.Values,
                                                       dispense.Payload.Denomination.CashBox);
