@@ -80,7 +80,9 @@ namespace XFS4IoTFramework.Dispenser
                     _ => OpenShutterCompletion.PayloadData.ErrorCodeEnum.ShutterNotOpen,
                 };
             }
-            return new OpenShutterCompletion.PayloadData(result.CompletionCode, result.ErrorDescription, errorCode);
+            return new OpenShutterCompletion.PayloadData(result.CompletionCode, 
+                                                         result.ErrorDescription,
+                                                         errorCode);
         }
     }
 }
