@@ -44,7 +44,7 @@ namespace XFS4IoTServer
         /// <summary>
         /// Common service interface
         /// </summary>
-        public ICommonService CommonService { get; init; }
+        private ICommonService CommonService { get; init; }
 
         /// <summary>
         /// Stores CashDispenser interface capabilites internally

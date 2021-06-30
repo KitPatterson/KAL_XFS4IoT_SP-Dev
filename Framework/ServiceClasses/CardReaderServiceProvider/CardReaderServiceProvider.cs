@@ -38,12 +38,12 @@ namespace XFS4IoTServer
                  device,
                  logger)
         {
-            CardReader = new CardReaderServiceClass(this, logger);
             CommonService = new CommonServiceClass(this, logger);
+            CardReader = new CardReaderServiceClass(this, CommonService, logger);
         }
 
         private readonly CardReaderServiceClass CardReader;
-        public CommonServiceClass CommonService { get; init; }
+        private readonly CommonServiceClass CommonService;
 
         #region CardReader unsolicited events
         public Task MediaRemovedEvent() => CardReader.MediaRemovedEvent();
@@ -58,6 +58,11 @@ namespace XFS4IoTServer
 
         public Task DevicePositionEvent(DevicePositionEvent.PayloadData Payload) => CommonService.DevicePositionEvent(Payload);
         #endregion
+
+        /// <summary>
+        /// Stores CardReader interface capabilites internally
+        /// </summary>
+        public CardReaderCapabilitiesClass CardReaderCapabilities { get => CommonService.CardReaderCapabilities; set => CommonService.CardReaderCapabilities = value; }
 
     }
 }

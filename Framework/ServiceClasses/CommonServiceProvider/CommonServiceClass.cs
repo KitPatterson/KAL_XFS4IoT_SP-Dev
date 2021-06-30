@@ -29,5 +29,10 @@ namespace XFS4IoTServer
         /// Stores CashManagement interface capabilites internally
         /// </summary>
         public CashManagementCapabilitiesClass CashManagementCapabilities { get; set; }
+
+        /// <summary>
+        /// Stores CardReader interface capabilites internally
+        /// </summary>
+        public CardReaderCapabilitiesClass CardReaderCapabilities { get; set; }
     }
 }

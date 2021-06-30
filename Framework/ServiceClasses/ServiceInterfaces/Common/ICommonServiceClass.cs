@@ -24,6 +24,12 @@ namespace XFS4IoTFramework.Common
         /// Stores CashManagement interface capabilites internally
         /// </summary>
         CashManagementCapabilitiesClass CashManagementCapabilities { get => null; set { } }
+
+
+        /// <summary>
+        /// Stores CardReader interface capabilites internally
+        /// </summary>
+        CardReaderCapabilitiesClass CardReaderCapabilities { get => null; set { } }
     }
 
     public interface ICommonServiceClass : ICommonService, ICommonUnsolicitedEvents
