@@ -79,7 +79,9 @@ namespace XFS4IoTFramework.Dispenser
                     _ => CloseShutterCompletion.PayloadData.ErrorCodeEnum.ShutterNotClosed,
                 };
             }
-            return new CloseShutterCompletion.PayloadData(result.CompletionCode, result.ErrorDescription, errorCode);
+            return new CloseShutterCompletion.PayloadData(result.CompletionCode, 
+                                                          result.ErrorDescription, 
+                                                          errorCode);
         }
     }
 }

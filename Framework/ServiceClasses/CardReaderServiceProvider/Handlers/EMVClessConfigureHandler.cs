@@ -11,6 +11,7 @@ using System.Threading;
 using XFS4IoT.Completions;
 using XFS4IoT.CardReader.Commands;
 using XFS4IoT.CardReader.Completions;
+using XFS4IoTFramework.Common;
 
 namespace XFS4IoTFramework.CardReader
 {
@@ -18,6 +19,12 @@ namespace XFS4IoTFramework.CardReader
     { 
         private async Task<EMVClessConfigureCompletion.PayloadData> HandleEMVClessConfigure(IEMVClessConfigureEvents events, EMVClessConfigureCommand eMVClessConfigure, CancellationToken cancel)
         {
+            if (CardReader.CardReaderCapabilities.Type != CardReaderCapabilitiesClass.DeviceTypeEnum.IntelligentContactless)
+            {
+                return new EMVClessConfigureCompletion.PayloadData(MessagePayload.CompletionCodeEnum.UnsupportedCommand,
+                                                                   $"This device is not an intelligent contactless CardReader. {CardReader.CardReaderCapabilities.Type}");
+            }
+
             // Data check
             if ((eMVClessConfigure.Payload.AidData is null || eMVClessConfigure.Payload.AidData.Count == 0) &&
                 eMVClessConfigure.Payload.TerminalData is null &&

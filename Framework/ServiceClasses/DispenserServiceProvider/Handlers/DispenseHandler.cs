@@ -131,6 +131,13 @@ namespace XFS4IoTFramework.Dispenser
                         Contracts.Assert(Result == Denominate.DispensableResultEnum.Good, $"Unexpected result received after an internal IsDispense call. {Result}");
                         break;
                 }
+
+                if (denomToDispense.Values is null)
+                {
+                    return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                                                              $"Mix failed to denominate. {mixNumber}, {denomToDispense.CurrencyAmounts}",
+                                                              DispenseCompletion.PayloadData.ErrorCodeEnum.NotDispensable);
+                }
             }
             ////////////////////////////////////////////////////////////////////////////
             //  2) Calculate the denomination, given an amount and mix number.
@@ -145,6 +152,13 @@ namespace XFS4IoTFramework.Dispenser
                 }
 
                 denomToDispense.Denomination = Dispenser.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, Dispenser.CashUnits, Dispenser.CashDispenserCapabilities.MaxDispenseItems, Logger);
+
+                if (denomToDispense.Values is null)
+                {
+                    return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                                                              $"Mix failed to denominate. {mixNumber}, {totalAmount}",
+                                                              DispenseCompletion.PayloadData.ErrorCodeEnum.NotDispensable);
+                }
             }
             ////////////////////////////////////////////////////////////////////////////
             //  3) Complete a partially specified denomination for a given amount.
@@ -169,7 +183,6 @@ namespace XFS4IoTFramework.Dispenser
             {
                 Contracts.Assert(false, $"Unreachable code.");
             }
-
 
             Logger.Log(Constants.DeviceClass, "CashDispenserDev.DispenseAsync()");
 
@@ -218,9 +231,9 @@ namespace XFS4IoTFramework.Dispenser
 
             Dispenser.UpdateCashUnitAccounting(result.MovementResult);
 
-            return new DispenseCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
-                                                      null,
-                                                      null,
+            return new DispenseCompletion.PayloadData(result.CompletionCode,
+                                                      result.ErrorDescription,
+                                                      result.ErrorCode,
                                                       denomToDispense.CurrencyAmounts,
                                                       denomToDispense.Values,
                                                       dispense.Payload.Denomination.CashBox);

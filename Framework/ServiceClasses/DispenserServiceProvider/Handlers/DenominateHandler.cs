@@ -101,6 +101,13 @@ namespace XFS4IoTFramework.Dispenser
                         Contracts.Assert(Result == Denominate.DispensableResultEnum.Good, $"Unexpected result received after an internal IsDispense call. {Result}");
                         break;
                 }
+
+                if (denomToDispense.Values is null)
+                {
+                    return Task.FromResult(new DenominateCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                                                                                $"Mix failed to denominate. {mixNumber}, {denomToDispense.CurrencyAmounts}",
+                                                                                DenominateCompletion.PayloadData.ErrorCodeEnum.NotDispensable));
+                }
             }
             ////////////////////////////////////////////////////////////////////////////
             //  2) Calculate the denomination, given an amount and mix number.
@@ -115,6 +122,13 @@ namespace XFS4IoTFramework.Dispenser
                 }
 
                 denomToDispense.Denomination = Dispenser.GetMix(mixNumber).Calculate(denomToDispense.CurrencyAmounts, Dispenser.CashUnits, Dispenser.CashDispenserCapabilities.MaxDispenseItems, Logger);
+
+                if (denomToDispense.Values is null)
+                {
+                    return Task.FromResult(new DenominateCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                                                                                $"Mix failed to denominate. {mixNumber}, {denomToDispense.CurrencyAmounts}",
+                                                                                DenominateCompletion.PayloadData.ErrorCodeEnum.NotDispensable));
+                }
             }
             ////////////////////////////////////////////////////////////////////////////
             //  3) Complete a partially specified denomination for a given amount.
