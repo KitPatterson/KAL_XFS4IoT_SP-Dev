@@ -43,7 +43,7 @@ namespace XFS4IoT.PinPad.Events
             public string Key { get; init; }
 
             /// <summary>
-            /// structure that contains the KSN formatted in base64.
+            /// The Base64 encoded KSN.
             /// </summary>
             [DataMember(Name = "ksn")]
             public string Ksn { get; init; }

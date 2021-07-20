@@ -27,7 +27,7 @@ namespace XFS4IoT.PinPad.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, string CustomerData = null, string XorData = null, int? Padding = null, FormatEnum? Format = null, string Key = null, string SecondEncKey = null, PinBlockAttributeClass PinBlockAttribute = null)
+            public PayloadData(int Timeout, string CustomerData = null, string XorData = null, int? Padding = null, FormatEnum? Format = null, string Key = null, string SecondEncKey = null, PinBlockAttributesClass PinBlockAttributes = null)
                 : base(Timeout)
             {
                 this.CustomerData = CustomerData;
@@ -36,7 +36,7 @@ namespace XFS4IoT.PinPad.Commands
                 this.Format = Format;
                 this.Key = Key;
                 this.SecondEncKey = SecondEncKey;
-                this.PinBlockAttribute = PinBlockAttribute;
+                this.PinBlockAttributes = PinBlockAttributes;
             }
 
             /// <summary>
@@ -56,8 +56,8 @@ namespace XFS4IoT.PinPad.Commands
             /// of the first encryption by an XOR-operation. This parameter is a string of hexadecimal data that must be converted by 
             /// the application, e.g. 0x0123456789ABCDEF must be converted to 0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x41 
             /// 0x42 0x43 0x44 0x45 0x46 and terminated with 0x00. In other words the application would set xorData to “0123456789ABCDEF”. 
-            /// The hex digits 0xA to 0xF can be represented by characters in the ranges ‘a’ to ‘f’ or ‘A’ to ‘F’. If this value is NULL 
-            /// no XOR-operation will be performed. If the formatted PIN is not encrypted twice (i.e. if lpsKeyEncKey is NULL) this parameter is ignored.
+            /// The hex digits 0xA to 0xF can be represented by characters in the ranges ‘a’ to ‘f’ or ‘A’ to ‘F’. If this value is omitted 
+            /// no XOR-operation will be performed. If the formatted PIN is not encrypted twice (i.e. if the [secondEncKey](#pinpad.getpinblock.command.properties.secondenckey) property is omitted) this parameter is ignored.
             /// </summary>
             [DataMember(Name = "xorData")]
             public string XorData { get; init; }
@@ -127,7 +127,7 @@ namespace XFS4IoT.PinPad.Commands
             public string Key { get; init; }
 
             /// <summary>
-            /// Specifies the key used to format the once encrypted formatted PIN, this field is not required if no second encryption required. 
+            /// Specifies the key used to format the once encrypted formatted PIN, this property can be omitted if no second encryption required. 
             /// The key referenced by lpsKeyEncKey must have the function or pinRemote attribute. 
             /// If this specifies a double-length or triple-length key, triple DES encryption will be performed.
             /// </summary>
@@ -135,9 +135,9 @@ namespace XFS4IoT.PinPad.Commands
             public string SecondEncKey { get; init; }
 
             [DataContract]
-            public sealed class PinBlockAttributeClass
+            public sealed class PinBlockAttributesClass
             {
-                public PinBlockAttributeClass(AlgorithmEnum? Algorithm = null, CryptoMethodEnum? CryptoMethod = null)
+                public PinBlockAttributesClass(AlgorithmEnum? Algorithm = null, CryptoMethodEnum? CryptoMethod = null)
                 {
                     this.Algorithm = Algorithm;
                     this.CryptoMethod = CryptoMethod;
@@ -201,8 +201,8 @@ namespace XFS4IoT.PinPad.Commands
             /// [Capabilities.cryptAttributes](#common.capabilities.completion.properties.crypto.cryptoattributes) capability field. 
             /// The values specified must be compatible with the key identified by key.
             /// </summary>
-            [DataMember(Name = "pinBlockAttribute")]
-            public PinBlockAttributeClass PinBlockAttribute { get; init; }
+            [DataMember(Name = "pinBlockAttributes")]
+            public PinBlockAttributesClass PinBlockAttributes { get; init; }
 
         }
     }

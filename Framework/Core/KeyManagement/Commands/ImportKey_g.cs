@@ -27,7 +27,7 @@ namespace XFS4IoT.KeyManagement.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, string Key = null, Dictionary<string, System.Text.Json.JsonElement> KeyAttributes = null, string Value = null, bool? Constructing = null, string DecryptKey = null, DecryptMethodEnum? DecryptMethod = null, string VerificationData = null, string VerifyKey = null, VerifyAttributesClass VerifyAttributes = null, string VendorAttributes = null)
+            public PayloadData(int Timeout, string Key = null, KeyAttributesClass KeyAttributes = null, string Value = null, bool? Constructing = null, string DecryptKey = null, DecryptMethodEnum? DecryptMethod = null, string VerificationData = null, string VerifyKey = null, VerifyAttributesClass VerifyAttributes = null, string VendorAttributes = null)
                 : base(Timeout)
             {
                 this.Key = Key;
@@ -48,13 +48,155 @@ namespace XFS4IoT.KeyManagement.Commands
             [DataMember(Name = "key")]
             public string Key { get; init; }
 
+            [DataContract]
+            public sealed class KeyAttributesClass
+            {
+                public KeyAttributesClass(string KeyUsage = null, string Algorithm = null, string ModeOfUse = null, string Restricted = null)
+                {
+                    this.KeyUsage = KeyUsage;
+                    this.Algorithm = Algorithm;
+                    this.ModeOfUse = ModeOfUse;
+                    this.Restricted = Restricted;
+                }
+
+                /// <summary>
+                /// Specifies the key usage.
+                /// The following values are possible:  
+                /// 
+                /// * ```B0``` - BDK Base Derivation Key. 
+                /// * ```B1``` - Initial DUKPT key. 
+                /// * ```B2``` - Base Key Variant Key. 
+                /// * ```C0``` - CVK Card Verification Key. 
+                /// * ```D0``` - Symmetric Key for Data Encryption. 
+                /// * ```D1``` - Asymmetric Key for Data Encryption. 
+                /// * ```D2``` - Data Encryption Key for Decimalization Table. 
+                /// * ```E0``` - EMV / Chip Issuer Master Key: Application Cryptogram. 
+                /// * ```E1``` - EMV / Chip Issuer Master Key: Secure Messaging for Confidentiality. 
+                /// * ```E2``` - EMV / Chip Issuer Master Key: Secure Messaging for Integrity. 
+                /// * ```E3``` - EMV / Chip Issuer Master Key: Data Authentication Code. 
+                /// * ```E4``` - EMV / Chip Issuer Master Key: Dynamic. 
+                /// * ```E5``` - EMV / Chip Issuer Master Key: Card Personalization. 
+                /// * ```E6``` - EMV / Chip Issuer Master Key: Other Initialization Vector (IV). 
+                /// * ```I0``` - Initialization Vector (IV). 
+                /// * ```K0``` - Key Encryption or wrapping. 
+                /// * ```K1``` - TR-31 Key Block Protection Key. 
+                /// * ```K2``` - TR-34 Asymmetric Key. 
+                /// * ```K3``` - Asymmetric Key for key agreement / key wrapping. 
+                /// * ```M0``` - ISO 16609 MAC algorithm 1 (using TDEA). 
+                /// * ```M1``` - ISO 9797-1 MAC Algorithm 1. 
+                /// * ```M2``` - ISO 9797-1 MAC Algorithm 2. 
+                /// * ```M3``` - ISO 9797-1 MAC Algorithm 3. 
+                /// * ```M4``` - ISO 9797-1 MAC Algorithm 4. 
+                /// * ```M5``` - ISO 9797-1:2011 MAC Algorithm 5. 
+                /// * ```M6``` - ISO 9797-1:2011 MAC Algorithm 5 / CMAC. 
+                /// * ```M7``` - HMAC. 
+                /// * ```M8``` - ISO 9797-1:2011 MAC Algorithm 6. 
+                /// * ```P0``` - PIN Encryption. 
+                /// * ```S0``` - Asymmetric key pair for digital signature. 
+                /// * ```S1``` - Asymmetric key pair, CA key. 
+                /// * ```S2``` - Asymmetric key pair, nonX9.24 key. 
+                /// * ```V0``` - PIN verification, KPV, other algorithm. 
+                /// * ```V1``` - PIN verification, IBM 3624. 
+                /// * ```V2``` - PIN verification, VISA PVV. 
+                /// * ```V3``` - PIN verification, X9-132 algorithm 1. 
+                /// * ```V4``` - PIN verification, X9-132 algorithm 2. 
+                /// * ```00 - 99``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "keyUsage")]
+                [DataTypes(Pattern = "^B[0-2]$|^C0$|^D[0-2]$|^E[0-6]$|^I0$|^K[0-3]$|^M[0-8]$|^P0$|^S[0-2]$|^V[0-4]$|^[0-9][0-9]$")]
+                public string KeyUsage { get; init; }
+
+                /// <summary>
+                /// Specifies the encryption algorithm.
+                /// The following values are possible:
+                /// 
+                /// * ```A``` - AES.
+                /// * ```D``` - DEA. 
+                /// * ```R``` - RSA. 
+                /// * ```T``` - Triple DEA (also referred to as TDEA). 
+                /// * ```"0" - "9"``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "algorithm")]
+                [DataTypes(Pattern = "^[0-9ADRT]$")]
+                public string Algorithm { get; init; }
+
+                /// <summary>
+                /// Specifies the encryption mode.
+                /// The following values are possible: 
+                /// 
+                /// * ```B``` - Both Encrypt and Decrypt / Wrap and unwrap. 
+                /// * ```C``` - Both Generate and Verify. 
+                /// * ```D``` - Decrypt / Unwrap Only. 
+                /// * ```E``` - Encrypt / Wrap Only. 
+                /// * ```G``` - Generate Only. 
+                /// * ```S``` - Signature Only. 
+                /// * ```T``` - Both Sign and Decrypt. 
+                /// * ```V``` - Verify Only. 
+                /// * ```X``` - Key used to derive other keys(s). 
+                /// * ```Y``` - Key used to create key variants. 
+                /// * ```0 - 9``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "modeOfUse")]
+                [DataTypes(Pattern = "^[0-9BCDEGSTVXY]$")]
+                public string ModeOfUse { get; init; }
+
+                /// <summary>
+                /// Specifies restricted key usage of the key associated with the [keyUsage](#keymanagement.importkey.command.properties.keyattributes.keyusage) property.
+                /// This property can be omitted if there is no restricted key usage required.
+                /// Following restricted key usage can be set if the [keyUsage](#keymanagement.importkey.command.properties.keyattributes.keyusage) property is either ['K0' or 'K1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0).
+                /// The following values are possible:
+                /// 
+                /// * ```B0``` - BDK Base Derivation Key. 
+                /// * ```B1``` - Initial DUKPT key. 
+                /// * ```B2``` - Base Key Variant Key. 
+                /// * ```C0``` - CVK Card Verification Key. 
+                /// * ```D0``` - Symmetric Key for Data Encryption. 
+                /// * ```D1``` - Asymmetric Key for Data Encryption. 
+                /// * ```D2``` - Data Encryption Key for Decimalization Table. 
+                /// * ```E0``` - EMV / Chip Issuer Master Key: Application Cryptogram. 
+                /// * ```E1``` - EMV / Chip Issuer Master Key: Secure Messaging for Confidentiality. 
+                /// * ```E2``` - EMV / Chip Issuer Master Key: Secure Messaging for Integrity. 
+                /// * ```E3``` - EMV / Chip Issuer Master Key: Data Authentication Code. 
+                /// * ```E4``` - EMV / Chip Issuer Master Key: Dynamic. 
+                /// * ```E5``` - EMV / Chip Issuer Master Key: Card Personalization. 
+                /// * ```E6``` - EMV / Chip Issuer Master Key: Other Initialization Vector (IV). 
+                /// * ```I0``` - Initialization Vector (IV). 
+                /// * ```K2``` - TR-34 Asymmetric Key. 
+                /// * ```K3``` - Asymmetric Key for key agreement / key wrapping. 
+                /// * ```M0``` - ISO 16609 MAC algorithm 1 (using TDEA). 
+                /// * ```M1``` - ISO 9797-1 MAC Algorithm 1. 
+                /// * ```M2``` - ISO 9797-1 MAC Algorithm 2. 
+                /// * ```M3``` - ISO 9797-1 MAC Algorithm 3. 
+                /// * ```M4``` - ISO 9797-1 MAC Algorithm 4. 
+                /// * ```M5``` - ISO 9797-1:2011 MAC Algorithm 5. 
+                /// * ```M6``` - ISO 9797-1:2011 MAC Algorithm 5 / CMAC. 
+                /// * ```M7``` - HMAC. 
+                /// * ```M8``` - ISO 9797-1:2011 MAC Algorithm 6. 
+                /// * ```P0``` - PIN Encryption. 
+                /// * ```S0``` - Asymmetric key pair for digital signature. 
+                /// * ```S1``` - Asymmetric key pair, CA key. 
+                /// * ```S2``` - Asymmetric key pair, nonX9.24 key. 
+                /// * ```V0``` - PIN verification, KPV, other algorithm. 
+                /// * ```V1``` - PIN verification, IBM 3624. 
+                /// * ```V2``` - PIN verification, VISA PVV. 
+                /// * ```V3``` - PIN verification, X9-132 algorithm 1. 
+                /// * ```V4``` - PIN verification, X9-132 algorithm 2. 
+                /// * ```00 - 99``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "restricted")]
+                [DataTypes(Pattern = "^B[0-2]$|^C0$|^D[0-2]$|^E[0-6]$|^I0$|^K[2-3]$|^M[0-8]$|^P0$|^S[0-2]$|^V[0-4]$|^[0-9][0-9]$")]
+                public string Restricted { get; init; }
+
+            }
+
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for the key imported 
             /// by this command. For a list of valid values see the [KeyManagement.keyAttribute](#common.capabilities.completion.properties.keymanagement.keyattributes) 
             /// capability. The values specified must be compatible with the key identified by key.
+            /// This property can be omitted if the constructing property is true.
             /// </summary>
             [DataMember(Name = "keyAttributes")]
-            public Dictionary<string, System.Text.Json.JsonElement> KeyAttributes { get; init; }
+            public KeyAttributesClass KeyAttributes { get; init; }
 
             /// <summary>
             /// Specifies the value of key to be loaded formatted in base64.
@@ -112,7 +254,7 @@ namespace XFS4IoT.KeyManagement.Commands
             /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm. 
             /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm. 
             /// 
-            /// If the specified [key](#keymanagement.importkey.command.properties.key) is key usage ['K1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be omitted.
+            /// If the specified [decryptKey](#keymanagement.importkey.command.properties.decryptkey) is key usage ['K1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be omitted.
             /// TR-31 defines the cryptographic methods used for each key block version.
             /// </summary>
             [DataMember(Name = "decryptMethod")]

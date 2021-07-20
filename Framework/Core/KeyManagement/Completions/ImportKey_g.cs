@@ -75,7 +75,7 @@ namespace XFS4IoT.KeyManagement.Completions
             public ErrorCodeEnum? ErrorCode { get; init; }
 
             /// <summary>
-            /// The verification data. This field is not set if there is no verification data.
+            /// The verification data. This field can be omitted if there is no verification data.
             /// </summary>
             [DataMember(Name = "verificationData")]
             public string VerificationData { get; init; }

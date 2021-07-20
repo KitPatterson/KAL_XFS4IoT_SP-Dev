@@ -14,6 +14,33 @@ using System.Runtime.Serialization;
 namespace XFS4IoT.Common
 {
 
+    public enum CompletionCodeEnumEnum
+    {
+        Success,
+        CommandErrorCode,
+        Canceled,
+        DeviceNotReady,
+        HardwareError,
+        InternalError,
+        InvalidCommand,
+        InvalidRequestID,
+        TimeOut,
+        UnsupportedCommand,
+        InvalidData,
+        UserError,
+        UnsupportedData,
+        FraudAttempt,
+        SequenceError,
+        AuthorisationRequired,
+        NoTokenNonce,
+        InvalidToken,
+        InvalidTokenNonce,
+        InvalidTokenHMAC,
+        InvalidTokenFormat,
+        InvalidTokenKeyNoValue
+    }
+
+
     public enum PositionStatusEnum
     {
         Inposition,
@@ -25,11 +52,10 @@ namespace XFS4IoT.Common
     [DataContract]
     public sealed class StatusPropertiesClass
     {
-        public StatusPropertiesClass(DeviceEnum? Device = null, List<string> Extra = null, List<GuideLightsClass> GuideLights = null, PositionStatusEnum? DevicePosition = null, int? PowerSaveRecoveryTime = null, AntiFraudModuleEnum? AntiFraudModule = null)
+        public StatusPropertiesClass(DeviceEnum? Device = null, List<string> Extra = null, PositionStatusEnum? DevicePosition = null, int? PowerSaveRecoveryTime = null, AntiFraudModuleEnum? AntiFraudModule = null)
         {
             this.Device = Device;
             this.Extra = Extra;
-            this.GuideLights = GuideLights;
             this.DevicePosition = DevicePosition;
             this.PowerSaveRecoveryTime = PowerSaveRecoveryTime;
             this.AntiFraudModule = AntiFraudModule;
@@ -61,73 +87,6 @@ namespace XFS4IoT.Common
         /// </summary>
         [DataMember(Name = "extra")]
         public List<string> Extra { get; init; }
-
-        [DataContract]
-        public sealed class GuideLightsClass
-        {
-            public GuideLightsClass(FlashRateEnum? FlashRate = null, ColorEnum? Color = null, DirectionEnum? Direction = null)
-            {
-                this.FlashRate = FlashRate;
-                this.Color = Color;
-                this.Direction = Direction;
-            }
-
-            public enum FlashRateEnum
-            {
-                NotSupported,
-                Off,
-                Slow,
-                Medium,
-                Quick,
-                Continuous
-            }
-
-            /// <summary>
-            /// Indicates the current flash rate of the guidelight.
-            /// </summary>
-            [DataMember(Name = "flashRate")]
-            public FlashRateEnum? FlashRate { get; init; }
-
-            public enum ColorEnum
-            {
-                NotSupported,
-                Off,
-                Red,
-                Green,
-                Yellow,
-                Blue,
-                Cyan,
-                Magenta,
-                White
-            }
-
-            /// <summary>
-            /// Indicates the current color of the guidelight.
-            /// </summary>
-            [DataMember(Name = "color")]
-            public ColorEnum? Color { get; init; }
-
-            public enum DirectionEnum
-            {
-                NotSupported,
-                Off,
-                Entry,
-                Exit
-            }
-
-            /// <summary>
-            /// Indicates the current direction of the guidelight.
-            /// </summary>
-            [DataMember(Name = "direction")]
-            public DirectionEnum? Direction { get; init; }
-
-        }
-
-        /// <summary>
-        /// Specifies the state of the guidance light indicators. A number of guidance light types are defined below. Vendor specific guidance lights are defined starting from the end of the array.
-        /// </summary>
-        [DataMember(Name = "guideLights")]
-        public List<GuideLightsClass> GuideLights { get; init; }
 
         /// <summary>
         /// Position of the device.
@@ -367,13 +326,12 @@ namespace XFS4IoT.Common
     [DataContract]
     public sealed class CapabilityPropertiesClass
     {
-        public CapabilityPropertiesClass(string ServiceVersion = null, List<DeviceInformationClass> DeviceInformation = null, VendorModeInfoClass VendorModeIformation = null, List<string> Extra = null, List<GuideLightsClass> GuideLights = null, bool? PowerSaveControl = null, bool? AntiFraudModule = null, List<string> SynchronizableCommands = null, bool? EndToEndSecurity = null, bool? HardwareSecurityElement = null, bool? ResponseSecurityEnabled = null)
+        public CapabilityPropertiesClass(string ServiceVersion = null, List<DeviceInformationClass> DeviceInformation = null, VendorModeInfoClass VendorModeIformation = null, List<string> Extra = null, bool? PowerSaveControl = null, bool? AntiFraudModule = null, List<string> SynchronizableCommands = null, bool? EndToEndSecurity = null, bool? HardwareSecurityElement = null, bool? ResponseSecurityEnabled = null)
         {
             this.ServiceVersion = ServiceVersion;
             this.DeviceInformation = DeviceInformation;
             this.VendorModeIformation = VendorModeIformation;
             this.Extra = Extra;
-            this.GuideLights = GuideLights;
             this.PowerSaveControl = PowerSaveControl;
             this.AntiFraudModule = AntiFraudModule;
             this.SynchronizableCommands = SynchronizableCommands;
@@ -407,160 +365,6 @@ namespace XFS4IoT.Common
         /// </summary>
         [DataMember(Name = "extra")]
         public List<string> Extra { get; init; }
-
-        [DataContract]
-        public sealed class GuideLightsClass
-        {
-            public GuideLightsClass(FlashRateClass FlashRate = null, ColorClass Color = null, DirectionClass Direction = null)
-            {
-                this.FlashRate = FlashRate;
-                this.Color = Color;
-                this.Direction = Direction;
-            }
-
-            [DataContract]
-            public sealed class FlashRateClass
-            {
-                public FlashRateClass(bool? Slow = null, bool? Medium = null, bool? Quick = null, bool? Continuous = null)
-                {
-                    this.Slow = Slow;
-                    this.Medium = Medium;
-                    this.Quick = Quick;
-                    this.Continuous = Continuous;
-                }
-
-                /// <summary>
-                /// The light can blink slowly.
-                /// </summary>
-                [DataMember(Name = "slow")]
-                public bool? Slow { get; init; }
-
-                /// <summary>
-                /// The light can blink medium frequency.
-                /// </summary>
-                [DataMember(Name = "medium")]
-                public bool? Medium { get; init; }
-
-                /// <summary>
-                /// The light can blink quickly.
-                /// </summary>
-                [DataMember(Name = "quick")]
-                public bool? Quick { get; init; }
-
-                /// <summary>
-                /// The light can be continuous (steady).
-                /// </summary>
-                [DataMember(Name = "continuous")]
-                public bool? Continuous { get; init; }
-
-            }
-
-            /// <summary>
-            /// Indicates which flash rates are supported by the guidelight.
-            /// </summary>
-            [DataMember(Name = "flashRate")]
-            public FlashRateClass FlashRate { get; init; }
-
-            [DataContract]
-            public sealed class ColorClass
-            {
-                public ColorClass(bool? Red = null, bool? Green = null, bool? Yellow = null, bool? Blue = null, bool? Cyan = null, bool? Magenta = null, bool? White = null)
-                {
-                    this.Red = Red;
-                    this.Green = Green;
-                    this.Yellow = Yellow;
-                    this.Blue = Blue;
-                    this.Cyan = Cyan;
-                    this.Magenta = Magenta;
-                    this.White = White;
-                }
-
-                /// <summary>
-                /// The light can be red.
-                /// </summary>
-                [DataMember(Name = "red")]
-                public bool? Red { get; init; }
-
-                /// <summary>
-                /// The light can be green.
-                /// </summary>
-                [DataMember(Name = "green")]
-                public bool? Green { get; init; }
-
-                /// <summary>
-                /// The light can be yellow.
-                /// </summary>
-                [DataMember(Name = "yellow")]
-                public bool? Yellow { get; init; }
-
-                /// <summary>
-                /// The light can be blue.
-                /// </summary>
-                [DataMember(Name = "blue")]
-                public bool? Blue { get; init; }
-
-                /// <summary>
-                /// The light can be cyan.
-                /// </summary>
-                [DataMember(Name = "cyan")]
-                public bool? Cyan { get; init; }
-
-                /// <summary>
-                /// The light can be magenta.
-                /// </summary>
-                [DataMember(Name = "magenta")]
-                public bool? Magenta { get; init; }
-
-                /// <summary>
-                /// The light can be white.
-                /// </summary>
-                [DataMember(Name = "white")]
-                public bool? White { get; init; }
-
-            }
-
-            /// <summary>
-            /// Indicates which colors are supported by the guidelight.
-            /// </summary>
-            [DataMember(Name = "color")]
-            public ColorClass Color { get; init; }
-
-            [DataContract]
-            public sealed class DirectionClass
-            {
-                public DirectionClass(bool? Entry = null, bool? Exit = null)
-                {
-                    this.Entry = Entry;
-                    this.Exit = Exit;
-                }
-
-                /// <summary>
-                /// The light can indicate entry.
-                /// </summary>
-                [DataMember(Name = "entry")]
-                public bool? Entry { get; init; }
-
-                /// <summary>
-                /// The light can indicate exit.
-                /// </summary>
-                [DataMember(Name = "exit")]
-                public bool? Exit { get; init; }
-
-            }
-
-            /// <summary>
-            /// Indicates which directions are supported by the guidelight.
-            /// </summary>
-            [DataMember(Name = "direction")]
-            public DirectionClass Direction { get; init; }
-
-        }
-
-        /// <summary>
-        /// Specifies which guidance lights are available
-        /// </summary>
-        [DataMember(Name = "guideLights")]
-        public List<GuideLightsClass> GuideLights { get; init; }
 
         /// <summary>
         /// Specifies whether power saving control is available
