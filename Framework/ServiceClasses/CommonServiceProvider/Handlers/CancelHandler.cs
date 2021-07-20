@@ -21,7 +21,7 @@ namespace XFS4IoTFramework.Common
     public partial class CancelHandler
     {
 
-        private Task<CancelCompletion.PayloadData> HandleCancel(ICancelEvents events, CancelCommand cancel, CancellationToken cancel)
+        private Task<CancelCompletion.PayloadData> HandleCancel(ICancelEvents events, CancelCommand cancelCommand, CancellationToken cancel)
         {
             //ToDo: Implement HandleCancel for Common.
             
