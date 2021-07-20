@@ -40,7 +40,7 @@ namespace XFS4IoT.Crypto.Commands
             }
 
             /// <summary>
-            /// Specifies the name of the stored key.
+            /// Specifies the name of the stored key. The key must have modeOfUse ['C', 'G', 'S' or 'T'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0.r.g).
             /// </summary>
             [DataMember(Name = "key")]
             public string Key { get; init; }
@@ -86,28 +86,11 @@ namespace XFS4IoT.Crypto.Commands
             [DataContract]
             public sealed class AuthenticationAttributeClass
             {
-                public AuthenticationAttributeClass(ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
+                public AuthenticationAttributeClass(CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
                 {
-                    this.ModeOfUse = ModeOfUse;
                     this.CryptoMethod = CryptoMethod;
                     this.HashAlgorithm = HashAlgorithm;
                 }
-
-                public enum ModeOfUseEnum
-                {
-                    G,
-                    S
-                }
-
-                /// <summary>
-                /// Specifies the encryption mode supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) 
-                /// command. The following values are possible: 
-                /// 
-                /// * ```G``` - Generate. This be used to generate a MAC. 
-                /// * ```S``` - Signature
-                /// </summary>
-                [DataMember(Name = "modeOfUse")]
-                public ModeOfUseEnum? ModeOfUse { get; init; }
 
                 public enum CryptoMethodEnum
                 {
@@ -116,15 +99,14 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the cryptographic method supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) 
-                /// command. For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following
+                /// Specifies the [cryptographic method](#common.capabilities.completion.properties.crypto.authenticationattributes.s0.r.g.cryptomethod) supported.
+                /// command. For asymmetric signature verification methods (Specified [key](#crypto.generateauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0)), this can be one of the following
                 /// values: 
                 /// 
                 /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
                 /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm. 
                 /// 
-                /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then this proeprty should not be
-                /// not set.
+                /// If the specified [key](#crypto.generateauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.authenticationattributes.m0)), then this property can be omitted.
                 /// </summary>
                 [DataMember(Name = "cryptoMethod")]
                 public CryptoMethodEnum? CryptoMethod { get; init; }
@@ -136,9 +118,9 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one
-                /// of the following values to be used. If keyUsage is specified as any of the MAC usages (i.e. ‘M1’),
-                /// then properties should not be not set. this can be one of the following values: 
+                /// For asymmetric signature verification methods (Specified [key](#crypto.generateauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0)), this can be one
+                /// of the following values to be used. If the specified [key](#crypto.generateauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.authenticationattributes.m0)),
+                /// then this property can be omitted.
                 /// 
                 /// * ```sha1``` - The SHA 1 digest algorithm.
                 /// * ```sha256``` - The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.

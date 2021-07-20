@@ -124,15 +124,14 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the cryptographic method supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command. For asymmetric
-                /// signature verification methods (bKeyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the
+                /// Specifies the [cryptographic method](#common.capabilities.completion.properties.crypto.verifyattributes.s0.r.s.cryptomethod) supported. For asymmetric
+                /// signature verification methods (Specified [key](#crypto.verifyauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)), this can be one of the
                 /// following values. 
                 /// 
                 /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
                 /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm. 
                 /// 
-                /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then this proeprty should not be
-                /// not set.
+                /// If the specified [key](#crypto.verifyauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.verifyattributes.m0)), then this property can be omitted.
                 /// </summary>
                 [DataMember(Name = "cryptoMethod")]
                 public CryptoMethodEnum? CryptoMethod { get; init; }
@@ -144,11 +143,11 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one
-                /// of the following values to be used. If keyUsage is specified as any of the MAC usages (i.e. ‘M1’),
-                /// then properties should not be not set or both 'sha1' and 'sha256' are false. **sha1**: The SHA 1
-                /// digest algorithm. 
+                /// For asymmetric signature verification methods (Specified [key](#crypto.verifyauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)), this can be one
+                /// of the following values to be used. If the specified [key](#crypto.verifyauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.verifyattributes.m0)),
+                /// then this property can be omitted.
                 /// 
+                /// * ```sha1``` - The SHA 1 digest algorithm.
                 /// * ```sha256``` - The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
                 /// </summary>
                 [DataMember(Name = "hashAlgorithm")]

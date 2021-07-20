@@ -93,7 +93,7 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the encryption algorithms supported by [Crypto.CryptoData](#crypto.cryptodata) command. The following values are
+                /// Specifies the encryption [algorithms](#common.capabilities.completion.properties.crypto.cryptoattributes.d0.d) supported. The following values are
                 /// possible: 
                 /// 
                 /// * ```A``` - AES.
@@ -111,7 +111,7 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the encryption mode supported by [Crypto.CryptoData](#crypto.cryptodata) command. The following values are
+                /// Specifies the [encryption mode](#common.capabilities.completion.properties.crypto.cryptoattributes.d0.d.d) supported. The following values are
                 /// possible:
                 /// 
                 /// * ```D``` - Decrypt 
@@ -133,8 +133,8 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the cryptographic method supported by the [Crypto.CryptoData](#crypto.cryptodata) command. For symmetric encryption
-                /// methods (keyUsage is ‘D0’), this can be one of the following values:
+                /// Specifies the [cryptographic method](#common.capabilities.completion.properties.crypto.cryptoattributes.d0.d.d.cryptomethod) supported. For symmetric encryption
+                /// methods (Specified [key](#crypto.cryptodata.command.properties.key) is key usage ['D0'](#common.capabilities.completion.properties.crypto.cryptoattributes.d0)), this can be one of the following values:
                 /// 
                 /// * ```ecb``` - The ECB encryption method.
                 /// * ```cbc``` - The CBC encryption method.
@@ -143,7 +143,7 @@ namespace XFS4IoT.Crypto.Commands
                 /// * ```ctr``` - The CTR method defined in NIST SP800-38A.
                 /// * ```xts``` - The XTS method defined in NIST SP800-38E.
                 /// 
-                /// For asymmetric encryption methods (keyUsage is ‘D1’), this can be one of the following values:
+                /// For asymmetric encryption methods (Specified [key](#crypto.cryptodata.command.properties.key) is key usage ['D1'](#common.capabilities.completion.properties.crypto.cryptoattributes.d1)), this can be one of the following values:
                 /// 
                 /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm.
                 /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.
@@ -155,7 +155,7 @@ namespace XFS4IoT.Crypto.Commands
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this
-            /// command. For a list of valid values see [cryptoAttributes capabilities](#common.capabilities.completion.properties.crypto.cryptoattributes) property. The values specified must be
+            /// command. For a list of valid values see [cryptoAttributes](#common.capabilities.completion.properties.crypto.cryptoattributes) property. The values specified must be
             /// compatible with the key identified by Key.
             /// </summary>
             [DataMember(Name = "cryptoAttributes")]
