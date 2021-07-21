@@ -26,7 +26,7 @@ namespace XFS4IoT.KeyManagement.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, string VerificationData = null, Dictionary<string, System.Text.Json.JsonElement> VerifyAttributes = null, int? KeyLength = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, string VerificationData = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null, int? KeyLength = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
@@ -80,13 +80,126 @@ namespace XFS4IoT.KeyManagement.Completions
             [DataMember(Name = "verificationData")]
             public string VerificationData { get; init; }
 
+            [DataContract]
+            public sealed class VerifyAttributesClass
+            {
+                public VerifyAttributesClass(CryptoMethodClass CryptoMethod = null, HashAlgorithmClass HashAlgorithm = null)
+                {
+                    this.CryptoMethod = CryptoMethod;
+                    this.HashAlgorithm = HashAlgorithm;
+                }
+
+                [DataContract]
+                public sealed class CryptoMethodClass
+                {
+                    public CryptoMethodClass(bool? KcvNone = null, bool? KcvSelf = null, bool? KcvZero = null, bool? SigNone = null, bool? RsassaPkcs1V15 = null, bool? RsassaPss = null)
+                    {
+                        this.KcvNone = KcvNone;
+                        this.KcvSelf = KcvSelf;
+                        this.KcvZero = KcvZero;
+                        this.SigNone = SigNone;
+                        this.RsassaPkcs1V15 = RsassaPkcs1V15;
+                        this.RsassaPss = RsassaPss;
+                    }
+
+                    /// <summary>
+                    /// The ECB encryption method. 
+                    /// </summary>
+                    [DataMember(Name = "kcvNone")]
+                    public bool? KcvNone { get; init; }
+
+                    /// <summary>
+                    /// There is no key check value verification required. 
+                    /// </summary>
+                    [DataMember(Name = "kcvSelf")]
+                    public bool? KcvSelf { get; init; }
+
+                    /// <summary>
+                    /// The key check value (KCV) is created by encrypting a zero value with the key. 
+                    /// </summary>
+                    [DataMember(Name = "kcvZero")]
+                    public bool? KcvZero { get; init; }
+
+                    /// <summary>
+                    /// The No signature algorithm specified. No signature verification will take place.
+                    /// </summary>
+                    [DataMember(Name = "sigNone")]
+                    public bool? SigNone { get; init; }
+
+                    /// <summary>
+                    /// The RSASSA-PKCS1-v1.5 algorithm. 
+                    /// </summary>
+                    [DataMember(Name = "rsassaPkcs1V15")]
+                    public bool? RsassaPkcs1V15 { get; init; }
+
+                    /// <summary>
+                    /// The RSASSA-PSS algorithm.
+                    /// </summary>
+                    [DataMember(Name = "rsassaPss")]
+                    public bool? RsassaPss { get; init; }
+
+                }
+
+                /// <summary>
+                /// This parameter specifies the cryptographic method that will be used with encryption algorithm.
+                /// 
+                /// If the algorithm is 'A', 'D', or 'T' and the key usage is a MAC usage (i.e. ‘M1’), then all properties are false. 
+                /// 
+                /// If the algorithm is 'A', 'D', or 'T' and the key usage is '00', then one of properties must be set true. 
+                /// 
+                /// * ```kcvNone``` - There is no key check value verification required. 
+                /// * ```kcvSelf``` - The key check value (KCV) is created by an encryption of the key with itself. 
+                /// * ```kcvZero``` - The key check value (KCV) is created by encrypting a zero value with the key. 
+                /// 
+                /// If the algorithm is 'R' and the key usage is not '00', then one of properties must be set true. 
+                /// 
+                /// * ```sigNone``` - No signature algorithm specified. No signature verification will take place and the 
+                /// content of verificationData must be set. 
+                /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
+                /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm.
+                /// </summary>
+                [DataMember(Name = "cryptoMethod")]
+                public CryptoMethodClass CryptoMethod { get; init; }
+
+                [DataContract]
+                public sealed class HashAlgorithmClass
+                {
+                    public HashAlgorithmClass(bool? Sha1 = null, bool? Sha256 = null)
+                    {
+                        this.Sha1 = Sha1;
+                        this.Sha256 = Sha256;
+                    }
+
+                    /// <summary>
+                    /// The SHA 1 digest algorithm.
+                    /// </summary>
+                    [DataMember(Name = "sha1")]
+                    public bool? Sha1 { get; init; }
+
+                    /// <summary>
+                    /// The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
+                    /// </summary>
+                    [DataMember(Name = "sha256")]
+                    public bool? Sha256 { get; init; }
+
+                }
+
+                /// <summary>
+                /// For asymmetric signature verification methods (key usage is 'S0', 'S1', or 'S2'), then one of the following properties are true.
+                /// If the key usage is any of the MAC usages (i.e. 'M1'), then properties both 'sha1' and 'sha256' are false.
+                /// </summary>
+                [DataMember(Name = "hashAlgorithm")]
+                public HashAlgorithmClass HashAlgorithm { get; init; }
+
+            }
+
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode used to verify this command 
             /// For a list of valid values see the [Capabilities.verifyAttributes](#common.capabilities.completion.properties.keymanagement.verifyattributes)
             /// capability fields. This field is not set if there is no verification data.
             /// </summary>
             [DataMember(Name = "verifyAttributes")]
-            public Dictionary<string, System.Text.Json.JsonElement> VerifyAttributes { get; init; }
+            public Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes { get; init; }
 
             /// <summary>
             /// Specifies the length, in bits, of the key. 0 is the key length is unknown.
