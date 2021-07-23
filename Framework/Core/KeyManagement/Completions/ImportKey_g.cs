@@ -143,7 +143,7 @@ namespace XFS4IoT.KeyManagement.Completions
                 /// <summary>
                 /// This parameter specifies the cryptographic method that will be used with encryption algorithm.
                 /// 
-                /// If the algorithm is 'A', 'D', or 'T' and the key usage is a MAC usage (i.e. ‘M1’), then all properties are false. 
+                /// If the algorithm is 'A', 'D', or 'T' and the key usage is a MAC usage (i.e. 'M1'), then all properties are false. 
                 /// 
                 /// If the algorithm is 'A', 'D', or 'T' and the key usage is '00', then one of properties must be set true. 
                 /// 

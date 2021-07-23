@@ -3,7 +3,7 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT PinPad interface.
+ * This file was created automatically as part of the XFS4IoT Crypto interface.
  * DUKPTKSNEvent_g.cs uses automatically generated parts.
 \***********************************************************************************************/
 
@@ -12,11 +12,11 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using XFS4IoT.Events;
 
-namespace XFS4IoT.PinPad.Events
+namespace XFS4IoT.Crypto.Events
 {
 
     [DataContract]
-    [Event(Name = "PinPad.DUKPTKSNEvent")]
+    [Event(Name = "Crypto.DUKPTKSNEvent")]
     public sealed class DUKPTKSNEvent : Event<DUKPTKSNEvent.PayloadData>
     {
 
@@ -43,7 +43,7 @@ namespace XFS4IoT.PinPad.Events
             public string Key { get; init; }
 
             /// <summary>
-            /// structure that contains the KSN formatted in base64.
+            /// The Base64 encoded KSN.
             /// </summary>
             [DataMember(Name = "ksn")]
             public string Ksn { get; init; }

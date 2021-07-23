@@ -143,7 +143,7 @@ namespace XFS4IoT.Crypto.Commands
                 /// * ```ctr``` - The CTR method defined in NIST SP800-38A.
                 /// * ```xts``` - The XTS method defined in NIST SP800-38E.
                 /// 
-                /// For asymmetric encryption methods (Specified [key](#crypto.cryptodata.command.properties.key) is key usage ['D1'](#common.capabilities.completion.properties.crypto.cryptoattributes.d1)), this can be one of the following values:
+                /// For asymmetric encryption methods (Specified [key](#crypto.cryptodata.command.properties.key) is key usage ['D1'](#common.capabilities.completion.properties.crypto.cryptoattributes.d0)), this can be one of the following values:
                 /// 
                 /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm.
                 /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.

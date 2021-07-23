@@ -106,7 +106,7 @@ namespace XFS4IoT.Crypto.Commands
                 /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
                 /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm. 
                 /// 
-                /// If the specified [key](#crypto.generateauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.authenticationattributes.m0)), then this property can be omitted.
+                /// If the specified [key](#crypto.generateauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0)), then this property can be omitted.
                 /// </summary>
                 [DataMember(Name = "cryptoMethod")]
                 public CryptoMethodEnum? CryptoMethod { get; init; }
@@ -119,7 +119,7 @@ namespace XFS4IoT.Crypto.Commands
 
                 /// <summary>
                 /// For asymmetric signature verification methods (Specified [key](#crypto.generateauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0)), this can be one
-                /// of the following values to be used. If the specified [key](#crypto.generateauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.authenticationattributes.m0)),
+                /// of the following values to be used. If the specified [key](#crypto.generateauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0)),
                 /// then this property can be omitted.
                 /// 
                 /// * ```sha1``` - The SHA 1 digest algorithm.

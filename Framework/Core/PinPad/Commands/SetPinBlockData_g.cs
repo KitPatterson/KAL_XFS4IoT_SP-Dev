@@ -211,7 +211,7 @@ namespace XFS4IoT.PinPad.Commands
                 /// * ```ctr``` - The CTR method defined in NIST SP800-38A.  
                 /// * ```xts``` - The XTS method defined in NIST SP800-38E. 
                 ///  
-                /// If the algorithm is ['R'](#common.capabilities.completion.properties.pinpad.pinblockattributes.p0.r), then this property can be one of the following values:  
+                /// If the algorithm is ['R'](#common.capabilities.completion.properties.pinpad.pinblockattributes.p0.t), then this property can be one of the following values:  
                 /// 
                 /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm. 
                 /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.
