@@ -16,7 +16,7 @@ namespace XFS4IoTFramework.Crypto
     public interface IGenerateAuthenticationEvents
     {
 
-        Task DUKPTKSNEvent(XFS4IoT.PinPad.Events.DUKPTKSNEvent.PayloadData Payload);
+        Task DUKPTKSNEvent(XFS4IoT.Crypto.Events.DUKPTKSNEvent.PayloadData Payload);
 
     }
 }

@@ -21,7 +21,7 @@ namespace XFS4IoTFramework.Crypto
             : base(connection, requestId)
         { }
 
-        public async Task DUKPTKSNEvent(XFS4IoT.PinPad.Events.DUKPTKSNEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.PinPad.Events.DUKPTKSNEvent(requestId, Payload));
+        public async Task DUKPTKSNEvent(XFS4IoT.Crypto.Events.DUKPTKSNEvent.PayloadData Payload) => await connection.SendMessageAsync(new XFS4IoT.Crypto.Events.DUKPTKSNEvent(requestId, Payload));
 
     }
 }

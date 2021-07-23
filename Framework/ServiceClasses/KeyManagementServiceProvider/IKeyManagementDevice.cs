@@ -47,7 +47,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                   CancellationToken cancellation);
 
         /// <summary>
-        /// The encryption key passed by the application is loaded in the encryption module. For secret keys, the key must be passed encrypted with an accompanying \"key encrypting key\" or \"key block protection key\". For public keys, they key is not required to be encrypted but is required to have verification data in order to be loaded.
+        /// The encryption key passed by the application is loaded in the encryption module. For secret keys, the key must be passed encrypted with an accompanying "key encrypting key" or "key block protection key". For public keys, they key is not required to be encrypted but is required to have verification data in order to be loaded.
         /// </summary>
         Task<XFS4IoT.KeyManagement.Completions.ImportKeyCompletion.PayloadData> ImportKey(IImportKeyEvents events, 
                                                                                           XFS4IoT.KeyManagement.Commands.ImportKeyCommand.PayloadData payload, 
