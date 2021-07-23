@@ -44,6 +44,7 @@ namespace XFS4IoT.Common.Commands
             /// the client connection on which this command is received.
             /// </summary>
             [DataMember(Name = "requestIds")]
+            [DataTypes(Minimum = 1)]
             public List<int> RequestIds { get; init; }
 
         }
