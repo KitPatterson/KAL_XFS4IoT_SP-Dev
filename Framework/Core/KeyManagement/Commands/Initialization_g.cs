@@ -41,7 +41,7 @@ namespace XFS4IoT.KeyManagement.Commands
             public string Ident { get; init; }
 
             /// <summary>
-            /// The value of the encryption key formatted in base64. this field is not required if no specific key name required. 
+            /// The Base64 encoded value of the encryption key. this property is not required if no specific key name required. 
             /// </summary>
             [DataMember(Name = "key")]
             public string Key { get; init; }

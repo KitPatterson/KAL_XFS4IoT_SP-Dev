@@ -79,7 +79,7 @@ namespace XFS4IoT.Keyboard.Completions
             public EntryCompletionEnum? Completion { get; init; }
 
             /// <summary>
-            /// Contains the key check value data that can be used for verification of the entered key formatted in base 64. 
+            /// Contains the Base64 encoded key check value data that can be used for verification of the entered key formatted in base 64. 
             /// This property it omitted if device does not have this capability, or the key entry was not fully entered, e.g. 
             /// the entry was terminated by Enter before the required number of digits was entered.
             /// </summary>

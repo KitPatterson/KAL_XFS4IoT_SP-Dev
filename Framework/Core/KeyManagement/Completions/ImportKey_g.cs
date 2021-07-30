@@ -195,7 +195,7 @@ namespace XFS4IoT.KeyManagement.Completions
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode used to verify this command 
-            /// For a list of valid values see the [Capabilities.verifyAttributes](#common.capabilities.completion.properties.keymanagement.verifyattributes)
+            /// For a list of valid values see the [verifyAttributes](#common.capabilities.completion.properties.keymanagement.verifyattributes)
             /// capability fields. This field is not set if there is no verification data.
             /// </summary>
             [DataMember(Name = "verifyAttributes")]

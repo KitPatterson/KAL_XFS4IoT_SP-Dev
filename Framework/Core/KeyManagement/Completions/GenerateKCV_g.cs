@@ -52,7 +52,7 @@ namespace XFS4IoT.KeyManagement.Completions
             public ErrorCodeEnum? ErrorCode { get; init; }
 
             /// <summary>
-            /// Contains the key check value data that can be used for verification of the key formatted in base64. 
+            /// Contains the Base64 encoded key check value data that can be used for verification of the key. 
             /// </summary>
             [DataMember(Name = "kcv")]
             public string Kcv { get; init; }

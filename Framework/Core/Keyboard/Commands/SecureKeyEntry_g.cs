@@ -47,7 +47,7 @@ namespace XFS4IoT.Keyboard.Commands
             }
 
             /// <summary>
-            /// Specifies the number of digits which must be entered for the encryption key, 16 for a singlelength key, 
+            /// Specifies the number of digits which must be entered for the encryption key, 16 for a single length key, 
             /// 32 for a double-length key and 48 for a triple-length key.
             /// The only valid values are 16, 32 and 48.
             /// </summary>
@@ -55,9 +55,9 @@ namespace XFS4IoT.Keyboard.Commands
             public KeyLenEnum? KeyLen { get; init; }
 
             /// <summary>
-            /// If autoEnd is set to true, the Service Provider terminates the command when the maximum number of encryption 
+            /// If *autoEnd* is set to true, the Service Provider terminates the command when the maximum number of encryption 
             /// key digits are entered. Otherwise, the input is terminated by the user using Enter, Cancel or any terminating key. 
-            /// When keyLen is reached, the Service Provider will disable all keys associated with an encryption key digit.
+            /// When *keyLen* is reached, the Service Provider will disable all keys associated with an encryption key digit.
             /// </summary>
             [DataMember(Name = "autoEnd")]
             public bool? AutoEnd { get; init; }
@@ -71,8 +71,7 @@ namespace XFS4IoT.Keyboard.Commands
 
             /// <summary>
             /// Specifies all Function Keys(not FDKs) which are active during the execution of the command.
-            /// This should be the complete set or a subset of the keys returned in the funcKeyDetail parameter of the 
-            /// SecureKeyDetail command.
+            /// This should be the complete set or a subset of the keys returned by the [GetSecureKeyDetail](#keyboard.getsecurekeydetail) command.
             /// </summary>
             [DataMember(Name = "activeKeys")]
             public FunctionKeysClass ActiveKeys { get; init; }

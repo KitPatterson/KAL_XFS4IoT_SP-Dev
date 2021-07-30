@@ -48,30 +48,29 @@ namespace XFS4IoT.Crypto.Commands
 
             /// <summary>
             /// If startValue specifies an Initialization Vector (IV), then this property specifies the name of the
-            /// stored key used to decrypt the startValue to obtain the IV. If startValue is not set and this property
+            /// stored key used to decrypt the startValue to obtain the IV. If *startValue* is not set and this property
             /// is also not set, then this property specifies the name of the IV that has been previously imported via
-            /// TR-31. If this property is not set, startValue is used as the Initialization Vector.
+            /// TR-31. If this property is not set, *startValue* is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")]
             public string StartValueKey { get; init; }
 
             /// <summary>
-            /// The initialization vector for CBC / CFB encryption. If this parameter and startValueKey are both not
+            /// The initialization vector for CBC / CFB encryption. If this parameter and *startValueKey* are both not
             /// set the default value for CBC / CFB is all zeroes.
             /// </summary>
             [DataMember(Name = "startValue")]
             public string StartValue { get; init; }
 
             /// <summary>
-            /// Specifies the padding character. The padding character is a full byte, e.g. 0xFF.  The valid range is
-            /// 0x00 to 0xFF.
+            /// Specifies the padding character. The valid range is 0 to 255.
             /// </summary>
             [DataMember(Name = "padding")]
             [DataTypes(Minimum = 0, Maximum = 255)]
             public int? Padding { get; init; }
 
             /// <summary>
-            /// Specifies whether data is to be compressed (blanks removed) before building the mac. If compression is
+            /// Specifies whether data is to be compressed (blanks removed) before building the MAC. If compression is
             /// 0x00 no compression is selected, otherwise compression holds the representation of the blank character
             /// (e.g. 0x20 in ASCII or 0x40 in EBCDIC).
             /// </summary>
@@ -79,14 +78,13 @@ namespace XFS4IoT.Crypto.Commands
             public bool? Compression { get; init; }
 
             /// <summary>
-            /// The device will either generate a MAC or sign the authenticationData and compare with verifyData
-            /// formatted in base64.
+            /// The device will either generate a MAC or sign the Base64 encoded *authenticationData* and compare with *verifyData* property.
             /// </summary>
             [DataMember(Name = "authenticationData")]
             public string AuthenticationData { get; init; }
 
             /// <summary>
-            /// The authentication data to be verified by MAC or signature formatted in base64.
+            /// The Base64 encoded authentication data to be verified by MAC or signature.
             /// </summary>
             [DataMember(Name = "verifyData")]
             public string VerifyData { get; init; }
@@ -124,7 +122,7 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the [cryptographic method](#common.capabilities.completion.properties.crypto.verifyattributes.s0.r.s.cryptomethod) supported. For asymmetric
+                /// Specifies the cryptographic method [cryptoMethod](#common.capabilities.completion.properties.crypto.verifyattributes.s0.r.s.cryptomethod) supported. For asymmetric
                 /// signature verification methods (Specified [key](#crypto.verifyauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)), this can be one of the
                 /// following values. 
                 /// 

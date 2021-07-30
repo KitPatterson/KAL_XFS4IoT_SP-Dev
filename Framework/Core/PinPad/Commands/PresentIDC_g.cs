@@ -43,14 +43,14 @@ namespace XFS4IoT.PinPad.Commands
 
             /// <summary>
             /// Specifies the algorithm that is used for presentation.
-            /// Possible values are: (see command [Capabilities](#common.capabilities.completion.properties.pinpad)).
+            /// Possible values are: (see [presentationAlgorithms](#common.capabilities.completion.properties.pinpad.presentationAlgorithms)).
             /// </summary>
             [DataMember(Name = "presentAlgorithm")]
             public PresentAlgorithmEnum? PresentAlgorithm { get; init; }
 
             /// <summary>
             /// Identifies the protocol that is used to communicate with the chip. Possible values are: 
-            /// (see command [CardReader.Capabilities](#common.capabilities.completion.properties.cardreader) in the Identification Card Device Class Interface)
+            /// (see command [chipProtocols](#common.capabilities.completion.properties.cardreader.chipProtocols) in the Identification Card Device Class Interface)
             /// </summary>
             [DataMember(Name = "chipProtocol")]
             public string ChipProtocol { get; init; }
@@ -78,7 +78,7 @@ namespace XFS4IoT.PinPad.Commands
                 public int? PinPointer { get; init; }
 
                 /// <summary>
-                /// The bit offset within the byte specified by pinPointer where to start inserting the PIN. 
+                /// The bit offset within the byte specified by *pinPointer* property where to start inserting the PIN. 
                 /// The leftmost bit numbered zero.
                 /// </summary>
                 [DataMember(Name = "pinOffset")]

@@ -42,7 +42,9 @@ namespace XFS4IoT.KeyManagement.Commands
             }
 
             /// <summary>
-            /// Specifies the method to use to load the certificate
+            /// Specifies the method to use to load the certificate. The following values are possible:
+            /// * ```newHost``` - Load a new Host certificate, where one has not already been loaded.
+            /// * ```replaceHost``` - Replace (or rebind) the device to a new Host certificate, where the new Host certificate is signed by *signer*.
             /// </summary>
             [DataMember(Name = "loadOption")]
             public LoadOptionEnum? LoadOption { get; init; }
@@ -55,7 +57,10 @@ namespace XFS4IoT.KeyManagement.Commands
             }
 
             /// <summary>
-            /// Specifies the signer of the certificate to be loaded
+            /// Specifies the signer of the certificate to be loaded. The following values are possible:
+            /// * ```certHost``` - The certificate to be loaded is signed by the current Host. Cannot be combined with newHost.
+            /// * ```ca``` - The certificate to be loaded is signed by the Certificate Authority (CA).
+            /// * ```hl``` - The certificate to be loaded is signed by the Higher Level (HL) Authority.
             /// </summary>
             [DataMember(Name = "signer")]
             public SignerEnum? Signer { get; init; }

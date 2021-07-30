@@ -57,8 +57,8 @@ namespace XFS4IoT.KeyManagement.Commands
             public CommandNameEnum? CommandName { get; init; }
 
             /// <summary>
-            /// A payload to the input parameters of the command referred to by commandName property.
-            /// If the specified commandName doesn't require an input parameter, this property can be omitted.
+            /// A payload to the input parameters of the command referred to by *commandName* property.
+            /// If the specified *commandName* doesn't require an input parameter, this property can be omitted.
             /// </summary>
             [DataMember(Name = "commandParameters")]
             public object CommandParameters { get; init; }

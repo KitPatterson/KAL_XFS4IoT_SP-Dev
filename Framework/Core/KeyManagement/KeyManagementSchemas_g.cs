@@ -59,9 +59,10 @@ namespace XFS4IoT.KeyManagement
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(int? KeyNum = null, IdKeyClass IdKey = null, KeyCheckModesClass KeyCheckModes = null, string HsmVendor = null, RsaAuthenticationSchemeClass RsaAuthenticationScheme = null, RsaSignatureAlgorithmClass RsaSignatureAlgorithm = null, RsaCryptAlgorithmClass RsaCryptAlgorithm = null, RsaKeyCheckModeClass RsaKeyCheckMode = null, SignatureSchemeClass SignatureScheme = null, EmvImportSchemesClass EmvImportSchemes = null, KeyBlockImportFormatsClass KeyBlockImportFormats = null, bool? KeyImportThroughParts = null, DesKeyLengthClass DesKeyLength = null, CertificateTypesClass CertificateTypes = null, List<LoadCertOptionsClass> LoadCertOptions = null, CrklLoadOptionsClass CrklLoadOptions = null, List<RestrictedKeyEncKeySupportClass> RestrictedKeyEncKeySupport = null, SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods = null, Dictionary<string, Dictionary<string, Dictionary<string, KeyAttributesClass>>> KeyAttributes = null, Dictionary<string, DecryptAttributesClass> DecryptAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
+        public CapabilitiesClass(int? KeyNum = null, DerivationAlgorithmsClass DerivationAlgorithms = null, IdKeyClass IdKey = null, KeyCheckModesClass KeyCheckModes = null, string HsmVendor = null, RsaAuthenticationSchemeClass RsaAuthenticationScheme = null, RsaSignatureAlgorithmClass RsaSignatureAlgorithm = null, RsaCryptAlgorithmClass RsaCryptAlgorithm = null, RsaKeyCheckModeClass RsaKeyCheckMode = null, SignatureSchemeClass SignatureScheme = null, EmvImportSchemesClass EmvImportSchemes = null, KeyBlockImportFormatsClass KeyBlockImportFormats = null, bool? KeyImportThroughParts = null, DesKeyLengthClass DesKeyLength = null, CertificateTypesClass CertificateTypes = null, List<LoadCertOptionsClass> LoadCertOptions = null, CrklLoadOptionsClass CrklLoadOptions = null, List<RestrictedKeyEncKeySupportClass> RestrictedKeyEncKeySupport = null, SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods = null, Dictionary<string, Dictionary<string, Dictionary<string, KeyAttributesClass>>> KeyAttributes = null, Dictionary<string, DecryptAttributesClass> DecryptAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
         {
             this.KeyNum = KeyNum;
+            this.DerivationAlgorithms = DerivationAlgorithms;
             this.IdKey = IdKey;
             this.KeyCheckModes = KeyCheckModes;
             this.HsmVendor = HsmVendor;
@@ -89,6 +90,28 @@ namespace XFS4IoT.KeyManagement
         /// </summary>
         [DataMember(Name = "keyNum")]
         public int? KeyNum { get; init; }
+
+        [DataContract]
+        public sealed class DerivationAlgorithmsClass
+        {
+            public DerivationAlgorithmsClass(bool? ChipZka = null)
+            {
+                this.ChipZka = ChipZka;
+            }
+
+            /// <summary>
+            /// Algorithm for the derivation of a chip card individual key as described by the German ZKA.
+            /// </summary>
+            [DataMember(Name = "chipZka")]
+            public bool? ChipZka { get; init; }
+
+        }
+
+        /// <summary>
+        /// Supported derivation algorithms.
+        /// </summary>
+        [DataMember(Name = "derivationAlgorithms")]
+        public DerivationAlgorithmsClass DerivationAlgorithms { get; init; }
 
         [DataContract]
         public sealed class IdKeyClass
@@ -828,15 +851,15 @@ namespace XFS4IoT.KeyManagement
         [DataContract]
         public sealed class DecryptAttributesClass
         {
-            public DecryptAttributesClass(DecryptoMethodClass DecryptoMethod = null)
+            public DecryptAttributesClass(DecryptMethodClass DecryptMethod = null)
             {
-                this.DecryptoMethod = DecryptoMethod;
+                this.DecryptMethod = DecryptMethod;
             }
 
             [DataContract]
-            public sealed class DecryptoMethodClass
+            public sealed class DecryptMethodClass
             {
-                public DecryptoMethodClass(bool? Ecb = null, bool? Cbc = null, bool? Cfb = null, bool? Ofb = null, bool? Ctr = null, bool? Xts = null, bool? RsaesPkcs1V15 = null, bool? RsaesOaep = null)
+                public DecryptMethodClass(bool? Ecb = null, bool? Cbc = null, bool? Cfb = null, bool? Ofb = null, bool? Ctr = null, bool? Xts = null, bool? RsaesPkcs1V15 = null, bool? RsaesOaep = null)
                 {
                     this.Ecb = Ecb;
                     this.Cbc = Cbc;
@@ -914,8 +937,8 @@ namespace XFS4IoT.KeyManagement
             /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm. 
             /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm. 
             /// </summary>
-            [DataMember(Name = "decryptoMethod")]
-            public DecryptoMethodClass DecryptoMethod { get; init; }
+            [DataMember(Name = "decryptMethod")]
+            public DecryptMethodClass DecryptMethod { get; init; }
 
         }
 

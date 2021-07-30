@@ -68,7 +68,7 @@ namespace XFS4IoT.PinPad.Commands
             /// <summary>
             /// The customer data should be an ASCII string. Used for ANSI, ISO-0 and ISO-1 algorithm to build the formatted PIN. 
             /// For ANSI and ISO-0 the PAN (Primary Account Number, without the check number) is supplied, for ISO-1 a ten digit 
-            /// transaction field is required. If not used a NULL is required. Used for DIEBOLD with coordination number, as a 
+            /// transaction field is required. If not used, this property can be omitted. Used for DIEBOLD with coordination number, as a 
             /// two digit coordination number. Used for EMV with challenge number (8 bytes) coming from the chip card. 
             /// This number is passed as unpacked string, for example: 0123456789ABCDEF = 0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 
             /// 0x38 0x39 0x41 0x42 0x43 0x44 0x45 0x46 For AP PIN blocks, the data must be a concatenation of the PAN (18 digits 
@@ -89,8 +89,8 @@ namespace XFS4IoT.PinPad.Commands
             public string XorData { get; init; }
 
             /// <summary>
-            /// Specifies the padding character. The valid range is 0x0 to 0xF in hexadecimal string format. 
-            /// Only the least significant nibble is used. This field is ignored for PIN block formats with fixed, sequential or random padding.
+            /// Specifies the padding character. The valid range is 0 to 15. 
+            /// Only the least significant nibble is used. This property is ignored for PIN block formats with fixed, sequential or random padding.
             /// </summary>
             [DataMember(Name = "padding")]
             [DataTypes(Minimum = 0, Maximum = 15)]
@@ -116,7 +116,7 @@ namespace XFS4IoT.PinPad.Commands
 
             /// <summary>
             /// Specifies the format of the PIN block.
-            /// Possible values are: (see command [Capabilities](#common.capabilities.completion.properties.pinpad.pinformats))  
+            /// Possible values are: (see [pinformats](#common.capabilities.completion.properties.pinpad.pinformats))  
             /// * ```ibm3624``` - PIN left justified, filled with padding characters, PIN length 4-16 digits. The padding character is a hexadecimal digit 
             /// in the range 0x00 to 0x0F."
             /// * ```ansi``` - PIN is preceded by 0x00 and the length of the PIN (0x04 to 0x0C), filled with padding character 0x0F to the right, PIN length 
@@ -144,7 +144,7 @@ namespace XFS4IoT.PinPad.Commands
             public FormatEnum? Format { get; init; }
 
             /// <summary>
-            /// Specifies the key used to encrypt the formatted PIN for the first time, this field is not required if no encryption is required. 
+            /// Specifies the key used to encrypt the formatted PIN for the first time, this property is not required if no encryption is required. 
             /// If this specifies a double-length or triple-length key, triple DES encryption will be performed. 
             /// The key referenced by key property must have the function or pinRemote attribute. 
             /// If this specifies an RSA key, RSA encryption will be performed
@@ -153,8 +153,8 @@ namespace XFS4IoT.PinPad.Commands
             public string Key { get; init; }
 
             /// <summary>
-            /// Specifies the key used to format the once encrypted formatted PIN, this property can be omitted if no second encryption required. 
-            /// The key referenced by lpsKeyEncKey must have the function or pinRemote attribute. 
+            /// Specifies the _key_ used to format the once encrypted formatted PIN, this property can be omitted if no second encryption required. 
+            /// The key referenced by _secondEncKey_ must have the [keyUsage](#common.capabilities.completion.properties.keymanagement.keyattributes.m0) 'P0' attribute. 
             /// If this specifies a double-length or triple-length key, triple DES encryption will be performed.
             /// </summary>
             [DataMember(Name = "secondEncKey")]
@@ -201,7 +201,7 @@ namespace XFS4IoT.PinPad.Commands
                 }
 
                 /// <summary>
-                /// This parameter specifies the [cryptographic method](#common.capabilities.completion.properties.pinpad.pinblockattributes.p0.t.e.cryptomethod) that will be used with the encryption algorithm.
+                /// This parameter specifies the cryptographic method [cryptomethod](#common.capabilities.completion.properties.pinpad.pinblockattributes.p0.t.e.cryptomethod) that will be used with the encryption algorithm.
                 /// If the algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.pinpad.pinblockattributes.p0.t), then this property can be one of the following values:" 
                 /// 
                 /// * ```ecb``` - The ECB encryption method. 
@@ -223,9 +223,8 @@ namespace XFS4IoT.PinPad.Commands
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this command. For a list of valid values see the 
-            /// [Capabilities.pinBlockAttributes](#common.capabilities.completion.properties.pinpad.pinblockattributes) field. For a list of valid values see the 
-            /// [Capabilities.cryptAttributes](#common.capabilities.completion.properties.crypto.cryptoattributes) capability field. 
-            /// The values specified must be compatible with the key identified by key.
+            /// [pinBlockAttributes](#common.capabilities.completion.properties.pinpad.pinblockattributes).
+            /// The values specified must be compatible with the key identified by *key*.
             /// </summary>
             [DataMember(Name = "pinBlockAttributes")]
             public PinBlockAttributesClass PinBlockAttributes { get; init; }

@@ -36,7 +36,7 @@ namespace XFS4IoT.KeyManagement.Completions
 
             /// <summary>
             /// Result from the command referenced by execution command. If the data within payload is invalid or cannot be used for 
-            /// some reason, then hInternalCmdResult will return an error but the result of this command will be ok. 
+            /// some reason, then *internalCmdResult* will return an error but the result of this command will be ok. 
             /// </summary>
             [DataMember(Name = "internalCmdResult")]
             public string InternalCmdResult { get; init; }

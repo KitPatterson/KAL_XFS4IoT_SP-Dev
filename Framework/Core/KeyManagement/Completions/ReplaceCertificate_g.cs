@@ -50,7 +50,7 @@ namespace XFS4IoT.KeyManagement.Completions
             public ErrorCodeEnum? ErrorCode { get; init; }
 
             /// <summary>
-            /// A PKCS #7 using a Digested-data content type formatted in base64.
+            /// The Base64 encoded PKCS #7 using a Digested-data content type.
             /// The digest parameter should contain the thumb print value.
             /// </summary>
             [DataMember(Name = "newCertificateData")]

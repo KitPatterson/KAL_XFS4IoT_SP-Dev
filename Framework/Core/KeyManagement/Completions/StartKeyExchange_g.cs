@@ -46,7 +46,7 @@ namespace XFS4IoT.KeyManagement.Completions
             public ErrorCodeEnum? ErrorCode { get; init; }
 
             /// <summary>
-            /// A randomly generated number created by the encryptor encoded in Base64.
+            /// The Base64 encoded randomly generated number created by the encryptor.
             /// If the device does not support random number generation and verification, a zero length random number is returned 
             /// and an empty string is returned.
             /// </summary>

@@ -46,10 +46,11 @@ namespace XFS4IoT.PinPad.Commands
             public string Pan { get; init; }
 
             /// <summary>
-            /// PIN Validation Value from track data, as an ASCII string with characters in the range '0' to '9'. 
+            /// PIN Validation Value from track data. The valid range is '0' to '9'. 
             /// This string should contain 4 digits. 
             /// </summary>
             [DataMember(Name = "pvv")]
+            [DataTypes(Pattern = "^[0-9]$")]
             public string Pvv { get; init; }
 
             /// <summary>
@@ -59,14 +60,14 @@ namespace XFS4IoT.PinPad.Commands
             public int? PvvDigits { get; init; }
 
             /// <summary>
-            /// Name of the validation key. The key referenced by key must have the function or pinLocal attribute
+            /// Name of the validation key. The key referenced by key must have the [keyUsage](#common.capabilities.completion.properties.keymanagement.keyattributes.m0) 'V2' attribute.
             /// </summary>
             [DataMember(Name = "key")]
             public string Key { get; init; }
 
             /// <summary>
             /// If this property is omitted, key is used directly for PIN validation. Otherwise, key is used to decrypt the 
-            /// encrypted key passed in keyEncKey and the result is used for PIN validation. 
+            /// encrypted key passed in *keyEncKey* and the result is used for PIN validation. 
             /// </summary>
             [DataMember(Name = "keyEncKey")]
             public string KeyEncKey { get; init; }

@@ -48,7 +48,7 @@ namespace XFS4IoT.KeyManagement.Completions
             public ErrorCodeEnum? ErrorCode { get; init; }
 
             /// <summary>
-            /// The value of the ID key encrypted by the encryption key formatted in base64.
+            /// The Base64 encoded value of the ID key encrypted by the encryption key.
             /// This value can be used as authorization for the [KeyManagement.ImportKey](#keymanagement.importkey) command, this 
             /// field is not set if no authorization required.
             /// 

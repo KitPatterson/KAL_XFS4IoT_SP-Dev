@@ -41,7 +41,7 @@ namespace XFS4IoT.KeyManagement.Commands
             }
 
             /// <summary>
-            /// Specifies the algorithm that is used for derivation. 
+            /// Specifies the algorithm that is used for derivation. Possible values are: (see [derivationAlgorithms](#common.capabilities.completion.properties.keymanagement.derivationalgorithms))
             /// </summary>
             [DataMember(Name = "derivationAlgorithm")]
             public int? DerivationAlgorithm { get; init; }
@@ -59,20 +59,20 @@ namespace XFS4IoT.KeyManagement.Commands
             public string KeyGenKey { get; init; }
 
             /// <summary>
-            /// Specifies the name of the stored key used to decrypt the startValue to obtain the Initialization Vector.
-            /// If this field is not set, startValue is used as the Initialization Vector.
+            /// Specifies the name of the stored key used to decrypt the *startValue* to obtain the Initialization Vector.
+            /// If this field is omitted, *startValue* is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")]
             public string StartValueKey { get; init; }
 
             /// <summary>
-            /// DES initialization vector for the encryption step within the derivation. 
+            /// DES initialization vector for the encryption step within the derivation.
             /// </summary>
             [DataMember(Name = "startValue")]
             public string StartValue { get; init; }
 
             /// <summary>
-            /// Specifies the padding character for the encryption step within the derivation. The valid range is 0x00 to 0xFF
+            /// Specifies the padding character for the encryption step within the derivation. The valid range is 0 to 255.
             /// </summary>
             [DataMember(Name = "padding")]
             [DataTypes(Minimum = 0, Maximum = 255)]
@@ -87,8 +87,8 @@ namespace XFS4IoT.KeyManagement.Commands
             /// <summary>
             /// Specifies the key owner identification.
             /// It is a handle to the encryption module and is returned to the application in the [KeyManagement.Initialization](#keymanagement.initialization) command.
-            /// See [Capabilities.idkey](#common.capabilities.completion.properties.keymanagement.idkey) for whether this value is required.
-            /// If not required, this field should not be set. The use of this parameter is vendor dependent.
+            /// See [idkey](#common.capabilities.completion.properties.keymanagement.idkey) for whether this value is required.
+            /// If not required, this property is omitted. The use of this parameter is vendor dependent.
             /// </summary>
             [DataMember(Name = "ident")]
             public string Ident { get; init; }

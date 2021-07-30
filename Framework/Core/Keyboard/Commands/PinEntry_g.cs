@@ -45,6 +45,7 @@ namespace XFS4IoT.Keyboard.Commands
             /// A value of zero indicates no minimum PIN length verification.
             /// </summary>
             [DataMember(Name = "minLen")]
+            [DataTypes(Minimum = 0)]
             public int? MinLen { get; init; }
 
             /// <summary>
@@ -52,12 +53,13 @@ namespace XFS4IoT.Keyboard.Commands
             /// A value of zero indicates no maximum PIN length verification.
             /// </summary>
             [DataMember(Name = "maxLen")]
+            [DataTypes(Minimum = 0)]
             public int? MaxLen { get; init; }
 
             /// <summary>
-            /// If autoEnd is set to true, the Service Provider terminates the command when the maximum number of digits are entered. 
+            /// If *autoEnd* is set to true, the Service Provider terminates the command when the maximum number of digits are entered. 
             /// Otherwise, the input is terminated by the user using one of the termination keys. 
-            /// autoEnd is ignored when maxLen is set to zero.
+            /// *autoEnd* is ignored when *maxLen* is set to zero.
             /// </summary>
             [DataMember(Name = "autoEnd")]
             public bool? AutoEnd { get; init; }
@@ -69,25 +71,25 @@ namespace XFS4IoT.Keyboard.Commands
             public int? Echo { get; init; }
 
             /// <summary>
-            /// Specifies a mask of those FDKs which are active during the execution of the command 
+            /// Specifies a mask of those FDKs which are active during the execution of the command.
             /// </summary>
             [DataMember(Name = "activeFDKs")]
             public FDKKeysClass ActiveFDKs { get; init; }
 
             /// <summary>
-            /// Specifies a mask of those (other) Function Keys which are active during the execution of the command 
+            /// Specifies a mask of those (other) Function Keys which are active during the execution of the command.
             /// </summary>
             [DataMember(Name = "activeKeys")]
             public FunctionKeysClass ActiveKeys { get; init; }
 
             /// <summary>
-            /// Specifies a mask of those FDKs which must terminate the execution of the command 
+            /// Specifies a mask of those FDKs which must terminate the execution of the command.
             /// </summary>
             [DataMember(Name = "terminateFDKs")]
             public FDKKeysClass TerminateFDKs { get; init; }
 
             /// <summary>
-            /// Specifies a mask of those (other) Function Keys which must terminate the execution of the command 
+            /// Specifies a mask of those (other) Function Keys which must terminate the execution of the command.
             /// </summary>
             [DataMember(Name = "terminateKeys")]
             public FunctionKeysClass TerminateKeys { get; init; }

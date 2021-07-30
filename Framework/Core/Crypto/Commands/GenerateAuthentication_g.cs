@@ -49,21 +49,20 @@ namespace XFS4IoT.Crypto.Commands
             /// If startValue specifies an Initialization Vector (IV), then this property specifies the name of the
             /// stored key used to decrypt the startValue to obtain the IV. If startValue is not set and this property
             /// is also not set, then this property specifies the name of the IV that has been previously imported via
-            /// TR-31. If this property is not set, startValue is used as the Initialization Vector.
+            /// TR-31. If this property is not set, *startValue* is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")]
             public string StartValueKey { get; init; }
 
             /// <summary>
-            /// The initialization vector for CBC / CFB encryption. If this parameter and startValueKey are both not
+            /// The initialization vector for CBC / CFB encryption. If this parameter and *startValueKey* are both not
             /// set the default value for CBC / CFB is all zeroes.
             /// </summary>
             [DataMember(Name = "startValue")]
             public string StartValue { get; init; }
 
             /// <summary>
-            /// Specifies the padding character. The padding character is a full byte, e.g. 0xFF.  The valid range is
-            /// 0x00 to 0xFF.
+            /// Specifies the padding character. The valid range is 0 to 255.
             /// </summary>
             [DataMember(Name = "padding")]
             [DataTypes(Minimum = 0, Maximum = 255)]
@@ -78,7 +77,7 @@ namespace XFS4IoT.Crypto.Commands
             public bool? Compression { get; init; }
 
             /// <summary>
-            /// The data to be MACed, or signed formatted in base64.
+            /// The Base64 encoded data to be MACed, or signed.
             /// </summary>
             [DataMember(Name = "authenticationData")]
             public string AuthenticationData { get; init; }
@@ -99,7 +98,7 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the [cryptographic method](#common.capabilities.completion.properties.crypto.authenticationattributes.s0.r.g.cryptomethod) supported.
+                /// Specifies the cryptographic method [cryptoMethod](#common.capabilities.completion.properties.crypto.authenticationattributes.s0.r.g.cryptomethod) supported.
                 /// command. For asymmetric signature verification methods (Specified [key](#crypto.generateauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.authenticationattributes.s0)), this can be one of the following
                 /// values: 
                 /// 
@@ -132,7 +131,7 @@ namespace XFS4IoT.Crypto.Commands
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this command. 
-            /// For a list of valid values see the Attributes [authenticationAttribute](#common.capabilities.completion.properties.crypto.authenticationattributes) 
+            /// For a list of valid values see the Attributes [authenticationAttributes](#common.capabilities.completion.properties.crypto.authenticationattributes) 
             /// property. The values specified must be compatible with the key identified by Key.
             /// </summary>
             [DataMember(Name = "authenticationAttribute")]

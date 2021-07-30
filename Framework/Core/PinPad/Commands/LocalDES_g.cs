@@ -62,8 +62,8 @@ namespace XFS4IoT.PinPad.Commands
             /// Specifies the padding character for the validation data. 
             /// If the validation data is less than 16 characters long then it will be padded with this character. 
             /// If padding is in the range 00 to 0F in 16 character string, padding is applied after the validation data has been compressed. 
-            /// If the padding character is in the range 30 to 39 ('0' to '9' in ASCII code), 41 to 46 ('A' to 'F' in ASCII code), 
-            /// or 61 to 66 ('a' to 'f' in ASCII code) in hexadecimal string format, padding is applied before the validation data is compressed.  
+            /// If the padding character is in the range '0' to '9' and 'A' to 'F', or 'a' to 'f'
+            /// in hexadecimal string format, padding is applied before the validation data is compressed.  
             /// pattern: "^0[0-9a-fA-F]$|^3[0-9]$|^4[1-6]$|^6[1-6]$\
             /// </summary>
             [DataMember(Name = "padding")]
@@ -79,7 +79,7 @@ namespace XFS4IoT.PinPad.Commands
 
             /// <summary>
             /// Number of Validation digits from the validation data to be used for validation.
-            /// This is the length of the validationData string.
+            /// This is the length of the *validationData*.
             /// </summary>
             [DataMember(Name = "valDigits")]
             public int? ValDigits { get; init; }
@@ -92,14 +92,14 @@ namespace XFS4IoT.PinPad.Commands
             public bool? NoLeadingZero { get; init; }
 
             /// <summary>
-            /// Name of the key to be used for validation. The key referenced by key must have the function or pinLocal attribute. 
+            /// Name of the key to be used for validation. The key referenced by key must have the [keyUsage](#common.capabilities.completion.properties.keymanagement.keyattributes.m0) 'V0' attribute.
             /// </summary>
             [DataMember(Name = "key")]
             public string Key { get; init; }
 
             /// <summary>
             /// If this property is omitted, key is used directly for PIN validation.
-            /// Otherwise, key is used to decrypt the encrypted key passed in keyEncKey and the result is used for PIN validation.
+            /// Otherwise, key is used to decrypt the encrypted key passed in *keyEncKey* and the result is used for PIN validation.
             /// </summary>
             [DataMember(Name = "keyEncKey")]
             public string KeyEncKey { get; init; }

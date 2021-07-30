@@ -141,10 +141,8 @@ namespace XFS4IoT.KeyManagement.Commands
                 public string ModeOfUse { get; init; }
 
                 /// <summary>
-                /// Specifies restricted key usage of the key associated with the [keyUsage](#keymanagement.importkey.command.properties.keyattributes.keyusage) property.
-                /// This property can be omitted if there is no restricted key usage required.
-                /// Following restricted key usage can be set if the [keyUsage](#keymanagement.importkey.command.properties.keyattributes.keyusage) property is either ['K0' or 'K1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0).
-                /// The following values are possible:
+                /// This property should only be included if the [keyUsage](#keymanagement.importkey.command.properties.keyattributes.keyusage) is an exchange key (K0, K1 or K2) 
+                /// and the key can only be used as the decryptKey for keys with one of the following usages:
                 /// 
                 /// * ```B0``` - BDK Base Derivation Key. 
                 /// * ```B1``` - Initial DUKPT key. 
@@ -161,6 +159,8 @@ namespace XFS4IoT.KeyManagement.Commands
                 /// * ```E5``` - EMV / Chip Issuer Master Key: Card Personalization. 
                 /// * ```E6``` - EMV / Chip Issuer Master Key: Other Initialization Vector (IV). 
                 /// * ```I0``` - Initialization Vector (IV). 
+                /// * ```K0``` - Key Encryption or wrapping. 
+                /// * ```K1``` - TR-31 Key Block Protection Key. 
                 /// * ```K2``` - TR-34 Asymmetric Key. 
                 /// * ```K3``` - Asymmetric Key for key agreement / key wrapping. 
                 /// * ```M0``` - ISO 16609 MAC algorithm 1 (using TDEA). 
@@ -184,22 +184,21 @@ namespace XFS4IoT.KeyManagement.Commands
                 /// * ```00 - 99``` - These numeric values are reserved for proprietary use.
                 /// </summary>
                 [DataMember(Name = "restricted")]
-                [DataTypes(Pattern = "^B[0-2]$|^C0$|^D[0-2]$|^E[0-6]$|^I0$|^K[2-3]$|^M[0-8]$|^P0$|^S[0-2]$|^V[0-4]$|^[0-9][0-9]$")]
+                [DataTypes(Pattern = "^B[0-2]$|^C0$|^D[0-2]$|^E[0-6]$|^I0$|^K[0-3]$|^M[0-8]$|^P0$|^S[0-2]$|^V[0-4]$|^[0-9][0-9]$")]
                 public string Restricted { get; init; }
 
             }
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for the key imported 
-            /// by this command. For a list of valid values see the [KeyManagement.keyAttribute](#common.capabilities.completion.properties.keymanagement.keyattributes) 
+            /// by this command. For a list of valid values see the [keyAttribute](#common.capabilities.completion.properties.keymanagement.keyattributes) 
             /// capability. The values specified must be compatible with the key identified by key.
-            /// This property can be omitted if the constructing property is true.
             /// </summary>
             [DataMember(Name = "keyAttributes")]
             public KeyAttributesClass KeyAttributes { get; init; }
 
             /// <summary>
-            /// Specifies the value of key to be loaded formatted in base64.
+            /// Specifies the Base64 encoded value of key to be loaded.
             /// If it is an RSA key the first 4 bytes contain the exponent and the following 128 the modulus.
             /// This property is not required for secure key entry and can be omitted.
             /// </summary>
@@ -233,14 +232,13 @@ namespace XFS4IoT.KeyManagement.Commands
             }
 
             /// <summary>
-            /// Specifies the cryptographic method that shall be used with the key specified by decryptKey.
-            /// The device shall use this method to decrypt the encrypted value in the value parameter.
+            /// Specifies the cryptographic method that shall be used with the key specified by *decryptKey*.
             /// This property is not required if a keyblock is being imported, as the decrypt method is contained within the keyblock.
-            /// This property specifies the cryptographic method that will be used with the encryption algorithm specified by algorithm.
-            /// This property is not required if the constructing property is true.
-            /// For a list of valid values see this property in the [KeyManagement.decryptAttribute](#common.capabilities.completion.properties.keymanagement.decryptattributes)
+            /// This property specifies the cryptographic method that will be used to decrypt the encrypted value.
+            /// This property is not required if the *constructing* property is true or if _decryptKey_ is omitted.
+            /// For a list of valid values see this property in the [decryptAttribute](#common.capabilities.completion.properties.keymanagement.decryptattributes)
             /// capability.
-            /// If the algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.decryptattributes.a), then this property can be one of the following values: 
+            /// If the decryptKey algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.decryptattributes.a), then this property can be one of the following values: 
             /// 
             /// * ```ecb``` - The ECB encryption method. 
             /// * ```cbc``` - The CBC encryption method. 
@@ -249,7 +247,7 @@ namespace XFS4IoT.KeyManagement.Commands
             /// * ```ctr``` - The CTR method defined in NIST SP800-38A. 
             /// * ```xts``` - The XTS method defined in NIST SP800-38E. 
             /// 
-            /// If the algorithm is ['R'](#common.capabilities.completion.properties.keymanagement.decryptattributes.a), then this property can be one of the following values: 
+            /// If the decryptKey algorithm is ['R'](#common.capabilities.completion.properties.keymanagement.decryptattributes.a), then this property can be one of the following values: 
             /// 
             /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm. 
             /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm. 
@@ -262,14 +260,14 @@ namespace XFS4IoT.KeyManagement.Commands
 
             /// <summary>
             /// Contains the data to be verified before importing.
-            /// This property can be omitted if no verification is needed before importing the key or the constructing property is true.
+            /// This property can be omitted if no verification is needed before importing the key or the *constructing* property is true.
             /// </summary>
             [DataMember(Name = "verificationData")]
             public string VerificationData { get; init; }
 
             /// <summary>
             /// Specifies the name of the previously loaded key which will be used to verify the verificationData.
-            /// This property can be omitted when no verification is needed before importing the key or the constructing property is true.
+            /// This property can be omitted when no verification is needed before importing the key or the *constructing* property is true.
             /// </summary>
             [DataMember(Name = "verifyKey")]
             public string VerifyKey { get; init; }
@@ -309,17 +307,17 @@ namespace XFS4IoT.KeyManagement.Commands
                 }
 
                 /// <summary>
-                /// This parameter specifies the [cryptographic method](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t.v.cryptomethod) that will be used with encryption algorithm.
+                /// This parameter specifies the cryptographic method [cryptomethod](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t.v.cryptomethod) that will be used with encryption algorithm.
                 /// 
-                /// If the algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified [verifyKey](#keymanagement.importkey.command.properties.verifykey) is MAC key usage (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then this property can be omitted. 
+                /// If the verifyKey algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified [verifyKey](#keymanagement.importkey.command.properties.verifykey) is MAC key usage (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then this property can be omitted. 
                 /// 
-                /// If the algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified [verifyKey](#keymanagement.importkey.command.properties.verifykey) is key usage ['00'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be one of the following values: 
+                /// If the verifyKey algorithm is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified [verifyKey](#keymanagement.importkey.command.properties.verifykey) is key usage ['00'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be one of the following values: 
                 /// 
                 /// * ```kcvNone``` - There is no key check value verification required. 
                 /// * ```kcvSelf``` - The key check value (KCV) is created by an encryption of the key with itself.
                 /// * ```kcvZero``` - The key check value (KCV) is created by encrypting a zero value with the key. 
                 /// 
-                /// If the algorithm is ['R'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified [verifyKey](#keymanagement.importkey.command.properties.verifykey) is not key usage ['00'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be one of the following values: 
+                /// If the verifyKey algorithm is ['R'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified [verifyKey](#keymanagement.importkey.command.properties.verifykey) is not key usage ['00'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be one of the following values: 
                 /// 
                 /// * ```sigNone``` - No signature algorithm specified. No signature verification will take place and the content of verificationData is not required. 
                 /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
@@ -349,8 +347,8 @@ namespace XFS4IoT.KeyManagement.Commands
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used to verify this command or to 
             /// generate verification output data. Verifying input data will result in no verification output data.
-            /// For a list of valid values see the [Capabilities.verifyAttributes](#common.capabilities.completion.properties.keymanagement.verifyattributes)
-            /// capability. This property can be omitted if verificationData is not required or the constructing property is true.
+            /// For a list of valid values see the [verifyAttributes](#common.capabilities.completion.properties.keymanagement.verifyattributes)
+            /// capability. This property can be omitted if *verificationData* is not required or the _constructing_ property is true.
             /// </summary>
             [DataMember(Name = "verifyAttributes")]
             public VerifyAttributesClass VerifyAttributes { get; init; }
@@ -358,7 +356,7 @@ namespace XFS4IoT.KeyManagement.Commands
             /// <summary>
             /// Specifies the vendor attributes of the key to be imported.
             /// Refer to vendor documentation for details.
-            /// If no vendor attributes are used or the constructing property is true, then this property can be omitted.
+            /// If no vendor attributes are used or the *constructing* property is true, then this property can be omitted.
             /// </summary>
             [DataMember(Name = "vendorAttributes")]
             public string VendorAttributes { get; init; }

@@ -51,7 +51,7 @@ namespace XFS4IoT.KeyManagement.Commands
             /// The following values are possible:
             /// 
             /// * ```self``` - The key check value (KCV) is created by an encryption of the key with itself. 
-            ///                For the description refer to the kcvSelf literal described in the [Capabilites.keyCheckModes](#common.capabilities.completion.properties.keymanagement.keycheckmodes).
+            ///                For the description refer to the kcvSelf literal described in the [keyCheckModes](#common.capabilities.completion.properties.keymanagement.keycheckmodes).
             /// * ```zero``` - The key check value (KCV) is created by encrypting a zero value with the key. 
             ///                Unless otherwise specified, ECB encryption is used
             ///                The encryption algorithm used (i.e. DES, 3DES, AES) is determined by the type of key used to generate the KCV.
