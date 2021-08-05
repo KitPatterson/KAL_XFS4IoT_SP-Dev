@@ -48,7 +48,7 @@ namespace XFS4IoTFramework.Dispenser
 
                 if (!Dispenser.CashDispenserCapabilities.RetractAreas[retractArea])
                 {
-                    return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                    return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                              $"Specified unsupported retract area. {retractArea}",
                                                              RetractCompletion.PayloadData.ErrorCodeEnum.InvalidRetractPosition);
                 }

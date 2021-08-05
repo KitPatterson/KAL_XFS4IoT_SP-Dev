@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Crypto interface.
- * GenerateRandomHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -20,17 +18,19 @@ namespace XFS4IoTFramework.Crypto
 {
     public partial class GenerateRandomHandler
     {
-
-        private Task<GenerateRandomCompletion.PayloadData> HandleGenerateRandom(IGenerateRandomEvents events, GenerateRandomCommand generateRandom, CancellationToken cancel)
+        private async Task<GenerateRandomCompletion.PayloadData> HandleGenerateRandom(IGenerateRandomEvents events, GenerateRandomCommand generateRandom, CancellationToken cancel)
         {
-            //ToDo: Implement HandleGenerateRandom for Crypto.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleGenerateRandom for Crypto is not implemented in GenerateRandomHandler.cs");
-            #else
-                #error HandleGenerateRandom for Crypto is not implemented in GenerateRandomHandler.cs
-            #endif
-        }
+            Logger.Log(Constants.DeviceClass, "CryptoDev.GenerateRandomNumber()");
 
+            var result = await Device.GenerateRandomNumber(cancel);
+
+            Logger.Log(Constants.DeviceClass, $"CryptoDev.GenerateRandomNumber() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            byte[] random = result.RandomNumber?.ToArray();
+            return new GenerateRandomCompletion.PayloadData(result.CompletionCode,
+                                                            result.ErrorDescription,
+                                                            result.ErrorCode,
+                                                            random is null ? string.Empty : Convert.ToBase64String(random));
+        }
     }
 }

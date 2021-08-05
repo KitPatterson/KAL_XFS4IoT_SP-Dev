@@ -5,13 +5,16 @@
 \***********************************************************************************************/
 
 using System.Threading.Tasks;
-
 using XFS4IoTFramework.Crypto;
-using XFS4IoT.Crypto.Events;
+using XFS4IoTFramework.Common;
 
 namespace XFS4IoTServer
 {
-    public interface ICryptoServiceClass : ICryptoUnsolicitedEvents
+    public interface ICryptoService : IKeyManagementService, ICommonService
+    {
+    }
+
+    public interface ICryptoServiceClass : ICryptoService, ICryptoUnsolicitedEvents
     {
     }
 }
