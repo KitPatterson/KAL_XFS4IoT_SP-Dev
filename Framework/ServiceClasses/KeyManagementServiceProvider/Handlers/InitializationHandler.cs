@@ -8,6 +8,7 @@
 using System;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using XFS4IoT;
@@ -42,6 +43,23 @@ namespace XFS4IoTFramework.KeyManagement
                                                      cancel);
 
             Logger.Log(Constants.DeviceClass, $"CryptoDev.Initialization() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
+            {
+                // Delete internal key information
+                if (string.IsNullOrEmpty(initialization.Payload.Key))
+                {
+                    foreach (var key in KeyManagement.GetKeyTable())
+                    {
+                        if (!key.Preloaded)
+                            KeyManagement.DeleteKey(key.KeyName);
+                    }
+                }
+                else
+                {
+                    KeyManagement.DeleteKey(initialization.Payload.Key);
+                }
+            }
 
             return new InitializationCompletion.PayloadData(result.CompletionCode,
                                                             result.ErrorDescription,
