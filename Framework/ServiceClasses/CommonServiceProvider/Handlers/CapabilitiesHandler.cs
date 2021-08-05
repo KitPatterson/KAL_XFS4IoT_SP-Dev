@@ -646,21 +646,21 @@ namespace XFS4IoTFramework.Common
                     foreach (var (algorithm, method) in result.KeyManagement.DecryptAttributes)
                     {
                         KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum decryptMethod = KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.NotSupported;
-                        if (method?.DecryptoMethod?.Cbc is not null && (bool)method?.DecryptoMethod?.Cbc)
+                        if (method?.DecryptMethod?.Cbc is not null && (bool)method?.DecryptMethod?.Cbc)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CBC;
-                        if (method?.DecryptoMethod?.Cfb is not null && (bool)method?.DecryptoMethod?.Cfb)
+                        if (method?.DecryptMethod?.Cfb is not null && (bool)method?.DecryptMethod?.Cfb)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CFB;
-                        if (method?.DecryptoMethod?.Ctr is not null && (bool)method?.DecryptoMethod?.Ctr)
+                        if (method?.DecryptMethod?.Ctr is not null && (bool)method?.DecryptMethod?.Ctr)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CTR;
-                        if (method?.DecryptoMethod?.Ecb is not null && (bool)method?.DecryptoMethod?.Ecb)
+                        if (method?.DecryptMethod?.Ecb is not null && (bool)method?.DecryptMethod?.Ecb)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.ECB;
-                        if (method?.DecryptoMethod?.Ofb is not null && (bool)method?.DecryptoMethod?.Ofb)
+                        if (method?.DecryptMethod?.Ofb is not null && (bool)method?.DecryptMethod?.Ofb)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.OFB;
-                        if (method?.DecryptoMethod?.RsaesOaep is not null && (bool)method?.DecryptoMethod?.RsaesOaep)
+                        if (method?.DecryptMethod?.RsaesOaep is not null && (bool)method?.DecryptMethod?.RsaesOaep)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_OAEP;
-                        if (method?.DecryptoMethod?.RsaesPkcs1V15 is not null && (bool)method?.DecryptoMethod?.RsaesPkcs1V15)
+                        if (method?.DecryptMethod?.RsaesPkcs1V15 is not null && (bool)method?.DecryptMethod?.RsaesPkcs1V15)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_PKCS1_V1_5;
-                        if (method?.DecryptoMethod?.Xts is not null && (bool)method?.DecryptoMethod?.Xts)
+                        if (method?.DecryptMethod?.Xts is not null && (bool)method?.DecryptMethod?.Xts)
                             decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.XTS;
 
                         decryptAttributes.Add(algorithm, new KeyManagementCapabilitiesClass.DecryptMethodClass(decryptMethod));
