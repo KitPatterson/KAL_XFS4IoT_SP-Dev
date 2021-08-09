@@ -5,16 +5,12 @@
  *
 \***********************************************************************************************/
 
-
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text.RegularExpressions;
-using XFS4IoT;
-using XFS4IoTServer;
 using XFS4IoT.KeyManagement.Commands;
 using XFS4IoT.KeyManagement.Completions;
 using XFS4IoT.Completions;
@@ -72,14 +68,54 @@ namespace XFS4IoTFramework.KeyManagement
                                                            $"Invalid key mode specified.");
             }
 
+            // Check key attributes supported
+            List<string> keyUsages = new() { importKey.Payload.KeyAttributes.KeyUsage };
+            for (int i = 0; i < 100; i++)
+                keyUsages.Add(i.ToString("00"));
+            bool keyAttribSupported = false;
+            foreach (string keyUsage in keyUsages)
+            {
+                if (KeyManagement.KeyManagementCapabilities.KeyAttributes.ContainsKey(keyUsage))
+                {
+                    List<string> algorithms = new() { importKey.Payload.KeyAttributes.Algorithm };
+                    for (int i = 0; i < 10; i++)
+                        keyUsages.Add(i.ToString("0"));
+                    foreach (string algorithm in algorithms)
+                    {
+                        if (KeyManagement.KeyManagementCapabilities.KeyAttributes[keyUsage].ContainsKey(algorithm))
+                        {
+                            List<string> modes = new() { importKey.Payload.KeyAttributes.ModeOfUse };
+                            for (int i = 0; i < 10; i++)
+                                keyUsages.Add(i.ToString("0"));
+                            foreach (string mode in modes)
+                            {
+                                keyAttribSupported = KeyManagement.KeyManagementCapabilities.KeyAttributes[keyUsage][algorithm].ContainsKey(mode);
+                                if (keyAttribSupported)
+                                    break;
+                            }
+                        }
+                        if (keyAttribSupported)
+                            break;
+                    }
+                }
+                if (keyAttribSupported)
+                    break;
+            }
+
+            if (!keyAttribSupported)
+            {
+                return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                           $"Specified key attribute is not supported.",
+                                                           ImportKeyCompletion.PayloadData.ErrorCodeEnum.ModeNotSupported);
+            }
+
             if (importKey.Payload.Constructing is not null &&
                 (bool)importKey.Payload.Constructing)
             {
                 int importPartKeySlot = KeyManagement.FindKeySlot(importKey.Payload.Key);
-                Logger.Log(Constants.DeviceClass, "CryptoDev.ImportKeyPart()");
+                Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKeyPart()");
 
-                var importKeyPartResult = await Device.ImportKeyPart(events,
-                                                                     new ImportKeyPartRequest(importKey.Payload.Key,
+                var importKeyPartResult = await Device.ImportKeyPart(new ImportKeyPartRequest(importKey.Payload.Key,
                                                                                               importPartKeySlot,
                                                                                               importKey.Payload.KeyAttributes.KeyUsage,
                                                                                               importKey.Payload.KeyAttributes.Algorithm,
@@ -87,7 +123,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                               importKey.Payload.KeyAttributes.Restricted),
                                                                      cancel);
 
-                Logger.Log(Constants.DeviceClass, $"CryptoDev.ImportKeyPart() -> {importKeyPartResult.CompletionCode}, {importKeyPartResult.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKeyPart() -> {importKeyPartResult.CompletionCode}, {importKeyPartResult.ErrorCode}");
 
                 Dictionary<string, Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>>> verifyAttribute = null;
                 if (importKeyPartResult.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
@@ -293,10 +329,9 @@ namespace XFS4IoTFramework.KeyManagement
             }
 
             int keySlot = KeyManagement.FindKeySlot(importKey.Payload.Key);
-            Logger.Log(Constants.DeviceClass, "CryptoDev.ImportKey()");
+            Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKey()");
 
-            var result = await Device.ImportKey(events,
-                                                new ImportKeyRequest(importKey.Payload.Key,
+            var result = await Device.ImportKey(new ImportKeyRequest(importKey.Payload.Key,
                                                                      keySlot,
                                                                      !string.IsNullOrEmpty(importKey.Payload.Value) ? null : Convert.FromBase64String(importKey.Payload.Value).ToList(),
                                                                      importKey.Payload.KeyAttributes.KeyUsage,
@@ -305,7 +340,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                      importKey.Payload.KeyAttributes.Restricted),
                                                 cancel);
 
-            Logger.Log(Constants.DeviceClass, $"CryptoDev.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
 
             Dictionary<string, Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>>> importKeyVerifyAttib = null;
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)

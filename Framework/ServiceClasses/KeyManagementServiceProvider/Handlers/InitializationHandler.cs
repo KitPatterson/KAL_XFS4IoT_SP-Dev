@@ -7,12 +7,8 @@
 
 using System;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
 using XFS4IoT.KeyManagement.Commands;
 using XFS4IoT.KeyManagement.Completions;
 using XFS4IoT.Completions;
@@ -35,14 +31,21 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
-            Logger.Log(Constants.DeviceClass, "CryptoDev.Initialization()");
+            if (KeyManagement.KeyManagementCapabilities.IDKey.HasFlag(KeyManagementCapabilitiesClass.IDKeyEnum.Initialization) &&
+                string.IsNullOrEmpty(initialization.Payload.Ident))
+            {
+                return new InitializationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                $"No identification data provided.",
+                                                                InitializationCompletion.PayloadData.ErrorCodeEnum.AccessDenied);
+            }
 
-            var result = await Device.Initialization(events,
-                                                     new InitializationRequest(initialization.Payload.Key,
+            Logger.Log(Constants.DeviceClass, "KeyManagement.Initialization()");
+
+            var result = await Device.Initialization(new InitializationRequest(initialization.Payload.Key,
                                                                                string.IsNullOrEmpty(initialization.Payload.Ident) ? null : Convert.FromBase64String(initialization.Payload.Ident).ToList()),
                                                      cancel);
 
-            Logger.Log(Constants.DeviceClass, $"CryptoDev.Initialization() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagement.Initialization() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {

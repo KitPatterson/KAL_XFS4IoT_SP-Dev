@@ -131,17 +131,7 @@ namespace XFS4IoTFramework.Crypto
             if (!string.IsNullOrEmpty(cryptoData.Payload.StartValueKey) ||
                 !string.IsNullOrEmpty(cryptoData.Payload.StartValue))
             {
-                ivData = (new byte[8]).Select(x => x = 0).ToList();
-
-                // Need an IV
-                if (string.IsNullOrEmpty(cryptoData.Payload.StartValueKey) &&
-                    !string.IsNullOrEmpty(cryptoData.Payload.StartValue))
-                {
-                    // ClearIV;
-                    ivData = new(Convert.FromBase64String(cryptoData.Payload.StartValue));
-                }
-                else if (!string.IsNullOrEmpty(cryptoData.Payload.StartValueKey) &&
-                         !string.IsNullOrEmpty(cryptoData.Payload.StartValue))
+                if (!string.IsNullOrEmpty(cryptoData.Payload.StartValueKey))
                 {
                     // First to check capabilities of ECB decryption
                     bool verifyIVAttrib = false;
@@ -165,6 +155,20 @@ namespace XFS4IoTFramework.Crypto
                                                                     $"The crypto attribute doesn't support decrypt IV data with IV key.",
                                                                     CryptoDataCompletion.PayloadData.ErrorCodeEnum.UseViolation);
                     }
+                }
+
+                ivData = (new byte[8]).Select(x => x = 0).ToList();
+
+                // Need an IV
+                if (string.IsNullOrEmpty(cryptoData.Payload.StartValueKey) &&
+                    !string.IsNullOrEmpty(cryptoData.Payload.StartValue))
+                {
+                    // ClearIV;
+                    ivData = new(Convert.FromBase64String(cryptoData.Payload.StartValue));
+                }
+                else if (!string.IsNullOrEmpty(cryptoData.Payload.StartValueKey) &&
+                         !string.IsNullOrEmpty(cryptoData.Payload.StartValue))
+                {
                     // In this last mode, the data is encrypted, so we have to decrypt
                     // it then send it as a clear IV
                     Logger.Log(Constants.DeviceClass, "CryptoDev.Crypto()");

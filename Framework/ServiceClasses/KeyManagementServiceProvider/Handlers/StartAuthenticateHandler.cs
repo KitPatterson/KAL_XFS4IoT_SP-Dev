@@ -3,10 +3,7 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT KeyManagement interface.
- * StartAuthenticateHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
-
 
 using System;
 using System.Threading.Tasks;
@@ -23,14 +20,7 @@ namespace XFS4IoTFramework.KeyManagement
 
         private Task<StartAuthenticateCompletion.PayloadData> HandleStartAuthenticate(IStartAuthenticateEvents events, StartAuthenticateCommand startAuthenticate, CancellationToken cancel)
         {
-            //ToDo: Implement HandleStartAuthenticate for KeyManagement.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleStartAuthenticate for KeyManagement is not implemented in StartAuthenticateHandler.cs");
-            #else
-                #error HandleStartAuthenticate for KeyManagement is not implemented in StartAuthenticateHandler.cs
-            #endif
+            throw new NotImplementedException("HandleStartAuthenticate for KeyManagement is not implemented in StartAuthenticateHandler.cs");
         }
-
     }
 }

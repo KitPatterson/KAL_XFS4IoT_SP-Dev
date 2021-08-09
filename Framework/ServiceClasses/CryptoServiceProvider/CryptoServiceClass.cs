@@ -54,7 +54,7 @@ namespace XFS4IoTServer
         /// <summary>
         /// Find keyslot available or being used
         /// </summary>
-        public int FindKeySlot(string KeyName) => KeyManagementService.FindKeySlot(KeyName);
+        public int FindKeySlot(string KeyName) => throw new NotSupportedException("The UpdateKeyStatus method is not supported in the Crypto interface.");
 
         /// <summary>
         /// Stored key information of this device
@@ -84,31 +84,16 @@ namespace XFS4IoTServer
                            int? Generation,
                            DateTime? ActivatingDate,
                            DateTime? ExpiryDate,
-                           int? Version) => KeyManagementService.AddKey(KeyName,
-                                                                        KeySlot,
-                                                                        KeyUsage,
-                                                                        Algorithm,
-                                                                        ModeOfUse,
-                                                                        RestrictedKeyUsage,
-                                                                        KeyVersionNumber,
-                                                                        Exportability,
-                                                                        KeyStatus,
-                                                                        Preloaded,
-                                                                        KeyLength,
-                                                                        OptionalKeyBlockHeader,
-                                                                        Generation,
-                                                                        ActivatingDate,
-                                                                        ExpiryDate,
-                                                                        Version);
+                           int? Version) => throw new NotSupportedException("The AddKey method is not supported in the Crypto interface.");
 
         /// <summary>
         /// Delete specified key from the collection and return key slot
         /// </summary>
-        public void DeleteKey(string KeyName) => KeyManagementService.DeleteKey(KeyName);
+        public void DeleteKey(string KeyName) => throw new NotSupportedException("The DeleteKey method is not supported in the Crypto interface.");
 
         /// <summary>
         /// Update key status
         /// </summary>
-        public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => KeyManagementService.UpdateKeyStatus(KeyName, Status);
+        public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => throw new NotSupportedException("The UpdateKeyStatus method is not supported in the Crypto interface.");
     }
 }
