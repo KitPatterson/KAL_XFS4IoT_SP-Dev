@@ -47,14 +47,14 @@ namespace XFS4IoTFramework.KeyManagement
                 {
                     List<string> algorithms = new() { "R" };
                     for (int i = 0; i < 10; i++)
-                        keyUsages.Add(i.ToString("0"));
+                        algorithms.Add(i.ToString("0"));
                     foreach (string algorithm in algorithms)
                     {
                         if (KeyManagement.KeyManagementCapabilities.KeyAttributes[keyUsage].ContainsKey(algorithm))
                         {
                             List<string> modes = new() { "S", "T" };
                             for (int i = 0; i < 10; i++)
-                                keyUsages.Add(i.ToString("0"));
+                                modes.Add(i.ToString("0"));
                             foreach (string mode in modes)
                             {
                                 asymmetricKeySupported = KeyManagement.KeyManagementCapabilities.KeyAttributes[keyUsage][algorithm].ContainsKey(mode);
