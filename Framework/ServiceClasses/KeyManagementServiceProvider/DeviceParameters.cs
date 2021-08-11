@@ -28,17 +28,79 @@ namespace XFS4IoTFramework.KeyManagement
         RSASSA_PSS,            // SSA_PSS Signatures supported
     }
 
-    public sealed class ImportKeyPartRequest
+    public class KeyInformationBase
     {
-        public ImportKeyPartRequest(string KeyName,
-                                    int KeySlot,
+        public KeyInformationBase(string KeyVersionNumber,
+                                  string Exportability,
+                                  List<byte> OptionalKeyBlockHeader,
+                                  int? Generation = null,
+                                  DateTime? ActivatingDate = null,
+                                  DateTime? ExpiryDate = null,
+                                  int? Version = null)
+        {
+            this.KeyVersionNumber = KeyVersionNumber;
+
+            Regex.IsMatch(Exportability, KeyDetail.regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
+            this.Exportability = Exportability;
+            this.OptionalKeyBlockHeader = OptionalKeyBlockHeader;
+            this.Generation = Generation;
+            this.ActivatingDate = ActivatingDate;
+            this.ExpiryDate = ExpiryDate;
+            this.Version = Version;
+        }
+
+        /// <summary>
+        /// Specifies a two-digit ASCII character version number, which is optionally used to indicate that contents 
+        /// of the key block are a component, or to prevent re-injection of old keys.
+        /// See [Reference 35. ANS X9 TR-31 2018] for all possible values.
+        /// </summary>
+        public string KeyVersionNumber { get; init; }
+
+        /// <summary>
+        /// Specifies whether the key may be transferred outside of the cryptographic domain in which the key is found.
+        /// See[Reference 35.ANS X9 TR - 31 2018] for all possible values.
+        /// </summary>
+        public string Exportability { get; init; }
+
+        /// <summary>
+        /// Contains any optional header blocks, as defined in [Reference 35. ANS X9 TR-31 2018].
+        /// This value can be omitted if there are no optional block headers.
+        /// </summary>
+        public List<byte> OptionalKeyBlockHeader { get; init; }
+
+        /// <summary>
+        /// Specifies the generation of the key.
+        /// Different generations might correspond to different environments(e.g.test or production environment).
+        /// The content is vendor specific.
+        /// </summary>
+        public int? Generation { get; init; }
+
+        /// <summary>
+        /// Specifies the date when the key is activated in the format YYYYMMDD.
+        /// </summary>
+        public DateTime? ActivatingDate { get; init; }
+
+        /// <summary>
+        /// Specifies the date when the key expires in the format YYYYMMDD.
+        /// </summary>
+        public DateTime? ExpiryDate { get; init; }
+
+        /// <summary>
+        /// Specifies the version of the key (the year in which the key is valid, e.g. 1 for 2001).
+        /// This value can be omitted if no such information is available for the key.
+        /// </summary>
+        public int? Version { get; init; }
+    }
+
+    public class ImportKeyBaseRequest
+    {
+        public ImportKeyBaseRequest(string KeyName,
                                     string KeyUsage,
                                     string Algorithm,
                                     string ModeOfUse,
                                     string RestrictedKeyUsage = null)
         {
             this.KeyName = KeyName;
-            this.KeySlot = KeySlot;
             this.KeyUsage = KeyUsage;
             this.Algorithm = Algorithm;
             this.ModeOfUse = ModeOfUse;
@@ -51,12 +113,7 @@ namespace XFS4IoTFramework.KeyManagement
         public string KeyName { get; init; }
 
         /// <summary>
-        /// Key slot to use
-        /// </summary>
-        public int KeySlot { get; init; }
-
-        /// <summary>
-        /// Key usage to load
+        /// Key usage associated with the key to be stored
         /// </summary>
         public string KeyUsage { get; init; }
 
@@ -76,7 +133,45 @@ namespace XFS4IoTFramework.KeyManagement
         public string RestrictedKeyUsage { get; init; }
     }
 
-    public sealed class ImportKeyRequest
+    public sealed class ImportKeyPartRequest : ImportKeyBaseRequest
+    {
+        public ImportKeyPartRequest(string KeyName,
+                                    int ComponentNumber,
+                                    string KeyUsage,
+                                    string Algorithm,
+                                    string ModeOfUse,
+                                    string RestrictedKeyUsage = null)
+            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
+        {
+            this.ComponentNumber = ComponentNumber;
+        }
+
+        /// <summary>
+        /// Number of component to store temporarily
+        /// </summary>
+        public int ComponentNumber { get; init; }
+    }
+
+    public sealed class AssemblyKeyPartsRequest : ImportKeyBaseRequest
+    {
+        public AssemblyKeyPartsRequest(string KeyName,
+                                       int KeySlot,
+                                       string KeyUsage,
+                                       string Algorithm,
+                                       string ModeOfUse,
+                                       string RestrictedKeyUsage = null)
+            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
+        {
+            this.KeySlot = KeySlot;
+        }
+
+        /// <summary>
+        /// Key slot to use, if the device class needs to use specific number, update it in the result
+        /// </summary>
+        public int KeySlot { get; init; }
+    }
+
+    public sealed class ImportKeyRequest : ImportKeyBaseRequest
     {
         public sealed class VerifyAttributeClass
         {
@@ -132,22 +227,12 @@ namespace XFS4IoTFramework.KeyManagement
                                 string RestrictedKeyUsage = null,
                                 VerifyAttributeClass VerifyAttribute = null,
                                 DecryptAttributeClass DecryptAttribute = null)
+            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
         {
-            this.KeyName = KeyName;
             this.KeySlot = KeySlot;
-            this.KeyData = KeyData;
-            this.KeyUsage = KeyUsage;
-            this.Algorithm = Algorithm;
-            this.ModeOfUse = ModeOfUse;
-            this.RestrictedKeyUsage = RestrictedKeyUsage;
             this.VerifyAttribute = VerifyAttribute;
             this.DecryptAttribute = DecryptAttribute;
         }
-
-        /// <summary>
-        /// Specifies the key name to store
-        /// </summary>
-        public string KeyName { get; init; }
 
         /// <summary>
         /// Key slot to use, if the device class needs to use specific number, update it in the result
@@ -158,26 +243,6 @@ namespace XFS4IoTFramework.KeyManagement
         /// Key data to load
         /// </summary>
         public List<byte> KeyData { get; init; }
-
-        /// <summary>
-        /// Key usage to load
-        /// </summary>
-        public string KeyUsage { get; init; }
-
-        /// <summary>
-        /// Algorithm associated with key usage
-        /// </summary>
-        public string Algorithm { get; init; }
-
-        /// <summary>
-        /// Mode of use associated with the Algorithm
-        /// </summary>
-        public string ModeOfUse { get; init; }
-
-        /// <summary>
-        /// Restricted key usage
-        /// </summary>
-        public string RestrictedKeyUsage { get; init; }
 
         /// <summary>
         /// Verify data if it's requested
@@ -192,80 +257,6 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class ImportKeyResult : DeviceResult
     {
-        public sealed class LoadedKeyInformation
-        {
-            public LoadedKeyInformation(string KeyVersionNumber,
-                                        string Exportability,
-                                        int KeyLength,
-                                        List<byte> OptionalKeyBlockHeader,
-                                        int? Generation = null,
-                                        DateTime? ActivatingDate = null,
-                                        DateTime? ExpiryDate = null,
-                                        int? Version = null)
-            {
-                this.KeyVersionNumber = KeyVersionNumber;
-
-                Regex.IsMatch(Exportability, KeyDetail.regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
-                this.Exportability = Exportability;
-
-                this.KeyLength = KeyLength;
-                this.OptionalKeyBlockHeader = OptionalKeyBlockHeader;
-
-                this.Generation = Generation;
-                this.ActivatingDate = ActivatingDate;
-                this.ExpiryDate = ExpiryDate;
-                this.Version = Version;
-            }
-
-            /// <summary>
-            /// Specifies a two-digit ASCII character version number, which is optionally used to indicate that contents 
-            /// of the key block are a component, or to prevent re-injection of old keys.
-            /// See [Reference 35. ANS X9 TR-31 2018] for all possible values.
-            /// </summary>
-            public string KeyVersionNumber { get; init; }
-
-            /// <summary>
-            /// Specifies whether the key may be transferred outside of the cryptographic domain in which the key is found.
-            /// See[Reference 35.ANS X9 TR - 31 2018] for all possible values.
-            /// </summary>
-            public string Exportability { get; init; }
-
-
-            /// <summary>
-            /// Specifies the length, in bits, of the key. 0 if the key length is unknown.
-            /// </summary>
-            public int KeyLength { get; init; }
-
-            /// <summary>
-            /// Contains any optional header blocks, as defined in [Reference 35. ANS X9 TR-31 2018].
-            /// This value can be omitted if there are no optional block headers.
-            /// </summary>
-            public List<byte> OptionalKeyBlockHeader { get; init; }
-
-            /// <summary>
-            /// Specifies the generation of the key.
-            /// Different generations might correspond to different environments(e.g.test or production environment).
-            /// The content is vendor specific.
-            /// </summary>
-            public int? Generation { get; init; }
-
-            /// <summary>
-            /// Specifies the date when the key is activated in the format YYYYMMDD.
-            /// </summary>
-            public DateTime? ActivatingDate { get; init; }
-
-            /// <summary>
-            /// Specifies the date when the key expires in the format YYYYMMDD.
-            /// </summary>
-            public DateTime? ExpiryDate { get; init; }
-
-            /// <summary>
-            /// Specifies the version of the key (the year in which the key is valid, e.g. 1 for 2001).
-            /// This value can be omitted if no such information is available for the key.
-            /// </summary>
-            public int? Version { get; init; }
-        }
-
         public sealed class VerifyAttributeClass
         {
             public VerifyAttributeClass(string KeyUsage,
@@ -300,12 +291,14 @@ namespace XFS4IoTFramework.KeyManagement
         {
             this.ErrorCode = ErrorCode;
             this.VerificationData = null;
+            this.KeyLength = 0;
         }
 
         public ImportKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               LoadedKeyInformation KeyInformation,
+                               KeyInformationBase KeyInformation,
                                List<byte> VerificationData,
                                VerifyAttributeClass VerifyAttribute,
+                               int KeyLength,
                                int? UpdatedKeySlot = null)
             : base(CompletionCode, null)
         {
@@ -313,6 +306,7 @@ namespace XFS4IoTFramework.KeyManagement
             this.KeyInformation = KeyInformation;
             this.VerificationData = VerificationData;
             this.VerifyAttribute = VerifyAttribute;
+            this.KeyLength = KeyLength;
             this.UpdatedKeySlot = UpdatedKeySlot;
         }
 
@@ -327,7 +321,7 @@ namespace XFS4IoTFramework.KeyManagement
         /// <summary>
         /// Store key information loaded by the device class
         /// </summary>
-        public LoadedKeyInformation KeyInformation { get; init; }
+        public KeyInformationBase KeyInformation { get; init; }
 
         /// <summary>
         /// This parameter specifies the encryption algorithm, cryptographic method, and mode used to verify this command
@@ -338,6 +332,11 @@ namespace XFS4IoTFramework.KeyManagement
         /// Verify attribute
         /// </summary>
         public VerifyAttributeClass VerifyAttribute { get; init; }
+
+        /// <summary>
+        /// Specifies the length, in bits, of the key. 0 if the key length is unknown.
+        /// </summary>
+        public int KeyLength { get; init; }
     }
 
     public sealed class InitializationRequest
@@ -542,35 +541,25 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class DeriveKeyResult : DeviceResult
     {
-        public sealed class LoadedKeyInformation
+        public sealed class LoadedKeyInformation : KeyInformationBase
         {
             public LoadedKeyInformation(string KeyUsage,
                                         string Algorithm,
                                         string ModeOfUse,
+                                        int KeyLength,
                                         string KeyVersionNumber,
                                         string Exportability,
-                                        int KeyLength,
                                         List<byte> OptionalKeyBlockHeader,
                                         int? Generation = null,
                                         DateTime? ActivatingDate = null,
                                         DateTime? ExpiryDate = null,
                                         int? Version = null)
+                : base(KeyVersionNumber, Exportability, OptionalKeyBlockHeader, Generation, ActivatingDate, ExpiryDate, Version)
             {
                 this.KeyUsage = KeyUsage;
                 this.Algorithm = Algorithm;
                 this.ModeOfUse = ModeOfUse;
-                this.KeyVersionNumber = KeyVersionNumber;
-
-                Regex.IsMatch(Exportability, KeyDetail.regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
-                this.Exportability = Exportability;
-
                 this.KeyLength = KeyLength;
-                this.OptionalKeyBlockHeader = OptionalKeyBlockHeader;
-
-                this.Generation = Generation;
-                this.ActivatingDate = ActivatingDate;
-                this.ExpiryDate = ExpiryDate;
-                this.Version = Version;
             }
 
             /// <summary>
@@ -589,52 +578,9 @@ namespace XFS4IoTFramework.KeyManagement
             public string ModeOfUse { get; init; }
 
             /// <summary>
-            /// Specifies a two-digit ASCII character version number, which is optionally used to indicate that contents 
-            /// of the key block are a component, or to prevent re-injection of old keys.
-            /// See [Reference 35. ANS X9 TR-31 2018] for all possible values.
-            /// </summary>
-            public string KeyVersionNumber { get; init; }
-
-            /// <summary>
-            /// Specifies whether the key may be transferred outside of the cryptographic domain in which the key is found.
-            /// See[Reference 35.ANS X9 TR - 31 2018] for all possible values.
-            /// </summary>
-            public string Exportability { get; init; }
-
-
-            /// <summary>
             /// Specifies the length, in bits, of the key. 0 if the key length is unknown.
             /// </summary>
             public int KeyLength { get; init; }
-
-            /// <summary>
-            /// Contains any optional header blocks, as defined in [Reference 35. ANS X9 TR-31 2018].
-            /// This value can be omitted if there are no optional block headers.
-            /// </summary>
-            public List<byte> OptionalKeyBlockHeader { get; init; }
-
-            /// <summary>
-            /// Specifies the generation of the key.
-            /// Different generations might correspond to different environments(e.g.test or production environment).
-            /// The content is vendor specific.
-            /// </summary>
-            public int? Generation { get; init; }
-
-            /// <summary>
-            /// Specifies the date when the key is activated in the format YYYYMMDD.
-            /// </summary>
-            public DateTime? ActivatingDate { get; init; }
-
-            /// <summary>
-            /// Specifies the date when the key expires in the format YYYYMMDD.
-            /// </summary>
-            public DateTime? ExpiryDate { get; init; }
-
-            /// <summary>
-            /// Specifies the version of the key (the year in which the key is valid, e.g. 1 for 2001).
-            /// This value can be omitted if no such information is available for the key.
-            /// </summary>
-            public int? Version { get; init; }
         }
 
         public DeriveKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
@@ -876,35 +822,25 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class GenerateRSAKeyPairResult : DeviceResult
     {
-        public sealed class LoadedKeyInformation
+        public sealed class LoadedKeyInformation : KeyInformationBase
         {
             public LoadedKeyInformation(string KeyUsage,
                                         string Algorithm,
                                         string ModeOfUse,
+                                        int KeyLength,
                                         string KeyVersionNumber,
                                         string Exportability,
-                                        int KeyLength,
                                         List<byte> OptionalKeyBlockHeader,
                                         int? Generation = null,
                                         DateTime? ActivatingDate = null,
                                         DateTime? ExpiryDate = null,
-                                        int? Version = null)
+                                        int? Version = null) 
+                : base(KeyVersionNumber, Exportability, OptionalKeyBlockHeader, Generation, ActivatingDate, ExpiryDate, Version)
             {
                 this.KeyUsage = KeyUsage;
                 this.Algorithm = Algorithm;
                 this.ModeOfUse = ModeOfUse;
-                this.KeyVersionNumber = KeyVersionNumber;
-
-                Regex.IsMatch(Exportability, KeyDetail.regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
-                this.Exportability = Exportability;
-
                 this.KeyLength = KeyLength;
-                this.OptionalKeyBlockHeader = OptionalKeyBlockHeader;
-
-                this.Generation = Generation;
-                this.ActivatingDate = ActivatingDate;
-                this.ExpiryDate = ExpiryDate;
-                this.Version = Version;
             }
 
             /// <summary>
@@ -929,52 +865,9 @@ namespace XFS4IoTFramework.KeyManagement
             public string ModeOfUse { get; init; }
 
             /// <summary>
-            /// Specifies a two-digit ASCII character version number, which is optionally used to indicate that contents 
-            /// of the key block are a component, or to prevent re-injection of old keys.
-            /// See [Reference 35. ANS X9 TR-31 2018] for all possible values.
-            /// </summary>
-            public string KeyVersionNumber { get; init; }
-
-            /// <summary>
-            /// Specifies whether the key may be transferred outside of the cryptographic domain in which the key is found.
-            /// See[Reference 35.ANS X9 TR - 31 2018] for all possible values.
-            /// </summary>
-            public string Exportability { get; init; }
-
-
-            /// <summary>
             /// Specifies the length, in bits, of the key. 0 if the key length is unknown.
             /// </summary>
             public int KeyLength { get; init; }
-
-            /// <summary>
-            /// Contains any optional header blocks, as defined in [Reference 35. ANS X9 TR-31 2018].
-            /// This value can be omitted if there are no optional block headers.
-            /// </summary>
-            public List<byte> OptionalKeyBlockHeader { get; init; }
-
-            /// <summary>
-            /// Specifies the generation of the key.
-            /// Different generations might correspond to different environments(e.g.test or production environment).
-            /// The content is vendor specific.
-            /// </summary>
-            public int? Generation { get; init; }
-
-            /// <summary>
-            /// Specifies the date when the key is activated in the format YYYYMMDD.
-            /// </summary>
-            public DateTime? ActivatingDate { get; init; }
-
-            /// <summary>
-            /// Specifies the date when the key expires in the format YYYYMMDD.
-            /// </summary>
-            public DateTime? ExpiryDate { get; init; }
-
-            /// <summary>
-            /// Specifies the version of the key (the year in which the key is valid, e.g. 1 for 2001).
-            /// This value can be omitted if no such information is available for the key.
-            /// </summary>
-            public int? Version { get; init; }
         }
 
         public GenerateRSAKeyPairResult(MessagePayload.CompletionCodeEnum CompletionCode,

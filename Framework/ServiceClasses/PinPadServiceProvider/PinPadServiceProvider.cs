@@ -104,41 +104,33 @@ namespace XFS4IoTServer
                            string KeyUsage,
                            string Algorithm,
                            string ModeOfUse,
+                           int KeyLength,
+                           KeyDetail.KeyStatusEnum KeyStatus,
+                           bool Preloaded,
                            string RestrictedKeyUsage,
                            string KeyVersionNumber,
                            string Exportability,
-                           KeyDetail.KeyStatusEnum KeyStatus,
-                           bool Preloaded,
-                           int KeyLength,
                            List<byte> OptionalKeyBlockHeader,
                            int? Generation,
                            DateTime? ActivatingDate,
                            DateTime? ExpiryDate,
-                           int? Version) => KeyManagementService.AddKey(KeyName,
-                                                                        KeySlot,
-                                                                        KeyUsage,
-                                                                        Algorithm,
-                                                                        ModeOfUse,
-                                                                        RestrictedKeyUsage,
-                                                                        KeyVersionNumber,
-                                                                        Exportability,
-                                                                        KeyStatus,
-                                                                        Preloaded,
-                                                                        KeyLength,
-                                                                        OptionalKeyBlockHeader,
-                                                                        Generation,
-                                                                        ActivatingDate,
-                                                                        ExpiryDate,
-                                                                        Version);
+                           int? Version) => throw new NotSupportedException("The AddKey method is not supported in the PinPad ServiceProvider.");
 
         /// <summary>
         /// Delete specified key from the collection and return key slot
         /// </summary>
-        public void DeleteKey(string KeyName) => KeyManagementService.DeleteKey(KeyName);
+        public void DeleteKey(string KeyName) => throw new NotSupportedException("The DeleteKey method is not supported in the PinPad ServiceProvider.");
 
         /// <summary>
         /// Update key status
         /// </summary>
-        public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => KeyManagementService.UpdateKeyStatus(KeyName, Status);
+        public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => throw new NotSupportedException("The UpdateKeyStatus method is not supported in the PinPad ServiceProvider.");
+
+        /// <summary>
+        /// Return secure key entry component status
+        /// The device specified class reset current status if the stored key components are claered except successful Initialization command.
+        /// </summary>
+        /// <returns></returns>
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
     }
 }

@@ -39,17 +39,17 @@ namespace XFS4IoTServer
                     string KeyUsage,
                     string Algorithm,
                     string ModeOfUse,
-                    string RestrictedKeyUsage,
-                    string KeyVersionNumber,
-                    string Exportability,
-                    KeyDetail.KeyStatusEnum KeyStatus,
-                    bool Preloaded,
                     int KeyLength,
-                    List<byte> OptionalKeyBlockHeader,
-                    int? Generation,
-                    DateTime? ActivatingDate,
-                    DateTime? ExpiryDate,
-                    int? Version);
+                    KeyDetail.KeyStatusEnum KeyStatus,
+                    bool Preloaded = false,
+                    string RestrictedKeyUsage = null,
+                    string KeyVersionNumber = null,
+                    string Exportability = null,
+                    List<byte> OptionalKeyBlockHeader = null,
+                    int? Generation = null,
+                    DateTime? ActivatingDate = null,
+                    DateTime? ExpiryDate = null,
+                    int? Version = null);
 
 
         /// <summary>
@@ -61,6 +61,13 @@ namespace XFS4IoTServer
         /// Update key status
         /// </summary>
         void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status);
+
+
+        /// <summary>
+        /// Return secure key entry component status
+        /// </summary>
+        /// <returns></returns>
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus();
     }
 
     public interface IKeyManagementServiceClass : IKeyManagementService, IKeyManagementUnsolicitedEvents

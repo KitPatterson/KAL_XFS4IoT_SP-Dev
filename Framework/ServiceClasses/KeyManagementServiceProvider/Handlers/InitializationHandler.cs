@@ -49,6 +49,8 @@ namespace XFS4IoTFramework.KeyManagement
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {
+                KeyManagement.GetSecureKeyEntryStatus().Reset();
+
                 // Delete internal key information
                 if (string.IsNullOrEmpty(initialization.Payload.Key))
                 {

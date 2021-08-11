@@ -3,8 +3,6 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT KeyManagement interface.
- * ExportRSAIssuerSignedItemHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
@@ -20,17 +18,10 @@ namespace XFS4IoTFramework.KeyManagement
 {
     public partial class ExportRSAIssuerSignedItemHandler
     {
-
         private Task<ExportRSAIssuerSignedItemCompletion.PayloadData> HandleExportRSAIssuerSignedItem(IExportRSAIssuerSignedItemEvents events, ExportRSAIssuerSignedItemCommand exportRSAIssuerSignedItem, CancellationToken cancel)
         {
-            //ToDo: Implement HandleExportRSAIssuerSignedItem for KeyManagement.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleExportRSAIssuerSignedItem for KeyManagement is not implemented in ExportRSAIssuerSignedItemHandler.cs");
-            #else
-                #error HandleExportRSAIssuerSignedItem for KeyManagement is not implemented in ExportRSAIssuerSignedItemHandler.cs
-            #endif
+            /// TODO: This command to be deleted from YAML
+            throw new NotImplementedException("HandleExportRSAIssuerSignedItem for KeyManagement is not implemented in ExportRSAIssuerSignedItemHandler.cs");
         }
-
     }
 }

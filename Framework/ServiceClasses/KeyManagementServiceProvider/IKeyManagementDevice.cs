@@ -18,10 +18,17 @@ namespace XFS4IoTFramework.KeyManagement
     public interface IKeyManagementDevice : IDevice
     {
         /// <summary>
-        /// Importing key components temporally while in secure key loading process 
+        /// Importing key components temporarily while in secure key loading process 
         /// </summary>
         Task<ImportKeyResult> ImportKeyPart(ImportKeyPartRequest request,
                                             CancellationToken cancellation);
+
+
+        /// <summary>
+        /// Last part of loading key components stored temporarily in secure key buffer into the EPP
+        /// </summary>
+        Task<ImportKeyResult>  AssemblyKeyParts(AssemblyKeyPartsRequest request,
+                                                CancellationToken cancellation);
 
         /// <summary>
         /// The encryption key passed by the application is loaded in the encryption module. 
@@ -148,6 +155,7 @@ namespace XFS4IoTFramework.KeyManagement
         Task<ImportCertificateResult> ImportCertificate(ImportCertificateRequest request,
                                                         CancellationToken cancellation);
 
+        
         /// <summary>
         /// This command is used to retrieve the data that needs to be signed and hence provided to the Authenticate command in order to perform an authenticated action on the device.
         /// If this command returns data to be signed then the Authenticate command must be used to call the command referenced by the payload.

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text.RegularExpressions;
+using XFS4IoT;
 using XFS4IoT.KeyManagement.Commands;
 using XFS4IoT.KeyManagement.Completions;
 using XFS4IoT.Completions;
@@ -109,14 +110,60 @@ namespace XFS4IoTFramework.KeyManagement
                                                            ImportKeyCompletion.PayloadData.ErrorCodeEnum.ModeNotSupported);
             }
 
+            int keySlot = KeyManagement.FindKeySlot(importKey.Payload.Key);
+            SecureKeyEntryStatusClass secureKeyEntryStatus = KeyManagement.GetSecureKeyEntryStatus();
+            bool assemblyParts;
+
             if (importKey.Payload.Constructing is not null &&
                 (bool)importKey.Payload.Constructing)
             {
-                int importPartKeySlot = KeyManagement.FindKeySlot(importKey.Payload.Key);
+                if (!KeyManagement.KeyManagementCapabilities.KeyImportThroughParts)
+                {
+                    return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                               $"The constructing property is enabled, but the device doesn't support secure key entry.");
+                }
+
+                if (!secureKeyEntryStatus.KeyBuffered)
+                {
+                    return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                               $"There are not key component buffered.",
+                                                               ImportKeyCompletion.PayloadData.ErrorCodeEnum.KeyNoValue);
+                }
+
+                if (!string.IsNullOrEmpty(importKey.Payload.Value))
+                {
+                    Logger.Warning(Constants.Framework, "Key value is set to buffer key components. the key data is ignored.");
+                }
+
+                int componentNumber;
+                Dictionary<SecureKeyEntryStatusClass.KeyPartEnum, KeyComponentStatus> keyStatus = secureKeyEntryStatus.GetKeyStatus();
+                if (!keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].Stored)
+                {
+                    keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].Stored.IsFalse($"First part of key is not loaded, but the second part of key flag is enabled.");
+                    componentNumber = (int)SecureKeyEntryStatusClass.KeyPartEnum.First;
+                }
+                else
+                {
+                    // first part of key component is already loaded
+                    if (keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.Second].Stored)
+                    {
+                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"Both 2 parts of key components already stored.");
+                    }
+
+                    if (keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].KeyName != importKey.Payload.Key)
+                    {
+                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"Invalid key name specified. first part stored {keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].KeyName}, attempt to load {importKey.Payload.Key}");
+                    }
+
+                    componentNumber = (int)SecureKeyEntryStatusClass.KeyPartEnum.Second;
+                }
+
                 Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKeyPart()");
 
                 var importKeyPartResult = await Device.ImportKeyPart(new ImportKeyPartRequest(importKey.Payload.Key,
-                                                                                              importPartKeySlot,
+                                                                                              componentNumber,
                                                                                               importKey.Payload.KeyAttributes.KeyUsage,
                                                                                               importKey.Payload.KeyAttributes.Algorithm,
                                                                                               importKey.Payload.KeyAttributes.ModeOfUse,
@@ -128,9 +175,21 @@ namespace XFS4IoTFramework.KeyManagement
                 Dictionary<string, Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>>> verifyAttribute = null;
                 if (importKeyPartResult.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
                 {
+                    secureKeyEntryStatus.KeyPartLoaded((SecureKeyEntryStatusClass.KeyPartEnum)componentNumber, importKey.Payload.Key);
+                    // Successfully loaded and add key information managing internally
+                    KeyManagement.AddKey(importKey.Payload.Key,
+                                         keySlot,
+                                         importKey.Payload.KeyAttributes.KeyUsage,
+                                         importKey.Payload.KeyAttributes.Algorithm,
+                                         importKey.Payload.KeyAttributes.ModeOfUse,
+                                         importKeyPartResult.KeyLength,
+                                         KeyDetail.KeyStatusEnum.Construct,
+                                         false,
+                                         importKey.Payload.KeyAttributes.Restricted);
+
                     if (importKeyPartResult.VerifyAttribute is not null)
                     {
-                        ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttributes = new ImportKeyCompletion.PayloadData.VerifyAttributesClass(
+                        ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttributes = new(
                             new ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodClass(importKeyPartResult.VerifyAttribute.VerifyMethod.CryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVNone) ? true : null,
                                                                                                         importKeyPartResult.VerifyAttribute.VerifyMethod.CryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVSelf) ? true : null,
                                                                                                         importKeyPartResult.VerifyAttribute.VerifyMethod.CryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVZero) ? true : null,
@@ -147,23 +206,6 @@ namespace XFS4IoTFramework.KeyManagement
                         verifyAttribute = new();
                         verifyAttribute.Add(importKey.Payload.KeyAttributes.KeyUsage, algorithmAttrib);
                     }
-                    // Successfully loaded and add key information managing internally
-                    KeyManagement.AddKey(importKey.Payload.Key,
-                                         importKeyPartResult.UpdatedKeySlot is null ? importPartKeySlot : (int)importKeyPartResult.UpdatedKeySlot,
-                                         importKey.Payload.KeyAttributes.KeyUsage,
-                                         importKey.Payload.KeyAttributes.Algorithm,
-                                         importKey.Payload.KeyAttributes.ModeOfUse,
-                                         importKey.Payload.KeyAttributes.Restricted,
-                                         importKeyPartResult.KeyInformation?.KeyVersionNumber,
-                                         importKeyPartResult.KeyInformation?.Exportability,
-                                         KeyDetail.KeyStatusEnum.Construct,
-                                         false,
-                                         importKeyPartResult.KeyInformation is null ? 0 : importKeyPartResult.KeyInformation.KeyLength,
-                                         importKeyPartResult.KeyInformation?.OptionalKeyBlockHeader,
-                                         importKeyPartResult.KeyInformation?.Generation,
-                                         importKeyPartResult.KeyInformation?.ActivatingDate,
-                                         importKeyPartResult.KeyInformation?.ExpiryDate,
-                                         importKeyPartResult.KeyInformation?.Version);
                 }
 
                 return new ImportKeyCompletion.PayloadData(importKeyPartResult.CompletionCode,
@@ -171,7 +213,46 @@ namespace XFS4IoTFramework.KeyManagement
                                                            importKeyPartResult.ErrorCode,
                                                            importKeyPartResult.VerificationData is not null && importKeyPartResult.VerificationData.Count > 0 ? Convert.ToBase64String(importKeyPartResult.VerificationData.ToArray()) : null,
                                                            verifyAttribute,
-                                                           importKeyPartResult.KeyInformation?.KeyLength);
+                                                           importKeyPartResult.KeyLength);
+            }
+            else
+            {
+                Dictionary<SecureKeyEntryStatusClass.KeyPartEnum, KeyComponentStatus> keyStatus = secureKeyEntryStatus.GetKeyStatus();
+                assemblyParts = (keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].Stored && keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.Second].Stored);
+                
+                if (assemblyParts)
+                {
+                    if (!string.IsNullOrEmpty(importKey.Payload.Value))
+                    {
+                        Logger.Warning(Constants.Framework, "Key value is set for assembly buffered key components. the key data is ignored.");
+                    }
+
+                    Contracts.Assert(keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].KeyName == keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.Second].KeyName, $"Stored key component name should be identical. {keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].KeyName}, {keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.Second].KeyName}");
+
+
+                    if (keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].KeyName != importKey.Payload.Key)
+                    {
+                        // Some of firmware allows to load different encryption key while secure key components are already loaded, however the SP framework returns error.
+                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.SequenceError,
+                                                                   $"Invalid sequence for importing encryption key as the secure key entry process is enabled. the key name preserved for the key components different on assemblying key components.");
+                    }
+                }
+                else
+                {
+                    if (keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.First].Stored ||
+                        keyStatus[SecureKeyEntryStatusClass.KeyPartEnum.Second].Stored)
+                    {
+                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.SequenceError,
+                                                                   $"Invalid sequence for importing encryption key as the secure key entry process is enabled.");
+                    }
+
+                    if (string.IsNullOrEmpty(importKey.Payload.Value))
+                    {
+                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"No key value specified. {importKey.Payload.Key}");
+                    }
+
+                }
             }
 
             if (!string.IsNullOrEmpty(importKey.Payload.DecryptKey))
@@ -328,23 +409,42 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
-            int keySlot = KeyManagement.FindKeySlot(importKey.Payload.Key);
-            Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKey()");
+            ImportKeyResult result;
+            if (assemblyParts)
+            {
+                Logger.Log(Constants.DeviceClass, "KeyManagement.AssemblyKeyParts()");
 
-            var result = await Device.ImportKey(new ImportKeyRequest(importKey.Payload.Key,
+                result = await Device.AssemblyKeyParts(new AssemblyKeyPartsRequest(importKey.Payload.Key,
+                                                                                   keySlot,
+                                                                                   importKey.Payload.KeyAttributes.KeyUsage,
+                                                                                   importKey.Payload.KeyAttributes.Algorithm,
+                                                                                   importKey.Payload.KeyAttributes.ModeOfUse,
+                                                                                   importKey.Payload.KeyAttributes.Restricted),
+                                                       cancel);
+
+                Logger.Log(Constants.DeviceClass, $"KeyManagement.AssemblyKeyParts() -> {result.CompletionCode}, {result.ErrorCode}");
+            }
+            else
+            {
+                Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKey()");
+
+                result = await Device.ImportKey(new ImportKeyRequest(importKey.Payload.Key,
                                                                      keySlot,
-                                                                     !string.IsNullOrEmpty(importKey.Payload.Value) ? null : Convert.FromBase64String(importKey.Payload.Value).ToList(),
+                                                                     Convert.FromBase64String(importKey.Payload.Value).ToList(),
                                                                      importKey.Payload.KeyAttributes.KeyUsage,
                                                                      importKey.Payload.KeyAttributes.Algorithm,
                                                                      importKey.Payload.KeyAttributes.ModeOfUse,
                                                                      importKey.Payload.KeyAttributes.Restricted),
                                                 cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
+            }
 
             Dictionary<string, Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>>> importKeyVerifyAttib = null;
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {
+                secureKeyEntryStatus.Reset();
+
                 if (result.VerifyAttribute is not null)
                 {
                     ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttributes = new (
@@ -371,12 +471,12 @@ namespace XFS4IoTFramework.KeyManagement
                                      importKey.Payload.KeyAttributes.KeyUsage,
                                      importKey.Payload.KeyAttributes.Algorithm,
                                      importKey.Payload.KeyAttributes.ModeOfUse,
+                                     result.KeyLength,
+                                     KeyDetail.KeyStatusEnum.Loaded,
+                                     false,
                                      importKey.Payload.KeyAttributes.Restricted,
                                      result.KeyInformation?.KeyVersionNumber,
                                      result.KeyInformation?.Exportability,
-                                     KeyDetail.KeyStatusEnum.Loaded,
-                                     false,
-                                     result.KeyInformation is null ? 0 : result.KeyInformation.KeyLength,
                                      result.KeyInformation?.OptionalKeyBlockHeader,
                                      result.KeyInformation?.Generation,
                                      result.KeyInformation?.ActivatingDate,
@@ -389,7 +489,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                        result.ErrorCode,
                                                        result.VerificationData is not null && result.VerificationData.Count > 0 ? Convert.ToBase64String(result.VerificationData.ToArray()) : null,
                                                        importKeyVerifyAttib,
-                                                       result.KeyInformation?.KeyLength);
+                                                       result.KeyLength);
         }
     }
 }

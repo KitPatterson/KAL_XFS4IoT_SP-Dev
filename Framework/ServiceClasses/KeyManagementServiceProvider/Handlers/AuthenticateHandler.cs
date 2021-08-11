@@ -20,6 +20,7 @@ namespace XFS4IoTFramework.KeyManagement
     {
         private Task<AuthenticateCompletion.PayloadData> HandleAuthenticate(IAuthenticateEvents events, AuthenticateCommand authenticate, CancellationToken cancel)
         {
+            /// TODO: This command to be deleted from YAML
             throw new NotImplementedException("HandleStartAuthenticate for KeyManagement is not implemented in StartAuthenticateHandler.cs");
         }
     }

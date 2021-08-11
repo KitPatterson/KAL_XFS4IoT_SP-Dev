@@ -95,12 +95,12 @@ namespace XFS4IoTServer
                            string KeyUsage,
                            string Algorithm,
                            string ModeOfUse,
+                           int KeyLength,
+                           KeyDetail.KeyStatusEnum KeyStatus,
+                           bool Preloaded,
                            string RestrictedKeyUsage,
                            string KeyVersionNumber,
                            string Exportability,
-                           KeyDetail.KeyStatusEnum KeyStatus,
-                           bool Preloaded,
-                           int KeyLength,
                            List<byte> OptionalKeyBlockHeader,
                            int? Generation,
                            DateTime? ActivatingDate,
@@ -112,12 +112,12 @@ namespace XFS4IoTServer
                                                   KeyUsage,
                                                   Algorithm,
                                                   ModeOfUse,
+                                                  KeyLength,
+                                                  KeyStatus,
+                                                  Preloaded,
                                                   RestrictedKeyUsage,
                                                   KeyVersionNumber,
                                                   Exportability,
-                                                  KeyStatus,
-                                                  Preloaded,
-                                                  KeyLength,
                                                   OptionalKeyBlockHeader,
                                                   Generation,
                                                   ActivatingDate,
@@ -157,12 +157,12 @@ namespace XFS4IoTServer
                                                   keyDetail.KeyUsage,
                                                   keyDetail.Algorithm,
                                                   keyDetail.ModeOfUse,
+                                                  keyDetail.KeyLength,
+                                                  Status,
+                                                  keyDetail.Preloaded,
                                                   keyDetail.RestrictedKeyUsage,
                                                   keyDetail.KeyVersionNumber,
                                                   keyDetail.Exportability,
-                                                  Status,
-                                                  keyDetail.Preloaded,
-                                                  keyDetail.KeyLength,
                                                   keyDetail.OptionalKeyBlockHeader,
                                                   keyDetail.Generation,
                                                   keyDetail.ActivatingDate,
@@ -171,5 +171,14 @@ namespace XFS4IoTServer
 
             PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(Dictionary<string, KeyDetail>).FullName, KeyDetails);
         }
+
+        private readonly SecureKeyEntryStatusClass SecureKeyEntryStatus = new();
+
+        /// <summary>
+        /// Return secure key entry component status
+        /// The device specified class reset current status if the stored key components are claered except successful Initialization command.
+        /// </summary>
+        /// <returns></returns>
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => SecureKeyEntryStatus;
     }
 }

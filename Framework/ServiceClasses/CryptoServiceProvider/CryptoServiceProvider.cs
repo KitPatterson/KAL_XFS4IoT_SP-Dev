@@ -103,12 +103,12 @@ namespace XFS4IoTServer
                            string KeyUsage,
                            string Algorithm,
                            string ModeOfUse,
+                           int KeyLength,
+                           KeyDetail.KeyStatusEnum KeyStatus,
+                           bool Preloaded,
                            string RestrictedKeyUsage,
                            string KeyVersionNumber,
                            string Exportability,
-                           KeyDetail.KeyStatusEnum KeyStatus,
-                           bool Preloaded,
-                           int KeyLength,
                            List<byte> OptionalKeyBlockHeader,
                            int? Generation,
                            DateTime? ActivatingDate,
@@ -124,5 +124,11 @@ namespace XFS4IoTServer
         /// Update key status
         /// </summary>
         public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => throw new NotSupportedException("The UpdateKeyStatus method is not supported in the Crypto ServiceProvider.");
+
+        /// <summary>
+        /// Return secure key entry component status
+        /// </summary>
+        /// <returns></returns>
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => throw new NotSupportedException("The GetSecureKeyEntryStatus method is not supported in the Crypto ServiceProvider.");
     }
 }
