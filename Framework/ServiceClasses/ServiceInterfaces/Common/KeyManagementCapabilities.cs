@@ -431,13 +431,12 @@ namespace XFS4IoTFramework.Common
                 SHA256 = 0x0002,
             }
 
-            public VerifyMethodClass(CryptoMethodEnum CryptoMethod, HashAlgorithmEnum HashAlgorithm)
+            public VerifyMethodClass(CryptoMethodEnum CryptoMethod, HashAlgorithmEnum HashAlgorithm = HashAlgorithmEnum.NotSupported)
             {
                 this.CryptoMethod = CryptoMethod;
                 this.HashAlgorithm = HashAlgorithm;
             }
 
-            
             /// <summary>
             /// This parameter specifies the cryptographic method that will be used with encryption algorithm.
             /// 

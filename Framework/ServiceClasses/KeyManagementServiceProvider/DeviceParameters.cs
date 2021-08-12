@@ -30,9 +30,9 @@ namespace XFS4IoTFramework.KeyManagement
 
     public class KeyInformationBase
     {
-        public KeyInformationBase(string KeyVersionNumber,
-                                  string Exportability,
-                                  List<byte> OptionalKeyBlockHeader,
+        public KeyInformationBase(string KeyVersionNumber = null,
+                                  string Exportability = null,
+                                  List<byte> OptionalKeyBlockHeader = null,
                                   int? Generation = null,
                                   DateTime? ActivatingDate = null,
                                   DateTime? ExpiryDate = null,
@@ -285,8 +285,8 @@ namespace XFS4IoTFramework.KeyManagement
         }
 
         public ImportKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               string ErrorDescription,
-                               ImportKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                               string ErrorDescription = null,
+                               ImportKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -362,8 +362,8 @@ namespace XFS4IoTFramework.KeyManagement
     public sealed class InitializationResult : DeviceResult
     {
         public InitializationResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                    string ErrorDescription,
-                                    InitializationCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                    string ErrorDescription = null,
+                                    InitializationCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -427,8 +427,8 @@ namespace XFS4IoTFramework.KeyManagement
     public sealed class GenerateKCVResult : DeviceResult
     {
         public GenerateKCVResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                    string ErrorDescription,
-                                    GenerateKCVCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                    string ErrorDescription = null,
+                                    GenerateKCVCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -584,8 +584,8 @@ namespace XFS4IoTFramework.KeyManagement
         }
 
         public DeriveKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                               string ErrorDescription,
-                               DeriveKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                               string ErrorDescription = null,
+                               DeriveKeyCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -670,25 +670,25 @@ namespace XFS4IoTFramework.KeyManagement
     {
 
         public RSASignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                   string ErrorDescription,
-                                   ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                   string ErrorDescription = null,
+                                   ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
             this.Data = null;
-            this.SelfSelfSignature = null;
+            this.SelfSignature = null;
             this.Signature = null;
         }
 
         public RSASignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                    List<byte> Data,
-                                   List<byte> SelfSelfSignature,
-                                   List<byte> Signature)
+                                   List<byte> Signature = null,
+                                   List<byte> SelfSignature = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
             this.Data = Data;
-            this.SelfSelfSignature = SelfSelfSignature;
+            this.SelfSignature = SelfSignature;
             this.Signature = Signature;
         }
 
@@ -703,7 +703,7 @@ namespace XFS4IoTFramework.KeyManagement
         /// If a public key was requested then this property contains the RSA signature of the public key exported, 
         /// generated with the key-pair’s private component. this property can be null when key Self-Signatures are not supported or required.
         /// </summary>
-        public List<byte> SelfSelfSignature { get; init; }
+        public List<byte> SelfSignature { get; init; }
         
         /// <summary>
         /// Signed signature data
@@ -737,8 +737,8 @@ namespace XFS4IoTFramework.KeyManagement
     {
 
         public ExportCertificateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                       string ErrorDescription,
-                                       GetCertificateCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                       string ErrorDescription = null,
+                                       GetCertificateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -871,8 +871,8 @@ namespace XFS4IoTFramework.KeyManagement
         }
 
         public GenerateRSAKeyPairResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                        string ErrorDescription,
-                                        GenerateRSAKeyPairCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                        string ErrorDescription = null,
+                                        GenerateRSAKeyPairCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -927,8 +927,8 @@ namespace XFS4IoTFramework.KeyManagement
     {
 
         public ReplaceCertificateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                       string ErrorDescription,
-                                       ReplaceCertificateCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                       string ErrorDescription = null,
+                                       ReplaceCertificateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -1002,8 +1002,8 @@ namespace XFS4IoTFramework.KeyManagement
         }
 
         public ImportCertificateResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                       string ErrorDescription,
-                                       LoadCertificateCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                       string ErrorDescription = null,
+                                       LoadCertificateCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -1046,8 +1046,8 @@ namespace XFS4IoTFramework.KeyManagement
         }
 
         public StartKeyExchangeResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                      string ErrorDescription,
-                                      StartKeyExchangeCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                      string ErrorDescription = null,
+                                      StartKeyExchangeCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
