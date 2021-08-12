@@ -87,7 +87,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                     result.ErrorDescription,
                                                                     result.ErrorCode,
                                                                     result.Data is not null && result.Data.Count > 0 ? Convert.ToBase64String(result.Data.ToArray()) : null,
-                                                                    result.SelfSelfSignature is not null && result.SelfSelfSignature.Count > 0 ? Convert.ToBase64String(result.SelfSelfSignature.ToArray()) : null,
+                                                                    result.SelfSignature is not null && result.SelfSignature.Count > 0 ? Convert.ToBase64String(result.SelfSignature.ToArray()) : null,
                                                                     result.Signature is not null && result.Signature.Count > 0 ? Convert.ToBase64String(result.Signature.ToArray()) : null);
         }
     }
