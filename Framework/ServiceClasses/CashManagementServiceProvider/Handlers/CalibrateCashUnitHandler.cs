@@ -81,7 +81,7 @@ namespace XFS4IoTFramework.CashManagement
 
                             if (!CashManagement.CashDispenserCapabilities.RetractAreas[retractArea])
                             {
-                                return new CalibrateCashUnitCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                return new CalibrateCashUnitCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                                    $"Specified unsupported retract area. {retractArea}",
                                                                                    CalibrateCashUnitCompletion.PayloadData.ErrorCodeEnum.InvalidCashUnit);
                             }

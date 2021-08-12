@@ -15,375 +15,9 @@ namespace XFS4IoT.Crypto
 {
 
     [DataContract]
-    public sealed class CryptoAttributeClass
-    {
-        public CryptoAttributeClass(KeyUsageEnum? KeyUsage = null, AlgorithmEnum? Algorithm = null, ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null)
-        {
-            this.KeyUsage = KeyUsage;
-            this.Algorithm = Algorithm;
-            this.ModeOfUse = ModeOfUse;
-            this.CryptoMethod = CryptoMethod;
-        }
-
-        public enum KeyUsageEnum
-        {
-            D0,
-            D1
-        }
-
-        /// <summary>
-        /// Specifies the key usage supported by the [Crypto.CryptoData](#crypto.cryptodata) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```D0``` - Symmetric data encryption.  
-        /// * ```D1``` - Asymmetric data encryption.
-        /// </summary>
-        [DataMember(Name = "keyUsage")]
-        public KeyUsageEnum? KeyUsage { get; init; }
-
-        public enum AlgorithmEnum
-        {
-            A,
-            D,
-            R,
-            T
-        }
-
-        /// <summary>
-        /// Specifies the encryption algorithms supported by [Crypto.CryptoData](#crypto.cryptodata) command.
-        /// The following values are possible:  
-        /// 
-        /// * ```A``` - AES. 
-        /// * ```D``` - DEA. 
-        /// * ```R``` - RSA. 
-        /// * ```T``` - Triple DEA (also referred to as TDEA).
-        /// </summary>
-        [DataMember(Name = "algorithm")]
-        public AlgorithmEnum? Algorithm { get; init; }
-
-        public enum ModeOfUseEnum
-        {
-            D,
-            E
-        }
-
-        /// <summary>
-        /// Specifies the encryption mode supported by [Crypto.CryptoData](#crypto.cryptodata) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```D``` - Decrypt  
-        /// * ```E``` - Encrypt  
-        /// </summary>
-        [DataMember(Name = "modeOfUse")]
-        public ModeOfUseEnum? ModeOfUse { get; init; }
-
-        public enum CryptoMethodEnum
-        {
-            Ecb,
-            Cbc,
-            Cfb,
-            Ofb,
-            Ctr,
-            Xts,
-            RsaesPkcs1V15,
-            RsaesOaep
-        }
-
-        /// <summary>
-        /// Specifies the cryptographic method supported by the [Crypto.CryptoData](#crypto.cryptodata) command.
-        /// For symmetric encryption methods (keyUsage is ‘D0’), this can be one of the following values: 
-        /// 
-        /// * ```ecb``` - The ECB encryption method. 
-        /// * ```cbc``` - The CBC encryption method. 
-        /// * ```cfb``` - The CFB encryption method. 
-        /// * ```ofb``` - The OFB encryption method. 
-        /// * ```ctr``` - The CTR method defined in NIST SP800-38A. 
-        /// * ```xts``` - The XTS method defined in NIST SP800-38E. 
-        /// 
-        /// For asymmetric encryption methods (keyUsage is ‘D1’), this can be one of the following values: 
-        /// 
-        /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm. 
-        /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.
-        /// </summary>
-        [DataMember(Name = "cryptoMethod")]
-        public CryptoMethodEnum? CryptoMethod { get; init; }
-
-    }
-
-
-    [DataContract]
-    public sealed class AuthenticationAttributeClass
-    {
-        public AuthenticationAttributeClass(KeyUsageEnum? KeyUsage = null, AlgorithmEnum? Algorithm = null, ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmClass HashAlgorithm = null)
-        {
-            this.KeyUsage = KeyUsage;
-            this.Algorithm = Algorithm;
-            this.ModeOfUse = ModeOfUse;
-            this.CryptoMethod = CryptoMethod;
-            this.HashAlgorithm = HashAlgorithm;
-        }
-
-        public enum KeyUsageEnum
-        {
-            M0,
-            M1,
-            M2,
-            M3,
-            M4,
-            M5,
-            M6,
-            M7,
-            M8,
-            S0,
-            S1,
-            S2
-        }
-
-        /// <summary>
-        /// Specifies the key usage supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
-        /// The following values are possible:
-        /// 
-        /// * ```M0``` - ISO 16609 MAC Algorithm 1 (using TDEA).
-        /// * ```M1```- ISO 9797-1 MAC Algorithm 1.
-        /// * ```M2``` - ISO 9797-1 MAC Algorithm 2. 
-        /// * ```M3``` - ISO 9797-1 MAC Algorithm 3. 
-        /// * ```M4``` - ISO 9797-1 MAC Algorithm 4. 
-        /// * ```M5``` - ISO 9797-1:1999 MAC Algorithm 5. 
-        /// * ```M6``` - 9797-1:2011 MAC Algorithm 5/CMAC. 
-        /// * ```M7``` - HMAC. 
-        /// * ```M8``` - ISO 9797-1:2011 MAC Algorithm 6. 
-        /// * ```S0``` - Asymmetric key pair for digital signature. 
-        /// * ```S1``` - Asymmetric key pair, CA. 
-        /// * ```S2``` - Asymmetric key pair, nonX9.24 key.
-        /// </summary>
-        [DataMember(Name = "keyUsage")]
-        public KeyUsageEnum? KeyUsage { get; init; }
-
-        public enum AlgorithmEnum
-        {
-            A,
-            D,
-            R,
-            T
-        }
-
-        /// <summary>
-        /// Specifies the encryption algorithms supported by [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```A``` - AES. 
-        /// * ```D``` - DEA. 
-        /// * ```R``` - RSA. 
-        /// * ```T``` - Triple DEA (also referred to as TDEA).
-        /// </summary>
-        [DataMember(Name = "algorithm")]
-        public AlgorithmEnum? Algorithm { get; init; }
-
-        public enum ModeOfUseEnum
-        {
-            G,
-            S
-        }
-
-        /// <summary>
-        /// Specifies the encryption mode supported by [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```G``` - Generate. This be used to generate a MAC. 
-        /// * ```S``` - Signature
-        /// </summary>
-        [DataMember(Name = "modeOfUse")]
-        public ModeOfUseEnum? ModeOfUse { get; init; }
-
-        public enum CryptoMethodEnum
-        {
-            RsassaPkcs1V15,
-            RsassaPss
-        }
-
-        /// <summary>
-        /// Specifies the cryptographic method supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
-        /// For asymmetric signature verification methods (bKeyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values: 
-        /// 
-        /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
-        /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm. 
-        /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then this proeprty should not be not set.
-        /// </summary>
-        [DataMember(Name = "cryptoMethod")]
-        public CryptoMethodEnum? CryptoMethod { get; init; }
-
-        [DataContract]
-        public sealed class HashAlgorithmClass
-        {
-            public HashAlgorithmClass(bool? Sha1 = null, bool? Sha256 = null)
-            {
-                this.Sha1 = Sha1;
-                this.Sha256 = Sha256;
-            }
-
-            /// <summary>
-            /// The SHA 1 digest algorithm.
-            /// </summary>
-            [DataMember(Name = "sha1")]
-            public bool? Sha1 { get; init; }
-
-            /// <summary>
-            /// The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
-            /// </summary>
-            [DataMember(Name = "sha256")]
-            public bool? Sha256 { get; init; }
-
-        }
-
-        /// <summary>
-        /// For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used.
-        /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
-        /// </summary>
-        [DataMember(Name = "hashAlgorithm")]
-        public HashAlgorithmClass HashAlgorithm { get; init; }
-
-    }
-
-
-    [DataContract]
-    public sealed class VerifyAttributeClass
-    {
-        public VerifyAttributeClass(KeyUsageEnum? KeyUsage = null, AlgorithmEnum? Algorithm = null, ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmClass HashAlgorithm = null)
-        {
-            this.KeyUsage = KeyUsage;
-            this.Algorithm = Algorithm;
-            this.ModeOfUse = ModeOfUse;
-            this.CryptoMethod = CryptoMethod;
-            this.HashAlgorithm = HashAlgorithm;
-        }
-
-        public enum KeyUsageEnum
-        {
-            M0,
-            M1,
-            M2,
-            M3,
-            M4,
-            M5,
-            M6,
-            M7,
-            M8,
-            S0,
-            S1,
-            S2
-        }
-
-        /// <summary>
-        /// Specifies the key usage supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```M0``` - ISO 16609 MAC Algorithm 1 (using TDEA).
-        /// * ```M1``` - ISO 9797-1 MAC Algorithm 1. 
-        /// * ```M2``` - ISO 9797-1 MAC Algorithm 2.
-        /// * ```M3``` - ISO 9797-1 MAC Algorithm 3. 
-        /// * ```M4``` - ISO 9797-1 MAC Algorithm 4. 
-        /// * ```M5``` - ISO 9797-1:1999 MAC Algorithm 5. 
-        /// * ```M6``` - 9797-1:2011 MAC Algorithm 5/CMAC. 
-        /// * ```M7``` - HMAC. 
-        /// * ```M8``` - ISO 9797-1:2011 MAC Algorithm 6. 
-        /// * ```S0``` - Asymmetric key pair for digital signature. 
-        /// * ```S1``` - Asymmetric key pair, CA. 
-        /// * ```S2``` - Asymmetric key pair, nonX9.24 key.
-        /// </summary>
-        [DataMember(Name = "keyUsage")]
-        public KeyUsageEnum? KeyUsage { get; init; }
-
-        public enum AlgorithmEnum
-        {
-            A,
-            D,
-            R,
-            T
-        }
-
-        /// <summary>
-        /// Specifies the encryption algorithms supported by [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```A``` - AES. 
-        /// * ```D``` - DEA. 
-        /// * ```R``` - RSA. 
-        /// * ```T``` - Triple DEA (also referred to as TDEA).
-        /// </summary>
-        [DataMember(Name = "algorithm")]
-        public AlgorithmEnum? Algorithm { get; init; }
-
-        public enum ModeOfUseEnum
-        {
-            S,
-            V
-        }
-
-        /// <summary>
-        /// Specifies the encryption mode supported by [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
-        /// The following values are possible: 
-        /// 
-        /// * ```S``` - Signature.  
-        /// * ```V``` - Verify. This be used to verify a MAC.
-        /// </summary>
-        [DataMember(Name = "modeOfUse")]
-        public ModeOfUseEnum? ModeOfUse { get; init; }
-
-        public enum CryptoMethodEnum
-        {
-            RsassaPkcs1V15,
-            RsassaPss
-        }
-
-        /// <summary>
-        /// Specifies the cryptographic method supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
-        /// For asymmetric signature verification methods (bKeyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values. 
-        /// 
-        /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
-        /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm. 
-        /// 
-        /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then this proeprty should not be not set.
-        /// </summary>
-        [DataMember(Name = "cryptoMethod")]
-        public CryptoMethodEnum? CryptoMethod { get; init; }
-
-        [DataContract]
-        public sealed class HashAlgorithmClass
-        {
-            public HashAlgorithmClass(bool? Sha1 = null, bool? Sha256 = null)
-            {
-                this.Sha1 = Sha1;
-                this.Sha256 = Sha256;
-            }
-
-            /// <summary>
-            /// The SHA 1 digest algorithm.
-            /// </summary>
-            [DataMember(Name = "sha1")]
-            public bool? Sha1 { get; init; }
-
-            /// <summary>
-            /// The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
-            /// </summary>
-            [DataMember(Name = "sha256")]
-            public bool? Sha256 { get; init; }
-
-        }
-
-        /// <summary>
-        /// For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the following values to be used.
-        /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then properties should not be not set or both 'sha1' and 'sha256' are false.
-        /// </summary>
-        [DataMember(Name = "hashAlgorithm")]
-        public HashAlgorithmClass HashAlgorithm { get; init; }
-
-    }
-
-
-    [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(AlgorithmsClass Algorithms = null, EmvHashAlgorithmClass EmvHashAlgorithm = null, List<CryptoAttributeClass> CryptoAttributes = null, List<AuthenticationAttributeClass> AuthenticationAttributes = null, List<VerifyAttributeClass> VerifyAttributes = null)
+        public CapabilitiesClass(AlgorithmsClass Algorithms = null, EmvHashAlgorithmClass EmvHashAlgorithm = null, Dictionary<string, Dictionary<string, Dictionary<string, CryptoAttributesClass>>> CryptoAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, AuthenticationAttributesClass>>> AuthenticationAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
         {
             this.Algorithms = Algorithms;
             this.EmvHashAlgorithm = EmvHashAlgorithm;
@@ -538,23 +172,262 @@ namespace XFS4IoT.Crypto
         [DataMember(Name = "emvHashAlgorithm")]
         public EmvHashAlgorithmClass EmvHashAlgorithm { get; init; }
 
+        [DataContract]
+        public sealed class CryptoAttributesClass
+        {
+            public CryptoAttributesClass(CryptoMethodClass CryptoMethod = null)
+            {
+                this.CryptoMethod = CryptoMethod;
+            }
+
+            [DataContract]
+            public sealed class CryptoMethodClass
+            {
+                public CryptoMethodClass(bool? Ecb = null, bool? Cbc = null, bool? Cfb = null, bool? Ofb = null, bool? Ctr = null, bool? Xts = null, bool? RsaesPkcs1V15 = null, bool? RsaesOaep = null)
+                {
+                    this.Ecb = Ecb;
+                    this.Cbc = Cbc;
+                    this.Cfb = Cfb;
+                    this.Ofb = Ofb;
+                    this.Ctr = Ctr;
+                    this.Xts = Xts;
+                    this.RsaesPkcs1V15 = RsaesPkcs1V15;
+                    this.RsaesOaep = RsaesOaep;
+                }
+
+                /// <summary>
+                /// The ECB encryption method. 
+                /// </summary>
+                [DataMember(Name = "ecb")]
+                public bool? Ecb { get; init; }
+
+                /// <summary>
+                /// The CBC encryption method. 
+                /// </summary>
+                [DataMember(Name = "cbc")]
+                public bool? Cbc { get; init; }
+
+                /// <summary>
+                /// The CFB encryption method. 
+                /// </summary>
+                [DataMember(Name = "cfb")]
+                public bool? Cfb { get; init; }
+
+                /// <summary>
+                /// The The OFB encryption method. 
+                /// </summary>
+                [DataMember(Name = "ofb")]
+                public bool? Ofb { get; init; }
+
+                /// <summary>
+                /// The CTR method defined in NIST SP800-38A. 
+                /// </summary>
+                [DataMember(Name = "ctr")]
+                public bool? Ctr { get; init; }
+
+                /// <summary>
+                /// The XTS method defined in NIST SP800-38E. 
+                /// </summary>
+                [DataMember(Name = "xts")]
+                public bool? Xts { get; init; }
+
+                /// <summary>
+                /// The RSAES_PKCS1-v1.5 algorithm.
+                /// </summary>
+                [DataMember(Name = "rsaesPkcs1V15")]
+                public bool? RsaesPkcs1V15 { get; init; }
+
+                /// <summary>
+                /// The RSAES OAEP algorithm. 
+                /// </summary>
+                [DataMember(Name = "rsaesOaep")]
+                public bool? RsaesOaep { get; init; }
+
+            }
+
+            /// <summary>
+            /// Specifies the cryptographic method supported by the [Crypto.CryptoData](#crypto.cryptodata) command.
+            /// If the key usage is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then the following properties can be true. 
+            /// 
+            /// * ```ecb``` - The ECB encryption method.
+            /// * ```cbc``` - The CBC encryption method.
+            /// * ```cfb``` - The CFB encryption method.
+            /// * ```ofb``` - The OFB encryption method.
+            /// * ```ctr``` - The CTR method defined in NIST SP800-38A.
+            /// * ```xts``` - The XTS method defined in NIST SP800-38E.
+            /// 
+            /// If the algorithm is 'R' and the key usage is ['D0'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then the following properties can be true. 
+            /// 
+            /// * ```rsaesPkcs1V15``` - RSAES_PKCS1-v1.5 algorithm.
+            /// * ```rsaesOaep``` - The RSAES OAEP algorithm. 
+            /// </summary>
+            [DataMember(Name = "cryptoMethod")]
+            public CryptoMethodClass CryptoMethod { get; init; }
+
+        }
+
         /// <summary>
-        /// Array of attributes supported by the [Crypto.CryptoData](#crypto.cryptodata) command.
+        /// Key-value pair of attributes supported by the [Crypto.CryptoData](#crypto.cryptodata) command to encrypt
+        /// or decrypt data.
         /// </summary>
         [DataMember(Name = "cryptoAttributes")]
-        public List<CryptoAttributeClass> CryptoAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, CryptoAttributesClass>>> CryptoAttributes { get; init; }
+
+        [DataContract]
+        public sealed class AuthenticationAttributesClass
+        {
+            public AuthenticationAttributesClass(CryptoMethodClass CryptoMethod = null, HashAlgorithmClass HashAlgorithm = null)
+            {
+                this.CryptoMethod = CryptoMethod;
+                this.HashAlgorithm = HashAlgorithm;
+            }
+
+            [DataContract]
+            public sealed class CryptoMethodClass
+            {
+                public CryptoMethodClass(bool? RsassaPkcs1V15 = null, bool? RsassaPss = null)
+                {
+                    this.RsassaPkcs1V15 = RsassaPkcs1V15;
+                    this.RsassaPss = RsassaPss;
+                }
+
+                /// <summary>
+                /// The RSASSA-PKCS1-v1.5 algorithm. 
+                /// </summary>
+                [DataMember(Name = "rsassaPkcs1V15")]
+                public bool? RsassaPkcs1V15 { get; init; }
+
+                /// <summary>
+                /// The the RSASSA-PSS algorithm.
+                /// </summary>
+                [DataMember(Name = "rsassaPss")]
+                public bool? RsassaPss { get; init; }
+
+            }
+
+            /// <summary>
+            /// Specifies the asymmetric signature verification method supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
+            /// If the key usage is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then following properties are false.
+            /// </summary>
+            [DataMember(Name = "cryptoMethod")]
+            public CryptoMethodClass CryptoMethod { get; init; }
+
+            [DataContract]
+            public sealed class HashAlgorithmClass
+            {
+                public HashAlgorithmClass(bool? Sha1 = null, bool? Sha256 = null)
+                {
+                    this.Sha1 = Sha1;
+                    this.Sha256 = Sha256;
+                }
+
+                /// <summary>
+                /// The SHA 1 digest algorithm.
+                /// If the key usage is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then following properties are false.
+                /// </summary>
+                [DataMember(Name = "sha1")]
+                public bool? Sha1 { get; init; }
+
+                /// <summary>
+                /// The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
+                /// </summary>
+                [DataMember(Name = "sha256")]
+                public bool? Sha256 { get; init; }
+
+            }
+
+            /// <summary>
+            /// Specifies the hash algorithm supported.
+            /// </summary>
+            [DataMember(Name = "hashAlgorithm")]
+            public HashAlgorithmClass HashAlgorithm { get; init; }
+
+        }
 
         /// <summary>
-        /// Array of attributes supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) command.
+        /// Key-value pair of attributes supported by the [Crypto.GenerateAuthentication](#crypto.generateauthentication) command
+        /// to generate authentication data.
         /// </summary>
         [DataMember(Name = "authenticationAttributes")]
-        public List<AuthenticationAttributeClass> AuthenticationAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, AuthenticationAttributesClass>>> AuthenticationAttributes { get; init; }
+
+        [DataContract]
+        public sealed class VerifyAttributesClass
+        {
+            public VerifyAttributesClass(CryptoMethodClass CryptoMethod = null, HashAlgorithmClass HashAlgorithm = null)
+            {
+                this.CryptoMethod = CryptoMethod;
+                this.HashAlgorithm = HashAlgorithm;
+            }
+
+            [DataContract]
+            public sealed class CryptoMethodClass
+            {
+                public CryptoMethodClass(bool? RsassaPkcs1V15 = null, bool? RsassaPss = null)
+                {
+                    this.RsassaPkcs1V15 = RsassaPkcs1V15;
+                    this.RsassaPss = RsassaPss;
+                }
+
+                /// <summary>
+                /// The RSASSA-PKCS1-v1.5 algorithm. 
+                /// </summary>
+                [DataMember(Name = "rsassaPkcs1V15")]
+                public bool? RsassaPkcs1V15 { get; init; }
+
+                /// <summary>
+                /// The the RSASSA-PSS algorithm.
+                /// </summary>
+                [DataMember(Name = "rsassaPss")]
+                public bool? RsassaPss { get; init; }
+
+            }
+
+            /// <summary>
+            /// Specifies the asymmetric signature verification method supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
+            /// If the key usage is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then following properties are false.
+            /// </summary>
+            [DataMember(Name = "cryptoMethod")]
+            public CryptoMethodClass CryptoMethod { get; init; }
+
+            [DataContract]
+            public sealed class HashAlgorithmClass
+            {
+                public HashAlgorithmClass(bool? Sha1 = null, bool? Sha256 = null)
+                {
+                    this.Sha1 = Sha1;
+                    this.Sha256 = Sha256;
+                }
+
+                /// <summary>
+                /// The SHA 1 digest algorithm.
+                /// </summary>
+                [DataMember(Name = "sha1")]
+                public bool? Sha1 { get; init; }
+
+                /// <summary>
+                /// The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
+                /// </summary>
+                [DataMember(Name = "sha256")]
+                public bool? Sha256 { get; init; }
+
+            }
+
+            /// <summary>
+            /// Specifies the hash algorithm supported. 
+            /// If the key usage is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then following properties are false.
+            /// </summary>
+            [DataMember(Name = "hashAlgorithm")]
+            public HashAlgorithmClass HashAlgorithm { get; init; }
+
+        }
 
         /// <summary>
-        /// Array of attributes supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command.
+        /// Key-value pair of attributes supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command
+        /// to verify authentication data.
         /// </summary>
         [DataMember(Name = "verifyAttributes")]
-        public List<VerifyAttributeClass> VerifyAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes { get; init; }
 
     }
 

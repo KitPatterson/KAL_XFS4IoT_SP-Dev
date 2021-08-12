@@ -48,21 +48,20 @@ namespace XFS4IoT.Crypto.Commands
             /// If startValue specifies an Initialization Vector (IV), then this parameter specifies the name of the
             /// stored key used to decrypt the startValue to obtain the IV. If startValue is omitted and this
             /// parameter is set, then this parameter specifies the name of the IV that has been previously imported
-            /// via TR-31. If this parameter is not set, startValue is used as the Initialization Vector.
+            /// via TR-31. If this parameter is not set, *startValue* is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")]
             public string StartValueKey { get; init; }
 
             /// <summary>
             /// The Base64 encoded initialization vector for CBC / CFB encryption. 
-            /// If this property and startValueKey are both omitted the default value for CBC / CFB is all zeroes.
+            /// If this property and *startValueKey* are both omitted the default value for CBC / CFB is all zeroes.
             /// </summary>
             [DataMember(Name = "startValue")]
             public string StartValue { get; init; }
 
             /// <summary>
-            /// Specifies the padding character. The padding character is a full byte, e.g. 0xFF.  The valid range is
-            /// 0x00 to 0xFF.
+            /// Specifies the padding character. The valid range is 0 to 255.
             /// </summary>
             [DataMember(Name = "padding")]
             [DataTypes(Minimum = 0, Maximum = 255)]
@@ -134,7 +133,7 @@ namespace XFS4IoT.Crypto.Commands
 
                 /// <summary>
                 /// Specifies the cryptographic method supported by the [Crypto.CryptoData](#crypto.cryptodata) command. For symmetric encryption
-                /// methods (keyUsage is ‘D0’), this can be one of the following values:
+                /// methods (keyUsage is �D0�), this can be one of the following values:
                 /// 
                 /// * ```ecb``` - The ECB encryption method.
                 /// * ```cbc``` - The CBC encryption method.
@@ -143,7 +142,7 @@ namespace XFS4IoT.Crypto.Commands
                 /// * ```ctr``` - The CTR method defined in NIST SP800-38A.
                 /// * ```xts``` - The XTS method defined in NIST SP800-38E.
                 /// 
-                /// For asymmetric encryption methods (keyUsage is ‘D1’), this can be one of the following values:
+                /// For asymmetric encryption methods (keyUsage is �D1�), this can be one of the following values:
                 /// 
                 /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm.
                 /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.
@@ -155,7 +154,7 @@ namespace XFS4IoT.Crypto.Commands
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this
-            /// command. For a list of valid values see [cryptoAttributes capabilities](#common.capabilities.completion.properties.crypto.cryptoattributes) property. The values specified must be
+            /// command. For a list of valid values see [cryptoAttributes](#common.capabilities.completion.properties.crypto.cryptoattributes) capability. The values specified must be
             /// compatible with the key identified by Key.
             /// </summary>
             [DataMember(Name = "cryptoAttributes")]
