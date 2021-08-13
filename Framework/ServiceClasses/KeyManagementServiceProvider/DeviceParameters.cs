@@ -30,7 +30,7 @@ namespace XFS4IoTFramework.KeyManagement
 
     public class KeyInformationBase
     {
-        public KeyInformationBase(string KeyVersionNumber = null,
+        public KeyInformationBase(string KeyVersionNumber = "00",
                                   string Exportability = null,
                                   List<byte> OptionalKeyBlockHeader = null,
                                   int? Generation = null,
@@ -173,13 +173,32 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class ImportKeyRequest : ImportKeyBaseRequest
     {
+
         public sealed class VerifyAttributeClass
         {
+            public enum VerifyMethodEnum
+            {
+                KCVNone,
+                KCVSelf,
+                KCVZero,
+                SignatureNone,
+                RSASSA_PKCS1_V1_5,
+                RSASSA_PSS,
+            }
+
+            public enum HashAlgorithmEnum
+            {
+                SHA1,
+                SHA256,
+            }
+
             public VerifyAttributeClass(string KeyName,
-                                        KeyManagementCapabilitiesClass.VerifyMethodClass VerifyMethod)
+                                        VerifyMethodEnum VerifyMethod,
+                                        HashAlgorithmEnum? HashAlgorithm = null)
             {
                 this.KeyName = KeyName;
                 this.VerifyMethod = VerifyMethod;
+                this.HashAlgorithm = HashAlgorithm;
             }
 
             /// <summary>
@@ -195,13 +214,30 @@ namespace XFS4IoTFramework.KeyManagement
             /// <summary>
             /// Cryptographic method to use
             /// </summary>
-            public KeyManagementCapabilitiesClass.VerifyMethodClass VerifyMethod { get; init; }
+            public VerifyMethodEnum VerifyMethod { get; init; }
+
+            /// <summary>
+            /// Hash algorithm to use
+            /// </summary>
+            public HashAlgorithmEnum? HashAlgorithm { get; init; }
         }
 
         public sealed class DecryptAttributeClass
         {
+            public enum DecryptMethodEnum
+            {
+                ECB,
+                CBC,
+                CFB,
+                OFB,
+                CTR,
+                XTS,
+                RSAES_PKCS1_V1_5,
+                RSAES_OAEP,
+            }
+
             public DecryptAttributeClass(string KeyName,
-                                         KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum DecryptoMethod)
+                                         DecryptMethodEnum DecryptoMethod)
             {
                 this.KeyName = KeyName;
                 this.DecryptoMethod = DecryptoMethod;
@@ -215,7 +251,7 @@ namespace XFS4IoTFramework.KeyManagement
             /// <summary>
             /// Cryptographic method to use
             /// </summary>
-            public KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum DecryptoMethod { get; init; }
+            public DecryptMethodEnum DecryptoMethod { get; init; }
         }
 
         public ImportKeyRequest(string KeyName,
@@ -261,11 +297,13 @@ namespace XFS4IoTFramework.KeyManagement
         {
             public VerifyAttributeClass(string KeyUsage,
                                         string Algorithm,
-                                        KeyManagementCapabilitiesClass.VerifyMethodClass VerifyMethod)
+                                        ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum VerifyMethod,
+                                        ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum? HashAlgorithm = null)
             {
                 this.KeyUsage = KeyUsage;
                 this.Algorithm = Algorithm;
                 this.VerifyMethod = VerifyMethod;
+                this.HashAlgorithm = HashAlgorithm;
             }
 
             /// <summary>
@@ -281,7 +319,12 @@ namespace XFS4IoTFramework.KeyManagement
             /// <summary>
             /// Cryptographic method to use
             /// </summary>
-            public KeyManagementCapabilitiesClass.VerifyMethodClass VerifyMethod { get; init; }
+            public ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum VerifyMethod { get; init; }
+
+            /// <summary>
+            /// Hash algorithm to use
+            /// </summary>
+            public ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum? HashAlgorithm { get; init; }
         }
 
         public ImportKeyResult(MessagePayload.CompletionCodeEnum CompletionCode,
@@ -828,9 +871,9 @@ namespace XFS4IoTFramework.KeyManagement
                                         string Algorithm,
                                         string ModeOfUse,
                                         int KeyLength,
-                                        string KeyVersionNumber,
-                                        string Exportability,
-                                        List<byte> OptionalKeyBlockHeader,
+                                        string KeyVersionNumber = "00",
+                                        string Exportability = null,
+                                        List<byte> OptionalKeyBlockHeader = null,
                                         int? Generation = null,
                                         DateTime? ActivatingDate = null,
                                         DateTime? ExpiryDate = null,
@@ -881,7 +924,7 @@ namespace XFS4IoTFramework.KeyManagement
 
         public GenerateRSAKeyPairResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                         LoadedKeyInformation LoadedKeyDetail,
-                                        int? UpdatedKeySlot)
+                                        int? UpdatedKeySlot = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;

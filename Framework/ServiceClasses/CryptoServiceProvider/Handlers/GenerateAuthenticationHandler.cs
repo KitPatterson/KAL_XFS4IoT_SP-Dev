@@ -111,7 +111,7 @@ namespace XFS4IoTFramework.Crypto
                 }
             }
 
-            CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum sigAlgorithm = CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported;
+            GenerateSignatureRequest.RSASignatureAlgorithmEnum? sigAlgorithm = null;
             // Chcek the crypto capabilities
             bool verifyCryptAttrib = false;
             if (Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$"))
@@ -124,12 +124,24 @@ namespace XFS4IoTFramework.Crypto
                     {
                         sigAlgorithm = generateAuthentication.Payload.AuthenticationAttribute.CryptoMethod switch
                         {
-                            GenerateAuthenticationCommand.PayloadData.AuthenticationAttributeClass.CryptoMethodEnum.RsassaPkcs1V15 => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
-                            GenerateAuthenticationCommand.PayloadData.AuthenticationAttributeClass.CryptoMethodEnum.RsassaPss => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PSS,
-                            _ => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported
+                            GenerateAuthenticationCommand.PayloadData.AuthenticationAttributeClass.CryptoMethodEnum.RsassaPkcs1V15 => GenerateSignatureRequest.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
+                            GenerateAuthenticationCommand.PayloadData.AuthenticationAttributeClass.CryptoMethodEnum.RsassaPss => GenerateSignatureRequest.RSASignatureAlgorithmEnum.RSASSA_PSS,
+                            _ => null
                         };
-                        if (sigAlgorithm != CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported)
-                            verifyCryptAttrib = Crypto.CryptoCapabilities.CryptoAttributes[keyDetail.KeyUsage][keyDetail.Algorithm][keyDetail.ModeOfUse].CryptoMethods.HasFlag(sigAlgorithm);
+                        if (sigAlgorithm is not null)
+                        {
+                            return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                                    $"Specified crypto method is not supported. {generateAuthentication.Payload.AuthenticationAttribute.CryptoMethod}",
+                                                                                    GenerateAuthenticationCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
+                        }
+
+                        CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum algorithmFlag = (GenerateSignatureRequest.RSASignatureAlgorithmEnum)sigAlgorithm switch
+                        {
+                            GenerateSignatureRequest.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5 => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
+                            _ => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PSS
+                        };
+
+                        verifyCryptAttrib = Crypto.CryptoCapabilities.AuthenticationAttributes[keyDetail.KeyUsage][keyDetail.Algorithm][keyDetail.ModeOfUse].CryptoMethods.HasFlag(algorithmFlag);
                     }
                 }
             }
@@ -247,7 +259,7 @@ namespace XFS4IoTFramework.Crypto
                                                                                      Crypto.GetKeyDetail(generateAuthentication.Payload.Key).KeySlot,
                                                                                      Convert.FromBase64String(generateAuthentication.Payload.AuthenticationData).ToList(),
                                                                                      padding,
-                                                                                     sigAlgorithm),
+                                                                                     (GenerateSignatureRequest.RSASignatureAlgorithmEnum)sigAlgorithm),
                                                         cancel);
 
 

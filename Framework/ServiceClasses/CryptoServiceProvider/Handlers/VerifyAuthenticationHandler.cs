@@ -111,37 +111,49 @@ namespace XFS4IoTFramework.Crypto
             }
 
             // Chcek the crypto capabilities
-            CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum sigAlgorithm = CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported;
+            VerifySignatureRequest.RSASignatureAlgorithmEnum? sigAlgorithm = null;
             // Chcek the crypto capabilities
             bool verifyCryptAttrib = false;
             if (Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$"))
             {
-                if (Crypto.CryptoCapabilities.AuthenticationAttributes[keyDetail.KeyUsage].ContainsKey(keyDetail.Algorithm))
+                if (Crypto.CryptoCapabilities.VerifyAttributes[keyDetail.KeyUsage].ContainsKey(keyDetail.Algorithm))
                 {
-                    if (Crypto.CryptoCapabilities.AuthenticationAttributes[keyDetail.KeyUsage][keyDetail.Algorithm].ContainsKey(keyDetail.ModeOfUse))
+                    if (Crypto.CryptoCapabilities.VerifyAttributes[keyDetail.KeyUsage][keyDetail.Algorithm].ContainsKey(keyDetail.ModeOfUse))
                     {
                         sigAlgorithm = verifyAuthentication.Payload.VerifyAttributes.CryptoMethod switch
                         {
-                            VerifyAuthenticationCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPkcs1V15 => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
-                            VerifyAuthenticationCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPss => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PSS,
-                            _ => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported
+                            VerifyAuthenticationCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPkcs1V15 => VerifySignatureRequest.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
+                            VerifyAuthenticationCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPss => VerifySignatureRequest.RSASignatureAlgorithmEnum.RSASSA_PSS,
+                            _ => null
                         };
-                        if (sigAlgorithm != CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported)
-                            verifyCryptAttrib = Crypto.CryptoCapabilities.VerifyAttributes[keyDetail.KeyUsage][keyDetail.Algorithm][keyDetail.ModeOfUse].CryptoMethods.HasFlag(sigAlgorithm);
+                        if (sigAlgorithm is not null)
+                        {
+                            return new VerifyAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                                    $"Specified crypto method is not supported. {verifyAuthentication.Payload.VerifyAttributes.CryptoMethod}",
+                                                                                    VerifyAuthenticationCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
+                        }
+
+                        CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum algorithmFlag = (GenerateSignatureRequest.RSASignatureAlgorithmEnum)sigAlgorithm switch
+                        {
+                            GenerateSignatureRequest.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5 => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
+                            _ => CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PSS
+                        };
+
+                        verifyCryptAttrib = Crypto.CryptoCapabilities.VerifyAttributes[keyDetail.KeyUsage][keyDetail.Algorithm][keyDetail.ModeOfUse].CryptoMethods.HasFlag(algorithmFlag);
                     }
                 }
             }
             else
             {
-                if (Crypto.CryptoCapabilities.AuthenticationAttributes[keyDetail.KeyUsage].ContainsKey(keyDetail.Algorithm))
+                if (Crypto.CryptoCapabilities.VerifyAttributes[keyDetail.KeyUsage].ContainsKey(keyDetail.Algorithm))
                 {
-                    verifyCryptAttrib = (Crypto.CryptoCapabilities.AuthenticationAttributes[keyDetail.KeyUsage][keyDetail.Algorithm].ContainsKey(keyDetail.ModeOfUse));
+                    verifyCryptAttrib = (Crypto.CryptoCapabilities.VerifyAttributes[keyDetail.KeyUsage][keyDetail.Algorithm].ContainsKey(keyDetail.ModeOfUse));
                 }
             }
             if (!verifyCryptAttrib)
             {
                 return new VerifyAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
-                                                                      $"The crypto attribute doesn't support specified RSA signature algorithm or unsupported mode of use for MAC.",
+                                                                      $"The verify attribute doesn't support specified RSA signature algorithm or unsupported mode of use for MAC.",
                                                                       VerifyAuthenticationCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
             }
 
@@ -240,7 +252,7 @@ namespace XFS4IoTFramework.Crypto
                                                                                    Crypto.GetKeyDetail(verifyAuthentication.Payload.Key).KeySlot,
                                                                                    Convert.FromBase64String(verifyAuthentication.Payload.AuthenticationData).ToList(),
                                                                                    Convert.FromBase64String(verifyAuthentication.Payload.VerifyData).ToList(),
-                                                                                   sigAlgorithm,
+                                                                                   (VerifySignatureRequest.RSASignatureAlgorithmEnum)sigAlgorithm,
                                                                                    padding),
                                                         cancel);
 

@@ -30,7 +30,7 @@ namespace XFS4IoTFramework.Crypto
     {
         public GenerateRandomNumberResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                           string ErrorDescription,
-                                          GenerateRandomCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                          GenerateRandomCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -131,8 +131,8 @@ namespace XFS4IoTFramework.Crypto
     public sealed class CryptoDataResult : DeviceResult
     {
         public CryptoDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                string ErrorDescription,
-                                CryptoDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                string ErrorDescription = null,
+                                CryptoDataCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -154,11 +154,17 @@ namespace XFS4IoTFramework.Crypto
 
     public sealed class GenerateSignatureRequest : RequestBase
     {
+        public enum RSASignatureAlgorithmEnum
+        {
+            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
+            RSASSA_PSS,            // SSA_PSS Signatures supported
+        }
+
         public GenerateSignatureRequest(string KeyName,
                                         int KeySlot,
                                         List<byte> Data,
                                         byte Padding,
-                                        CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum SignatureAlgorithm)
+                                        RSASignatureAlgorithmEnum SignatureAlgorithm)
             : base(KeyName, KeySlot, Data, Padding)
         {
             this.SignatureAlgorithm = SignatureAlgorithm;
@@ -167,7 +173,7 @@ namespace XFS4IoTFramework.Crypto
         /// <summary>
         /// Signature algorithm
         /// </summary>
-        public CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
+        public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
 
     }
 
@@ -207,7 +213,7 @@ namespace XFS4IoTFramework.Crypto
     {
         public GenerateAuthenticationDataResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                           string ErrorDescription,
-                                          GenerateAuthenticationCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                          GenerateAuthenticationCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -228,11 +234,17 @@ namespace XFS4IoTFramework.Crypto
 
     public sealed class VerifySignatureRequest : RequestBase
     {
+        public enum RSASignatureAlgorithmEnum
+        {
+            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
+            RSASSA_PSS,            // SSA_PSS Signatures supported
+        }
+
         public VerifySignatureRequest(string KeyName,
                                       int KeySlot,
                                       List<byte> Data,
                                       List<byte> VerificationData,
-                                      CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum SignatureAlgorithm,
+                                      RSASignatureAlgorithmEnum SignatureAlgorithm,
                                       byte Padding)
             : base(KeyName, KeySlot, Data, Padding)
         {
@@ -243,7 +255,7 @@ namespace XFS4IoTFramework.Crypto
         /// <summary>
         /// Signature algorithm
         /// </summary>
-        public CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
+        public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
 
         /// <summary>
         /// Data to verify signature
@@ -320,7 +332,7 @@ namespace XFS4IoTFramework.Crypto
     {
         public GenerateDigestResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                           string ErrorDescription,
-                                          DigestCompletion.PayloadData.ErrorCodeEnum? ErrorCode)
+                                          DigestCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
             : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;

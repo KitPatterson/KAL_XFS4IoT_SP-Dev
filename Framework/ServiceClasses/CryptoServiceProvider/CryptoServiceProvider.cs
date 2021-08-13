@@ -83,7 +83,7 @@ namespace XFS4IoTServer
         /// <summary>
         /// Find keyslot available or being used
         /// </summary>
-        public int FindKeySlot(string KeyName) => throw new NotSupportedException("The FindKeySlot method is not supported in the Crypto ServiceProvider.");
+        public int FindKeySlot(string KeyName) => KeyManagementService.FindKeySlot(KeyName);
 
         /// <summary>
         /// Stored key information of this device
@@ -106,14 +106,29 @@ namespace XFS4IoTServer
                            int KeyLength,
                            KeyDetail.KeyStatusEnum KeyStatus,
                            bool Preloaded,
-                           string RestrictedKeyUsage,
-                           string KeyVersionNumber,
-                           string Exportability,
-                           List<byte> OptionalKeyBlockHeader,
-                           int? Generation,
-                           DateTime? ActivatingDate,
-                           DateTime? ExpiryDate,
-                           int? Version) => throw new NotSupportedException("The AddKey method is not supported in the Crypto ServiceProvider.");
+                           string RestrictedKeyUsage = null,
+                           string KeyVersionNumber = null,
+                           string Exportability = null,
+                           List<byte> OptionalKeyBlockHeader = null,
+                           int? Generation = null,
+                           DateTime? ActivatingDate = null,
+                           DateTime? ExpiryDate = null,
+                           int? Version = null) => KeyManagementService.AddKey(KeyName,
+                                                                               KeySlot,
+                                                                               KeyUsage,
+                                                                               Algorithm,
+                                                                               ModeOfUse,
+                                                                               KeyLength,
+                                                                               KeyStatus,
+                                                                               Preloaded,
+                                                                               RestrictedKeyUsage,
+                                                                               KeyVersionNumber,
+                                                                               Exportability,
+                                                                               OptionalKeyBlockHeader,
+                                                                               Generation,
+                                                                               ActivatingDate,
+                                                                               ExpiryDate,
+                                                                               Version);
 
         /// <summary>
         /// Delete specified key from the collection and return key slot
