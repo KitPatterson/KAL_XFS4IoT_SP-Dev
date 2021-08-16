@@ -20,7 +20,7 @@ namespace XFS4IoTFramework.KeyManagement
     {
         private async Task<InitializationCompletion.PayloadData> HandleInitialization(IInitializationEvents events, InitializationCommand initialization, CancellationToken cancel)
         {
-            if (string.IsNullOrEmpty(initialization.Payload.Key))
+            if (!string.IsNullOrEmpty(initialization.Payload.Key))
             {
                 KeyDetail keyinfo = KeyManagement.GetKeyDetail(initialization.Payload.Key);
                 if (keyinfo is null)

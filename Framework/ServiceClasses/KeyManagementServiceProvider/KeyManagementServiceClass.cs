@@ -28,7 +28,9 @@ namespace XFS4IoTServer
         : this(ServiceProvider, logger)
         {
             this.PersistentData = PersistentData.IsNotNull($"No persistent data interface is set in the " + typeof(KeyManagementServiceClass));
-            KeyDetails = PersistentData.Load< Dictionary<string, KeyDetail>> (typeof(Dictionary<string, KeyDetail>).FullName);
+            KeyDetails = PersistentData.Load< Dictionary<string, KeyDetail>> (typeof(KeyDetail).FullName);
+            if (KeyDetails is null)
+                KeyDetails = new();
 
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(KeyManagementServiceClass));
         }
@@ -53,6 +55,8 @@ namespace XFS4IoTServer
         /// </summary>
         public int FindKeySlot(string KeyName)
         {
+            KeyDetails.IsNotNull($"The list object {nameof(KeyDetail)} is null in the FindKeySlot.");
+
             int keySlot = 1;
             if (KeyDetails.ContainsKey(KeyName))
             {
@@ -72,13 +76,15 @@ namespace XFS4IoTServer
         /// <summary>
         /// Stored key information of this device
         /// </summary>
-        public List<KeyDetail> GetKeyTable() => KeyDetails.Values.ToList();
+        public List<KeyDetail> GetKeyTable() => KeyDetails?.Values.ToList();
 
         /// <summary>
         /// Return detailed stored key information
         /// </summary>
         public KeyDetail GetKeyDetail(string KeyName)
         {
+            KeyDetails.IsNotNull($"The list object {nameof(GetKeyDetail)} is null in the FindKeySlot.");
+
             KeyDetail keyInfo = null;
             if (KeyDetails.ContainsKey(KeyName))
                 keyInfo = KeyDetails[KeyName];
@@ -124,7 +130,7 @@ namespace XFS4IoTServer
                                                   ExpiryDate,
                                                   Version));
 
-            PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(Dictionary<string, KeyDetail>).FullName, KeyDetails);
+            PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(KeyDetail).FullName, KeyDetails);
         }
 
         /// <summary>
@@ -132,10 +138,12 @@ namespace XFS4IoTServer
         /// </summary>
         public void DeleteKey(string KeyName)
         {
+            KeyDetails.IsNotNull($"The list object {nameof(GetKeyDetail)} is null in the DeleteKey.");
+
             if (KeyDetails.ContainsKey(KeyName))
             {
                 KeyDetails.Remove(KeyName);
-                PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(Dictionary<string, KeyDetail>).FullName, KeyDetails);
+                PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(KeyDetail).FullName, KeyDetails);
             }
             else
             {
@@ -148,6 +156,8 @@ namespace XFS4IoTServer
         /// </summary>
         public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status)
         {
+            KeyDetails.IsNotNull($"The list object {nameof(GetKeyDetail)} is null in the UpdateKeyStatus.");
+
             KeyDetails.ContainsKey(KeyName).IsTrue($"No key found. {KeyName}" + nameof(UpdateKeyStatus));
             KeyDetail keyDetail = GetKeyDetail(KeyName);
             DeleteKey(KeyName);
@@ -169,7 +179,7 @@ namespace XFS4IoTServer
                                                   keyDetail.ExpiryDate,
                                                   keyDetail.Version));
 
-            PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(Dictionary<string, KeyDetail>).FullName, KeyDetails);
+            PersistentData.Store<Dictionary<string, KeyDetail>>(typeof(KeyDetail).FullName, KeyDetails);
         }
 
         private readonly SecureKeyEntryStatusClass SecureKeyEntryStatus = new();

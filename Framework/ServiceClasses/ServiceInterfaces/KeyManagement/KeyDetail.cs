@@ -69,7 +69,7 @@ namespace XFS4IoTFramework.KeyManagement
             this.RestrictedKeyUsage = RestrictedKeyUsage;
 
             if (!string.IsNullOrEmpty(KeyVersionNumber))
-                Regex.IsMatch(RestrictedKeyUsage, regxKeyVersionNumber).IsTrue($"Invalid version number specified. {KeyVersionNumber}");
+                Regex.IsMatch(KeyVersionNumber, regxKeyVersionNumber).IsTrue($"Invalid version number specified. {KeyVersionNumber}");
             this.KeyVersionNumber = KeyVersionNumber;
 
             this.KeyStatus = KeyStatus;
