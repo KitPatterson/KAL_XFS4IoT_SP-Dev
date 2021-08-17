@@ -57,8 +57,9 @@ namespace XFS4IoTFramework.Crypto
             }
 
             if (Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$") &&
+                (verifyAuthentication.Payload.VerifyAttributes is null ||
                 (verifyAuthentication.Payload.VerifyAttributes.CryptoMethod is null &&
-                 verifyAuthentication.Payload.VerifyAttributes.HashAlgorithm is null))
+                 verifyAuthentication.Payload.VerifyAttributes.HashAlgorithm is null)))
             {
                 return new VerifyAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, $"No hash algorith, or cryptoMethod specified.");
             }

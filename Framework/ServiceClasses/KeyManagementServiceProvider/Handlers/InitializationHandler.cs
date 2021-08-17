@@ -49,7 +49,7 @@ namespace XFS4IoTFramework.KeyManagement
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {
-                KeyManagement.GetSecureKeyEntryStatus().Reset();
+                KeyManagement.GetSecureKeyEntryStatus()?.Reset();
 
                 // Delete internal key information
                 if (string.IsNullOrEmpty(initialization.Payload.Key))
@@ -69,7 +69,7 @@ namespace XFS4IoTFramework.KeyManagement
             return new InitializationCompletion.PayloadData(result.CompletionCode,
                                                             result.ErrorDescription,
                                                             result.ErrorCode,
-                                                            result.Identification is not null || result.Identification.Count == 0 ? null : Convert.ToBase64String(result.Identification.ToArray()));
+                                                            result.Identification is null || result.Identification.Count == 0 ? null : Convert.ToBase64String(result.Identification.ToArray()));
         }
     }
 }

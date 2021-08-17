@@ -133,17 +133,17 @@ namespace XFS4IoTServer
         /// <summary>
         /// Delete specified key from the collection and return key slot
         /// </summary>
-        public void DeleteKey(string KeyName) => throw new NotSupportedException("The DeleteKey method is not supported in the Crypto ServiceProvider.");
+        public void DeleteKey(string KeyName) => KeyManagementService.DeleteKey(KeyName);
 
         /// <summary>
         /// Update key status
         /// </summary>
-        public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => throw new NotSupportedException("The UpdateKeyStatus method is not supported in the Crypto ServiceProvider.");
+        public void UpdateKeyStatus(string KeyName, KeyDetail.KeyStatusEnum Status) => KeyManagementService.UpdateKeyStatus(KeyName, Status);
 
         /// <summary>
         /// Return secure key entry component status
         /// </summary>
         /// <returns></returns>
-        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => throw new NotSupportedException("The GetSecureKeyEntryStatus method is not supported in the Crypto ServiceProvider.");
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
     }
 }

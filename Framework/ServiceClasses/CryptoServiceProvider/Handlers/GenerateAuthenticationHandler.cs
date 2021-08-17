@@ -25,16 +25,22 @@ namespace XFS4IoTFramework.Crypto
         {
             if (string.IsNullOrEmpty(generateAuthentication.Payload.Key))
             {
-                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
-                                                                        $"No key name is specified.");
+                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                        $"No key name specified.");
+            }
+
+            if (string.IsNullOrEmpty(generateAuthentication.Payload.AuthenticationData))
+            {
+                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                        $"No authentication data specified.");
             }
 
             // Check key is stored and available
             KeyDetail keyDetail = Crypto.GetKeyDetail(generateAuthentication.Payload.Key);
             if (keyDetail is null)
             {
-                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode, 
-                                                                        $"Specified key name is not found. {generateAuthentication.Payload.Key}", 
+                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                        $"Specified key name is not found. {generateAuthentication.Payload.Key}",
                                                                         GenerateAuthenticationCompletion.PayloadData.ErrorCodeEnum.KeyNotFound);
             }
 
@@ -47,13 +53,14 @@ namespace XFS4IoTFramework.Crypto
 
             if (!Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$|^M[0-8]$"))
             {
-                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
+                return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                         $"Specified key {generateAuthentication.Payload.Key} has no valid key usage for generating authentication data.");
             }
 
             if (Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$") &&
+                (generateAuthentication.Payload.AuthenticationAttribute is null ||
                 (generateAuthentication.Payload.AuthenticationAttribute.CryptoMethod is null &&
-                 generateAuthentication.Payload.AuthenticationAttribute.HashAlgorithm is null))
+                 generateAuthentication.Payload.AuthenticationAttribute.HashAlgorithm is null)))
             {
                 return new GenerateAuthenticationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
                                                                         $"No hash algorith, or cryptoMethod specified.");
@@ -250,7 +257,7 @@ namespace XFS4IoTFramework.Crypto
             byte padding = (byte)(generateAuthentication.Payload.Padding is not null ? generateAuthentication.Payload.Padding : 0);
 
             GenerateAuthenticationDataResult result;
-            if (!Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$"))
+            if (Regex.IsMatch(keyDetail.KeyUsage, "^S[0-2]$"))
             {
                 Logger.Log(Constants.DeviceClass, "CryptoDev.GenerateSignature()");
 

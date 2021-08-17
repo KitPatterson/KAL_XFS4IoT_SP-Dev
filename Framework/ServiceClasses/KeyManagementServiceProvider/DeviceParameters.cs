@@ -40,7 +40,8 @@ namespace XFS4IoTFramework.KeyManagement
         {
             this.KeyVersionNumber = KeyVersionNumber;
 
-            Regex.IsMatch(Exportability, KeyDetail.regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
+            if (!string.IsNullOrEmpty(Exportability))
+                Regex.IsMatch(Exportability, KeyDetail.regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
             this.Exportability = Exportability;
             this.OptionalKeyBlockHeader = OptionalKeyBlockHeader;
             this.Generation = Generation;
@@ -266,6 +267,7 @@ namespace XFS4IoTFramework.KeyManagement
             : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
         {
             this.KeySlot = KeySlot;
+            this.KeyData = KeyData;
             this.VerifyAttribute = VerifyAttribute;
             this.DecryptAttribute = DecryptAttribute;
         }

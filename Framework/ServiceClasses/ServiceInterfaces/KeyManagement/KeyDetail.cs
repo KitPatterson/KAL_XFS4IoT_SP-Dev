@@ -75,7 +75,8 @@ namespace XFS4IoTFramework.KeyManagement
             this.KeyStatus = KeyStatus;
             this.Preloaded = Preloaded;
 
-            Regex.IsMatch(Exportability, regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
+            if (!string.IsNullOrEmpty(Exportability))
+                Regex.IsMatch(Exportability, regxExportability).IsTrue($"Invalid key usage specified. {Exportability}");
             this.Exportability = Exportability;
 
             this.KeyLength = KeyLength;
