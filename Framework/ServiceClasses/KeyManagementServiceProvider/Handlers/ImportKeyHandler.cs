@@ -255,6 +255,7 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
+            ImportKeyRequest.DecryptAttributeClass decryptKeyAttribute = null;
             if (!string.IsNullOrEmpty(importKey.Payload.DecryptKey))
             {
                 KeyDetail decryptKeyDetail = KeyManagement.GetKeyDetail(importKey.Payload.DecryptKey);
@@ -279,54 +280,71 @@ namespace XFS4IoTFramework.KeyManagement
                                                                ImportKeyCompletion.PayloadData.ErrorCodeEnum.AlgorithmNotSupported);
                 }
 
-                if (importKey.Payload.DecryptMethod is null)
-                {
-                    return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                               $"No decrypt method specified.");
-                }
-                
-                KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum decryptMethod = KeyManagement.KeyManagementCapabilities.DecryptAttributes[decryptKeyDetail.Algorithm].DecryptMethods;
-                if (decryptMethod == KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.NotSupported)
+                KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum decryptMethodCap = KeyManagement.KeyManagementCapabilities.DecryptAttributes[decryptKeyDetail.Algorithm].DecryptMethods;
+                if (decryptMethodCap == KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.NotSupported)
                 {
                     return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                $"No decrypt method is not supported. {importKey.Payload.DecryptMethod}",
                                                                ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
                 }
 
-                if (decryptKeyDetail.Algorithm != "R")
+                ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum decryptMethod = ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.TR31;
+                if (importKey.Payload.DecryptMethod is not null)
                 {
-                    if ((importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Cbc &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CBC)) ||
-                        (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Cfb &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CFB)) ||
-                        (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Ctr &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CTR)) ||
-                        (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Ecb &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.ECB)) ||
-                        (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Ofb &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.OFB)) ||
-                        (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Xts &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.XTS)))
+                    if (decryptKeyDetail.Algorithm != "R")
                     {
-                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
-                                                                   $"No decrypt method is not supported. {importKey.Payload.DecryptMethod}",
-                                                                   ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
+                        if ((importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Cbc &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CBC)) ||
+                            (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Cfb &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CFB)) ||
+                            (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Ctr &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CTR)) ||
+                            (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Ecb &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.ECB)) ||
+                            (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Ofb &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.OFB)) ||
+                            (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.Xts &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.XTS)))
+                        {
+                            return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                       $"No decrypt method is not supported. {importKey.Payload.DecryptMethod}",
+                                                                       ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
+                        }
+
+                        decryptMethod = importKey.Payload.DecryptMethod switch
+                        {
+                            ImportKeyCommand.PayloadData.DecryptMethodEnum.Cbc =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.CBC,
+                            ImportKeyCommand.PayloadData.DecryptMethodEnum.Cfb =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.CFB,
+                            ImportKeyCommand.PayloadData.DecryptMethodEnum.Ctr =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.CTR,
+                            ImportKeyCommand.PayloadData.DecryptMethodEnum.Ecb =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.ECB,
+                            ImportKeyCommand.PayloadData.DecryptMethodEnum.Ofb =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.OFB,
+                            _ =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.XTS
+                        };
+                    }
+                    else
+                    {
+                        if ((importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.RsaesOaep &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_OAEP)) ||
+                            (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.RsaesPkcs1V15 &&
+                             !decryptMethodCap.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_PKCS1_V1_5)))
+                        {
+                            return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                       $"No decrypt method is supported. {importKey.Payload.DecryptMethod}",
+                                                                       ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
+                        }
+
+                        decryptMethod = importKey.Payload.DecryptMethod switch
+                        {
+                            ImportKeyCommand.PayloadData.DecryptMethodEnum.RsaesOaep => ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.RSAES_OAEP,
+                            _ =>  ImportKeyRequest.DecryptAttributeClass.DecryptMethodEnum.RSAES_PKCS1_V1_5
+                        };
                     }
                 }
-                else
-                {
-                    if ((importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.RsaesOaep &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_OAEP)) ||
-                        (importKey.Payload.DecryptMethod == ImportKeyCommand.PayloadData.DecryptMethodEnum.RsaesPkcs1V15 &&
-                         !decryptMethod.HasFlag(KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_PKCS1_V1_5)))
-                    {
-                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
-                                                                   $"No decrypt method is supported. {importKey.Payload.DecryptMethod}",
-                                                                   ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
-                    }
-                }
+
+                decryptKeyAttribute = new ImportKeyRequest.DecryptAttributeClass(importKey.Payload.DecryptKey, decryptMethod);
             }
 
+            ImportKeyRequest.VerifyAttributeClass verifyKeyAttribute = null;
             if (!string.IsNullOrEmpty(importKey.Payload.VerifyKey))
             {
                 if (importKey.Payload.VerificationData is null)
@@ -371,42 +389,100 @@ namespace XFS4IoTFramework.KeyManagement
                                                                ImportKeyCompletion.PayloadData.ErrorCodeEnum.ModeNotSupported);
                 }
 
-                KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum cryptoMethod = KeyManagement.KeyManagementCapabilities.VerifyAttributes[verifyKeyDetail.KeyUsage][verifyKeyDetail.Algorithm]["V"].CryptoMethod;
-                if (cryptoMethod == KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.NotSupported)
+                if (importKey.Payload.VerifyAttributes is null)
+                {
+                    return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                               $"No verify attributes specified when verify key name is specified. {importKey.Payload.VerifyKey}");
+                }
+
+                if (importKey.Payload.VerifyAttributes.CryptoMethod is null)
+                {
+                    return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                               $"No cryptoMethod specified when verify key name is specified. {importKey.Payload.VerifyKey}");
+                }
+
+                KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum cryptoMethodCap = KeyManagement.KeyManagementCapabilities.VerifyAttributes[verifyKeyDetail.KeyUsage][verifyKeyDetail.Algorithm]["V"].CryptoMethod;
+                if (cryptoMethodCap == KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.NotSupported)
                 {
                     return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                $"Crypto method is not supported. {importKey.Payload.VerifyAttributes.CryptoMethod}",
                                                                ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
                 }
 
+                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum verifyMethod;
+                ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum? hashAlgorithm = null;
                 if (verifyKeyDetail.Algorithm != "R")
                 {
                     if ((importKey.Payload.VerifyAttributes.CryptoMethod == ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvNone &&
-                         !cryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVNone)) ||
+                         !cryptoMethodCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVNone)) ||
                         (importKey.Payload.VerifyAttributes.CryptoMethod == ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvSelf &&
-                         !cryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVSelf)) ||
+                         !cryptoMethodCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVSelf)) ||
                         (importKey.Payload.VerifyAttributes.CryptoMethod == ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvZero &&
-                         !cryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVZero)))
+                         !cryptoMethodCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVZero)))
                     {
                         return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                    $"No crypto method is supported. {importKey.Payload.VerifyAttributes.CryptoMethod}",
                                                                    ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
                     }
+
+                    verifyMethod = importKey.Payload.VerifyAttributes.CryptoMethod switch
+                    {
+                        ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvSelf => ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVSelf,
+                        ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvZero => ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVZero,
+                        _ =>  ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVNone
+                    };
                 }
                 else
                 {
                     if ((importKey.Payload.VerifyAttributes.CryptoMethod == ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.SigNone &&
-                         !cryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.SignatureNone)) ||
+                         !cryptoMethodCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.SignatureNone)) ||
                         (importKey.Payload.VerifyAttributes.CryptoMethod == ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPkcs1V15 &&
-                         !cryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PKCS1_V1_5)) ||
+                         !cryptoMethodCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PKCS1_V1_5)) ||
                         (importKey.Payload.VerifyAttributes.CryptoMethod == ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPs &&
-                         !cryptoMethod.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PSS)))
+                         !cryptoMethodCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PSS)))
                     {
                         return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                    $"No decrypt method is not supported. {importKey.Payload.VerifyAttributes.CryptoMethod}",
                                                                    ImportKeyCompletion.PayloadData.ErrorCodeEnum.CryptoMethodNotSupported);
                     }
+
+                    verifyMethod = importKey.Payload.VerifyAttributes.CryptoMethod switch
+                    {
+                        ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPkcs1V15 => ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PKCS1_V1_5,
+                        ImportKeyCommand.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPs => ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PSS,
+                        _ =>  ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.SignatureNone
+                    };
+
+                    if (importKey.Payload.VerifyAttributes.HashAlgorithm is null &&
+                        verifyMethod != ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.SignatureNone)
+                    {
+                        return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"No hash algorithm specified when verify method is {importKey.Payload.VerifyAttributes.CryptoMethod}.");
+                    }
+
+                    if (verifyMethod != ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.SignatureNone)
+                    {
+                        KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum hashAlgorithmCap = KeyManagement.KeyManagementCapabilities.VerifyAttributes[verifyKeyDetail.KeyUsage][verifyKeyDetail.Algorithm]["V"].HashAlgorithm;
+                        if (hashAlgorithmCap == KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.NotSupported)
+                        {
+                            return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                       $"No hash algorithm supported to verify.",
+                                                                       ImportKeyCompletion.PayloadData.ErrorCodeEnum.AlgorithmNotSupported);
+                        }
+
+                        if ((importKey.Payload.VerifyAttributes.HashAlgorithm == ImportKeyCommand.PayloadData.VerifyAttributesClass.HashAlgorithmEnum.Sha1 &&
+                             !hashAlgorithmCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA1)) ||
+                            (importKey.Payload.VerifyAttributes.HashAlgorithm == ImportKeyCommand.PayloadData.VerifyAttributesClass.HashAlgorithmEnum.Sha256 &&
+                             !hashAlgorithmCap.HasFlag(KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA256)))
+                        {
+                            return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                                       $"No hash algorithm supported to verify. {importKey.Payload.VerifyAttributes.HashAlgorithm}",
+                                                                       ImportKeyCompletion.PayloadData.ErrorCodeEnum.AlgorithmNotSupported);
+                        }
+                    }
                 }
+
+                verifyKeyAttribute = new ImportKeyRequest.VerifyAttributeClass(importKey.Payload.VerifyKey, verifyMethod, hashAlgorithm);
             }
 
             ImportKeyResult result;
@@ -434,7 +510,9 @@ namespace XFS4IoTFramework.KeyManagement
                                                                      importKey.Payload.KeyAttributes.KeyUsage,
                                                                      importKey.Payload.KeyAttributes.Algorithm,
                                                                      importKey.Payload.KeyAttributes.ModeOfUse,
-                                                                     importKey.Payload.KeyAttributes.Restricted),
+                                                                     importKey.Payload.KeyAttributes.Restricted,
+                                                                     verifyKeyAttribute,
+                                                                     decryptKeyAttribute),
                                                 cancel);
 
                 Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");

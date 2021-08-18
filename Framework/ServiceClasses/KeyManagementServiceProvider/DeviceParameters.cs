@@ -235,6 +235,7 @@ namespace XFS4IoTFramework.KeyManagement
                 XTS,
                 RSAES_PKCS1_V1_5,
                 RSAES_OAEP,
+                TR31 // decrypt method is in the TR31 keyblock
             }
 
             public DecryptAttributeClass(string KeyName,
