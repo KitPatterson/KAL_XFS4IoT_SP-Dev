@@ -54,6 +54,10 @@ namespace XFS4IoT.KeyManagement.Commands
             /// The public key part can only be used for the inverse function.
             /// For example, if the rsaPrivateSign use is specified, then the private key can only be used for signature 
             /// generation and the partner public key can only be used for verification.
+            /// The following values are possible:
+            /// 
+            /// * ```rsaPrivate``` - Key is used as a private key for RSA decryption.
+            /// * ```rsaPrivateSign``` - Key is used as a private key for RSA Signature generation. Only data generated within the device can be signed.
             /// </summary>
             [DataMember(Name = "use")]
             public UseEnum? Use { get; init; }
@@ -68,13 +72,19 @@ namespace XFS4IoT.KeyManagement.Commands
             public enum ExponentValueEnum
             {
                 Default,
-                Exponent_1,
-                Exponent_4,
-                Exponent_16
+                Exponent1,
+                Exponent4,
+                Exponent16
             }
 
             /// <summary>
-            /// Specifies the value of the exponent of the RSA key pair to be generated
+            /// Specifies the value of the exponent of the RSA key pair to be generated.
+            /// The following values are possible:
+            /// 
+            /// * ```default``` - The device will decide the exponent.
+            /// * ```exponent1``` - Exponent of 21+1 (3).
+            /// * ```exponent4``` - Exponent of 24+1 (17).
+            /// * ```exponent16``` - Exponent of 216+1 (65537).
             /// </summary>
             [DataMember(Name = "exponentValue")]
             public ExponentValueEnum? ExponentValue { get; init; }

@@ -32,7 +32,7 @@ namespace XFS4IoT.Common
         FraudAttempt,
         SequenceError,
         AuthorisationRequired,
-        NoTokenNonce,
+        NoCommandNonce,
         InvalidToken,
         InvalidTokenNonce,
         InvalidTokenHMAC,

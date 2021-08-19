@@ -60,6 +60,11 @@ namespace XFS4IoT.KeyManagement.Completions
             /// <summary>
             /// Defines algorithm/method used to generate the public key check value/thumb print.
             /// The check value can be used to verify that the public key has been imported correctly.
+            /// 
+            /// The following values are possible:
+            /// * ```none``` - No check value is returned in *rsaData* property.
+            /// * ```sha1``` - The *rsaData* property contains a sha-1 digest of the public key.
+            /// * ```sha256``` - The *rsaData* contains a sha-256 digest of the public key.
             /// </summary>
             [DataMember(Name = "rsaKeyCheckMode")]
             public RsaKeyCheckModeEnum? RsaKeyCheckMode { get; init; }

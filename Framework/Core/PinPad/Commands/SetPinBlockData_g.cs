@@ -163,30 +163,10 @@ namespace XFS4IoT.PinPad.Commands
             [DataContract]
             public sealed class PinBlockAttributesClass
             {
-                public PinBlockAttributesClass(AlgorithmEnum? Algorithm = null, CryptoMethodEnum? CryptoMethod = null)
+                public PinBlockAttributesClass(CryptoMethodEnum? CryptoMethod = null)
                 {
-                    this.Algorithm = Algorithm;
                     this.CryptoMethod = CryptoMethod;
                 }
-
-                public enum AlgorithmEnum
-                {
-                    A,
-                    D,
-                    R,
-                    T
-                }
-
-                /// <summary>
-                /// Specifies the encryption [algorithms](#common.capabilities.completion.properties.pinpad.pinblockattributes.p0.t) supported by the PinBlock command.
-                /// The following values are possible:  
-                /// * ```A``` - AES.  
-                /// * ```D``` - DEA.  
-                /// * ```R``` - RSA.  
-                /// * ```T``` - Triple DEA (also referred to as TDEA).
-                /// </summary>
-                [DataMember(Name = "algorithm")]
-                public AlgorithmEnum? Algorithm { get; init; }
 
                 public enum CryptoMethodEnum
                 {

@@ -27,7 +27,7 @@ namespace XFS4IoT.Keyboard.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, KeyLenEnum? KeyLen = null, bool? AutoEnd = null, FDKKeysClass ActiveFDKs = null, FunctionKeysClass ActiveKeys = null, FDKKeysClass TerminateFDKs = null, FunctionKeysClass TrerminateKeys = null, VerificationTypeEnum? VerificationType = null)
+            public PayloadData(int Timeout, KeyLenEnum? KeyLen = null, bool? AutoEnd = null, string ActiveFDKs = null, string ActiveKeys = null, string TerminateFDKs = null, string TrerminateKeys = null, VerificationTypeEnum? VerificationType = null)
                 : base(Timeout)
             {
                 this.KeyLen = KeyLen;
@@ -47,7 +47,7 @@ namespace XFS4IoT.Keyboard.Commands
             }
 
             /// <summary>
-            /// Specifies the number of digits which must be entered for the encryption key, 16 for a single length key, 
+            /// Specifies the number of digits which must be entered for the encryption key, 16 for a singlelength key, 
             /// 32 for a double-length key and 48 for a triple-length key.
             /// The only valid values are 16, 32 and 48.
             /// </summary>
@@ -55,9 +55,9 @@ namespace XFS4IoT.Keyboard.Commands
             public KeyLenEnum? KeyLen { get; init; }
 
             /// <summary>
-            /// If *autoEnd* is set to true, the Service Provider terminates the command when the maximum number of encryption 
+            /// If autoEnd is set to true, the Service Provider terminates the command when the maximum number of encryption 
             /// key digits are entered. Otherwise, the input is terminated by the user using Enter, Cancel or any terminating key. 
-            /// When *keyLen* is reached, the Service Provider will disable all keys associated with an encryption key digit.
+            /// When keyLen is reached, the Service Provider will disable all keys associated with an encryption key digit.
             /// </summary>
             [DataMember(Name = "autoEnd")]
             public bool? AutoEnd { get; init; }
@@ -67,28 +67,33 @@ namespace XFS4IoT.Keyboard.Commands
             /// This parameter should include those FDKs mapped to edit functions.
             /// </summary>
             [DataMember(Name = "activeFDKs")]
-            public FDKKeysClass ActiveFDKs { get; init; }
+            [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+            public string ActiveFDKs { get; init; }
 
             /// <summary>
             /// Specifies all Function Keys(not FDKs) which are active during the execution of the command.
-            /// This should be the complete set or a subset of the keys returned by the [GetSecureKeyDetail](#keyboard.getsecurekeydetail) command.
+            /// This should be the complete set or a subset of the keys returned in the payload of the 
+            /// [Keyboard.GetLayout](#keyboard.getlayout) command.
             /// </summary>
             [DataMember(Name = "activeKeys")]
-            public FunctionKeysClass ActiveKeys { get; init; }
+            [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+            public string ActiveKeys { get; init; }
 
             /// <summary>
             /// Specifies those FDKs which must terminate the execution of the command.
             /// This should include the FDKs associated with Cancel and Enter.
             /// </summary>
             [DataMember(Name = "terminateFDKs")]
-            public FDKKeysClass TerminateFDKs { get; init; }
+            [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+            public string TerminateFDKs { get; init; }
 
             /// <summary>
             /// Specifies those all Function Keys (not FDKs) which must terminate the execution of the command.
             /// This does not include the FDKs associated with Enter or Cancel.
             /// </summary>
             [DataMember(Name = "trerminateKeys")]
-            public FunctionKeysClass TrerminateKeys { get; init; }
+            [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+            public string TrerminateKeys { get; init; }
 
             public enum VerificationTypeEnum
             {

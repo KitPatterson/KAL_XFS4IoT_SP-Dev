@@ -26,7 +26,7 @@ namespace XFS4IoT.KeyManagement.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, string VerificationData = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null, int? KeyLength = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, string VerificationData = null, VerifyAttributesClass VerifyAttributes = null, int? KeyLength = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
@@ -83,113 +83,108 @@ namespace XFS4IoT.KeyManagement.Completions
             [DataContract]
             public sealed class VerifyAttributesClass
             {
-                public VerifyAttributesClass(CryptoMethodClass CryptoMethod = null, HashAlgorithmClass HashAlgorithm = null)
+                public VerifyAttributesClass(string KeyUsage = null, string Algorithm = null, string ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
                 {
+                    this.KeyUsage = KeyUsage;
+                    this.Algorithm = Algorithm;
+                    this.ModeOfUse = ModeOfUse;
                     this.CryptoMethod = CryptoMethod;
                     this.HashAlgorithm = HashAlgorithm;
                 }
 
-                [DataContract]
-                public sealed class CryptoMethodClass
+                /// <summary>
+                /// Specifies the key usage.
+                /// The following values are possible:  
+                /// 
+                /// * ```M0``` - ISO 16609 MAC Algorithm 1 (using TDEA). 
+                /// * ```M1``` - ISO 9797-1 MAC Algorithm 1. 
+                /// * ```M2``` - ISO 9797-1 MAC Algorithm 2. 
+                /// * ```M3``` - ISO 9797-1 MAC Algorithm 3. 
+                /// * ```M4``` - ISO 9797-1 MAC Algorithm 4. 
+                /// * ```M5``` - ISO 9797-1:1999 MAC Algorithm 5. 
+                /// * ```M6``` - ISO 9797-1:2011 MAC Algorithm 5 / CMAC. 
+                /// * ```M7``` - HMAC. 
+                /// * ```M8``` - ISO 9797-1:2011 MAC Algorithm 6. 
+                /// * ```S0``` - Asymmetric key pair or digital signature. 
+                /// * ```S1``` - Asymmetric key pair, CA key. 
+                /// * ```S2``` - Asymmetric key pair, nonX9.24 key. 
+                /// * ```00 - 99``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "keyUsage")]
+                [DataTypes(Pattern = "^M[0-8]$|^S[0-2]$|^[0-9][0-9]$")]
+                public string KeyUsage { get; init; }
+
+                /// <summary>
+                /// Specifies the encryption algorithm.
+                /// The following values are possible:
+                /// 
+                /// * ```A``` - AES.
+                /// * ```D``` - DEA. 
+                /// * ```R``` - RSA. 
+                /// * ```T``` - Triple DEA (also referred to as TDEA). 
+                /// * ```"0" - "9"``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "algorithm")]
+                [DataTypes(Pattern = "^[0-9ADRT]$")]
+                public string Algorithm { get; init; }
+
+                /// <summary>
+                /// Specifies the encryption mode.
+                /// The following values are possible: 
+                /// 
+                /// * ```S``` - Signature.  
+                /// * ```V``` - Verify Only. 
+                /// * ```0 - 9``` - These numeric values are reserved for proprietary use.
+                /// </summary>
+                [DataMember(Name = "modeOfUse")]
+                [DataTypes(Pattern = "^[0-9SV]$")]
+                public string ModeOfUse { get; init; }
+
+                public enum CryptoMethodEnum
                 {
-                    public CryptoMethodClass(bool? KcvNone = null, bool? KcvSelf = null, bool? KcvZero = null, bool? SigNone = null, bool? RsassaPkcs1V15 = null, bool? RsassaPss = null)
-                    {
-                        this.KcvNone = KcvNone;
-                        this.KcvSelf = KcvSelf;
-                        this.KcvZero = KcvZero;
-                        this.SigNone = SigNone;
-                        this.RsassaPkcs1V15 = RsassaPkcs1V15;
-                        this.RsassaPss = RsassaPss;
-                    }
-
-                    /// <summary>
-                    /// The ECB encryption method. 
-                    /// </summary>
-                    [DataMember(Name = "kcvNone")]
-                    public bool? KcvNone { get; init; }
-
-                    /// <summary>
-                    /// There is no key check value verification required. 
-                    /// </summary>
-                    [DataMember(Name = "kcvSelf")]
-                    public bool? KcvSelf { get; init; }
-
-                    /// <summary>
-                    /// The key check value (KCV) is created by encrypting a zero value with the key. 
-                    /// </summary>
-                    [DataMember(Name = "kcvZero")]
-                    public bool? KcvZero { get; init; }
-
-                    /// <summary>
-                    /// The No signature algorithm specified. No signature verification will take place.
-                    /// </summary>
-                    [DataMember(Name = "sigNone")]
-                    public bool? SigNone { get; init; }
-
-                    /// <summary>
-                    /// The RSASSA-PKCS1-v1.5 algorithm. 
-                    /// </summary>
-                    [DataMember(Name = "rsassaPkcs1V15")]
-                    public bool? RsassaPkcs1V15 { get; init; }
-
-                    /// <summary>
-                    /// The RSASSA-PSS algorithm.
-                    /// </summary>
-                    [DataMember(Name = "rsassaPss")]
-                    public bool? RsassaPss { get; init; }
-
+                    KcvNone,
+                    KcvSelf,
+                    KcvZero,
+                    SigNone,
+                    RsassaPkcs1V15,
+                    RsassaPs
                 }
 
                 /// <summary>
-                /// This parameter specifies the cryptographic method that will be used with encryption algorithm.
+                /// This parameter specifies the cryptographic method [cryptomethod](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t.v.cryptomethod) that will be used with encryption algorithm.
                 /// 
-                /// If the algorithm is 'A', 'D', or 'T' and the key usage is a MAC usage (i.e. 'M1'), then all properties are false. 
+                /// If the *algorithm* property is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified *keyUsage* property is MAC key usage (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0)), then this property can be omitted. 
                 /// 
-                /// If the algorithm is 'A', 'D', or 'T' and the key usage is '00', then one of properties must be set true. 
+                /// If the *algorithm* property is ['A', 'D', or 'T'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified *keyUsage* property is ['00'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be one of the following values: 
                 /// 
                 /// * ```kcvNone``` - There is no key check value verification required. 
-                /// * ```kcvSelf``` - The key check value (KCV) is created by an encryption of the key with itself. 
+                /// * ```kcvSelf``` - The key check value (KCV) is created by an encryption of the key with itself.
                 /// * ```kcvZero``` - The key check value (KCV) is created by encrypting a zero value with the key. 
                 /// 
-                /// If the algorithm is 'R' and the key usage is not '00', then one of properties must be set true. 
+                /// If the *algorithm* property is ['R'](#common.capabilities.completion.properties.keymanagement.verifyattributes.m0.t) and specified *keyUsage* property is not ['00'](#common.capabilities.completion.properties.keymanagement.keyattributes.m0), then this property can be one of the following values: 
                 /// 
-                /// * ```sigNone``` - No signature algorithm specified. No signature verification will take place and the 
-                /// content of verificationData must be set. 
+                /// * ```sigNone``` - No signature algorithm specified. No signature verification will take place and the content of verificationData is not required. 
                 /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
                 /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm.
                 /// </summary>
                 [DataMember(Name = "cryptoMethod")]
-                public CryptoMethodClass CryptoMethod { get; init; }
+                public CryptoMethodEnum? CryptoMethod { get; init; }
 
-                [DataContract]
-                public sealed class HashAlgorithmClass
+                public enum HashAlgorithmEnum
                 {
-                    public HashAlgorithmClass(bool? Sha1 = null, bool? Sha256 = null)
-                    {
-                        this.Sha1 = Sha1;
-                        this.Sha256 = Sha256;
-                    }
-
-                    /// <summary>
-                    /// The SHA 1 digest algorithm.
-                    /// </summary>
-                    [DataMember(Name = "sha1")]
-                    public bool? Sha1 { get; init; }
-
-                    /// <summary>
-                    /// The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
-                    /// </summary>
-                    [DataMember(Name = "sha256")]
-                    public bool? Sha256 { get; init; }
-
+                    Sha1,
+                    Sha256
                 }
 
                 /// <summary>
-                /// For asymmetric signature verification methods (key usage is 'S0', 'S1', or 'S2'), then one of the following properties are true.
-                /// If the key usage is any of the MAC usages (i.e. 'M1'), then properties both 'sha1' and 'sha256' are false.
+                /// For asymmetric signature verification methods (Specified *keyUsage* property is ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.keymanagement.keyattributes.k1)), this can be one of the following values to be used.
+                /// If the *keyUsage* property is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.keymanagement.keyattributes.k1)), then this property can be omitted.
+                /// 
+                /// * ```sha1``` - The SHA 1 digest algorithm. 
+                /// * ```sha256``` - The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
                 /// </summary>
                 [DataMember(Name = "hashAlgorithm")]
-                public HashAlgorithmClass HashAlgorithm { get; init; }
+                public HashAlgorithmEnum? HashAlgorithm { get; init; }
 
             }
 
@@ -199,7 +194,7 @@ namespace XFS4IoT.KeyManagement.Completions
             /// capability fields. This field is not set if there is no verification data.
             /// </summary>
             [DataMember(Name = "verifyAttributes")]
-            public Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes { get; init; }
+            public VerifyAttributesClass VerifyAttributes { get; init; }
 
             /// <summary>
             /// Specifies the length, in bits, of the key. 0 is the key length is unknown.

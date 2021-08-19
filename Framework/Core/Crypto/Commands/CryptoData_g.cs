@@ -76,48 +76,10 @@ namespace XFS4IoT.Crypto.Commands
             [DataContract]
             public sealed class CryptoAttributesClass
             {
-                public CryptoAttributesClass(AlgorithmEnum? Algorithm = null, ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null)
+                public CryptoAttributesClass(CryptoMethodEnum? CryptoMethod = null)
                 {
-                    this.Algorithm = Algorithm;
-                    this.ModeOfUse = ModeOfUse;
                     this.CryptoMethod = CryptoMethod;
                 }
-
-                public enum AlgorithmEnum
-                {
-                    A,
-                    D,
-                    R,
-                    T
-                }
-
-                /// <summary>
-                /// Specifies the encryption algorithms supported by [Crypto.CryptoData](#crypto.cryptodata) command. The following values are
-                /// possible: 
-                /// 
-                /// * ```A``` - AES.
-                /// * ```D``` - DEA.
-                /// * ```R``` - RSA.
-                /// * ```T``` - Triple DEA (also referred to as TDEA).
-                /// </summary>
-                [DataMember(Name = "algorithm")]
-                public AlgorithmEnum? Algorithm { get; init; }
-
-                public enum ModeOfUseEnum
-                {
-                    D,
-                    E
-                }
-
-                /// <summary>
-                /// Specifies the encryption mode supported by [Crypto.CryptoData](#crypto.cryptodata) command. The following values are
-                /// possible:
-                /// 
-                /// * ```D``` - Decrypt 
-                /// * ```E``` - Encrypt
-                /// </summary>
-                [DataMember(Name = "modeOfUse")]
-                public ModeOfUseEnum? ModeOfUse { get; init; }
 
                 public enum CryptoMethodEnum
                 {
@@ -133,7 +95,7 @@ namespace XFS4IoT.Crypto.Commands
 
                 /// <summary>
                 /// Specifies the cryptographic method supported by the [Crypto.CryptoData](#crypto.cryptodata) command. For symmetric encryption
-                /// methods (keyUsage is �D0�), this can be one of the following values:
+                /// methods (keyUsage is ‘D0’), this can be one of the following values:
                 /// 
                 /// * ```ecb``` - The ECB encryption method.
                 /// * ```cbc``` - The CBC encryption method.
@@ -142,7 +104,7 @@ namespace XFS4IoT.Crypto.Commands
                 /// * ```ctr``` - The CTR method defined in NIST SP800-38A.
                 /// * ```xts``` - The XTS method defined in NIST SP800-38E.
                 /// 
-                /// For asymmetric encryption methods (keyUsage is �D1�), this can be one of the following values:
+                /// For asymmetric encryption methods (keyUsage is ‘D1’), this can be one of the following values:
                 /// 
                 /// * ```rsaesPkcs1V15``` - Use the RSAES_PKCS1-v1.5 algorithm.
                 /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.

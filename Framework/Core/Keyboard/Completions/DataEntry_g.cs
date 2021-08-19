@@ -58,13 +58,13 @@ namespace XFS4IoT.Keyboard.Completions
             public int? Keys { get; init; }
 
             /// <summary>
-            /// Array to the pinKey that contain the keys entered by the user 
+            /// Array contains the keys entered by the user 
             /// </summary>
             [DataMember(Name = "pinKeys")]
             public List<EntryCompletionEnum> PinKeys { get; init; }
 
             /// <summary>
-            /// Specifies the reason for completion of the entry
+            /// Specifies the reason for completion of the entry.
             /// </summary>
             [DataMember(Name = "completion")]
             public EntryCompletionEnum? Completion { get; init; }

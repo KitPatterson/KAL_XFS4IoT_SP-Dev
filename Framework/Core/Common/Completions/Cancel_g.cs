@@ -26,10 +26,25 @@ namespace XFS4IoT.Common.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null)
                 : base(CompletionCode, ErrorDescription)
             {
+                this.ErrorCode = ErrorCode;
             }
+
+            public enum ErrorCodeEnum
+            {
+                NoMatchingRequestIDs
+            }
+
+            /// <summary>
+            /// Specifies the error code if applicable. The following values are possible:
+            /// 
+            /// * ```noMatchingRequestIDs``` - No queued or executing command matches the 
+            ///   [requestIDs](#common.cancel.command.properties.requestids) property.
+            /// </summary>
+            [DataMember(Name = "errorCode")]
+            public ErrorCodeEnum? ErrorCode { get; init; }
 
         }
     }

@@ -59,7 +59,7 @@ namespace XFS4IoT.KeyManagement
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(int? KeyNum = null, DerivationAlgorithmsClass DerivationAlgorithms = null, IdKeyClass IdKey = null, KeyCheckModesClass KeyCheckModes = null, string HsmVendor = null, RsaAuthenticationSchemeClass RsaAuthenticationScheme = null, RsaSignatureAlgorithmClass RsaSignatureAlgorithm = null, RsaCryptAlgorithmClass RsaCryptAlgorithm = null, RsaKeyCheckModeClass RsaKeyCheckMode = null, SignatureSchemeClass SignatureScheme = null, EmvImportSchemesClass EmvImportSchemes = null, KeyBlockImportFormatsClass KeyBlockImportFormats = null, bool? KeyImportThroughParts = null, DesKeyLengthClass DesKeyLength = null, CertificateTypesClass CertificateTypes = null, List<LoadCertOptionsClass> LoadCertOptions = null, CrklLoadOptionsClass CrklLoadOptions = null, List<RestrictedKeyEncKeySupportClass> RestrictedKeyEncKeySupport = null, SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods = null, Dictionary<string, Dictionary<string, Dictionary<string, KeyAttributesClass>>> KeyAttributes = null, Dictionary<string, DecryptAttributesClass> DecryptAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
+        public CapabilitiesClass(int? KeyNum = null, DerivationAlgorithmsClass DerivationAlgorithms = null, IdKeyClass IdKey = null, KeyCheckModesClass KeyCheckModes = null, string HsmVendor = null, RsaAuthenticationSchemeClass RsaAuthenticationScheme = null, RsaSignatureAlgorithmClass RsaSignatureAlgorithm = null, RsaCryptAlgorithmClass RsaCryptAlgorithm = null, RsaKeyCheckModeClass RsaKeyCheckMode = null, SignatureSchemeClass SignatureScheme = null, EmvImportSchemesClass EmvImportSchemes = null, KeyBlockImportFormatsClass KeyBlockImportFormats = null, bool? KeyImportThroughParts = null, DesKeyLengthClass DesKeyLength = null, CertificateTypesClass CertificateTypes = null, List<LoadCertOptionsClass> LoadCertOptions = null, CrklLoadOptionsClass CrklLoadOptions = null, SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods = null, Dictionary<string, Dictionary<string, Dictionary<string, KeyAttributesClass>>> KeyAttributes = null, Dictionary<string, DecryptAttributesClass> DecryptAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
         {
             this.KeyNum = KeyNum;
             this.DerivationAlgorithms = DerivationAlgorithms;
@@ -78,7 +78,6 @@ namespace XFS4IoT.KeyManagement
             this.CertificateTypes = CertificateTypes;
             this.LoadCertOptions = LoadCertOptions;
             this.CrklLoadOptions = CrklLoadOptions;
-            this.RestrictedKeyEncKeySupport = RestrictedKeyEncKeySupport;
             this.SymmetricKeyManagementMethods = SymmetricKeyManagementMethods;
             this.KeyAttributes = KeyAttributes;
             this.DecryptAttributes = DecryptAttributes;
@@ -653,101 +652,6 @@ namespace XFS4IoT.KeyManagement
         public CrklLoadOptionsClass CrklLoadOptions { get; init; }
 
         [DataContract]
-        public sealed class RestrictedKeyEncKeySupportClass
-        {
-            public RestrictedKeyEncKeySupportClass(LoadingMethodEnum? LoadingMethod = null, UsesClass Uses = null)
-            {
-                this.LoadingMethod = LoadingMethod;
-                this.Uses = Uses;
-            }
-
-            public enum LoadingMethodEnum
-            {
-                RsaAuth2partySig,
-                RsaAuth3partyCert,
-                RsaAuth3partyCertTr34,
-                RestrictedSecurekeyentry
-            }
-
-            /// <summary>
-            /// Specifies the loading methods supported.
-            /// The possible variables are:
-            /// 
-            /// * ```rsaAuth2partySig``` - Two-party Signature based.
-            /// * ```rsaAuth3partyCert``` - Three-party Certificate based.
-            /// * ```rsaAuth3partyCertTr34``` - Three- party Certificate based TR34.
-            /// * ```restrictedSecurekeyentry``` - Restricted secure key entry.
-            /// </summary>
-            [DataMember(Name = "loadingMethod")]
-            public LoadingMethodEnum? LoadingMethod { get; init; }
-
-            [DataContract]
-            public sealed class UsesClass
-            {
-                public UsesClass(bool? Crypt = null, bool? Function = null, bool? Macing = null, bool? Pinlocal = null, bool? Svenckey = null, bool? PinRemote = null)
-                {
-                    this.Crypt = Crypt;
-                    this.Function = Function;
-                    this.Macing = Macing;
-                    this.Pinlocal = Pinlocal;
-                    this.Svenckey = Svenckey;
-                    this.PinRemote = PinRemote;
-                }
-
-                /// <summary>
-                /// Key isused for encryption and decryption.
-                /// </summary>
-                [DataMember(Name = "crypt")]
-                public bool? Crypt { get; init; }
-
-                /// <summary>
-                /// Key is used for Pin block creation.
-                /// </summary>
-                [DataMember(Name = "function")]
-                public bool? Function { get; init; }
-
-                /// <summary>
-                /// Key is using for macing.
-                /// </summary>
-                [DataMember(Name = "macing")]
-                public bool? Macing { get; init; }
-
-                /// <summary>
-                /// Key is used only for local PIN check.
-                /// </summary>
-                [DataMember(Name = "pinlocal")]
-                public bool? Pinlocal { get; init; }
-
-                /// <summary>
-                /// Key is used as cbc start Value encryption key.
-                /// </summary>
-                [DataMember(Name = "svenckey")]
-                public bool? Svenckey { get; init; }
-
-                /// <summary>
-                /// Key is used only for PIN block creation.
-                /// </summary>
-                [DataMember(Name = "pinRemote")]
-                public bool? PinRemote { get; init; }
-
-            }
-
-            /// <summary>
-            /// Specifies one or more usage flags that can be used in combination with the RestrictedKeyEncKey.
-            /// </summary>
-            [DataMember(Name = "uses")]
-            public UsesClass Uses { get; init; }
-
-        }
-
-        /// <summary>
-        /// A array of object specifying the loading methods that support the RestrictedKeyEncKey usage flag 
-        /// and the allowable usage flag combinations.
-        /// </summary>
-        [DataMember(Name = "restrictedKeyEncKeySupport")]
-        public List<RestrictedKeyEncKeySupportClass> RestrictedKeyEncKeySupport { get; init; }
-
-        [DataContract]
         public sealed class SymmetricKeyManagementMethodsClass
         {
             public SymmetricKeyManagementMethodsClass(bool? FixedKey = null, bool? MasterKey = null, bool? TdesDukpt = null)
@@ -1070,6 +974,21 @@ namespace XFS4IoT.KeyManagement
     }
 
 
+    public enum SigningMethodEnum
+    {
+        None,
+        Certhost,
+        SigHost,
+        Ca,
+        Hl,
+        Cbcmac,
+        Cmac,
+        Reserved1,
+        Reserved2,
+        Reserved3
+    }
+
+
     public enum TypeDataItemToExportEnum
     {
         EppId,
@@ -1082,94 +1001,6 @@ namespace XFS4IoT.KeyManagement
         Na,
         RsassaPkcs1V15,
         RsassaPss
-    }
-
-
-    [DataContract]
-    public sealed class SignersClass
-    {
-        public SignersClass(bool? None = null, bool? Certhost = null, bool? Sighost = null, bool? Ca = null, bool? Hl = null, bool? Tr34 = null, bool? Cbcmac = null, bool? Cmac = null, bool? Reserved_1 = null, bool? Reserved_2 = null, bool? Reserved_3 = null)
-        {
-            this.None = None;
-            this.Certhost = Certhost;
-            this.Sighost = Sighost;
-            this.Ca = Ca;
-            this.Hl = Hl;
-            this.Tr34 = Tr34;
-            this.Cbcmac = Cbcmac;
-            this.Cmac = Cmac;
-            this.Reserved_1 = Reserved_1;
-            this.Reserved_2 = Reserved_2;
-            this.Reserved_3 = Reserved_3;
-        }
-
-        /// <summary>
-        /// Authentication is not required.
-        /// </summary>
-        [DataMember(Name = "none")]
-        public bool? None { get; init; }
-
-        /// <summary>
-        /// The data is signed by the current Host, using the RSA certificate-based scheme.
-        /// </summary>
-        [DataMember(Name = "certhost")]
-        public bool? Certhost { get; init; }
-
-        /// <summary>
-        /// The data is signed by the current Host, using the RSA signature-based scheme.
-        /// </summary>
-        [DataMember(Name = "sighost")]
-        public bool? Sighost { get; init; }
-
-        /// <summary>
-        /// The data is signed by the Certificate Authority (CA).
-        /// </summary>
-        [DataMember(Name = "ca")]
-        public bool? Ca { get; init; }
-
-        /// <summary>
-        /// The data is signed by the Higher Level (HL) Authority.
-        /// </summary>
-        [DataMember(Name = "hl")]
-        public bool? Hl { get; init; }
-
-        /// <summary>
-        /// The format of the data that was signed complies with the data defined in X9 TR342012 [Ref. 42]. 
-        /// This value can only be used in combination with the CERTHOST, CA or HL flags.
-        /// </summary>
-        [DataMember(Name = "tr34")]
-        public bool? Tr34 { get; init; }
-
-        /// <summary>
-        /// A MAC is calculated over the data using lpsKey and the CBC MAC algorithm.
-        /// </summary>
-        [DataMember(Name = "cbcmac")]
-        public bool? Cbcmac { get; init; }
-
-        /// <summary>
-        /// A MAC is calculated over the data using lpsKey and the CMAC algorithm.
-        /// </summary>
-        [DataMember(Name = "cmac")]
-        public bool? Cmac { get; init; }
-
-        /// <summary>
-        /// Reserved for a vendor-defined signing method.
-        /// </summary>
-        [DataMember(Name = "reserved_1")]
-        public bool? Reserved_1 { get; init; }
-
-        /// <summary>
-        /// Reserved for a vendor-defined signing method.
-        /// </summary>
-        [DataMember(Name = "reserved_2")]
-        public bool? Reserved_2 { get; init; }
-
-        /// <summary>
-        /// Reserved for a vendor-defined signing method.
-        /// </summary>
-        [DataMember(Name = "reserved_3")]
-        public bool? Reserved_3 { get; init; }
-
     }
 
 

@@ -26,20 +26,12 @@ namespace XFS4IoT.KeyManagement.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, string InternalCmdResult = null, string DataToSign = null, SignersClass Signers = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, string DataToSign = null, SigningMethodEnum? Signers = null)
                 : base(CompletionCode, ErrorDescription)
             {
-                this.InternalCmdResult = InternalCmdResult;
                 this.DataToSign = DataToSign;
                 this.Signers = Signers;
             }
-
-            /// <summary>
-            /// Result from the command referenced by execution command. If the data within payload is invalid or cannot be used for 
-            /// some reason, then *internalCmdResult* will return an error but the result of this command will be ok. 
-            /// </summary>
-            [DataMember(Name = "internalCmdResult")]
-            public string InternalCmdResult { get; init; }
 
             /// <summary>
             /// The Base64 encoded data that must be signed by one of the authorities indicated by signers before the command referenced by 
@@ -51,7 +43,7 @@ namespace XFS4IoT.KeyManagement.Completions
 
 
             [DataMember(Name = "signers")]
-            public SignersClass Signers { get; init; }
+            public SigningMethodEnum? Signers { get; init; }
 
         }
     }

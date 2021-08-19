@@ -275,26 +275,11 @@ namespace XFS4IoT.KeyManagement.Commands
             [DataContract]
             public sealed class VerifyAttributesClass
             {
-                public VerifyAttributesClass(string Algorithm = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
+                public VerifyAttributesClass(CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
                 {
-                    this.Algorithm = Algorithm;
                     this.CryptoMethod = CryptoMethod;
                     this.HashAlgorithm = HashAlgorithm;
                 }
-
-                /// <summary>
-                /// Specifies the encryption algorithm.
-                /// The following values are possible:
-                /// 
-                /// * ```A``` - AES.
-                /// * ```D``` - DEA. 
-                /// * ```R``` - RSA. 
-                /// * ```T``` - Triple DEA (also referred to as TDEA). 
-                /// * ```"0" - "9"``` - These numeric values are reserved for proprietary use.
-                /// </summary>
-                [DataMember(Name = "algorithm")]
-                [DataTypes(Pattern = "^[0-9ADRT]$")]
-                public string Algorithm { get; init; }
 
                 public enum CryptoMethodEnum
                 {

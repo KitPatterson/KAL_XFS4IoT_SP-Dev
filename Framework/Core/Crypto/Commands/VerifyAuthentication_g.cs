@@ -92,28 +92,11 @@ namespace XFS4IoT.Crypto.Commands
             [DataContract]
             public sealed class VerifyAttributesClass
             {
-                public VerifyAttributesClass(ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
+                public VerifyAttributesClass(CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
                 {
-                    this.ModeOfUse = ModeOfUse;
                     this.CryptoMethod = CryptoMethod;
                     this.HashAlgorithm = HashAlgorithm;
                 }
-
-                public enum ModeOfUseEnum
-                {
-                    S,
-                    V
-                }
-
-                /// <summary>
-                /// Specifies the encryption mode supported by [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command. The following values are
-                /// possible: 
-                /// 
-                /// * ```S``` - Signature.  
-                /// * ```V``` - Verify. This be used to verify a MAC.
-                /// </summary>
-                [DataMember(Name = "modeOfUse")]
-                public ModeOfUseEnum? ModeOfUse { get; init; }
 
                 public enum CryptoMethodEnum
                 {
