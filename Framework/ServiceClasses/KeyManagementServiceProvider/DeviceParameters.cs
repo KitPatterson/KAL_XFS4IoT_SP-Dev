@@ -20,6 +20,12 @@ using XFS4IoT;
 
 namespace XFS4IoTFramework.KeyManagement
 {
+    public enum SignerEnum
+    {
+        EPP,
+        Issuer,
+    }
+
     public sealed class AuthenticationData
     {
         public enum SigningMethodEnum
@@ -725,23 +731,32 @@ namespace XFS4IoTFramework.KeyManagement
         public LoadedKeyInformation LoadedKeyDetail { get; init; }
     }
 
-    public sealed class ExportEPPIdEPPSignedRequest
+    public sealed class ExportEPPIdRequest
     {
         public enum RSASignatureAlgorithmEnum
         {
+            Default,
             NoSignature,
             RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
             RSASSA_PSS,            // SSA_PSS Signatures supported
         }
-        public ExportEPPIdEPPSignedRequest(string SignatureKeyName,
-                                           RSASignatureAlgorithmEnum SignatureAlgorithm)
+        public ExportEPPIdRequest(SignerEnum Signer,
+                                  RSASignatureAlgorithmEnum SignatureAlgorithm = RSASignatureAlgorithmEnum.Default,
+                                  string SignatureKeyName = null)
         {
+            this.Signer = Signer;
             this.SignatureKeyName = SignatureKeyName;
             this.SignatureAlgorithm = SignatureAlgorithm;
         }
 
         /// <summary>
+        /// Signer either EPP or offline Signature Issuer
+        /// </summary>
+        public SignerEnum Signer { get; init; }
+
+        /// <summary>
         /// Specifies the name of the private key to use to sign the exported item. 
+        /// This property is null or empty string if the Signer is set to Issuer
         /// </summary>
         public string SignatureKeyName { get; init; }
 
@@ -751,22 +766,30 @@ namespace XFS4IoTFramework.KeyManagement
         public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
     }
 
-    public sealed class ExportRSAPublicKeyEPPSignedRequest
+    public sealed class ExportRSAPublicKeyRequest
     {
         public enum RSASignatureAlgorithmEnum
         {
+            Default,
             NoSignature,
             RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
             RSASSA_PSS,            // SSA_PSS Signatures supported
         }
-        public ExportRSAPublicKeyEPPSignedRequest(string KeyName,
-                                                  string SignatureKeyName,
-                                                  RSASignatureAlgorithmEnum SignatureAlgorithm)
+        public ExportRSAPublicKeyRequest(SignerEnum Signer,
+                                         string KeyName,
+                                         RSASignatureAlgorithmEnum SignatureAlgorithm = RSASignatureAlgorithmEnum.Default,
+                                         string SignatureKeyName = null)
         {
+            this.Signer = Signer;
             this.KeyName = KeyName;
             this.SignatureKeyName = SignatureKeyName;
             this.SignatureAlgorithm = SignatureAlgorithm;
         }
+
+        /// <summary>
+        /// Signer either EPP or offline Signature Issuer
+        /// </summary>
+        public SignerEnum Signer { get; init; }
 
         /// <summary>
         /// Specifies the name of the public key to be exported. 
@@ -777,6 +800,7 @@ namespace XFS4IoTFramework.KeyManagement
 
         /// <summary>
         /// Specifies the name of the private key to use to sign the exported item. 
+        /// This property is null or empty string if the Signer is set to Issuer
         /// </summary>
         public string SignatureKeyName { get; init; }
 
@@ -786,33 +810,49 @@ namespace XFS4IoTFramework.KeyManagement
         public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
     }
 
-    public sealed class RSAEPPSignedItemResult : DeviceResult
+    public sealed class RSASignedItemResult : DeviceResult
     {
+        public enum RSASignatureAlgorithmEnum
+        {
+            NoSignature,
+            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
+            RSASSA_PSS,            // SSA_PSS Signatures supported
+        }
 
-        public RSAEPPSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                      string ErrorDescription = null,
-                                      ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
+        public enum ErrorCodeEnum
+        {
+            NoRSAKeyPair,
+            AccessDenied,
+            KeyNotFound
+        }
+
+        public RSASignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                   string ErrorDescription = null,
+                                   ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
             this.Data = null;
+            this.SignatureAlgorithm = RSASignatureAlgorithmEnum.NoSignature;
             this.SelfSignature = null;
             this.Signature = null;
         }
 
-        public RSAEPPSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                      List<byte> Data,
-                                      List<byte> Signature = null,
-                                      List<byte> SelfSignature = null)
+        public RSASignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                   List<byte> Data,
+                                   RSASignatureAlgorithmEnum SignatureAlgorithm,
+                                   List<byte> Signature = null,
+                                   List<byte> SelfSignature = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
             this.Data = Data;
+            this.SignatureAlgorithm = SignatureAlgorithm;
             this.SelfSignature = SelfSignature;
             this.Signature = Signature;
         }
 
-        public ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; init; }
+        public ErrorCodeEnum? ErrorCode { get; init; }
 
         /// <summary>
         /// EPP ID or Public key
@@ -822,7 +862,7 @@ namespace XFS4IoTFramework.KeyManagement
         /// <summary>
         /// If a public key was requested then this property contains the RSA signature of the public key exported, 
         /// generated with the key-pair’s private component. this property can be null when key Self-Signatures are not supported or required.
-        /// This property is only set if requested SignedItemType property is EPP
+        /// This property is only set if requested Signer property is EPP
         /// </summary>
         public List<byte> SelfSignature { get; init; }
         
@@ -830,60 +870,13 @@ namespace XFS4IoTFramework.KeyManagement
         /// Signed signature data
         /// </summary>
         public List<byte> Signature { get; init; }
-    }
-
-    public sealed class RSAIssuerSignedItemResult : DeviceResult
-    {
-        public enum RSASignatureAlgorithmEnum
-        {
-            NoSignature,
-            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
-            RSASSA_PSS,            // SSA_PSS Signatures supported
-        }
-
-        public RSAIssuerSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                         string ErrorDescription = null,
-                                         ExportRSAIssuerSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
-           : base(CompletionCode, ErrorDescription)
-        {
-            this.ErrorCode = ErrorCode;
-            this.Data = null;
-            this.Signature = null;
-            this.SignatureAlgorithm = RSASignatureAlgorithmEnum.NoSignature;
-        }
-
-        public RSAIssuerSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                         List<byte> Data,
-                                         RSASignatureAlgorithmEnum SignatureAlgorithm = RSASignatureAlgorithmEnum.NoSignature,
-                                         List<byte> Signature = null)
-            : base(CompletionCode, null)
-        {
-            this.ErrorCode = null;
-            this.Data = Data;
-            this.Signature = Signature;
-            this.SignatureAlgorithm = SignatureAlgorithm;
-        }
-
-        public ExportRSAIssuerSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; init; }
-
-        /// <summary>
-        /// EPP ID or Public key
-        /// </summary>
-        public List<byte> Data { get; init; }
-
- 
-        /// <summary>
-        /// Signed signature data
-        /// </summary>
-        public List<byte> Signature { get; init; }
 
 
         /// <summary>
-        /// RSA signature algorithm to sign
+        /// RSA signature algorithm to signed
         /// </summary>
         public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
     }
-
 
     public sealed class ExportCertificateRequest
     {
