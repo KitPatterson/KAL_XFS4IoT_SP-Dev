@@ -9,26 +9,6 @@ namespace XFS4IoTFramework.Common
     public sealed class CryptoCapabilitiesClass
     {
         [Flags]
-        public enum AlgorithmEnum
-        {
-            NotSupported = 0,
-            ECB = 0x0001, //Electronic Code Book
-            CBC = 0x0002, //Cipher Block Chaining
-            CFB = 0x0004, //Cipher Feed Back
-            RSA = 0x0008, //RSA Encryption
-            ECMA = 0x0010, //ECMA Encryption
-            DESMAC = 0x0020, //MAC calculation using CBC
-            TripleDESECB = 0x0040, //Triple DES with Electronic Code Book
-            TripleDESCBC = 0x0080, //Triple DES with Cipher Block Chaining
-            TripleDESCFB = 0x0100, //Triple DES with Cipher Feed Back
-            TripleDESMAC = 0x0200, //Last Block Triple DES MAC as defined in ISO/IEC 9797-1:1999 [Ref. 32], using: block length n=64, Padding Method 1 (when bPadding=0), MAC Algorithm 3, MAC length m where 32<=m<=64
-            MAAMAC = 0x0400, //MAC calculation using the Message authenticator algorithm as defined in ISO 8731-2 
-            TripleDESMAC2805 = 0x0800, //Triple DES MAC calculation as defined in ISO 16609:2004 and Australian Standard 2805.4 
-            SM4 = 0x1000, //SM4 block cipher algorithm as defined in Password industry standard of the People's Republic of China GM/T 0002-2012 
-            SM4AMC = 0x2000, //MAC calculation using the Message authenticator algorithm as defined in as defined in Password industry standard of the People's Republic of China GM/T 0002-2012 and in PBOC3.0 JR/T 0025.17-2013 
-        }
-
-        [Flags]
         public enum EMVHashAlgorithmEnum
         {
             NotSupported = 0,
@@ -45,23 +25,17 @@ namespace XFS4IoTFramework.Common
             SHA256 = 0x0002, //The SHA 256 digest algorithm
         }
 
-        public CryptoCapabilitiesClass(AlgorithmEnum Algorithms,
-                                       EMVHashAlgorithmEnum EMVHashAlgorithms,
+        public CryptoCapabilitiesClass(EMVHashAlgorithmEnum EMVHashAlgorithms,
                                        Dictionary<string, Dictionary<string, Dictionary<string, CryptoAttributesClass>>> CryptoAttributes,
                                        Dictionary<string, Dictionary<string, Dictionary<string, VerifyAuthenticationAttributesClass>>> AuthenticationAttributes,
                                        Dictionary<string, Dictionary<string, Dictionary<string, VerifyAuthenticationAttributesClass>>> VerifyAttributes)
-        {
-            this.Algorithms = Algorithms;
+        { 
             this.EMVHashAlgorithms = EMVHashAlgorithms;
             this.CryptoAttributes = CryptoAttributes;
             this.AuthenticationAttributes = AuthenticationAttributes;
             this.VerifyAttributes = VerifyAttributes;
         }
 
-        /// <summary>
-        /// Supported encryption modes.
-        /// </summary>
-        public AlgorithmEnum Algorithms { get; init; }
 
         /// <summary>
         /// Specifies which hash algorithm is supported for the calculation of the HASH.

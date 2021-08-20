@@ -20,7 +20,56 @@ using XFS4IoT;
 
 namespace XFS4IoTFramework.KeyManagement
 {
+    public sealed class AuthenticationData
+    {
+        public enum SigningMethodEnum
+        {
+            None,
+            CertHost,
+            SigHost,
+            CA,
+            HL,
+            CBCMAC,
+            CMAC,
+            Reserved1,
+            Reserved2,
+            Reserved3
+        }
 
+        public AuthenticationData(SigningMethodEnum SigningMethod,
+                                  string Key,
+                                  List<byte> Data)
+        {
+            this.SigningMethod = SigningMethod;
+            this.Key = Key;
+            this.Data = Data;
+        }
+
+        public SigningMethodEnum SigningMethod { get; init; }
+
+        /// <summary>
+        /// If the *signer* is cbcmac or mac are specified, then this _signatureKey_ property is the name of a key with the key usage of key attribute is M0 to M8.
+        /// If sigHost is specified for signer property, then this property signatureKey specifies the name of a previously loaded asymmetric key(i.e. an RSA Public Key).
+        /// The default Signature Issuer public key (installed in a secure environment during manufacture) will be used, 
+        /// if this signatureKey propery is omitted or contains the name of the default Signature Issuer as defined in the document [Default keys and securitry item loaded during manufacture](#keymanagement.generalinformation.rklprocess.defaultkeyandsecurity).
+        /// Otherwise, this property should be omitted.
+        /// </summary>
+        public string Key { get; init; }
+
+        /// <summary>
+        /// This property contains the signed version of the base64 encoded data that was provided by the KeyManagement device during the previous call to the StartExchange command.
+        /// The signer specified by *signer* property is used to do the signing.
+        /// Both the signature and the data that was signed must be verified before the operation is performed.
+        /// If certHost, ca, or hl are specified for *signer* property, then _signedData_ is a PKCS #7 structure which includes the data that was returned by the StartAuthenticate command.
+        /// The optional CRL field may or may not be included in the PKCS #7 _signedData_ structure.
+        /// If the signer is certHostTr34, caTr34 or hlTr34, please refer to the X9 TR34-2012 [Ref. 42] for more details.
+        /// If sigHost is specified for the *signer* property specified, then s is a PKCS #7 structure which includes the data that was returned by the StartAuthenticate command.
+        /// If cmcmac or cmac are specified for the *signer* property specified, then _signatureKey_ must refer to a key loaded with the key usage of key attribute is M0 to M8.
+        /// </summary>
+        public List<byte> Data { get; init; }
+    }
+
+    
     public enum RSASignatureAlgorithmEnum
     {
         NoSignature,
@@ -300,11 +349,16 @@ namespace XFS4IoTFramework.KeyManagement
         {
             public VerifyAttributeClass(string KeyUsage,
                                         string Algorithm,
+                                        string ModeOfUse,
                                         ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum VerifyMethod,
                                         ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum? HashAlgorithm = null)
             {
                 this.KeyUsage = KeyUsage;
+                Regex.IsMatch(this.KeyUsage, KeyDetail.regxVerifyKeyUsage).IsTrue($"Invalid key usage specified. {this.KeyUsage}");
                 this.Algorithm = Algorithm;
+                Regex.IsMatch(this.Algorithm, KeyDetail.regxAlgorithm).IsTrue($"Invalid algorithm specified. {this.Algorithm}");
+                this.ModeOfUse = ModeOfUse;
+                Regex.IsMatch(this.ModeOfUse, KeyDetail.regxVerifyModeOfUse).IsTrue($"Invalid mode specified. {this.KeyUsage}");
                 this.VerifyMethod = VerifyMethod;
                 this.HashAlgorithm = HashAlgorithm;
             }
@@ -318,6 +372,11 @@ namespace XFS4IoTFramework.KeyManagement
             /// Algorithm to use to verify data
             /// </summary>
             public string Algorithm { get; init; }
+
+            /// <summary>
+            /// Algorithm to use to verify data
+            /// </summary>
+            public string ModeOfUse { get; init; }
 
             /// <summary>
             /// Cryptographic method to use
@@ -388,10 +447,12 @@ namespace XFS4IoTFramework.KeyManagement
     public sealed class InitializationRequest
     {
         public InitializationRequest(string KeyName,
-                                     List<byte> Identification)
+                                     List<byte> Identification,
+                                     AuthenticationData Authentication = null)
         {
             this.KeyName = KeyName;
             this.Identification = Identification;
+            this.Authentication = Authentication;
         }
 
         /// <summary>
@@ -403,6 +464,11 @@ namespace XFS4IoTFramework.KeyManagement
         /// ID key encrypted by the encryption key
         /// </summary>
         public List<byte> Identification { get; init; }
+
+        /// <summary>
+        /// Authentication data required for initializing device
+        /// </summary>
+        public AuthenticationData Authentication { get; init; }
     }
 
     public sealed class InitializationResult : DeviceResult
@@ -434,7 +500,8 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class DeleteKeyRequest
     {
-        public DeleteKeyRequest(string KeyName)
+        public DeleteKeyRequest(string KeyName,
+                                AuthenticationData Authentication = null)
         {
             this.KeyName = KeyName;
         }
@@ -443,6 +510,11 @@ namespace XFS4IoTFramework.KeyManagement
         /// Key name to delete, if the value is null or empty string, all key to be deleted
         /// </summary>
         public string KeyName { get; init; }
+
+        /// <summary>
+        /// Authentication data required to delete key
+        /// </summary>
+        public AuthenticationData Authentication { get; set; }
     }
 
     public sealed class GenerateKCVRequest
@@ -661,11 +733,11 @@ namespace XFS4IoTFramework.KeyManagement
         public LoadedKeyInformation LoadedKeyDetail { get; init; }
     }
 
-    public sealed class ExportEPPIdRequest
+    public sealed class ExportEPPIdEPPSignedRequest
     {
 
-        public ExportEPPIdRequest(string SignatureKeyName,
-                                  RSASignatureAlgorithmEnum SignatureAlgorithm)
+        public ExportEPPIdEPPSignedRequest(string SignatureKeyName,
+                                           RSASignatureAlgorithmEnum SignatureAlgorithm)
         {
             this.SignatureKeyName = SignatureKeyName;
             this.SignatureAlgorithm = SignatureAlgorithm;
@@ -682,12 +754,12 @@ namespace XFS4IoTFramework.KeyManagement
         public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
     }
 
-    public sealed class ExportSignedItemRequest
+    public sealed class ExportRSAPublicKeyEPPSignedRequest
     {
 
-        public ExportSignedItemRequest(string KeyName,
-                                       string SignatureKeyName,
-                                       RSASignatureAlgorithmEnum SignatureAlgorithm)
+        public ExportRSAPublicKeyEPPSignedRequest(string KeyName,
+                                                  string SignatureKeyName,
+                                                  RSASignatureAlgorithmEnum SignatureAlgorithm)
         {
             this.KeyName = KeyName;
             this.SignatureKeyName = SignatureKeyName;
@@ -712,12 +784,12 @@ namespace XFS4IoTFramework.KeyManagement
         public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
     }
 
-    public sealed class RSASignedItemResult : DeviceResult
+    public sealed class RSAEPPSignedItemResult : DeviceResult
     {
 
-        public RSASignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                   string ErrorDescription = null,
-                                   ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
+        public RSAEPPSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                      string ErrorDescription = null,
+                                      ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
            : base(CompletionCode, ErrorDescription)
         {
             this.ErrorCode = ErrorCode;
@@ -726,10 +798,10 @@ namespace XFS4IoTFramework.KeyManagement
             this.Signature = null;
         }
 
-        public RSASignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                   List<byte> Data,
-                                   List<byte> Signature = null,
-                                   List<byte> SelfSignature = null)
+        public RSAEPPSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                      List<byte> Data,
+                                      List<byte> Signature = null,
+                                      List<byte> SelfSignature = null)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
@@ -748,6 +820,7 @@ namespace XFS4IoTFramework.KeyManagement
         /// <summary>
         /// If a public key was requested then this property contains the RSA signature of the public key exported, 
         /// generated with the key-pair’s private component. this property can be null when key Self-Signatures are not supported or required.
+        /// This property is only set if requested SignedItemType property is EPP
         /// </summary>
         public List<byte> SelfSignature { get; init; }
         
@@ -756,6 +829,53 @@ namespace XFS4IoTFramework.KeyManagement
         /// </summary>
         public List<byte> Signature { get; init; }
     }
+
+    public sealed class RSAIssuerSignedItemResult : DeviceResult
+    {
+
+        public RSAIssuerSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                         string ErrorDescription = null,
+                                         ExportRSAIssuerSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
+           : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
+            this.Data = null;
+            this.Signature = null;
+            this.SignatureAlgorithm = RSASignatureAlgorithmEnum.NoSignature;
+        }
+
+        public RSAIssuerSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                         List<byte> Data,
+                                         RSASignatureAlgorithmEnum SignatureAlgorithm = RSASignatureAlgorithmEnum.NoSignature,
+                                         List<byte> Signature = null)
+            : base(CompletionCode, null)
+        {
+            this.ErrorCode = null;
+            this.Data = Data;
+            this.Signature = Signature;
+            this.SignatureAlgorithm = SignatureAlgorithm;
+        }
+
+        public ExportRSAIssuerSignedItemCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; init; }
+
+        /// <summary>
+        /// EPP ID or Public key
+        /// </summary>
+        public List<byte> Data { get; init; }
+
+ 
+        /// <summary>
+        /// Signed signature data
+        /// </summary>
+        public List<byte> Signature { get; init; }
+
+
+        /// <summary>
+        /// RSA signature algorithm to sign
+        /// </summary>
+        public RSASignatureAlgorithmEnum SignatureAlgorithm { get; init; }
+    }
+
 
     public sealed class ExportCertificateRequest
     {
@@ -1115,5 +1235,101 @@ namespace XFS4IoTFramework.KeyManagement
         /// If the PIN device does not support random number generation and verification, this property can be null or zero length of list
         /// </summary>
         public List<byte> RandomItem { get; init; }
+    }
+
+
+    public sealed class StartAuthenticateRequest
+    {
+        public enum CommandEnum
+        {
+            Deletekey,
+            Initialization,
+        }
+
+        public sealed class DeleteKeyInput
+        {
+            public DeleteKeyInput(string Key)
+            {
+                this.Key = Key;
+            }
+
+            /// <summary>
+            /// Key name to delete
+            /// </summary>
+            public string Key { get; init; }
+        }
+
+        public sealed class InitializationInput
+        {
+            public InitializationInput(string Key,
+                                       List<byte> Identification)
+            {
+                this.Key = Key;
+                this.Identification = Identification;
+            }
+            /// <summary>
+            /// Key name to initialize
+            /// </summary>
+            public string Key { get; init; }
+
+            /// <summary>
+            /// Identification data
+            /// </summary>
+            public List<byte> Identification { get; init; }
+        }
+
+        public StartAuthenticateRequest(CommandEnum Command,
+                                        DeleteKeyInput DeleteKeyCommandParam)
+        {
+            Contracts.Assert(Command == CommandEnum.Deletekey, $"Command enum must be delete key. {Command}");
+            this.Command = Command;
+            this.DeleteKeyCommandParam = DeleteKeyCommandParam;
+            this.InitializationCommandParam = null;
+        }
+        public StartAuthenticateRequest(CommandEnum Command,
+                                        InitializationInput InitializationCommandParam)
+        {
+            Contracts.Assert(Command == CommandEnum.Initialization, $"Command enum must be initialization. {Command}");
+            this.Command = Command;
+            this.InitializationCommandParam = InitializationCommandParam;
+            this.DeleteKeyCommandParam = null;
+        }
+
+        /// <summary>
+        /// Command type to get authentication data to sign
+        /// </summary>
+        public CommandEnum Command { get; init; }
+
+        /// <summary>
+        /// Command parameter for singing data
+        /// </summary>
+        public DeleteKeyInput DeleteKeyCommandParam { get; init; }
+
+        public InitializationInput InitializationCommandParam { get; init; } 
+    }
+
+    public sealed class StartAuthenticateResult : DeviceResult
+    {
+        public StartAuthenticateResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                       string ErrorDescription = null)
+            : base(CompletionCode, null)
+        {
+            this.DataToSign = null;
+            this.SigningMethod =  AuthenticationData.SigningMethodEnum.None;
+        }
+
+        public StartAuthenticateResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                       List<byte> DataToSign,
+                                       AuthenticationData.SigningMethodEnum SigningMethod)
+            : base(CompletionCode, null)
+        {
+            this.DataToSign = DataToSign;
+            this.SigningMethod = SigningMethod;
+        }
+
+
+        public List<byte> DataToSign { get; init; }
+
+        public AuthenticationData.SigningMethodEnum SigningMethod { get; init; }
     }
 }

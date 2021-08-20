@@ -100,17 +100,32 @@ namespace XFS4IoTFramework.KeyManagement
         /// This command is used to export data elements from the device, which have been signed by an offline Signature Issuer. 
         /// This command is used when the default keys and Signature Issuer signatures, installed during manufacture, 
         /// are to be used for remote key loading. This command allows the following data items are to be exported:
-        /// The Security Item which uniquely identifies the device. 
-        /// This value may be used to uniquely identify a device and therefore confer trust upon any key or data obtained from this device.
-        /// The RSA public key component of a public/private key pair that exists within the device.
-        /// These public/private key pairs are installed during manufacture.
-        /// Typically, an exported public key is used by the host to encipher the symmetric key.
+        /// - The Security Item which uniquely identifies the device. 
+        ///   This value may be used to uniquely identify a device and therefore confer trust upon any key or data obtained from this device.
+        /// - The RSA public key component of a public/private key pair that exists within the device.
+        ///   These public/private key pairs are installed during manufacture.
+        ///   Typically, an exported public key is used by the host to encipher the symmetric key.
         /// </summary>
-        Task<RSASignedItemResult> ExportEPPId(ExportEPPIdRequest request,
-                                              CancellationToken cancellation);
+        Task<RSAIssuerSignedItemResult> ExportEPPIdIssuerSigned(CancellationToken cancellation);
 
-        Task<RSASignedItemResult> ExportRSAPublicKey(ExportSignedItemRequest request,
-                                                     CancellationToken cancellation);
+        Task<RSAIssuerSignedItemResult> ExportRSAPublicKeyIssuerSigned(string KeyName, 
+                                                                       CancellationToken cancellation);
+
+        /// <summary>
+        /// This command is used to export data elements from the PIN device that have been signed by a private key within the EPP. 
+        /// This command is used in place of the ExportRSAIssuerSignedItem command, when a private key generated within the PIN device is to be used to generate the signature for the data item.
+        /// This command allows an application to define which of the following data items are to be exported:
+        /// - The Security Item which uniquely identifies the PIN device. This value may be used to uniquely identify a PIN device and therefore confer trust upon any key or data obtained from this device.
+        /// - The RSA Public key component of a public/private key pair that exists within the PIN device.
+        /// The public/private key pairs exported by this command are either installed during manufacture or generated through the GenerateRSAKeyPair command.
+        /// The GetKeyDetail command can be used to determine the valid uses for the exported public key.
+        Task<RSAEPPSignedItemResult> ExportEPPIdEPPSigned(ExportEPPIdEPPSignedRequest request,
+                                                          CancellationToken cancellation);
+
+        Task<RSAEPPSignedItemResult> ExportRSAPublicKeyEPPSigned(ExportRSAPublicKeyEPPSignedRequest request,
+                                                                 CancellationToken cancellation);
+
+         
 
         /// <summary>
         /// This command will generate a new RSA key pair.
@@ -162,7 +177,8 @@ namespace XFS4IoTFramework.KeyManagement
         /// Any attempt to call the referenced command without using the Authenticate command, if authentication is required, 
         /// shall result in AuthRequired. 
         /// </summary>
-        //Task<StartAuthenticateResult> StartAuthenticate(StartAuthenticateRequest request, CancellationToken cancellation);
+        Task<StartAuthenticateResult> StartAuthenticate(StartAuthenticateRequest request, 
+                                                        CancellationToken cancellation);
 
     }
 }

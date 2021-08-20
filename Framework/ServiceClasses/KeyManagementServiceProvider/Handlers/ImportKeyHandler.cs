@@ -172,7 +172,7 @@ namespace XFS4IoTFramework.KeyManagement
 
                 Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKeyPart() -> {importKeyPartResult.CompletionCode}, {importKeyPartResult.ErrorCode}");
 
-                Dictionary<string, Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>>> verifyAttribute = null;
+                ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttribute = null;
                 if (importKeyPartResult.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
                 {
                     secureKeyEntryStatus.KeyPartLoaded((SecureKeyEntryStatusClass.KeyPartEnum)componentNumber, importKey.Payload.Key);
@@ -189,22 +189,24 @@ namespace XFS4IoTFramework.KeyManagement
 
                     if (importKeyPartResult.VerifyAttribute is not null)
                     {
-                        ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttributes = new(
-                            new ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodClass(importKeyPartResult.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVNone,
-                                                                                                        importKeyPartResult.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVSelf,
-                                                                                                        importKeyPartResult.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVZero,
-                                                                                                        importKeyPartResult.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.SignatureNone,
-                                                                                                        importKeyPartResult.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PKCS1_V1_5,
-                                                                                                        importKeyPartResult.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PSS),
-                            new ImportKeyCompletion.PayloadData.VerifyAttributesClass.HashAlgorithmClass(importKeyPartResult.VerifyAttribute.HashAlgorithm == ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum.SHA1,
-                                                                                                         importKeyPartResult.VerifyAttribute.HashAlgorithm == ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum.SHA256));
-
-                        Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass> verifyAttrib = new();
-                        verifyAttrib.Add(importKey.Payload.KeyAttributes.ModeOfUse, verifyAttributes);
-                        Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>> algorithmAttrib = new();
-                        algorithmAttrib.Add(importKey.Payload.KeyAttributes.Algorithm, verifyAttrib);
-                        verifyAttribute = new();
-                        verifyAttribute.Add(importKey.Payload.KeyAttributes.KeyUsage, algorithmAttrib);
+                        verifyAttribute = new(
+                            importKeyPartResult.VerifyAttribute.KeyUsage,
+                            importKeyPartResult.VerifyAttribute.Algorithm,
+                            importKeyPartResult.VerifyAttribute.ModeOfUse,
+                            importKeyPartResult.VerifyAttribute.VerifyMethod switch 
+                            {
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVNone => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvNone,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVSelf => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvSelf,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVZero => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvZero,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PKCS1_V1_5 => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPkcs1V15,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PSS => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPs,
+                                _ => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.SigNone
+                            },
+                            importKeyPartResult.VerifyAttribute.HashAlgorithm is null ? null : importKeyPartResult.VerifyAttribute.HashAlgorithm switch 
+                                                                                               {
+                                                                                                   ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum.SHA1 => ImportKeyCompletion.PayloadData.VerifyAttributesClass.HashAlgorithmEnum.Sha1,
+                                                                                                   _ => ImportKeyCompletion.PayloadData.VerifyAttributesClass.HashAlgorithmEnum.Sha256
+                                                                                               });
                     }
                 }
 
@@ -518,29 +520,31 @@ namespace XFS4IoTFramework.KeyManagement
                 Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
             }
 
-            Dictionary<string, Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>>> importKeyVerifyAttib = null;
+            ImportKeyCompletion.PayloadData.VerifyAttributesClass importKeyVerifyAttib = null;
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {
                 secureKeyEntryStatus.Reset();
 
                 if (result.VerifyAttribute is not null)
                 {
-                    ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttributes = new (
-                        new ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodClass(result.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVNone,
-                                                                                                    result.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVSelf,
-                                                                                                    result.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVZero,
-                                                                                                    result.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.SignatureNone,
-                                                                                                    result.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PKCS1_V1_5,
-                                                                                                    result.VerifyAttribute.VerifyMethod == ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PSS),
-                            new ImportKeyCompletion.PayloadData.VerifyAttributesClass.HashAlgorithmClass(result.VerifyAttribute.HashAlgorithm == ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum.SHA1,
-                                                                                                         result.VerifyAttribute.HashAlgorithm == ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum.SHA256));
-
-                    Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass> verifyAttrib = new();
-                    verifyAttrib.Add(importKey.Payload.KeyAttributes.ModeOfUse, verifyAttributes);
-                    Dictionary<string, Dictionary<string, ImportKeyCompletion.PayloadData.VerifyAttributesClass>> algorithmAttrib = new();
-                    algorithmAttrib.Add(importKey.Payload.KeyAttributes.Algorithm, verifyAttrib);
-                    importKeyVerifyAttib = new();
-                    importKeyVerifyAttib.Add(importKey.Payload.KeyAttributes.KeyUsage, algorithmAttrib);
+                    importKeyVerifyAttib = new(
+                            result.VerifyAttribute.KeyUsage,
+                            result.VerifyAttribute.Algorithm,
+                            result.VerifyAttribute.ModeOfUse,
+                            result.VerifyAttribute.VerifyMethod switch 
+                            {
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVNone => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvNone,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVSelf => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvSelf,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.KCVZero => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.KcvZero,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PKCS1_V1_5 => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPkcs1V15,
+                                ImportKeyRequest.VerifyAttributeClass.VerifyMethodEnum.RSASSA_PSS => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.RsassaPs,
+                                _ => ImportKeyCompletion.PayloadData.VerifyAttributesClass.CryptoMethodEnum.SigNone
+                            },
+                            result.VerifyAttribute.HashAlgorithm is null ? null : result.VerifyAttribute.HashAlgorithm switch 
+                                                                                  {
+                                                                                      ImportKeyRequest.VerifyAttributeClass.HashAlgorithmEnum.SHA1 => ImportKeyCompletion.PayloadData.VerifyAttributesClass.HashAlgorithmEnum.Sha1,
+                                                                                      _ => ImportKeyCompletion.PayloadData.VerifyAttributesClass.HashAlgorithmEnum.Sha256
+                                                                                  });
                 }
                 // Successfully loaded and add key information managing internally
                 KeyManagement.AddKey(importKey.Payload.Key,

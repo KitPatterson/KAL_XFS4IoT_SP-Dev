@@ -729,36 +729,6 @@ namespace XFS4IoTFramework.Common
 
             if (result.Crypto is not null)
             {
-                CryptoCapabilitiesClass.AlgorithmEnum algorithms = CryptoCapabilitiesClass.AlgorithmEnum.NotSupported;
-                if (result.Crypto.Algorithms?.Cbc is not null && (bool)result.Crypto.Algorithms.Cbc)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.CBC;
-                if (result.Crypto.Algorithms?.Cfb is not null && (bool)result.Crypto.Algorithms.Cfb)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.CFB;
-                if (result.Crypto.Algorithms?.Cma is not null && (bool)result.Crypto.Algorithms.Cma)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.ECMA;
-                if (result.Crypto.Algorithms?.DesMac is not null && (bool)result.Crypto.Algorithms.DesMac)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.DESMAC;
-                if (result.Crypto.Algorithms?.Ecb is not null && (bool)result.Crypto.Algorithms.Ecb)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.ECB;
-                if (result.Crypto.Algorithms?.MaaMac is not null && (bool)result.Crypto.Algorithms.MaaMac)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.MAAMAC;
-                if (result.Crypto.Algorithms?.Rsa is not null && (bool)result.Crypto.Algorithms.Rsa)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.RSA;
-                if (result.Crypto.Algorithms?.Sm4 is not null && (bool)result.Crypto.Algorithms.Sm4)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.CBC;
-                if (result.Crypto.Algorithms?.Sm4Mac is not null && (bool)result.Crypto.Algorithms.Sm4Mac)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.SM4AMC;
-                if (result.Crypto.Algorithms?.TriDesCbc is not null && (bool)result.Crypto.Algorithms.TriDesCbc)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.TripleDESCBC;
-                if (result.Crypto.Algorithms?.TriDesCfb is not null && (bool)result.Crypto.Algorithms.TriDesCfb)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.TripleDESCFB;
-                if (result.Crypto.Algorithms?.TriDesEcb is not null && (bool)result.Crypto.Algorithms.TriDesEcb)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.TripleDESECB;
-                if (result.Crypto.Algorithms?.TriDesMac is not null && (bool)result.Crypto.Algorithms.TriDesMac)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.TripleDESMAC;
-                if (result.Crypto.Algorithms?.TriDesMac2805 is not null && (bool)result.Crypto.Algorithms.TriDesMac2805)
-                    algorithms |= CryptoCapabilitiesClass.AlgorithmEnum.TripleDESMAC2805;
-
                 CryptoCapabilitiesClass.EMVHashAlgorithmEnum emvHashAlgorithms = CryptoCapabilitiesClass.EMVHashAlgorithmEnum.NotSupported;
                 if (result.Crypto.EmvHashAlgorithm?.Sha1Digest is not null && (bool)result.Crypto.EmvHashAlgorithm.Sha1Digest)
                     emvHashAlgorithms |= CryptoCapabilitiesClass.EMVHashAlgorithmEnum.SHA1_Digest;
@@ -858,8 +828,7 @@ namespace XFS4IoTFramework.Common
                     }
                 }
 
-                Common.CryptoCapabilities = new CryptoCapabilitiesClass(algorithms,
-                                                                        emvHashAlgorithms,
+                Common.CryptoCapabilities = new CryptoCapabilitiesClass(emvHashAlgorithms,
                                                                         cryptoAttributes,
                                                                         authenticationAttributes,
                                                                         verifyAttributes);

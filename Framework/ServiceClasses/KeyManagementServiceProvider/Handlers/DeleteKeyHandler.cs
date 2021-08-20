@@ -6,10 +6,12 @@
 \***********************************************************************************************/
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using XFS4IoT.KeyManagement.Commands;
 using XFS4IoT.KeyManagement.Completions;
+using XFS4IoT.KeyManagement;
 using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.KeyManagement
@@ -28,9 +30,59 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
+            AuthenticationData authData = null;
+            if (deleteKey.Payload.Authentication is not null)
+            {
+                if (deleteKey.Payload.Authentication.Method is null)
+                {
+                    return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                               $"No authentication method specified.");
+                }
+                if (deleteKey.Payload.Authentication.Method != SigningMethodEnum.None)
+                {
+                    if (string.IsNullOrEmpty(deleteKey.Payload.Authentication.Data))
+                    {
+                        return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"No authentication data specified.");
+                    }
+                    if (string.IsNullOrEmpty(deleteKey.Payload.Authentication.Key))
+                    {
+                        return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"No authentication key specified.");
+                    }
+                    if (deleteKey.Payload.Authentication.Method is null)
+                    {
+                        return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"No authentication method specified.");
+                    }
+
+                    KeyDetail keyDetail = KeyManagement.GetKeyDetail(deleteKey.Payload.Authentication.Key);
+                    if (keyDetail is null)
+                    {
+                        return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"Specified authentication key doesn't exist. {deleteKey.Payload.Authentication.Key}");
+                    }
+
+                    authData = new AuthenticationData(deleteKey.Payload.Authentication.Method switch
+                                                      {
+                                                          SigningMethodEnum.Ca => AuthenticationData.SigningMethodEnum.CA,
+                                                          SigningMethodEnum.Cbcmac => AuthenticationData.SigningMethodEnum.CBCMAC,
+                                                          SigningMethodEnum.Certhost => AuthenticationData.SigningMethodEnum.CertHost,
+                                                          SigningMethodEnum.Cmac => AuthenticationData.SigningMethodEnum.CMAC,
+                                                          SigningMethodEnum.Hl => AuthenticationData.SigningMethodEnum.HL,
+                                                          SigningMethodEnum.Reserved1 => AuthenticationData.SigningMethodEnum.Reserved1,
+                                                          SigningMethodEnum.Reserved2 => AuthenticationData.SigningMethodEnum.Reserved2,
+                                                          SigningMethodEnum.Reserved3 => AuthenticationData.SigningMethodEnum.Reserved3,
+                                                          _ => AuthenticationData.SigningMethodEnum.None,
+                                                      },
+                                                      deleteKey.Payload.Authentication.Key,
+                                                      Convert.FromBase64String(deleteKey.Payload.Authentication.Data).ToList());
+                }
+            }
+
             Logger.Log(Constants.DeviceClass, "KeyManagement.DeleteKey()");
 
-            var result = await Device.DeleteKey(new DeleteKeyRequest(deleteKey.Payload.Key), cancel);
+            var result = await Device.DeleteKey(new DeleteKeyRequest(deleteKey.Payload.Key, authData), cancel);
 
             Logger.Log(Constants.DeviceClass, $"KeyManagement.DeleteKey() -> {result.CompletionCode}");
 

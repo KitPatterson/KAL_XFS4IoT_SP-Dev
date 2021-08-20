@@ -17,14 +17,6 @@ namespace XFS4IoTFramework.Keyboard
 {
     public interface IKeyboardDevice : IDevice
     {
-
-        /// <summary>
-        /// This command returns information about the names of the Function Keys supported by the device. Location information is also returned for the supported FDKs (Function Descriptor Keys). This includes screen overlay FDKs. This command should be issued before the first call to [Keyboard.PinEntry](#keyboard.pinentry) or [Keyboard.DataEntry](#keyboard.dataentry)to determine which Function Keys (FKs) and Function Descriptor Keys (FDKs) are available and where the FDKs are located. Then, in these two commands, they can then be specified as Active and Terminate keys and options on the customer screen can be aligned with the active FDKs.
-        /// </summary>
-        Task<XFS4IoT.Keyboard.Completions.GetFuncKeyDetailCompletion.PayloadData> GetFuncKeyDetail(IGetFuncKeyDetailEvents events, 
-                                                                                                   XFS4IoT.Keyboard.Commands.GetFuncKeyDetailCommand.PayloadData payload, 
-                                                                                                   CancellationToken cancellation);
-
         /// <summary>
         /// This command allows an application to retrieve layout information for any device. Either one layout or all defined layouts can be retrieved with a single request of this command. There can be a layout for each of the different types of keyboard entry modes, if the vendor and the hardware support these different methods. The types of keyboard entry modes are: (1) Data Entry mode which corresponds to the [Keyboard.DataEntry](#keyboard.dataentry) command,(2) PIN Entry mode which corresponds to the [Keyboard.PinEntry](#keyboard.pinentry) command, (3) Secure Key Entry mode which corresponds to the [Keyboard.SecureKeyEntry](#keyboard.securekeyentry) command. The layouts can be preloaded into the device, if the device supports this, or a single layout can be loaded into the device immediately prior to the keyboard command being requested.
         /// </summary>

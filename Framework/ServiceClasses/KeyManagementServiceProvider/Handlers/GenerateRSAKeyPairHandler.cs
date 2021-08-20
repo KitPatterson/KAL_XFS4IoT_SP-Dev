@@ -91,9 +91,9 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                        generateRSAKeyPair.Payload.ModulusLength is null ? 0 : (int)generateRSAKeyPair.Payload.ModulusLength,
                                                                                        generateRSAKeyPair.Payload.ExponentValue is null ? GenerateRSAKeyPairRequest.ExponentEnum.Default : generateRSAKeyPair.Payload.ExponentValue switch
                                                                                        {
-                                                                                           GenerateRSAKeyPairCommand.PayloadData.ExponentValueEnum.Exponent_1 => GenerateRSAKeyPairRequest.ExponentEnum.Exponent1,
-                                                                                           GenerateRSAKeyPairCommand.PayloadData.ExponentValueEnum.Exponent_4 => GenerateRSAKeyPairRequest.ExponentEnum.Exponent4,
-                                                                                           GenerateRSAKeyPairCommand.PayloadData.ExponentValueEnum.Exponent_16 => GenerateRSAKeyPairRequest.ExponentEnum.Exponent16,
+                                                                                           GenerateRSAKeyPairCommand.PayloadData.ExponentValueEnum.Exponent1 => GenerateRSAKeyPairRequest.ExponentEnum.Exponent1,
+                                                                                           GenerateRSAKeyPairCommand.PayloadData.ExponentValueEnum.Exponent4 => GenerateRSAKeyPairRequest.ExponentEnum.Exponent4,
+                                                                                           GenerateRSAKeyPairCommand.PayloadData.ExponentValueEnum.Exponent16 => GenerateRSAKeyPairRequest.ExponentEnum.Exponent16,
                                                                                            _ => GenerateRSAKeyPairRequest.ExponentEnum.Default,
                                                                                        }),
                                                          cancel);

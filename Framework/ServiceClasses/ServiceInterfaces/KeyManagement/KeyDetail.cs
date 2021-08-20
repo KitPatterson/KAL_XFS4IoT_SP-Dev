@@ -184,5 +184,8 @@ namespace XFS4IoTFramework.KeyManagement
         public static readonly string regxModeOfUse = "^[0-9BCDEGSTVXY]$";
         public static readonly string regxExportability = "^[0-9ESN]$";
         public static readonly string regxKeyVersionNumber = "^[0-9a-zA-Z][0-9a-zA-Z]$";
+
+        public static readonly string regxVerifyKeyUsage = "^M[0-8]$|^S[0-2]$|^[0-9][0-9]$";
+        public static readonly string regxVerifyModeOfUse = "^[0-9SV]$";
     }
 }
