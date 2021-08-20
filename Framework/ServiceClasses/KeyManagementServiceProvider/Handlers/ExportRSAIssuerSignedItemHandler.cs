@@ -31,21 +31,21 @@ namespace XFS4IoTFramework.KeyManagement
             RSASignedItemResult result;
             if (exportRSAIssuerSignedItem.Payload.ExportItemType == XFS4IoT.KeyManagement.TypeDataItemToExportEnum.EppId)
             {
-                Logger.Log(Constants.DeviceClass, "KeyManagement.ExportEPPIdIssuerSigned()");
+                Logger.Log(Constants.DeviceClass, "KeyManagement.ExportEPPId()");
 
                 result = await Device.ExportEPPId(new ExportEPPIdRequest(SignerEnum.Issuer), cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportEPPIdIssuerSigned() -> {result.CompletionCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportEPPId() -> {result.CompletionCode}");
             }
             else
             {
-                Logger.Log(Constants.DeviceClass, "KeyManagement.ExportRSAPublicKeyIssuerSigned()");
+                Logger.Log(Constants.DeviceClass, "KeyManagement.ExportRSAPublicKey()");
 
                 result = await Device.ExportRSAPublicKey(new ExportRSAPublicKeyRequest(SignerEnum.Issuer,
                                                                                        exportRSAIssuerSignedItem.Payload.Name), 
                                                          cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportRSAPublicKeyIssuerSigned() -> {result.CompletionCode}, {result.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportRSAPublicKey() -> {result.CompletionCode}, {result.ErrorCode}");
             }
 
             return new ExportRSAIssuerSignedItemCompletion.PayloadData(result.CompletionCode,
