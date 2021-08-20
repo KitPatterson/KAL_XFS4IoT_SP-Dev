@@ -69,14 +69,6 @@ namespace XFS4IoTFramework.KeyManagement
         public List<byte> Data { get; init; }
     }
 
-    
-    public enum RSASignatureAlgorithmEnum
-    {
-        NoSignature,
-        RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
-        RSASSA_PSS,            // SSA_PSS Signatures supported
-    }
-
     public class KeyInformationBase
     {
         public KeyInformationBase(string KeyVersionNumber = "00",
@@ -735,7 +727,12 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class ExportEPPIdEPPSignedRequest
     {
-
+        public enum RSASignatureAlgorithmEnum
+        {
+            NoSignature,
+            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
+            RSASSA_PSS,            // SSA_PSS Signatures supported
+        }
         public ExportEPPIdEPPSignedRequest(string SignatureKeyName,
                                            RSASignatureAlgorithmEnum SignatureAlgorithm)
         {
@@ -756,7 +753,12 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class ExportRSAPublicKeyEPPSignedRequest
     {
-
+        public enum RSASignatureAlgorithmEnum
+        {
+            NoSignature,
+            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
+            RSASSA_PSS,            // SSA_PSS Signatures supported
+        }
         public ExportRSAPublicKeyEPPSignedRequest(string KeyName,
                                                   string SignatureKeyName,
                                                   RSASignatureAlgorithmEnum SignatureAlgorithm)
@@ -832,6 +834,12 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class RSAIssuerSignedItemResult : DeviceResult
     {
+        public enum RSASignatureAlgorithmEnum
+        {
+            NoSignature,
+            RSASSA_PKCS1_V1_5,     // SSA_PKCS_V1_5 Signatures supported
+            RSASSA_PSS,            // SSA_PSS Signatures supported
+        }
 
         public RSAIssuerSignedItemResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                          string ErrorDescription = null,

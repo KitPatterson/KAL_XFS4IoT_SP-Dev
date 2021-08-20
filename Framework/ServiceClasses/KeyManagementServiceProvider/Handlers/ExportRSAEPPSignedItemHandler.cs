@@ -58,9 +58,9 @@ namespace XFS4IoTFramework.KeyManagement
                 result = await Device.ExportEPPIdEPPSigned(new ExportEPPIdEPPSignedRequest(exportRSAEPPSignedItem.Payload.SigKey,
                                                                                            exportRSAEPPSignedItem.Payload.SignatureAlgorithm switch
                                                                                            {
-                                                                                               XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPkcs1V15 => RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
-                                                                                               XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPss => RSASignatureAlgorithmEnum.RSASSA_PSS,
-                                                                                               _ => RSASignatureAlgorithmEnum.NoSignature
+                                                                                               XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPkcs1V15 => ExportEPPIdEPPSignedRequest.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
+                                                                                               XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPss => ExportEPPIdEPPSignedRequest.RSASignatureAlgorithmEnum.RSASSA_PSS,
+                                                                                               _ => ExportEPPIdEPPSignedRequest.RSASignatureAlgorithmEnum.NoSignature
                                                                                            }),
                                                   cancel);
 
@@ -74,9 +74,9 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                                          exportRSAEPPSignedItem.Payload.SigKey,
                                                                                                          exportRSAEPPSignedItem.Payload.SignatureAlgorithm switch
                                                                                                          {
-                                                                                                             XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPkcs1V15 => RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
-                                                                                                             XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPss => RSASignatureAlgorithmEnum.RSASSA_PSS,
-                                                                                                             _ => RSASignatureAlgorithmEnum.NoSignature
+                                                                                                             XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPkcs1V15 => ExportRSAPublicKeyEPPSignedRequest.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5,
+                                                                                                             XFS4IoT.KeyManagement.RSASignatureAlgorithmEnum.RsassaPss => ExportRSAPublicKeyEPPSignedRequest.RSASignatureAlgorithmEnum.RSASSA_PSS,
+                                                                                                             _ => ExportRSAPublicKeyEPPSignedRequest.RSASignatureAlgorithmEnum.NoSignature
                                                                                                          }), 
                                                          cancel);
 

@@ -119,6 +119,7 @@ namespace XFS4IoTFramework.KeyManagement
         /// - The RSA Public key component of a public/private key pair that exists within the PIN device.
         /// The public/private key pairs exported by this command are either installed during manufacture or generated through the GenerateRSAKeyPair command.
         /// The GetKeyDetail command can be used to determine the valid uses for the exported public key.
+        /// </summary>
         Task<RSAEPPSignedItemResult> ExportEPPIdEPPSigned(ExportEPPIdEPPSignedRequest request,
                                                           CancellationToken cancellation);
 
