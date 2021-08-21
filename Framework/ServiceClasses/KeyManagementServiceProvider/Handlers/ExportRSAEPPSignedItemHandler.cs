@@ -87,12 +87,12 @@ namespace XFS4IoTFramework.KeyManagement
 
             return new ExportRSAEPPSignedItemCompletion.PayloadData(result.CompletionCode,
                                                                     result.ErrorDescription,
-                                                                    result.ErrorCode switch
+                                                                    result.ErrorCode is not null ? result.ErrorCode switch
                                                                     {
                                                                         RSASignedItemResult.ErrorCodeEnum.AccessDenied => ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum.AccessDenied,
                                                                         RSASignedItemResult.ErrorCodeEnum.KeyNotFound => ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum.KeyNotFound,
                                                                         _ => ExportRSAEPPSignedItemCompletion.PayloadData.ErrorCodeEnum.NoRSAKeyPair,
-                                                                    },
+                                                                    } : null,
                                                                     result.Data is not null && result.Data.Count > 0 ? Convert.ToBase64String(result.Data.ToArray()) : null,
                                                                     result.SelfSignature is not null && result.SelfSignature.Count > 0 ? Convert.ToBase64String(result.SelfSignature.ToArray()) : null,
                                                                     result.Signature is not null && result.Signature.Count > 0 ? Convert.ToBase64String(result.Signature.ToArray()) : null);
