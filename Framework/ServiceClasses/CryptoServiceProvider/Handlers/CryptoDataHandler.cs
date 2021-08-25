@@ -175,6 +175,7 @@ namespace XFS4IoTFramework.Crypto
 
                     var decryptResult = await Device.Crypto(events, 
                                                      new CryptoDataRequest(CryptoDataRequest.CryptoModeEnum.Decrypt,
+                                                                           CryptoDataRequest.CryptoAlgorithmEnum.ECB,
                                                                            cryptoData.Payload.StartValueKey,
                                                                            Crypto.GetKeyDetail(cryptoData.Payload.StartValueKey).KeySlot,
                                                                            new(Convert.FromBase64String(cryptoData.Payload.StartValue)),
@@ -204,6 +205,17 @@ namespace XFS4IoTFramework.Crypto
 
             var result = await Device.Crypto(events,
                                              new CryptoDataRequest(keyDetail.ModeOfUse == "E" ? CryptoDataRequest.CryptoModeEnum.Encrypt : CryptoDataRequest.CryptoModeEnum.Decrypt,
+                                                                   cryptoData.Payload.CryptoAttributes.CryptoMethod switch
+                                                                   {
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.Cbc => CryptoDataRequest.CryptoAlgorithmEnum.CBC,
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.Cfb => CryptoDataRequest.CryptoAlgorithmEnum.CFB,
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.Ctr => CryptoDataRequest.CryptoAlgorithmEnum.CTR,
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.Ecb => CryptoDataRequest.CryptoAlgorithmEnum.ECB,
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.Ofb => CryptoDataRequest.CryptoAlgorithmEnum.OFB,
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.Xts => CryptoDataRequest.CryptoAlgorithmEnum.XTS,
+                                                                       CryptoDataCommand.PayloadData.CryptoAttributesClass.CryptoMethodEnum.RsaesOaep => CryptoDataRequest.CryptoAlgorithmEnum.RSAES_OAEP,
+                                                                       _ => CryptoDataRequest.CryptoAlgorithmEnum.RSAES_OAEP,
+                                                                   },
                                                                    keyDetail.KeyName,
                                                                    keyDetail.KeySlot,
                                                                    Convert.FromBase64String(cryptoData.Payload.CryptData).ToList(),

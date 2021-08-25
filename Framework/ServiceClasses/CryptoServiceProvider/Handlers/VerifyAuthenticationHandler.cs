@@ -207,6 +207,7 @@ namespace XFS4IoTFramework.Crypto
 
                     var decryptResult = await Device.Crypto(null,
                                                             new CryptoDataRequest(CryptoDataRequest.CryptoModeEnum.Decrypt,
+                                                            CryptoDataRequest.CryptoAlgorithmEnum.ECB,
                                                             verifyAuthentication.Payload.StartValueKey,
                                                             Crypto.GetKeyDetail(verifyAuthentication.Payload.StartValueKey).KeySlot,
                                                             new(Convert.FromBase64String(verifyAuthentication.Payload.StartValue)),
