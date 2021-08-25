@@ -3,10 +3,7 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT PinPad interface.
- * PresentIDCHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
-
 
 using System;
 using System.Threading.Tasks;
@@ -23,14 +20,7 @@ namespace XFS4IoTFramework.PinPad
 
         private Task<PresentIDCCompletion.PayloadData> HandlePresentIDC(IPresentIDCEvents events, PresentIDCCommand presentIDC, CancellationToken cancel)
         {
-            //ToDo: Implement HandlePresentIDC for PinPad.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandlePresentIDC for PinPad is not implemented in PresentIDCHandler.cs");
-            #else
-                #error HandlePresentIDC for PinPad is not implemented in PresentIDCHandler.cs
-            #endif
+            throw new NotImplementedException("HandlePresentIDC for PinPad is not implemented in PresentIDCHandler.cs");
         }
-
     }
 }

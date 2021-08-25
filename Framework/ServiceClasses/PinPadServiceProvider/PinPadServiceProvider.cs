@@ -17,6 +17,7 @@ using XFS4IoTFramework.Common;
 using XFS4IoT.PinPad.Events;
 using XFS4IoT.KeyManagement.Events;
 using XFS4IoTFramework.KeyManagement;
+using XFS4IoTFramework.PinPad;
 
 namespace XFS4IoTServer
 {
@@ -132,5 +133,11 @@ namespace XFS4IoTServer
         /// </summary>
         /// <returns></returns>
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
+
+
+        /// <summary>
+        /// Return list of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device
+        /// </summary>
+        public List<PCIPTSDeviceId> GetPCIPTSDeviceIds() => PinPadService.GetPCIPTSDeviceIds();
     }
 }

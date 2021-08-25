@@ -834,6 +834,104 @@ namespace XFS4IoTFramework.Common
                                                                         verifyAttributes);
             }
 
+            if (result.PinPad is not null)
+            {
+                PinPadCapabilitiesClass.PINFormatEnum formats = PinPadCapabilitiesClass.PINFormatEnum.NotSupported;
+                if (result.PinPad.PinFormats?.Ansi is not null && (bool)result.PinPad.PinFormats.Ansi)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.ANSI;
+                if (result.PinPad.PinFormats?.Ap is not null && (bool)result.PinPad.PinFormats.Ap)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.AP;
+                if (result.PinPad.PinFormats?.Diebold is not null && (bool)result.PinPad.PinFormats.Diebold)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.DIEBOLD;
+                if (result.PinPad.PinFormats?.DieboldCo is not null && (bool)result.PinPad.PinFormats.DieboldCo)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.DIEBOLDCO;
+                if (result.PinPad.PinFormats?.Eci2 is not null && (bool)result.PinPad.PinFormats.Eci2)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.ECI2;
+                if (result.PinPad.PinFormats?.Eci3 is not null && (bool)result.PinPad.PinFormats.Eci3)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.ECI3;
+                if (result.PinPad.PinFormats?.Emv is not null && (bool)result.PinPad.PinFormats.Emv)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.EMV;
+                if (result.PinPad.PinFormats?.Ibm3624 is not null && (bool)result.PinPad.PinFormats.Ibm3624)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.IBM3624;
+                if (result.PinPad.PinFormats?.Iso0 is not null && (bool)result.PinPad.PinFormats.Iso0)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.ISO0;
+                if (result.PinPad.PinFormats?.Iso1 is not null && (bool)result.PinPad.PinFormats.Iso1)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.ISO1;
+                if (result.PinPad.PinFormats?.Iso3 is not null && (bool)result.PinPad.PinFormats.Iso3)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.ISO3;
+                if (result.PinPad.PinFormats?.Visa is not null && (bool)result.PinPad.PinFormats.Visa)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.VISA;
+                if (result.PinPad.PinFormats?.Visa3 is not null && (bool)result.PinPad.PinFormats.Visa3)
+                    formats |= PinPadCapabilitiesClass.PINFormatEnum.VISA3;
+
+                PinPadCapabilitiesClass.PresentationAlgorithmEnum presentationAlgorithms = PinPadCapabilitiesClass.PresentationAlgorithmEnum.NotSupported;
+                if (result.PinPad.PresentationAlgorithms?.PresentClear is not null && (bool)result.PinPad.PresentationAlgorithms.PresentClear)
+                    presentationAlgorithms |= PinPadCapabilitiesClass.PresentationAlgorithmEnum.PresentClear;
+
+                PinPadCapabilitiesClass.DisplayTypeEnum displayTypes = PinPadCapabilitiesClass.DisplayTypeEnum.NotSupported;
+                if (result.PinPad.Display?.LedThrough is not null && (bool)result.PinPad.Display.LedThrough)
+                    displayTypes |= PinPadCapabilitiesClass.DisplayTypeEnum.LEDThrough;
+                if (result.PinPad.Display?.Display is not null && (bool)result.PinPad.Display.Display)
+                    displayTypes |= PinPadCapabilitiesClass.DisplayTypeEnum.Display;
+
+                PinPadCapabilitiesClass.ValidationAlgorithmEnum validationAlgorithms = PinPadCapabilitiesClass.ValidationAlgorithmEnum.NotSupported;
+                if (result.PinPad.ValidationAlgorithms?.Des is not null && (bool)result.PinPad.ValidationAlgorithms.Des)
+                    validationAlgorithms |= PinPadCapabilitiesClass.ValidationAlgorithmEnum.DES;
+                if (result.PinPad.ValidationAlgorithms?.Visa is not null && (bool)result.PinPad.ValidationAlgorithms.Visa)
+                    validationAlgorithms |= PinPadCapabilitiesClass.ValidationAlgorithmEnum.VISA;
+
+                Dictionary<string, Dictionary<string, Dictionary<string, PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm>>> pinBlockAttributes = new();
+                if (result.PinPad.PinBlockAttributes is not null && result.PinPad.PinBlockAttributes.Count > 0)
+                {
+                    foreach (var (keyUsage, attributes) in result.PinPad.PinBlockAttributes)
+                    {
+                        Dictionary<string, Dictionary<string, PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm>> pinAlgorithms = new();
+                        foreach (var (attribute, modeOfUses) in attributes)
+                        {
+                            Dictionary<string, PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm> pinModeOfUse = new();
+                            foreach (var (modeOfUse, method) in modeOfUses)
+                            {
+                                PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum encAlgorithm = PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.NotSupported;
+                                if (method?.CryptoMethod?.Cbc is not null && (bool)method?.CryptoMethod?.Cbc)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.CBC;
+                                if (method?.CryptoMethod?.Cfb is not null && (bool)method?.CryptoMethod?.Cfb)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.CFB;
+                                if (method?.CryptoMethod?.Ctr is not null && (bool)method?.CryptoMethod?.Ctr)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.CTR;
+                                if (method?.CryptoMethod?.Ecb is not null && (bool)method?.CryptoMethod?.Ecb)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.ECB;
+                                if (method?.CryptoMethod?.Ofb is not null && (bool)method?.CryptoMethod?.Ofb)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.OFB;
+                                if (method?.CryptoMethod?.Xts is not null && (bool)method?.CryptoMethod?.Xts)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.XTS;
+                                if (method?.CryptoMethod?.RsaesOaep is not null && (bool)method?.CryptoMethod?.RsaesOaep)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.RSAES_OAEP;
+                                if (method?.CryptoMethod?.RsaesPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsaesPkcs1V15)
+                                    encAlgorithm |= PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm.EncryptionAlgorithmEnum.RSAES_PKCS1_V1_5;
+
+                                pinModeOfUse.Add(modeOfUse, new PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm(encAlgorithm));
+                            }
+                            pinAlgorithms.Add(attribute, pinModeOfUse);
+                        }
+                        pinBlockAttributes.Add(keyUsage, pinAlgorithms);
+                    }
+                }
+
+                Common.PinPadCapabilities = new PinPadCapabilitiesClass(formats,
+                                                                        presentationAlgorithms,
+                                                                        displayTypes,
+                                                                        result.PinPad.IdConnect is not null && (bool)result.PinPad.IdConnect,
+                                                                        validationAlgorithms,
+                                                                        result.PinPad.PinCanPersistAfterUse is not null && (bool)result.PinPad.PinCanPersistAfterUse,
+                                                                        result.PinPad.TypeCombined is not null && (bool)result.PinPad.TypeCombined,
+                                                                        result.PinPad.SetPinblockDataRequired is not null && (bool)result.PinPad.SetPinblockDataRequired,
+                                                                        pinBlockAttributes);
+            }
+
+            if (result.Keyboard is not null)
+            {
+            }
+
             return Task.FromResult(result);
         }
     }

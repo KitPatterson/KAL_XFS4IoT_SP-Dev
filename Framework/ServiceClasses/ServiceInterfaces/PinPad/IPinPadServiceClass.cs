@@ -4,14 +4,27 @@
  * See the LICENSE file in the project root for more information.
 \***********************************************************************************************/
 
-using System.Threading.Tasks;
-
+using System;
+using System.Collections.Generic;
 using XFS4IoTFramework.PinPad;
-using XFS4IoT.PinPad.Events;
+using XFS4IoTFramework.Common;
 
 namespace XFS4IoTServer
 {
-    public interface IPinPadServiceClass : IPinPadUnsolicitedEvents
+    public interface IPinPadService : IKeyManagementService, ICommonService
+    {
+        /// <summary>
+        /// True when the frameword received a list of PCIPTS device IDs otherwise false
+        /// </summary>
+        bool FirstPCIPTSInfoCommand { get; set; }
+
+        /// <summary>
+        /// List of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device
+        /// </summary>
+        PCIPTSDeviceIdClass PCIPTSDeviceId { get; set; }
+    }
+
+    public interface IPinPadServiceClass : IPinPadService, IPinPadUnsolicitedEvents
     {
     }
 }
