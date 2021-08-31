@@ -42,82 +42,44 @@ namespace XFS4IoT.Crypto.Commands
             /// Specifies the name of the stored key.
             /// </summary>
             [DataMember(Name = "key")]
-            public string Key { get; private set; }
+            public string Key { get; init; }
 
             /// <summary>
             /// If startValue specifies an Initialization Vector (IV), then this parameter specifies the name of the
-            /// stored key used to decrypt the startValue to obtain the IV. If startValue is not set and this
+            /// stored key used to decrypt the startValue to obtain the IV. If startValue is omitted and this
             /// parameter is set, then this parameter specifies the name of the IV that has been previously imported
-            /// via TR-31. If this parameter is not set, startValue is used as the Initialization Vector.
+            /// via TR-31. If this parameter is not set, *startValue* is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")]
-            public string StartValueKey { get; private set; }
+            public string StartValueKey { get; init; }
 
             /// <summary>
-            /// The initialization vector for CBC / CFB encryption. If this parameter and startValueKey are both not
-            /// set the default value for CBC / CFB is all zeroes.
+            /// The Base64 encoded initialization vector for CBC / CFB encryption. 
+            /// If this property and *startValueKey* are both omitted the default value for CBC / CFB is all zeroes.
             /// </summary>
             [DataMember(Name = "startValue")]
-            public string StartValue { get; private set; }
+            public string StartValue { get; init; }
 
             /// <summary>
-            /// Specifies the padding character. The padding character is a full byte, e.g. 0xFF.  The valid range is
-            /// 0x00 to 0xFF.
+            /// Specifies the padding character. The valid range is 0 to 255.
             /// </summary>
             [DataMember(Name = "padding")]
-            public int? Padding { get; private set; }
+            [DataTypes(Minimum = 0, Maximum = 255)]
+            public int? Padding { get; init; }
 
             /// <summary>
-            /// The data to be encrypted or decrypted formatted in Base64.
+            /// The Base64 encoded data to be encrypted or decrypted.
             /// </summary>
             [DataMember(Name = "cryptData")]
-            public string CryptData { get; private set; }
+            public string CryptData { get; init; }
 
             [DataContract]
             public sealed class CryptoAttributesClass
             {
-                public CryptoAttributesClass(AlgorithmEnum? Algorithm = null, ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null)
+                public CryptoAttributesClass(CryptoMethodEnum? CryptoMethod = null)
                 {
-                    this.Algorithm = Algorithm;
-                    this.ModeOfUse = ModeOfUse;
                     this.CryptoMethod = CryptoMethod;
                 }
-
-                public enum AlgorithmEnum
-                {
-                    A,
-                    D,
-                    R,
-                    T
-                }
-
-                /// <summary>
-                /// Specifies the encryption algorithms supported by [Crypto.CryptoData](#crypto.cryptodata) command. The following values are
-                /// possible: 
-                /// 
-                /// * ```A``` - AES.
-                /// * ```D``` - DEA.
-                /// * ```R``` - RSA.
-                /// * ```T``` - Triple DEA (also referred to as TDEA).
-                /// </summary>
-                [DataMember(Name = "algorithm")]
-                public AlgorithmEnum? Algorithm { get; private set; }
-
-                public enum ModeOfUseEnum
-                {
-                    D,
-                    E
-                }
-
-                /// <summary>
-                /// Specifies the encryption mode supported by [Crypto.CryptoData](#crypto.cryptodata) command. The following values are
-                /// possible:
-                /// 
-                /// * ```D``` - Decrypt 
-                /// * ```E``` - Encrypt
-                /// </summary>
-                [DataMember(Name = "modeOfUse")]
-                public ModeOfUseEnum? ModeOfUse { get; private set; }
 
                 public enum CryptoMethodEnum
                 {
@@ -148,17 +110,17 @@ namespace XFS4IoT.Crypto.Commands
                 /// * ```rsaesOaep``` - Use the RSAES OAEP algorithm.
                 /// </summary>
                 [DataMember(Name = "cryptoMethod")]
-                public CryptoMethodEnum? CryptoMethod { get; private set; }
+                public CryptoMethodEnum? CryptoMethod { get; init; }
 
             }
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this
-            /// command. For a list of valid values see the [Capability.Attributes](#common.capabilities.completion.properties.crypto.cryptoattributes) field. The values specified must be
+            /// command. For a list of valid values see [cryptoAttributes](#common.capabilities.completion.properties.crypto.cryptoattributes) capability. The values specified must be
             /// compatible with the key identified by Key.
             /// </summary>
             [DataMember(Name = "cryptoAttributes")]
-            public CryptoAttributesClass CryptoAttributes { get; private set; }
+            public CryptoAttributesClass CryptoAttributes { get; init; }
 
         }
     }

@@ -44,77 +44,59 @@ namespace XFS4IoT.Crypto.Commands
             /// Specifies the name of the stored key.
             /// </summary>
             [DataMember(Name = "key")]
-            public string Key { get; private set; }
+            public string Key { get; init; }
 
             /// <summary>
             /// If startValue specifies an Initialization Vector (IV), then this property specifies the name of the
-            /// stored key used to decrypt the startValue to obtain the IV. If startValue is not set and this property
+            /// stored key used to decrypt the startValue to obtain the IV. If *startValue* is not set and this property
             /// is also not set, then this property specifies the name of the IV that has been previously imported via
-            /// TR-31. If this property is not set, startValue is used as the Initialization Vector.
+            /// TR-31. If this property is not set, *startValue* is used as the Initialization Vector.
             /// </summary>
             [DataMember(Name = "startValueKey")]
-            public string StartValueKey { get; private set; }
+            public string StartValueKey { get; init; }
 
             /// <summary>
-            /// The initialization vector for CBC / CFB encryption. If this parameter and startValueKey are both not
+            /// The initialization vector for CBC / CFB encryption. If this parameter and *startValueKey* are both not
             /// set the default value for CBC / CFB is all zeroes.
             /// </summary>
             [DataMember(Name = "startValue")]
-            public string StartValue { get; private set; }
+            public string StartValue { get; init; }
 
             /// <summary>
-            /// Specifies the padding character. The padding character is a full byte, e.g. 0xFF.  The valid range is
-            /// 0x00 to 0xFF.
+            /// Specifies the padding character. The valid range is 0 to 255.
             /// </summary>
             [DataMember(Name = "padding")]
-            public int? Padding { get; private set; }
+            [DataTypes(Minimum = 0, Maximum = 255)]
+            public int? Padding { get; init; }
 
             /// <summary>
-            /// Specifies whether data is to be compressed (blanks removed) before building the mac. If compression is
+            /// Specifies whether data is to be compressed (blanks removed) before building the MAC. If compression is
             /// 0x00 no compression is selected, otherwise compression holds the representation of the blank character
             /// (e.g. 0x20 in ASCII or 0x40 in EBCDIC).
             /// </summary>
             [DataMember(Name = "compression")]
-            public bool? Compression { get; private set; }
+            public bool? Compression { get; init; }
 
             /// <summary>
-            /// The device will either generate a MAC or sign the authenticationData and compare with verifyData
-            /// formatted in base64.
+            /// The device will either generate a MAC or sign the Base64 encoded *authenticationData* and compare with *verifyData* property.
             /// </summary>
             [DataMember(Name = "authenticationData")]
-            public string AuthenticationData { get; private set; }
+            public string AuthenticationData { get; init; }
 
             /// <summary>
-            /// The authentication data to be verified by MAC or signature formatted in base64.
+            /// The Base64 encoded authentication data to be verified by MAC or signature.
             /// </summary>
             [DataMember(Name = "verifyData")]
-            public string VerifyData { get; private set; }
+            public string VerifyData { get; init; }
 
             [DataContract]
             public sealed class VerifyAttributesClass
             {
-                public VerifyAttributesClass(ModeOfUseEnum? ModeOfUse = null, CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
+                public VerifyAttributesClass(CryptoMethodEnum? CryptoMethod = null, HashAlgorithmEnum? HashAlgorithm = null)
                 {
-                    this.ModeOfUse = ModeOfUse;
                     this.CryptoMethod = CryptoMethod;
                     this.HashAlgorithm = HashAlgorithm;
                 }
-
-                public enum ModeOfUseEnum
-                {
-                    S,
-                    V
-                }
-
-                /// <summary>
-                /// Specifies the encryption mode supported by [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command. The following values are
-                /// possible: 
-                /// 
-                /// * ```S``` - Signature.  
-                /// * ```V``` - Verify. This be used to verify a MAC.
-                /// </summary>
-                [DataMember(Name = "modeOfUse")]
-                public ModeOfUseEnum? ModeOfUse { get; private set; }
 
                 public enum CryptoMethodEnum
                 {
@@ -123,18 +105,17 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// Specifies the cryptographic method supported by the [Crypto.VerifyAuthentication](#crypto.verifyauthentication) command. For asymmetric
-                /// signature verification methods (bKeyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one of the
+                /// Specifies the cryptographic method [cryptoMethod](#common.capabilities.completion.properties.crypto.verifyattributes.s0.r.s.cryptomethod) supported. For asymmetric
+                /// signature verification methods (Specified [key](#crypto.verifyauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)), this can be one of the
                 /// following values. 
                 /// 
                 /// * ```rsassaPkcs1V15``` - Use the RSASSA-PKCS1-v1.5 algorithm. 
                 /// * ```rsassaPss``` - Use the RSASSA-PSS algorithm. 
                 /// 
-                /// If keyUsage is specified as any of the MAC usages (i.e. ‘M1’), then this proeprty should not be
-                /// not set.
+                /// If the specified [key](#crypto.verifyauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)), then this property can be omitted.
                 /// </summary>
                 [DataMember(Name = "cryptoMethod")]
-                public CryptoMethodEnum? CryptoMethod { get; private set; }
+                public CryptoMethodEnum? CryptoMethod { get; init; }
 
                 public enum HashAlgorithmEnum
                 {
@@ -143,25 +124,25 @@ namespace XFS4IoT.Crypto.Commands
                 }
 
                 /// <summary>
-                /// For asymmetric signature verification methods (keyUsage is ‘S0’, ‘S1’, or ‘S2’), this can be one
-                /// of the following values to be used. If keyUsage is specified as any of the MAC usages (i.e. ‘M1’),
-                /// then properties should not be not set or both 'sha1' and 'sha256' are false. **sha1**: The SHA 1
-                /// digest algorithm. 
+                /// For asymmetric signature verification methods (Specified [key](#crypto.verifyauthentication.command.properties.key) is key usage ['S0', 'S1', or 'S2'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)), this can be one
+                /// of the following values to be used. If the specified [key](#crypto.verifyauthentication.command.properties.key) is any of the MAC usages (i.e. ['M1'](#common.capabilities.completion.properties.crypto.verifyattributes.s0)),
+                /// then this property can be omitted.
                 /// 
+                /// * ```sha1``` - The SHA 1 digest algorithm.
                 /// * ```sha256``` - The SHA 256 digest algorithm, as defined in ISO/IEC 10118-3:2004 and FIPS 180-2.
                 /// </summary>
                 [DataMember(Name = "hashAlgorithm")]
-                public HashAlgorithmEnum? HashAlgorithm { get; private set; }
+                public HashAlgorithmEnum? HashAlgorithm { get; init; }
 
             }
 
             /// <summary>
             /// This parameter specifies the encryption algorithm, cryptographic method, and mode to be used for this
-            /// command. For a list of valid values see the Attributes [Crypto.capability](#common.capabilities.completion.properties.crypto.verifyattributes) 
-            /// field. The values specified must be compatible with the key identified by Key.
+            /// command. For a list of valid values see the Attributes [verifyAttributes](#common.capabilities.completion.properties.crypto.verifyattributes) 
+            /// property. The values specified must be compatible with the key identified by Key.
             /// </summary>
             [DataMember(Name = "verifyAttributes")]
-            public VerifyAttributesClass VerifyAttributes { get; private set; }
+            public VerifyAttributesClass VerifyAttributes { get; init; }
 
         }
     }

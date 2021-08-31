@@ -56,7 +56,7 @@ namespace XFS4IoTFramework.Dispenser
 
             if (!Dispenser.CashDispenserCapabilities.OutputPositons[position])
             {
-                return new CloseShutterCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
+                return new CloseShutterCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                               $"Specified unsupported position {position}",
                                                                CloseShutterCompletion.PayloadData.ErrorCodeEnum.UnsupportedPosition);
             }

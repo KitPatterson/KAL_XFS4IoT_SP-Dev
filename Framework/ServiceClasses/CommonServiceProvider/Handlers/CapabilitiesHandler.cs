@@ -9,10 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Drawing;
 using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Common.Commands;
 using XFS4IoT.Common.Completions;
+using XFS4IoT.Completions;
+using XFS4IoT.TextTerminal;
 
 namespace XFS4IoTFramework.Common
 {
@@ -396,6 +399,439 @@ namespace XFS4IoTFramework.Common
                                                                                 memChipProtocols,
                                                                                 ejectPositions,
                                                                                 result.CardReader.NumberParkingStations is null ? 0 : (int)result.CardReader.NumberParkingStations);
+            }
+
+            if (result.TextTerminal is not null)
+            {
+                if (result.TextTerminal.Type is null)
+                {
+                    Task.FromResult(new CapabilitiesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InternalError,
+                                                                           $"The type proeprty is not set."));
+                }
+
+                List<Size> resolutions = new();
+                if (result.TextTerminal.Resolutions is not null)
+                {
+                    foreach (var resolution in result.TextTerminal.Resolutions)
+                    {
+                        if (resolution.SizeX is null ||
+                            resolution.SizeY is null)
+                        {
+                            Task.FromResult(new CapabilitiesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InternalError,
+                                                                                   $"The no resolution size specified."));
+                        }
+                        resolutions.Add(new Size((int)resolution.SizeX, (int)resolution.SizeY));
+                    }
+                }
+
+                List<TextTerminalCapabilitiesClass.LEDClass> LEDsSupported = new();
+                if (result.TextTerminal.Leds is not null)
+                {
+                    foreach (var led in result.TextTerminal.Leds)
+                    {
+                        TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum LEDColor = TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.None;
+                        if (led.Blue is not null && (bool)led.Blue)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Blue;
+                        if (led.Cyan is not null && (bool)led.Cyan)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Cyan;
+                        if (led.Green is not null && (bool)led.Green)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Green;
+                        if (led.Magenta is not null && (bool)led.Magenta)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Magenta;
+                        if (led.Red is not null && (bool)led.Red)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Red;
+                        if (led.White is not null && (bool)led.White)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.White;
+                        if (led.Yellow is not null && (bool)led.Yellow)
+                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Yellow;
+
+                        TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum LEDLight = TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.None;
+                        if (led.Continuous is not null && (bool)led.Continuous)
+                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.Continuous;
+                        if (led.MediumFlash is not null && (bool)led.MediumFlash)
+                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.MediumFlash;
+                        if (led.Off is not null && (bool)led.Off)
+                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.Off;
+                        if (led.QuickFlash is not null && (bool)led.QuickFlash)
+                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.QuickFlash;
+                        if (led.SlowFlash is not null && (bool)led.SlowFlash)
+                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.SlowFlash;
+
+                        LEDsSupported.Add(new TextTerminalCapabilitiesClass.LEDClass(LEDColor, LEDLight));
+                    }
+                }
+
+                Common.TextTerminalCapabilities = new TextTerminalCapabilitiesClass(result.TextTerminal.Type == CapabilitiesClass.TypeEnum.Fixed ? TextTerminalCapabilitiesClass.TypeEnum.Fixed : TextTerminalCapabilitiesClass.TypeEnum.Removable,
+                                                                                    resolutions,
+                                                                                    result.TextTerminal.KeyLock is not null && (bool)result.TextTerminal.KeyLock,
+                                                                                    result.TextTerminal.DisplayLight is not null && (bool)result.TextTerminal.DisplayLight,
+                                                                                    result.TextTerminal.Cursor is not null && (bool)result.TextTerminal.Cursor,
+                                                                                    result.TextTerminal.Forms is not null && (bool)result.TextTerminal.Forms,
+                                                                                    LEDsSupported);
+            }
+
+
+            if (result.KeyManagement is not null)
+            {
+                KeyManagementCapabilitiesClass.IDKeyEnum idKeys = KeyManagementCapabilitiesClass.IDKeyEnum.NotSupported;
+                if (result.KeyManagement.IdKey?.Import is not null && (bool)result.KeyManagement.IdKey.Import)
+                    idKeys |= KeyManagementCapabilitiesClass.IDKeyEnum.Import;
+                if (result.KeyManagement.IdKey?.Initialization is not null && (bool)result.KeyManagement.IdKey.Initialization)
+                    idKeys |= KeyManagementCapabilitiesClass.IDKeyEnum.Initialization;
+
+                KeyManagementCapabilitiesClass.KeyCheckModeEnum keyCheckModes = KeyManagementCapabilitiesClass.KeyCheckModeEnum.NotSupported;
+                if (result.KeyManagement.KeyCheckModes?.Self is not null && (bool)result.KeyManagement.KeyCheckModes.Self)
+                    keyCheckModes |= KeyManagementCapabilitiesClass.KeyCheckModeEnum.Self;
+                if (result.KeyManagement.KeyCheckModes?.Zero is not null && (bool)result.KeyManagement.KeyCheckModes.Zero)
+                    keyCheckModes |= KeyManagementCapabilitiesClass.KeyCheckModeEnum.Zero;
+
+                KeyManagementCapabilitiesClass.RSAAuthenticationSchemeEnum rsaAuthenticationScheme = KeyManagementCapabilitiesClass.RSAAuthenticationSchemeEnum.NotSupported;
+                if (result.KeyManagement.RsaAuthenticationScheme?.Number2partySig is not null && (bool)result.KeyManagement.RsaAuthenticationScheme.Number2partySig)
+                    rsaAuthenticationScheme |= KeyManagementCapabilitiesClass.RSAAuthenticationSchemeEnum.SecondPartySignature;
+                if (result.KeyManagement.RsaAuthenticationScheme?.Number3partyCert is not null && (bool)result.KeyManagement.RsaAuthenticationScheme.Number3partyCert)
+                    rsaAuthenticationScheme |= KeyManagementCapabilitiesClass.RSAAuthenticationSchemeEnum.ThirdPartyCertificate;
+                if (result.KeyManagement.RsaAuthenticationScheme?.Number3partyCertTr34 is not null && (bool)result.KeyManagement.RsaAuthenticationScheme.Number3partyCertTr34)
+                    rsaAuthenticationScheme |= KeyManagementCapabilitiesClass.RSAAuthenticationSchemeEnum.ThirdPartyCertificateTR34;
+
+                KeyManagementCapabilitiesClass.RSASignatureAlgorithmEnum rsaSignatureAlgorithms = KeyManagementCapabilitiesClass.RSASignatureAlgorithmEnum.NotSupported;
+                if (result.KeyManagement.RsaSignatureAlgorithm?.Pkcs1V15 is not null && (bool)result.KeyManagement.RsaSignatureAlgorithm.Pkcs1V15)
+                    rsaSignatureAlgorithms |= KeyManagementCapabilitiesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5;
+                if (result.KeyManagement.RsaSignatureAlgorithm?.Pss is not null && (bool)result.KeyManagement.RsaSignatureAlgorithm.Pss)
+                    rsaSignatureAlgorithms |= KeyManagementCapabilitiesClass.RSASignatureAlgorithmEnum.RSASSA_PSS;
+
+                KeyManagementCapabilitiesClass.RSACryptAlgorithmEnum rsaCryptAlgorithms = KeyManagementCapabilitiesClass.RSACryptAlgorithmEnum.NotSupported;
+                if (result.KeyManagement.RsaCryptAlgorithm?.Pkcs1V15 is not null && (bool)result.KeyManagement.RsaCryptAlgorithm.Pkcs1V15)
+                    rsaCryptAlgorithms |= KeyManagementCapabilitiesClass.RSACryptAlgorithmEnum.RSAES_PKCS1_V1_5;
+                if (result.KeyManagement.RsaCryptAlgorithm?.Oaep is not null && (bool)result.KeyManagement.RsaCryptAlgorithm.Oaep)
+                    rsaCryptAlgorithms |= KeyManagementCapabilitiesClass.RSACryptAlgorithmEnum.RSAES_OAEP;
+
+                KeyManagementCapabilitiesClass.RSAKeyCheckModeEnum rsaKeyCheckModes = KeyManagementCapabilitiesClass.RSAKeyCheckModeEnum.NotSupported;
+                if (result.KeyManagement.RsaKeyCheckMode?.Sha1 is not null && (bool)result.KeyManagement.RsaKeyCheckMode.Sha1)
+                    rsaKeyCheckModes |= KeyManagementCapabilitiesClass.RSAKeyCheckModeEnum.SHA1;
+                if (result.KeyManagement.RsaKeyCheckMode?.Sha256 is not null && (bool)result.KeyManagement.RsaKeyCheckMode.Sha256)
+                    rsaKeyCheckModes |= KeyManagementCapabilitiesClass.RSAKeyCheckModeEnum.SHA256;
+
+                KeyManagementCapabilitiesClass.SignatureSchemeEnum signatureScheme = KeyManagementCapabilitiesClass.SignatureSchemeEnum.NotSupported;
+                if (result.KeyManagement.SignatureScheme?.EnhancedRkl is not null && (bool)result.KeyManagement.SignatureScheme.EnhancedRkl)
+                    signatureScheme |= KeyManagementCapabilitiesClass.SignatureSchemeEnum.EnhancedRKL; 
+                if (result.KeyManagement.SignatureScheme?.ExportEppId is not null && (bool)result.KeyManagement.SignatureScheme.ExportEppId)
+                    signatureScheme |= KeyManagementCapabilitiesClass.SignatureSchemeEnum.ExportEPPID;
+                if (result.KeyManagement.SignatureScheme?.GenRsaKeyPair is not null && (bool)result.KeyManagement.SignatureScheme.GenRsaKeyPair)
+                    signatureScheme |= KeyManagementCapabilitiesClass.SignatureSchemeEnum.RSAKeyPair;
+                if (result.KeyManagement.SignatureScheme?.RandomNumber is not null && (bool)result.KeyManagement.SignatureScheme.RandomNumber)
+                    signatureScheme |= KeyManagementCapabilitiesClass.SignatureSchemeEnum.RandomNumber;
+
+                KeyManagementCapabilitiesClass.EMVImportSchemeEnum emvImportScheme = KeyManagementCapabilitiesClass.EMVImportSchemeEnum.NotSupported;
+                if (result.KeyManagement.EmvImportSchemes?.ChksumCA is not null && (bool)result.KeyManagement.EmvImportSchemes.ChksumCA)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.ChecksumCA;
+                if (result.KeyManagement.EmvImportSchemes?.EpiCA is not null && (bool)result.KeyManagement.EmvImportSchemes.EpiCA)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.EPICA;
+                if (result.KeyManagement.EmvImportSchemes?.Icc is not null && (bool)result.KeyManagement.EmvImportSchemes.Icc)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.ICC;
+                if (result.KeyManagement.EmvImportSchemes?.IccPin is not null && (bool)result.KeyManagement.EmvImportSchemes.IccPin)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.ICCPIN;
+                if (result.KeyManagement.EmvImportSchemes?.Issuer is not null && (bool)result.KeyManagement.EmvImportSchemes.Issuer)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.Issuer;
+                if (result.KeyManagement.EmvImportSchemes?.Pkcsv15CA is not null && (bool)result.KeyManagement.EmvImportSchemes.Pkcsv15CA)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.PKCSV1_5CA;
+                if (result.KeyManagement.EmvImportSchemes?.PlainCA is not null && (bool)result.KeyManagement.EmvImportSchemes.PlainCA)
+                    emvImportScheme |= KeyManagementCapabilitiesClass.EMVImportSchemeEnum.PlainCA;
+
+                KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum keyblockImportformats = KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.NotSupported;
+                if (result.KeyManagement.KeyBlockImportFormats?.AnsTr31KeyBlock is not null && (bool)result.KeyManagement.KeyBlockImportFormats.AnsTr31KeyBlock)
+                    keyblockImportformats |= KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.KEYBLOCKA;
+                if (result.KeyManagement.KeyBlockImportFormats?.AnsTr31KeyBlockB is not null && (bool)result.KeyManagement.KeyBlockImportFormats.AnsTr31KeyBlockB)
+                    keyblockImportformats |= KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.KEYBLOCKB;
+                if (result.KeyManagement.KeyBlockImportFormats?.AnsTr31KeyBlockC is not null && (bool)result.KeyManagement.KeyBlockImportFormats.AnsTr31KeyBlockC)
+                    keyblockImportformats |= KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.KEYBLOCKC;
+
+                KeyManagementCapabilitiesClass.DESKeyLengthEmum desKeyLength = KeyManagementCapabilitiesClass.DESKeyLengthEmum.NotSupported;
+                if (result.KeyManagement.DesKeyLength?.Double is not null && (bool)result.KeyManagement.DesKeyLength.Double)
+                    desKeyLength |= KeyManagementCapabilitiesClass.DESKeyLengthEmum.Double;
+                if (result.KeyManagement.DesKeyLength?.Single is not null && (bool)result.KeyManagement.DesKeyLength.Single)
+                    desKeyLength |= KeyManagementCapabilitiesClass.DESKeyLengthEmum.Single;
+                if (result.KeyManagement.DesKeyLength?.Triple is not null && (bool)result.KeyManagement.DesKeyLength.Triple)
+                    desKeyLength |= KeyManagementCapabilitiesClass.DESKeyLengthEmum.Triple;
+
+                KeyManagementCapabilitiesClass.CertificateTypeEnum certTypes = KeyManagementCapabilitiesClass.CertificateTypeEnum.NotSupported;
+                if (result.KeyManagement.CertificateTypes?.EncKey is not null && (bool)result.KeyManagement.CertificateTypes.EncKey)
+                    certTypes |= KeyManagementCapabilitiesClass.CertificateTypeEnum.EncKey;
+                if (result.KeyManagement.CertificateTypes?.HostKey is not null && (bool)result.KeyManagement.CertificateTypes.HostKey)
+                    certTypes |= KeyManagementCapabilitiesClass.CertificateTypeEnum.HostKey;
+                if (result.KeyManagement.CertificateTypes?.VerificationKey is not null && (bool)result.KeyManagement.CertificateTypes.VerificationKey)
+                    certTypes |= KeyManagementCapabilitiesClass.CertificateTypeEnum.VerificationKey;
+
+                List<KeyManagementCapabilitiesClass.SingerCapabilities> loadCertOptions = new ();
+                if (result.KeyManagement is not null)
+                {
+                    foreach (var option in result.KeyManagement.LoadCertOptions)
+                    {
+                        if (option.Signer is not null && option.Option is not null)
+                        {
+                            KeyManagementCapabilitiesClass.LoadCertificateSignerEnum singer = option.Signer switch
+                            {
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.Ca => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.CA,
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.CaTr34 => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.CA,
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.CertHost => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.CertHost,
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.CertHostTr34 => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.CertHost,
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.Hl => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.HL,
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.HlTr34 => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.HL,
+                                XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.SigHost => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.SigHost,
+                                _ => KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.NotSupported,
+                            };
+
+                            if (singer == KeyManagementCapabilitiesClass.LoadCertificateSignerEnum.NotSupported)
+                            {
+                                return Task.FromResult(new CapabilitiesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InternalError,
+                                                                                              $"Invalid signer specified for loading certificate. {option.Signer}"));
+                            }
+                            bool tr34 = (option.Signer == XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.CaTr34 ||
+                                         option.Signer == XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.CertHostTr34 ||
+                                         option.Signer == XFS4IoT.KeyManagement.CapabilitiesClass.LoadCertOptionsClass.SignerEnum.HlTr34);
+
+                            KeyManagementCapabilitiesClass.LoadCertificateOptionEnum loadCertCapOptions = KeyManagementCapabilitiesClass.LoadCertificateOptionEnum.NotSupported;
+                            if (option.Option.NewHost is not null && (bool)option.Option.NewHost)
+                                loadCertCapOptions |= KeyManagementCapabilitiesClass.LoadCertificateOptionEnum.NewHost;
+                            if (option.Option.ReplaceHost is not null && (bool)option.Option.ReplaceHost)
+                                loadCertCapOptions |= KeyManagementCapabilitiesClass.LoadCertificateOptionEnum.ReplaceHost;
+
+                            if (loadCertCapOptions == KeyManagementCapabilitiesClass.LoadCertificateOptionEnum.NotSupported)
+                            {
+                                return Task.FromResult(new CapabilitiesCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InternalError,
+                                                                                              $"Invalid option specified for loading certificate. {option.Option}"));
+                            }
+
+                            loadCertOptions.Add(new KeyManagementCapabilitiesClass.SingerCapabilities(singer, loadCertCapOptions, tr34));
+                        }
+                    }
+                }
+
+                KeyManagementCapabilitiesClass.SymmetricKeyManagementMethodEnum symmetricKeyMethods = KeyManagementCapabilitiesClass.SymmetricKeyManagementMethodEnum.NotSupported;
+                if (result.KeyManagement.SymmetricKeyManagementMethods?.FixedKey is not null && (bool)result.KeyManagement.SymmetricKeyManagementMethods.FixedKey)
+                    symmetricKeyMethods |= KeyManagementCapabilitiesClass.SymmetricKeyManagementMethodEnum.FixedKey;
+                if (result.KeyManagement.SymmetricKeyManagementMethods?.MasterKey is not null && (bool)result.KeyManagement.SymmetricKeyManagementMethods.MasterKey)
+                    symmetricKeyMethods |= KeyManagementCapabilitiesClass.SymmetricKeyManagementMethodEnum.MasterKey;
+                if (result.KeyManagement.SymmetricKeyManagementMethods?.TdesDukpt is not null && (bool)result.KeyManagement.SymmetricKeyManagementMethods.TdesDukpt)
+                    symmetricKeyMethods |= KeyManagementCapabilitiesClass.SymmetricKeyManagementMethodEnum.TripleDESDUKPT;
+
+                Dictionary<string, Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.KeyAttributeOptionClass>>> keyAttributes = new();
+                
+                if (result.KeyManagement.KeyAttributes is not null && result.KeyManagement.KeyAttributes.Count > 0)
+                { 
+                    foreach (var (keyUsage, attributes) in result.KeyManagement.KeyAttributes)
+                    {
+                        Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.KeyAttributeOptionClass>> dicAttributes = new();
+                        foreach (var (attribute, modeOfUses) in attributes)
+                        {
+                            Dictionary<string, KeyManagementCapabilitiesClass.KeyAttributeOptionClass> dicModeOfUse = new();
+                            foreach (var (modeOfUse, restrict) in modeOfUses)
+                            {
+                                KeyManagementCapabilitiesClass.KeyAttributeOptionClass restricted = new(string.Empty);
+                                if (restrict is not null)
+                                {
+                                    restricted = new(restrict.Restricted);
+                                }
+
+                                dicModeOfUse.Add(modeOfUse, restricted);
+                            }
+                            dicAttributes.Add(attribute, dicModeOfUse);
+                        }
+                        keyAttributes.Add(keyUsage, dicAttributes);
+                    }
+                }
+                
+                Dictionary<string, KeyManagementCapabilitiesClass.DecryptMethodClass> decryptAttributes = new();
+                if (result.KeyManagement.DecryptAttributes is not null && result.KeyManagement.DecryptAttributes.Count > 0)
+                {
+                    foreach (var (algorithm, method) in result.KeyManagement.DecryptAttributes)
+                    {
+                        KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum decryptMethod = KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.NotSupported;
+                        if (method?.DecryptMethod?.Cbc is not null && (bool)method?.DecryptMethod?.Cbc)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CBC;
+                        if (method?.DecryptMethod?.Cfb is not null && (bool)method?.DecryptMethod?.Cfb)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CFB;
+                        if (method?.DecryptMethod?.Ctr is not null && (bool)method?.DecryptMethod?.Ctr)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.CTR;
+                        if (method?.DecryptMethod?.Ecb is not null && (bool)method?.DecryptMethod?.Ecb)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.ECB;
+                        if (method?.DecryptMethod?.Ofb is not null && (bool)method?.DecryptMethod?.Ofb)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.OFB;
+                        if (method?.DecryptMethod?.RsaesOaep is not null && (bool)method?.DecryptMethod?.RsaesOaep)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_OAEP;
+                        if (method?.DecryptMethod?.RsaesPkcs1V15 is not null && (bool)method?.DecryptMethod?.RsaesPkcs1V15)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.RSAES_PKCS1_V1_5;
+                        if (method?.DecryptMethod?.Xts is not null && (bool)method?.DecryptMethod?.Xts)
+                            decryptMethod |= KeyManagementCapabilitiesClass.DecryptMethodClass.DecryptMethodEnum.XTS;
+
+                        decryptAttributes.Add(algorithm, new KeyManagementCapabilitiesClass.DecryptMethodClass(decryptMethod));
+                    }
+                }
+
+                Dictionary<string, Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.VerifyMethodClass>>> verifyAttributes = new();
+                if (result.KeyManagement.VerifyAttributes is not null && result.KeyManagement.VerifyAttributes.Count > 0)
+                {
+                    foreach (var (keyUsage, attributes) in result.KeyManagement.VerifyAttributes)
+                    {
+                        Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.VerifyMethodClass>> dicAttributes = new();
+                        foreach (var (attribute, modeOfUses) in attributes)
+                        {
+                            Dictionary<string, KeyManagementCapabilitiesClass.VerifyMethodClass> dicModeOfUse = new();
+                            foreach (var (modeOfUse, method) in modeOfUses)
+                            {
+                                KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum cryptoMethod = KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.NotSupported;
+                                if (method?.CryptoMethod?.KcvNone is not null && (bool)method?.CryptoMethod?.KcvNone)
+                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVNone;
+                                if (method?.CryptoMethod?.KcvSelf is not null && (bool)method?.CryptoMethod?.KcvSelf)
+                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVSelf;
+                                if (method?.CryptoMethod?.KcvZero is not null && (bool)method?.CryptoMethod?.KcvZero)
+                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVZero;
+                                if (method?.CryptoMethod?.RsassaPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsassaPkcs1V15)
+                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PKCS1_V1_5;
+                                if (method?.CryptoMethod?.RsassaPss is not null && (bool)method?.CryptoMethod?.RsassaPss)
+                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PSS;
+                                if (method?.CryptoMethod?.SigNone is not null && (bool)method?.CryptoMethod?.SigNone)
+                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.SignatureNone;
+
+                                KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum hashAlgorithm = KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.NotSupported;
+                                if (method?.HashAlgorithm?.Sha1 is not null && (bool)method?.HashAlgorithm?.Sha1)
+                                    hashAlgorithm |= KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA1;
+                                if (method?.HashAlgorithm?.Sha256 is not null && (bool)method?.HashAlgorithm?.Sha256)
+                                    hashAlgorithm |= KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA256;
+
+                                dicModeOfUse.Add(modeOfUse, new KeyManagementCapabilitiesClass.VerifyMethodClass(cryptoMethod, hashAlgorithm));
+                            }
+                            dicAttributes.Add(attribute, dicModeOfUse);
+                        }
+                        verifyAttributes.Add(keyUsage, dicAttributes);
+                    }
+                }
+
+                Common.KeyManagementCapabilities = new KeyManagementCapabilitiesClass(result.KeyManagement.KeyNum is not null ? (int)result.KeyManagement.KeyNum : 0,
+                                                                                      idKeys,
+                                                                                      keyCheckModes,
+                                                                                      result.KeyManagement.HsmVendor,
+                                                                                      rsaAuthenticationScheme,
+                                                                                      rsaSignatureAlgorithms,
+                                                                                      rsaCryptAlgorithms,
+                                                                                      rsaKeyCheckModes,
+                                                                                      signatureScheme,
+                                                                                      emvImportScheme,
+                                                                                      keyblockImportformats,
+                                                                                      result.KeyManagement.KeyImportThroughParts is not null ? (bool)result.KeyManagement.KeyImportThroughParts : false,
+                                                                                      desKeyLength,
+                                                                                      certTypes,
+                                                                                      loadCertOptions,
+                                                                                      symmetricKeyMethods,
+                                                                                      keyAttributes,
+                                                                                      decryptAttributes,
+                                                                                      verifyAttributes);
+            }
+
+            if (result.Crypto is not null)
+            {
+                CryptoCapabilitiesClass.EMVHashAlgorithmEnum emvHashAlgorithms = CryptoCapabilitiesClass.EMVHashAlgorithmEnum.NotSupported;
+                if (result.Crypto.EmvHashAlgorithm?.Sha1Digest is not null && (bool)result.Crypto.EmvHashAlgorithm.Sha1Digest)
+                    emvHashAlgorithms |= CryptoCapabilitiesClass.EMVHashAlgorithmEnum.SHA1_Digest;
+                if (result.Crypto.EmvHashAlgorithm?.Sha256Digest is not null && (bool)result.Crypto.EmvHashAlgorithm.Sha256Digest)
+                    emvHashAlgorithms |= CryptoCapabilitiesClass.EMVHashAlgorithmEnum.SHA256_Digest;
+
+
+                Dictionary<string, Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.CryptoAttributesClass>>> cryptoAttributes = new();
+                
+                if (result.Crypto.CryptoAttributes is not null && result.Crypto.CryptoAttributes.Count > 0)
+                {
+                    foreach (var (keyUsage, attributes) in result.Crypto.CryptoAttributes)
+                    {
+                        Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.CryptoAttributesClass>> dicAttributes = new();
+                        foreach (var (attribute, modeOfUses) in attributes)
+                        {
+                            Dictionary<string, CryptoCapabilitiesClass.CryptoAttributesClass> dicModeOfUse = new();
+                            foreach (var (modeOfUse, method) in modeOfUses)
+                            {
+                                CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum cryptoMethod = CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.NotSupported;
+                                if (method?.CryptoMethod?.Cbc is not null && (bool)method?.CryptoMethod?.Cbc)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.CBC;
+                                if (method?.CryptoMethod?.Cfb is not null && (bool)method?.CryptoMethod?.Cfb)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.CFB;
+                                if (method?.CryptoMethod?.Ctr is not null && (bool)method?.CryptoMethod?.Ctr)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.CTR;
+                                if (method?.CryptoMethod?.Ecb is not null && (bool)method?.CryptoMethod?.Ecb)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.ECB;
+                                if (method?.CryptoMethod?.Ofb is not null && (bool)method?.CryptoMethod?.Ofb)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.OFB;
+                                if (method?.CryptoMethod?.RsaesOaep is not null && (bool)method?.CryptoMethod?.RsaesOaep)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.RSAES_OAEP;
+                                if (method?.CryptoMethod?.RsaesPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsaesPkcs1V15)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.RSAES_PKCS1_V1_5;
+                                if (method?.CryptoMethod?.Xts is not null && (bool)method?.CryptoMethod?.Xts)
+                                    cryptoMethod |= CryptoCapabilitiesClass.CryptoAttributesClass.CryptoMethodEnum.XTS;
+
+                                dicModeOfUse.Add(modeOfUse, new CryptoCapabilitiesClass.CryptoAttributesClass(cryptoMethod));
+                            }
+                            dicAttributes.Add(attribute, dicModeOfUse);
+                        }
+                        cryptoAttributes.Add(keyUsage, dicAttributes);
+                    }
+                }
+
+                Dictionary<string, Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>>> authenticationAttributes = new();
+                if (result.Crypto.AuthenticationAttributes is not null && result.Crypto.AuthenticationAttributes.Count > 0)
+                {
+                    foreach (var (keyUsage, attributes) in result.Crypto.AuthenticationAttributes)
+                    {
+                        Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>> dicAttributes = new();
+                        foreach (var (attribute, modeOfUses) in attributes)
+                        {
+                            Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass> dicModeOfUse = new();
+                            foreach (var (modeOfUse, method) in modeOfUses)
+                            {
+                                CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum cryptoAlgorithm = CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported;
+                                if (method?.CryptoMethod?.RsassaPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsassaPkcs1V15)
+                                    cryptoAlgorithm |= CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5;
+                                if (method?.CryptoMethod?.RsassaPss is not null && (bool)method?.CryptoMethod?.RsassaPss)
+                                    cryptoAlgorithm |= CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PSS;
+                                
+                                CryptoCapabilitiesClass.HashAlgorithmEnum hashAlgorithm = CryptoCapabilitiesClass.HashAlgorithmEnum.NotSupported;
+
+                                dicModeOfUse.Add(modeOfUse, new CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass(cryptoAlgorithm, hashAlgorithm));
+                            }
+                            dicAttributes.Add(attribute, dicModeOfUse);
+                        }
+                        authenticationAttributes.Add(keyUsage, dicAttributes);
+                    }
+                }
+
+                Dictionary<string, Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>>> verifyAttributes = new();
+                if (result.Crypto.VerifyAttributes is not null && result.Crypto.VerifyAttributes.Count > 0)
+                {
+                    foreach (var (keyUsage, attributes) in result.Crypto.VerifyAttributes)
+                    {
+                        Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>> dicAttributes = new();
+                        foreach (var (attribute, modeOfUses) in attributes)
+                        {
+                            Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass> dicModeOfUse = new();
+                            foreach (var (modeOfUse, method) in modeOfUses)
+                            {
+                                CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum cryptoAlgorithm = CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.NotSupported;
+                                if (method?.CryptoMethod?.RsassaPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsassaPkcs1V15)
+                                    cryptoAlgorithm |= CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PKCS1_V1_5;
+                                if (method?.CryptoMethod?.RsassaPss is not null && (bool)method?.CryptoMethod?.RsassaPss)
+                                    cryptoAlgorithm |= CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass.RSASignatureAlgorithmEnum.RSASSA_PSS;
+
+                                CryptoCapabilitiesClass.HashAlgorithmEnum hashAlgorithm = CryptoCapabilitiesClass.HashAlgorithmEnum.NotSupported;
+
+                                dicModeOfUse.Add(modeOfUse, new CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass(cryptoAlgorithm, hashAlgorithm));
+                            }
+                            dicAttributes.Add(attribute, dicModeOfUse);
+                        }
+                        verifyAttributes.Add(keyUsage, dicAttributes);
+                    }
+                }
+
+                Common.CryptoCapabilities = new CryptoCapabilitiesClass(emvHashAlgorithms,
+                                                                        cryptoAttributes,
+                                                                        authenticationAttributes,
+                                                                        verifyAttributes);
             }
 
             return Task.FromResult(result);

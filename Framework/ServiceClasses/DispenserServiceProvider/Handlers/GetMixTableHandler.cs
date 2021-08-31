@@ -24,7 +24,7 @@ namespace XFS4IoTFramework.Dispenser
         {
             if (getMixTable.Payload.MixNumber is null)
             {
-                return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData, 
+                return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode, 
                                                                              $"Invalid mix number supplied. {getMixTable.Payload.MixNumber}",
                                                                              GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
             }
@@ -33,7 +33,7 @@ namespace XFS4IoTFramework.Dispenser
             if (mix is null ||
                 mix.Type != Mix.TypeEnum.Table)
             {
-                return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                return Task.FromResult(new GetMixTableCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                              $"Supplied mix number is not a MixTable. {getMixTable.Payload.MixNumber}",
                                                                              GetMixTableCompletion.PayloadData.ErrorCodeEnum.InvalidMixNumber));
             }
