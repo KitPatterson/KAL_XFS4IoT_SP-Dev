@@ -55,6 +55,7 @@ namespace XFS4IoTFramework.PinPad
             {
                 InvalidDataException => MaintainPinCompletion.PayloadData.CompletionCodeEnum.InvalidData,
                 NotImplementedException => MaintainPinCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TaskCanceledException or OperationCanceledException => MaintainPinCompletion.PayloadData.CompletionCodeEnum.Canceled,
                 _ => MaintainPinCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 

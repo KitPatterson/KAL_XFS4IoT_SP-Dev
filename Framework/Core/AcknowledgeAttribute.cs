@@ -6,20 +6,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using XFS4IoT;
 
-namespace XFS4IoTServer
+namespace XFS4IoT
 {
-    public interface ICommandDispatcher
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class AcknowledgeAttribute : Attribute
     {
-        Task Dispatch(IConnection Connection, MessageBase Command);
-
-        Task DispatchError(IConnection Connection, MessageBase Command, Exception CommandException);
-
-        Task RunAsync();
-
-        Task<bool> CancelCommandsAsync(IConnection Connection, List<int> RequestIds);
+        public string Name { get; set; }
     }
 }
