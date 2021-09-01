@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonServiceProvider", "Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashManagementServiceProvider", "ServiceClasses\CashManagementServiceProvider\CashManagementServiceProvider.csproj", "{C1B63AF5-4CDE-42C0-95A7-4B73B879725B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DispenserServiceProvider", "ServiceClasses\DispenserServiceProvider\DispenserServiceProvider.csproj", "{62236B74-B3C6-4A0B-A350-76C329B03176}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashDispenserServiceProvider", "ServiceClasses\CashDispenserServiceProvider\CashDispenserServiceProvider.csproj", "{62236B74-B3C6-4A0B-A350-76C329B03176}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextTerminalServiceProvider", "ServiceClasses\TextTerminalServiceProvider\TextTerminalServiceProvider.csproj", "{47897B41-5286-407F-8239-07624964896F}"
 EndProject

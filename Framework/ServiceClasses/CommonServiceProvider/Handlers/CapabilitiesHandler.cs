@@ -205,9 +205,9 @@ namespace XFS4IoTFramework.Common
                 // Store internal object for other interfaces can be used
                 Common.CashDispenserCapabilities = new CashDispenserCapabilitiesClass(result.CashDispenser.Type switch
                                                                                       {
-                                                                                          XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceBill => CashDispenserCapabilitiesClass.TypeEnum.selfServiceBill,
-                                                                                          XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.SelfServiceCoin => CashDispenserCapabilitiesClass.TypeEnum.selfServiceCoin,
-                                                                                          XFS4IoT.Dispenser.CapabilitiesClass.TypeEnum.TellerBill => CashDispenserCapabilitiesClass.TypeEnum.tellerBill,
+                                                                                          XFS4IoT.CashDispenser.CapabilitiesClass.TypeEnum.SelfServiceBill => CashDispenserCapabilitiesClass.TypeEnum.selfServiceBill,
+                                                                                          XFS4IoT.CashDispenser.CapabilitiesClass.TypeEnum.SelfServiceCoin => CashDispenserCapabilitiesClass.TypeEnum.selfServiceCoin,
+                                                                                          XFS4IoT.CashDispenser.CapabilitiesClass.TypeEnum.TellerBill => CashDispenserCapabilitiesClass.TypeEnum.tellerBill,
                                                                                           _ => CashDispenserCapabilitiesClass.TypeEnum.tellerCoin
                                                                                       },
                                                                                       result.CashDispenser.MaxDispenseItems is null ? 0 : (int)result.CashDispenser.MaxDispenseItems,

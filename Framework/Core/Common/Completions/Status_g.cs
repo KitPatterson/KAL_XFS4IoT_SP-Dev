@@ -26,7 +26,7 @@ namespace XFS4IoT.Common.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, StatusPropertiesClass Common = null, CardReader.StatusClass CardReader = null, CashAcceptor.StatusClass CashAcceptor = null, Dispenser.StatusClass CashDispenser = null, CashManagement.StatusClass CashManagement = null, KeyManagement.StatusClass KeyManagement = null, Keyboard.StatusClass Keyboard = null, TextTerminal.StatusClass TextTerminal = null, Printer.StatusClass Printer = null, CardEmbosser.StatusClass CardEmbosser = null, BarcodeReader.StatusClass BarcodeReader = null, Biometric.StatusClass Biometric = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, StatusPropertiesClass Common = null, CardReader.StatusClass CardReader = null, CashAcceptor.StatusClass CashAcceptor = null, CashDispenser.StatusClass CashDispenser = null, CashManagement.StatusClass CashManagement = null, KeyManagement.StatusClass KeyManagement = null, Keyboard.StatusClass Keyboard = null, TextTerminal.StatusClass TextTerminal = null, Printer.StatusClass Printer = null, CardEmbosser.StatusClass CardEmbosser = null, BarcodeReader.StatusClass BarcodeReader = null, Biometric.StatusClass Biometric = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.Common = Common;
@@ -68,7 +68,7 @@ namespace XFS4IoT.Common.Completions
             /// the CashDispenser interface is not supported.
             /// </summary>
             [DataMember(Name = "cashDispenser")]
-            public Dispenser.StatusClass CashDispenser { get; init; }
+            public CashDispenser.StatusClass CashDispenser { get; init; }
 
             /// <summary>
             /// Status information for XFS4IoT services implementing the CashManagement interface. This will be omitted if
