@@ -55,11 +55,6 @@ namespace XFS4IoTFramework.KeyManagement
                         return new InitializationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                         $"No authentication data specified.");
                     }
-                    if (string.IsNullOrEmpty(initialization.Payload.Authentication.Key))
-                    {
-                        return new InitializationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                        $"No authentication key specified.");
-                    }
                     if (initialization.Payload.Authentication.Method is null)
                     {
                         return new InitializationCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,

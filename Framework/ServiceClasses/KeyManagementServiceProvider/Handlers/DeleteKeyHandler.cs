@@ -45,11 +45,6 @@ namespace XFS4IoTFramework.KeyManagement
                         return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                    $"No authentication data specified.");
                     }
-                    if (string.IsNullOrEmpty(deleteKey.Payload.Authentication.Key))
-                    {
-                        return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                   $"No authentication key specified.");
-                    }
                     if (deleteKey.Payload.Authentication.Method is null)
                     {
                         return new DeleteKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
