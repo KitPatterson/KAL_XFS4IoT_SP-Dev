@@ -28,6 +28,7 @@ namespace XFS4IoTServer
             this.KeyManagementService = KeyManagement.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
             FirstPCIPTSInfoCommand = true;
+            PCIPTSDeviceId = null;
         }
 
         /// <summary>
@@ -104,11 +105,11 @@ namespace XFS4IoTServer
         /// <summary>
         /// True when the frameword received a list of PCIPTS device IDs otherwise false
         /// </summary>
-        public bool FirstPCIPTSInfoCommand { get; internal set; }
+        public bool FirstPCIPTSInfoCommand { get; set; }
 
         /// <summary>
         /// List of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device
         /// </summary>
-        public PCIPTSDeviceIdClass PCIPTSDeviceId { get; internal set; } = null;
+        public PCIPTSDeviceIdClass PCIPTSDeviceId { get; set; }
     }
 }

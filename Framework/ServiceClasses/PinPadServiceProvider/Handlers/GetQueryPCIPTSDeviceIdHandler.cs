@@ -22,11 +22,11 @@ namespace XFS4IoTFramework.PinPad
         {
             if (PinPad.FirstPCIPTSInfoCommand)
             {
-                Logger.Log(Constants.DeviceClass, "PinPad.GetPCIPTSDeviceId()");
+                Logger.Log(Constants.DeviceClass, "PinPadDev.GetPCIPTSDeviceId()");
 
                 PCIPTSDeviceIdClass deviceId = Device.GetPCIPTSDeviceId();
 
-                Logger.Log(Constants.DeviceClass, "PinPad.GetPCIPTSDeviceId()->");
+                Logger.Log(Constants.DeviceClass, "PinPadDev.GetPCIPTSDeviceId()->");
 
                 PinPad.PCIPTSDeviceId = deviceId;
                 PinPad.FirstPCIPTSInfoCommand = false;

@@ -25,11 +25,38 @@ namespace XFS4IoTFramework.PinPad
                 return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                            $"No customer data specified.");
             }
+            else
+            {
+                if (localVisa.Payload.Pan.Length != 23)
+                {
+                    return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                               $"Invalid length of pan specified. {localVisa.Payload.Pan.Length}");
+                }
 
+                foreach (char c in localVisa.Payload.Pan)
+                {
+                    if (!Char.IsDigit(c))
+                    {
+                        return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"Offset data should be number. {localVisa.Payload.Pan}");
+                    }
+                }
+            }
             if (string.IsNullOrEmpty(localVisa.Payload.Pvv))
             {
                 return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                           $"No key name specified to verify PIN locally.");
+            }
+            else
+            {
+                foreach (char c in localVisa.Payload.Pvv)
+                {
+                    if (!Char.IsDigit(c))
+                    {
+                        return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                   $"PIN valification value should be number. {localVisa.Payload.Pvv}");
+                    }
+                }
             }
 
             KeyDetail key = PinPad.GetKeyDetail(localVisa.Payload.Key);
@@ -57,10 +84,10 @@ namespace XFS4IoTFramework.PinPad
                                                                LocalVisaCompletion.PayloadData.ErrorCodeEnum.KeyNotFound);
                 }
 
-                if (key.KeyUsage != "K0" &&
-                    key.KeyUsage != "K1" &&
-                    key.KeyUsage != "K2" &&
-                    key.KeyUsage != "K3")
+                if (keyEncKey.KeyUsage != "K0" &&
+                    keyEncKey.KeyUsage != "K1" &&
+                    keyEncKey.KeyUsage != "K2" &&
+                    keyEncKey.KeyUsage != "K3")
                 {
                     return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                                $"Specified key encryption key usage is not expected.{keyEncKey.KeyUsage}",

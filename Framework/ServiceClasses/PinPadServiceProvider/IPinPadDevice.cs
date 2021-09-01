@@ -36,15 +36,9 @@ namespace XFS4IoTFramework.PinPad
                                                       CancellationToken cancellation);
 
         /// <summary>
-        /// The PIN, which was entered with the GetPin command, is combined with the requisite data specified by the IDC presentation algorithm and presented to the smartcard contained in the ID card unit. The result of the presentation is returned to the application. This command will clear the PIN unless the application has requested that the PIN be maintained through the [PinPad.MaintinPin](#pinpad.maintainpin) command.
-        /// </summary>
-        //Task<PresentIDCResult> PresentIDC(PresentIDCRequest request,
-        //                                  CancellationToken cancellation);
-
-        /// <summary>
         /// Sends a service reset to the Service Provider. 
         /// </summary>
-        Task<DeviceResult> Reset(CancellationToken cancellation);
+        Task<DeviceResult> ResetDevice(CancellationToken cancellation);
 
         /// <summary>
         /// This command is used to control if the PIN is maintained after a PIN processing command for subsequent use by other PIN processing commands. 
