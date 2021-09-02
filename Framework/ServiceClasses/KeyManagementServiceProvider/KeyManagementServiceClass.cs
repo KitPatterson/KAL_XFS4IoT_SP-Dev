@@ -113,6 +113,8 @@ namespace XFS4IoTServer
                            DateTime? ExpiryDate,
                            int? Version)
         {
+            if (KeyDetails.ContainsKey(KeyName))
+                KeyDetails.Remove(KeyName);
             KeyDetails.Add(KeyName, new KeyDetail(KeyName,
                                                   KeySlot,
                                                   KeyUsage,

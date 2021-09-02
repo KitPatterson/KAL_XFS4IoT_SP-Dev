@@ -91,7 +91,20 @@ namespace XFS4IoTFramework.Crypto
             Decrypt,
         }
 
+        public enum CryptoAlgorithmEnum
+        {
+            ECB,
+            CBC,
+            CFB,
+            OFB,
+            CTR,
+            XTS,
+            RSAES_PKCS1_V1_5,
+            RSAES_OAEP
+        }
+
         public CryptoDataRequest(CryptoModeEnum Mode,
+                                 CryptoAlgorithmEnum CryptoAlgorithm,
                                  string KeyName,
                                  int KeySlot,
                                  List<byte> Data,
@@ -111,6 +124,11 @@ namespace XFS4IoTFramework.Crypto
         /// Data to encrypt or decrypt
         /// </summary>
         public CryptoModeEnum Mode { get; init; }
+
+        /// <summary>
+        /// Crypto algorithm to use
+        /// </summary>
+        public CryptoAlgorithmEnum CryptoAlgorithm { get; init; }
 
         /// <summary>
         /// Data of the initialization vector

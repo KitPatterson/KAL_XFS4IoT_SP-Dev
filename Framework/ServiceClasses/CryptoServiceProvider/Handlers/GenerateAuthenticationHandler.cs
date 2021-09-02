@@ -218,11 +218,12 @@ namespace XFS4IoTFramework.Crypto
 
                     var decryptResult = await Device.Crypto(null,
                                                             new CryptoDataRequest(CryptoDataRequest.CryptoModeEnum.Decrypt,
-                                                            generateAuthentication.Payload.StartValueKey,
-                                                            Crypto.GetKeyDetail(generateAuthentication.Payload.StartValueKey).KeySlot,
-                                                            new(Convert.FromBase64String(generateAuthentication.Payload.StartValue)),
-                                                            0),
-                                                     cancel);
+                                                                                  CryptoDataRequest.CryptoAlgorithmEnum.ECB,
+                                                                                  generateAuthentication.Payload.StartValueKey,
+                                                                                  Crypto.GetKeyDetail(generateAuthentication.Payload.StartValueKey).KeySlot,
+                                                                                  new(Convert.FromBase64String(generateAuthentication.Payload.StartValue)),
+                                                                                  0),
+                                                            cancel);
 
                     Logger.Log(Constants.DeviceClass, $"CryptoDev.Crypto() -> {decryptResult.CompletionCode}, {decryptResult.ErrorCode}");
 
