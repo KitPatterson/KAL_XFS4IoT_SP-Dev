@@ -29,12 +29,12 @@ namespace XFS4IoTFramework.KeyManagement
                                                                     $"No certificate data specified.");
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.ReplaceCertificate()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.ReplaceCertificate()");
 
             var result = await Device.ReplaceCertificate(new ReplaceCertificateRequest(Convert.FromBase64String(replaceCertificate.Payload.ReplaceCertificate).ToList()), 
                                                          cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.ReplaceCertificate() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ReplaceCertificate() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new ReplaceCertificateCompletion.PayloadData(result.CompletionCode,
                                                                 result.ErrorDescription,

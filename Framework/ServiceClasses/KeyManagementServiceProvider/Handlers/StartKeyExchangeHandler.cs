@@ -41,11 +41,11 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.StartKeyExchange()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.StartKeyExchange()");
 
             var result = await Device.StartKeyExchange(cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.StartKeyExchange() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.StartKeyExchange() -> {result.CompletionCode}, {result.ErrorCode}");
 
 
             return new StartKeyExchangeCompletion.PayloadData(result.CompletionCode,

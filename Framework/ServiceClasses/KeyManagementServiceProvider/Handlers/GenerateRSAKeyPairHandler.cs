@@ -79,7 +79,7 @@ namespace XFS4IoTFramework.KeyManagement
 
             int keySlot = KeyManagement.FindKeySlot(generateRSAKeyPair.Payload.Key);
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.GenerateRSAKeyPair()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.GenerateRSAKeyPair()");
 
             var result = await Device.GenerateRSAKeyPair(new GenerateRSAKeyPairRequest(generateRSAKeyPair.Payload.Key,
                                                                                        keySlot,
@@ -98,7 +98,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                        }),
                                                          cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.GenerateRSAKeyPair() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.GenerateRSAKeyPair() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {
