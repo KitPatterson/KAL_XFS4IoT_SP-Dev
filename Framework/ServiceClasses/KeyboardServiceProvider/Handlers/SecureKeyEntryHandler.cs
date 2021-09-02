@@ -35,6 +35,8 @@ namespace XFS4IoTFramework.Keyboard
             if (secureKeyEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
+            // TO BE REMOVED
+            await Task.Delay(100, cancel);
 
             return new SecureKeyEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null);
         }

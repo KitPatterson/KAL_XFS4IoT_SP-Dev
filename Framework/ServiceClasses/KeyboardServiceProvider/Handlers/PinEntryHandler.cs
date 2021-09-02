@@ -30,6 +30,9 @@ namespace XFS4IoTFramework.Keyboard
             if (pinEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
+            // TO BE REMOVED
+            await Task.Delay(100, cancel);
+
             return new PinEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null);
         }
     }

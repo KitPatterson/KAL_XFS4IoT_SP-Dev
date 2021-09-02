@@ -332,6 +332,7 @@ namespace XFS4IoTFramework.Keyboard
         /// If this property is omitted, *keyLen* will determine the cryptographic method used. 
         /// If *keyLen* is 16, the cryptographic method will be Single DES. 
         /// If *keyLen* is 32 or 48, the cryptographic method will be Triple DES
+        /// </summary>
         public CryptoMethodEnum? CryptoMethod { get; init; }
     }
 
