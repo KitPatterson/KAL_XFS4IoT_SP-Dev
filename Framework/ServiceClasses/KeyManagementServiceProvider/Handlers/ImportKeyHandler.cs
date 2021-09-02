@@ -160,7 +160,7 @@ namespace XFS4IoTFramework.KeyManagement
                     componentNumber = (int)SecureKeyEntryStatusClass.KeyPartEnum.Second;
                 }
 
-                Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKeyPart()");
+                Logger.Log(Constants.DeviceClass, "KeyManagementDev.ImportKeyPart()");
 
                 var importKeyPartResult = await Device.ImportKeyPart(new ImportKeyPartRequest(importKey.Payload.Key,
                                                                                               componentNumber,
@@ -170,7 +170,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                               importKey.Payload.KeyAttributes.Restricted),
                                                                      cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKeyPart() -> {importKeyPartResult.CompletionCode}, {importKeyPartResult.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ImportKeyPart() -> {importKeyPartResult.CompletionCode}, {importKeyPartResult.ErrorCode}");
 
                 ImportKeyCompletion.PayloadData.VerifyAttributesClass verifyAttribute = null;
                 if (importKeyPartResult.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
@@ -490,7 +490,7 @@ namespace XFS4IoTFramework.KeyManagement
             ImportKeyResult result;
             if (assemblyParts)
             {
-                Logger.Log(Constants.DeviceClass, "KeyManagement.AssemblyKeyParts()");
+                Logger.Log(Constants.DeviceClass, "KeyManagementDev.AssemblyKeyParts()");
 
                 result = await Device.AssemblyKeyParts(new AssemblyKeyPartsRequest(importKey.Payload.Key,
                                                                                    keySlot,
@@ -500,11 +500,11 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                    importKey.Payload.KeyAttributes.Restricted),
                                                        cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.AssemblyKeyParts() -> {result.CompletionCode}, {result.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagementDev.AssemblyKeyParts() -> {result.CompletionCode}, {result.ErrorCode}");
             }
             else
             {
-                Logger.Log(Constants.DeviceClass, "KeyManagement.ImportKey()");
+                Logger.Log(Constants.DeviceClass, "KeyManagementDev.ImportKey()");
 
                 result = await Device.ImportKey(new ImportKeyRequest(importKey.Payload.Key,
                                                                      keySlot,
@@ -517,7 +517,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                      decryptKeyAttribute),
                                                 cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ImportKey() -> {result.CompletionCode}, {result.ErrorCode}");
             }
 
             ImportKeyCompletion.PayloadData.VerifyAttributesClass importKeyVerifyAttib = null;

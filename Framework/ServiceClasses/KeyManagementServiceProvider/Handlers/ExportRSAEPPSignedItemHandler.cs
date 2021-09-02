@@ -53,7 +53,7 @@ namespace XFS4IoTFramework.KeyManagement
             RSASignedItemResult result;
             if (exportRSAEPPSignedItem.Payload.ExportItemType == XFS4IoT.KeyManagement.TypeDataItemToExportEnum.EppId)
             {
-                Logger.Log(Constants.DeviceClass, "KeyManagement.ExportEPPId()");
+                Logger.Log(Constants.DeviceClass, "KeyManagementDev.ExportEPPId()");
 
                 result = await Device.ExportEPPId(new ExportEPPIdRequest(SignerEnum.EPP,
                                                                          exportRSAEPPSignedItem.Payload.SignatureAlgorithm switch
@@ -65,11 +65,11 @@ namespace XFS4IoTFramework.KeyManagement
                                                                          exportRSAEPPSignedItem.Payload.SigKey),
                                                   cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportEPPId() -> {result.CompletionCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ExportEPPId() -> {result.CompletionCode}");
             }
             else
             {
-                Logger.Log(Constants.DeviceClass, "KeyManagement.ExportRSAPublicKey()");
+                Logger.Log(Constants.DeviceClass, "KeyManagementDev.ExportRSAPublicKey()");
 
                 result = await Device.ExportRSAPublicKey(new ExportRSAPublicKeyRequest(SignerEnum.EPP,
                                                                                        exportRSAEPPSignedItem.Payload.Name,
@@ -82,7 +82,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                        exportRSAEPPSignedItem.Payload.SigKey), 
                                                          cancel);
 
-                Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportRSAPublicKey() -> {result.CompletionCode}, {result.ErrorCode}");
+                Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ExportRSAPublicKey() -> {result.CompletionCode}, {result.ErrorCode}");
             }
 
             return new ExportRSAEPPSignedItemCompletion.PayloadData(result.CompletionCode,

@@ -121,7 +121,7 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.DeriveKey()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.DeriveKey()");
 
             int keySlot = KeyManagement.FindKeySlot(deriveKey.Payload.Key);
             var result = await Device.DeriveKey(new DeriveKeyRequest(deriveKey.Payload.Key,
@@ -137,7 +137,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                      deriveKey.Payload.Ident is not null && deriveKey.Payload.Ident.Length > 0 ? Convert.FromBase64String(deriveKey.Payload.Ident).ToList() : null), 
                                                 cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.DeriveKey() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.DeriveKey() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {

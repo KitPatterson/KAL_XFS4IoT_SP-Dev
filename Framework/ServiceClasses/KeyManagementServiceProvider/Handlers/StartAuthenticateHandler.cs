@@ -30,7 +30,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                    $"No command information specified.");
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.StartAuthenticate()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.StartAuthenticate()");
 
             StartAuthenticateRequest request = null;
 
@@ -48,7 +48,7 @@ namespace XFS4IoTFramework.KeyManagement
 
             var result = await Device.StartAuthenticate(request, cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.StartAuthenticate() -> {result.CompletionCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.StartAuthenticate() -> {result.CompletionCode}");
 
             return new StartAuthenticateCompletion.PayloadData(result.CompletionCode,
                                                                result.ErrorDescription,

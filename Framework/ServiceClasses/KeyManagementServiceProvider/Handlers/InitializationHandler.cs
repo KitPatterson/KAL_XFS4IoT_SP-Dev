@@ -85,14 +85,14 @@ namespace XFS4IoTFramework.KeyManagement
                 }
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.Initialization()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.Initialization()");
 
             var result = await Device.Initialization(new InitializationRequest(initialization.Payload.Key,
                                                                                string.IsNullOrEmpty(initialization.Payload.Ident) ? null : Convert.FromBase64String(initialization.Payload.Ident).ToList(),
                                                                                authData),
                                                      cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.Initialization() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.Initialization() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {

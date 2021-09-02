@@ -66,7 +66,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                  $"No capabilties support for loading certificate. {loadCertificate.Payload.LoadOption} {loadCertificate.Payload.Signer}");
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.ImportCertificate()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.ImportCertificate()");
 
             var result = await Device.ImportCertificate(new ImportCertificateRequest(loadCertificate.Payload.LoadOption switch
                                                                                      {
@@ -82,7 +82,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                      Convert.FromBase64String(loadCertificate.Payload.CertificateData).ToList()),
                                                         cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.ImportCertificate() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ImportCertificate() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new LoadCertificateCompletion.PayloadData(result.CompletionCode,
                                                              result.ErrorDescription,
