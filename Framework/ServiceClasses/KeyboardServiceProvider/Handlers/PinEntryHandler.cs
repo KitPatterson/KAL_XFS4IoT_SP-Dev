@@ -3,34 +3,34 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Keyboard interface.
- * PinEntryHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
-
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Keyboard.Commands;
 using XFS4IoT.Keyboard.Completions;
+using XFS4IoT.Completions;
 
 namespace XFS4IoTFramework.Keyboard
 {
     public partial class PinEntryHandler
     {
-
-        private Task<PinEntryCompletion.PayloadData> HandlePinEntry(IPinEntryEvents events, PinEntryCommand pinEntry, CancellationToken cancel)
+        private async Task<PinEntryCompletion.PayloadData> HandlePinEntry(IPinEntryEvents events, PinEntryCommand pinEntry, CancellationToken cancel)
         {
-            //ToDo: Implement HandlePinEntry for Keyboard.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandlePinEntry for Keyboard is not implemented in PinEntryHandler.cs");
-            #else
-                #error HandlePinEntry for Keyboard is not implemented in PinEntryHandler.cs
-            #endif
-        }
+            if (pinEntry.Payload.MaxLen is null)
+                Logger.Warning(Constants.Framework, $"No MaxLen specified. use default 0.");
 
+            if (pinEntry.Payload.MinLen is null)
+                Logger.Warning(Constants.Framework, $"No MinLen specified. use default 0.");
+
+            if (pinEntry.Payload.AutoEnd is null)
+                Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
+
+            return new PinEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null);
+        }
     }
 }

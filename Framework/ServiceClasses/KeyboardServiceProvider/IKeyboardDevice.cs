@@ -46,17 +46,17 @@ namespace XFS4IoTFramework.Keyboard
         /// If the application makes a call to [PinPad.GetPinblock](#pinpad.getpinblock) or a local verification command without the minimum PIN digits having been entered, 
         /// either the command will fail or the PIN verification will fail. It is the responsibility of the application to identify the mapping between the FDK code and the physical location of the FDK.
         /// </summary>
-        Task<XFS4IoT.Keyboard.Completions.PinEntryCompletion.PayloadData> PinEntry(IPinEntryEvents events, 
-                                                                                   XFS4IoT.Keyboard.Commands.PinEntryCommand.PayloadData payload, 
-                                                                                   CancellationToken cancellation);
+        Task<PinEntryResult> PinEntry(IPinEntryEvents events, 
+                                      PinEntryRequest request, 
+                                      CancellationToken cancellation);
 
         /// <summary>
         /// This function enables keyboard insercure mode and report entered key in clear text with solicited events. 
         /// For Keyboard device, this command will clear the pin unless the application has requested that the pin be maintained through the MaintainPin command.
         /// </summary>
-        Task<XFS4IoT.Keyboard.Completions.DataEntryCompletion.PayloadData> DataEntry(IDataEntryEvents events, 
-                                                                                     XFS4IoT.Keyboard.Commands.DataEntryCommand.PayloadData payload, 
-                                                                                     CancellationToken cancellation);
+        Task<DataEntryResult> DataEntry(IDataEntryEvents events, 
+                                        DataEntryRequest request, 
+                                        CancellationToken cancellation);
 
         /// <summary>
         /// This command allows a full length symmetric encryption key part to be entered directly into the device without being exposed outside of the device.
@@ -85,9 +85,9 @@ namespace XFS4IoTFramework.Keyboard
         /// Encryption key parts entered with this command are stored through either the ImportKey. 
         /// Each key part can only be stored once after which the secure key buffer will be cleared automatically.
         /// </summary>
-        Task<XFS4IoT.Keyboard.Completions.SecureKeyEntryCompletion.PayloadData> SecureKeyEntry(ISecureKeyEntryEvents events, 
-                                                                                               XFS4IoT.Keyboard.Commands.SecureKeyEntryCommand.PayloadData payload, 
-                                                                                               CancellationToken cancellation);
+        Task<SecureKeyEntryResult> SecureKeyEntry(ISecureKeyEntryEvents events, 
+                                                  SecureKeyEntryRequest request, 
+                                                  CancellationToken cancellation);
         /// <summary>
         /// Sends a service reset to the Service Provider. 
         /// </summary>

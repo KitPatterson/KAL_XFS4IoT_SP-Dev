@@ -24,7 +24,12 @@ namespace XFS4IoTFramework.Keyboard
         {
             if (Keyboard.FirstGetLayoutCommand)
             {
+                Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()");
+
                 Keyboard.KeyboardLayouts = Device.GetLayoutInfo();
+
+                Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()->");
+
                 Keyboard.FirstGetLayoutCommand = false;
 
                 // Update internal variables
