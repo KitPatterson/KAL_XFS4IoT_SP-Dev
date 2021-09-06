@@ -45,15 +45,10 @@ namespace XFS4IoTFramework.Keyboard
                     {
                         foreach (var key in frame.FunctionKeys)
                         {
-                            if (key.FK != FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused)
-                            {
-                                fks.Add(key.FK.ToString());
-                            }
-
-                            if (key.ShiftFK != FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused)
-                            {
-                                fks.Add(key.ShiftFK.ToString());
-                            }
+                            if (!string.IsNullOrEmpty(key.FK))
+                                fks.Add(key.FK);
+                            if (!string.IsNullOrEmpty(key.ShiftFK))
+                                fks.Add(key.ShiftFK);
                         }
                     }
 
@@ -114,9 +109,8 @@ namespace XFS4IoTFramework.Keyboard
                                                                                   FrameClass.FunctionKeyClass.KeyTypeEnum.FK => LayoutClass.FramesClass.FksClass.KeyTypeEnum.Fk,
                                                                                   _ => LayoutClass.FramesClass.FksClass.KeyTypeEnum.Fdk
                                                                               },
-                                                                              functionKey.FK == FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused ? null : functionKey.FK.ToString(),
-                                                                              functionKey.ShiftFK == FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused ? null : functionKey.ShiftFK.ToString()
-                                                                              ));
+                                                                              functionKey.FK,
+                                                                              functionKey.ShiftFK));
                     }
 
                     resultFrames.Add(new(frame.XPos, 

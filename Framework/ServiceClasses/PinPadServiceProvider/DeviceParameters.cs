@@ -144,13 +144,11 @@ namespace XFS4IoTFramework.PinPad
     {
         public VerifyPINLocalVISARequest(string CustomerData,
                                          string PINValidationValue,
-                                         int PVVDigits,
                                          string KeyName,
                                          string KeyEncKeyName)
         {
             this.CustomerData = CustomerData;
             this.PINValidationValue = PINValidationValue;
-            this.PVVDigits = PVVDigits;
             this.KeyName = KeyName;
             this.KeyEncKeyName = KeyEncKeyName;
         }
@@ -167,11 +165,6 @@ namespace XFS4IoTFramework.PinPad
             /// This string should contain 4 digits. 
             /// </summary>
             public string PINValidationValue { get; init; }
-
-            /// <summary>
-            /// Number of digits of PVV. 
-            /// </summary>
-            public int PVVDigits { get; init; }
 
             /// <summary>
             /// Name of the validation key. The key referenced by key must have the 'V2' attribute.

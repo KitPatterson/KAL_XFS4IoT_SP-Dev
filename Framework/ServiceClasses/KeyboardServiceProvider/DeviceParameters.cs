@@ -29,6 +29,20 @@ namespace XFS4IoTFramework.Keyboard
         InActive = 0x2,
     }
 
+    public class ActiveKeyCalss
+    {
+
+        public ActiveKeyCalss(string KeyName,
+                              bool Terminate = false)
+        {
+            this.KeyName = KeyName;
+            this.Terminate = Terminate;
+        }
+
+        public string KeyName { get; init; }
+        public bool Terminate { get; init; }
+    }
+
     public sealed class DefineLayoutResult : DeviceResult
     {
         public DefineLayoutResult(MessagePayload.CompletionCodeEnum CompletionCode,
@@ -52,17 +66,12 @@ namespace XFS4IoTFramework.Keyboard
     {
         public DataEntryRequest(int MaxLen,
                                 bool AutoEnd,
-                                List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveFDKs,
-                                List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveKeys,
-                                List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateFDKs,
-                                List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateKeys)
+                                List<ActiveKeyCalss> ActiveKeys)
         {
             this.MaxLen = MaxLen;
             this.AutoEnd = AutoEnd;
-            this.ActiveFDKs = ActiveFDKs;
             this.ActiveKeys = ActiveKeys;
-            this.TerminateFDKs = TerminateFDKs;
-            this.TerminateKeys = TerminateKeys;
+
         }
 
         /// <summary>
@@ -78,24 +87,9 @@ namespace XFS4IoTFramework.Keyboard
         public bool AutoEnd { get; init; }
 
         /// <summary>
-        /// Specifies a mask of those FDKs which are active during the execution of the command.
+        /// Specifies Function Keys which are active during the execution of the command.
         /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveFDKs { get; init; }
-
-        /// <summary>
-        /// Specifies a mask of those (other) Function Keys which are active during the execution of the command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveKeys { get; init; }
-
-        /// <summary>
-        /// Specifies a mask of those FDKs which must terminate the execution of the command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateFDKs { get; init; }
-
-        /// <summary>
-        /// Specifies a mask of those (other) Function Keys which must terminate the execution of the command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateKeys { get; init; }
+        public List<ActiveKeyCalss> ActiveKeys { get; init; }
     }
 
     public sealed class DataEntryResult : DeviceResult
@@ -147,19 +141,13 @@ namespace XFS4IoTFramework.Keyboard
                                int MaxLen,
                                bool AutoEnd,
                                string Echo,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveFDKs,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveKeys,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateFDKs,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateKeys)
+                               List<ActiveKeyCalss> ActiveKeys)
         {
             this.MinLen = MinLen;
             this.MaxLen = MaxLen;
             this.AutoEnd = AutoEnd;
             this.Echo = Echo;
-            this.ActiveFDKs = ActiveFDKs;
             this.ActiveKeys = ActiveKeys;
-            this.TerminateFDKs = TerminateFDKs;
-            this.TerminateKeys = TerminateKeys;
         }
 
         /// <summary>
@@ -187,24 +175,10 @@ namespace XFS4IoTFramework.Keyboard
         public string Echo { get; init; }
 
         /// <summary>
-        /// Specifies a mask of those FDKs which are active during the execution of the command.
+        /// Specifies function keys which are active during the execution of the command.
         /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveFDKs { get; init; }
+        public List<ActiveKeyCalss> ActiveKeys { get; init; }
 
-        /// <summary>
-        /// Specifies a mask of those (other) Function Keys which are active during the execution of the command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveKeys { get; init; }
-
-        /// <summary>
-        /// Specifies a mask of those FDKs which must terminate the execution of the command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateFDKs { get; init; }
-
-        /// <summary>
-        /// Specifies a mask of those (other) Function Keys which must terminate the execution of the command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateKeys { get; init; }
     }
 
     public sealed class PinEntryResult : DeviceResult
@@ -268,19 +242,15 @@ namespace XFS4IoTFramework.Keyboard
 
         public SecureKeyEntryRequest(KeyLenEnum keyLen,
                                bool AutoEnd,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveFDKs,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveKeys,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateFDKs,
-                               List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateKeys,
+                               List<ActiveKeyCalss> ActiveKeys,
                                VerificationTypeEnum VerificationType,
                                CryptoMethodEnum CryptoMethod)
         {
             this.KeyLen = KeyLen;
             this.AutoEnd = AutoEnd;
-            this.ActiveFDKs = ActiveFDKs;
             this.ActiveKeys = ActiveKeys;
-            this.TerminateFDKs = TerminateFDKs;
-            this.TerminateKeys = TerminateKeys;
+            this.VerificationType = VerificationType;
+            this.CryptoMethod = CryptoMethod;
         }
 
         /// <summary>
@@ -298,29 +268,10 @@ namespace XFS4IoTFramework.Keyboard
         public bool AutoEnd { get; init; }
 
         /// <summary>
-        /// Specifies those FDKs which are active during the execution of the command.
+        /// Specifies those function keys which are active during the execution of the command.
         /// This parameter should include those FDKs mapped to edit functions.
         /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveFDKs { get; init; }
-
-        /// <summary>
-        /// Specifies all Function Keys(not FDKs) which are active during the execution of the command.
-        /// This should be the complete set or a subset of the keys returned in the payload of the 
-        /// [Keyboard.GetLayout](#keyboard.getlayout) command.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> ActiveKeys { get; init; }
-
-        /// <summary>
-        /// Specifies those FDKs which must terminate the execution of the command.
-        /// This should include the FDKs associated with Cancel and Enter.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateFDKs { get; init; }
-
-        /// <summary>
-        /// Specifies those all Function Keys (not FDKs) which must terminate the execution of the command.
-        /// This does not include the FDKs associated with Enter or Cancel.
-        /// </summary>
-        public List<FrameClass.FunctionKeyClass.FunctionKeyTypeEnum> TerminateKeys { get; init; }
+        public List<ActiveKeyCalss> ActiveKeys { get; init; }
 
         /// <summary>
         /// Specifies the type of verification to be done on the entered key.

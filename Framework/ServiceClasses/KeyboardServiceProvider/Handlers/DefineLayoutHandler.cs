@@ -96,6 +96,19 @@ namespace XFS4IoTFramework.Keyboard
                                                                           $"KeyType is not specified in function keys. {entryMode.EntryMode}");
                         }
 
+                        if (key.KeyType is null)
+                        {
+                            return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                          $"KeyType is not specified in function keys. {entryMode.EntryMode}");
+                        }
+
+                        if (string.IsNullOrEmpty(key.Fk) &&
+                            string.IsNullOrEmpty(key.ShiftFK))
+                        {
+                            return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                          $"No function key with shift and non-shift mode is specified. {entryMode.EntryMode}");
+                        }
+
                         functionKeys.Add(new FrameClass.FunctionKeyClass((int)key.XPos,
                                                                          (int)key.YPos,
                                                                          (int)key.XSize,
@@ -105,8 +118,8 @@ namespace XFS4IoTFramework.Keyboard
                                                                              LayoutClass.FramesClass.FksClass.KeyTypeEnum.Fk => FrameClass.FunctionKeyClass.KeyTypeEnum.FK,
                                                                              _ => FrameClass.FunctionKeyClass.KeyTypeEnum.FDK
                                                                          },
-                                                                         !string.IsNullOrEmpty(key.Fk) && FrameClass.FunctionKeyClass.StringFunctionKeyTypeMap.ContainsKey(key.Fk) ? FrameClass.FunctionKeyClass.StringFunctionKeyTypeMap[key.Fk] : FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused,
-                                                                         !string.IsNullOrEmpty(key.ShiftFK) && FrameClass.FunctionKeyClass.StringFunctionKeyTypeMap.ContainsKey(key.ShiftFK) ? FrameClass.FunctionKeyClass.StringFunctionKeyTypeMap[key.ShiftFK] : FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused));
+                                                                         key.Fk,
+                                                                         key.ShiftFK));
                     }
 
                     frames.Add(new FrameClass((int)frame.XPos, 
@@ -157,15 +170,10 @@ namespace XFS4IoTFramework.Keyboard
                     {
                         foreach (var key in frame.FunctionKeys)
                         {
-                            if (key.FK != FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused)
-                            {
-                                fks.Add(key.FK.ToString());
-                            }
-
-                            if (key.ShiftFK != FrameClass.FunctionKeyClass.FunctionKeyTypeEnum.unused)
-                            {
-                                fks.Add(key.ShiftFK.ToString());
-                            }
+                            if (!string.IsNullOrEmpty(key.FK))
+                                fks.Add(key.FK);
+                            if (!string.IsNullOrEmpty(key.ShiftFK))
+                                fks.Add(key.ShiftFK);
                         }
                     }
 

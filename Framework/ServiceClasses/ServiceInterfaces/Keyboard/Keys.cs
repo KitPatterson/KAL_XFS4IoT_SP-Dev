@@ -79,89 +79,13 @@ namespace XFS4IoTFramework.Keyboard
 
         public sealed class FunctionKeyClass
         {
-            public enum FunctionKeyTypeEnum
-            {
-                unused,
-                zero,
-                one,
-                two,
-                three,
-                four,
-                five,
-                six,
-                seven,
-                eight,
-                nine,
-                enter,
-                cancel,
-                clear,
-                backspace,
-                help,
-                decPoint,
-                doubleZero,
-                tripleZero,
-                res1,
-                res2,
-                res3,
-                res4,
-                res5,
-                res6,
-                res7,
-                res8,
-                oem1,
-                oem2,
-                oem3,
-                oem4,
-                oem5,
-                oem6,
-                a,
-                b,
-                c,
-                d,
-                e,
-                f,
-                shift,
-                fdk01,
-                fdk02,
-                fdk03,
-                fdk04,
-                fdk05,
-                fdk06,
-                fdk07,
-                fdk08,
-                fdk09,
-                fdk10,
-                fdk11,
-                fdk12,
-                fdk13,
-                fdk14,
-                fdk15,
-                fdk16,
-                fdk17,
-                fdk18,
-                fdk19,
-                fdk20,
-                fdk21,
-                fdk22,
-                fdk23,
-                fdk24,
-                fdk25,
-                fdk26,
-                fdk27,
-                fdk28,
-                fdk29,
-                fdk30,
-                fdk31,
-                fdk32
-            }
-
             public FunctionKeyClass(int XPos, 
                                     int YPos,
                                     int XSize, 
                                     int YSize, 
                                     KeyTypeEnum KeyType, 
-                                    FunctionKeyTypeEnum FK, 
-                                    FunctionKeyTypeEnum ShiftFK)
+                                    string FK, 
+                                    string ShiftFK)
             {
                 this.XPos = XPos;
                 this.YPos = YPos;
@@ -220,88 +144,13 @@ namespace XFS4IoTFramework.Keyboard
             /// Specifies the Function Key associated with the physical area in non-shifted mode.
             /// This property is not required if the *keyType* is omitted.
             /// </summary>
-            public FunctionKeyTypeEnum FK { get; init; }
+            public string FK { get; init; }
 
             /// <summary>
-            /// Specifies the Function Key associated with the physical key in shifted mode.
+            /// Specifies the Function Key associated with the physical area in shifted mode.
             /// This property is not required if the *keyType* is omitted.
             /// </summary>
-            public FunctionKeyTypeEnum ShiftFK { get; init; }
-
-
-            public static readonly Dictionary<string, FunctionKeyTypeEnum> StringFunctionKeyTypeMap = new()
-            {
-                { "a", FunctionKeyTypeEnum.a },
-                { "b", FunctionKeyTypeEnum.b },
-                { "c", FunctionKeyTypeEnum.c },
-                { "d", FunctionKeyTypeEnum.d },
-                { "e", FunctionKeyTypeEnum.e },
-                { "f", FunctionKeyTypeEnum.f },
-                { "one", FunctionKeyTypeEnum.one },
-                { "two", FunctionKeyTypeEnum.two },
-                { "three", FunctionKeyTypeEnum.three },
-                { "four", FunctionKeyTypeEnum.four },
-                { "five", FunctionKeyTypeEnum.five },
-                { "six", FunctionKeyTypeEnum.six },
-                { "seven", FunctionKeyTypeEnum.seven },
-                { "eight", FunctionKeyTypeEnum.eight },
-                { "nine", FunctionKeyTypeEnum.nine },
-                { "zero", FunctionKeyTypeEnum.zero },
-                { "enter", FunctionKeyTypeEnum.enter },
-                { "cancel", FunctionKeyTypeEnum.cancel },
-                { "clear", FunctionKeyTypeEnum.clear },
-                { "backspace", FunctionKeyTypeEnum.backspace },
-                { "help", FunctionKeyTypeEnum.help },
-                { "decPoint", FunctionKeyTypeEnum.decPoint },
-                { "doubleZero", FunctionKeyTypeEnum.doubleZero },
-                { "tripleZero", FunctionKeyTypeEnum.tripleZero },
-                { "res1", FunctionKeyTypeEnum.res1 },
-                { "res2", FunctionKeyTypeEnum.res2 },
-                { "res3", FunctionKeyTypeEnum.res3 },
-                { "res4", FunctionKeyTypeEnum.res4 },
-                { "res5", FunctionKeyTypeEnum.res5 },
-                { "res6", FunctionKeyTypeEnum.res6 },
-                { "res7", FunctionKeyTypeEnum.res7 },
-                { "oem1", FunctionKeyTypeEnum.oem1 },
-                { "oem2", FunctionKeyTypeEnum.oem2 },
-                { "oem3", FunctionKeyTypeEnum.oem3 },
-                { "oem4", FunctionKeyTypeEnum.oem4 },
-                { "oem5", FunctionKeyTypeEnum.oem5 },
-                { "oem6", FunctionKeyTypeEnum.oem6 },
-                { "shift", FunctionKeyTypeEnum.shift },
-                { "fdk01", FunctionKeyTypeEnum.fdk01 },
-                { "fdk02", FunctionKeyTypeEnum.fdk02 },
-                { "fdk03", FunctionKeyTypeEnum.fdk03 },
-                { "fdk04", FunctionKeyTypeEnum.fdk04 },
-                { "fdk05", FunctionKeyTypeEnum.fdk05 },
-                { "fdk06", FunctionKeyTypeEnum.fdk06 },
-                { "fdk07", FunctionKeyTypeEnum.fdk07 },
-                { "fdk08", FunctionKeyTypeEnum.fdk08 },
-                { "fdk09", FunctionKeyTypeEnum.fdk09 },
-                { "fdk10", FunctionKeyTypeEnum.fdk10 },
-                { "fdk11", FunctionKeyTypeEnum.fdk11 },
-                { "fdk12", FunctionKeyTypeEnum.fdk12 },
-                { "fdk13", FunctionKeyTypeEnum.fdk13 },
-                { "fdk14", FunctionKeyTypeEnum.fdk14 },
-                { "fdk15", FunctionKeyTypeEnum.fdk15 },
-                { "fdk16", FunctionKeyTypeEnum.fdk16 },
-                { "fdk17", FunctionKeyTypeEnum.fdk17 },
-                { "fdk18", FunctionKeyTypeEnum.fdk18 },
-                { "fdk19", FunctionKeyTypeEnum.fdk19 },
-                { "fdk20", FunctionKeyTypeEnum.fdk20 },
-                { "fdk21", FunctionKeyTypeEnum.fdk21 },
-                { "fdk22", FunctionKeyTypeEnum.fdk22 },
-                { "fdk23", FunctionKeyTypeEnum.fdk23 },
-                { "fdk24", FunctionKeyTypeEnum.fdk24 },
-                { "fdk25", FunctionKeyTypeEnum.fdk25 },
-                { "fdk26", FunctionKeyTypeEnum.fdk26 },
-                { "fdk27", FunctionKeyTypeEnum.fdk27 },
-                { "fdk28", FunctionKeyTypeEnum.fdk28 },
-                { "fdk29", FunctionKeyTypeEnum.fdk29 },
-                { "fdk30", FunctionKeyTypeEnum.fdk30 },
-                { "fdk31", FunctionKeyTypeEnum.fdk31 },
-                { "fdk32", FunctionKeyTypeEnum.fdk32 }
-            };
+            public string ShiftFK { get; init; }
         }
 
         /// <summary>

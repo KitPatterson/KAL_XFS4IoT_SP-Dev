@@ -47,6 +47,11 @@ namespace XFS4IoTFramework.PinPad
                 return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                           $"No key name specified to verify PIN locally.");
             }
+            else if (localVisa.Payload.Pvv.Length < 4)
+            {
+                return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                           $"Pin Valification Value must be minimum 4 digits.");
+            }
             else
             {
                 foreach (char c in localVisa.Payload.Pvv)
@@ -111,7 +116,6 @@ namespace XFS4IoTFramework.PinPad
 
             var result = await Device.VerifyPINLocalVISA(new VerifyPINLocalVISARequest(localVisa.Payload.Pan,
                                                                                        localVisa.Payload.Pvv,
-                                                                                       (int)localVisa.Payload.PvvDigits,
                                                                                        localVisa.Payload.Key,
                                                                                        localVisa.Payload.KeyEncKey),
                                                          cancel);
