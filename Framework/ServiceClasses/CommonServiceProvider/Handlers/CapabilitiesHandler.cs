@@ -424,50 +424,11 @@ namespace XFS4IoTFramework.Common
                     }
                 }
 
-                List<TextTerminalCapabilitiesClass.LEDClass> LEDsSupported = new();
-                if (result.TextTerminal.Leds is not null)
-                {
-                    foreach (var led in result.TextTerminal.Leds)
-                    {
-                        TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum LEDColor = TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.None;
-                        if (led.Blue is not null && (bool)led.Blue)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Blue;
-                        if (led.Cyan is not null && (bool)led.Cyan)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Cyan;
-                        if (led.Green is not null && (bool)led.Green)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Green;
-                        if (led.Magenta is not null && (bool)led.Magenta)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Magenta;
-                        if (led.Red is not null && (bool)led.Red)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Red;
-                        if (led.White is not null && (bool)led.White)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.White;
-                        if (led.Yellow is not null && (bool)led.Yellow)
-                            LEDColor |= TextTerminalCapabilitiesClass.LEDClass.LEDColorsEnum.Yellow;
-
-                        TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum LEDLight = TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.None;
-                        if (led.Continuous is not null && (bool)led.Continuous)
-                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.Continuous;
-                        if (led.MediumFlash is not null && (bool)led.MediumFlash)
-                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.MediumFlash;
-                        if (led.Off is not null && (bool)led.Off)
-                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.Off;
-                        if (led.QuickFlash is not null && (bool)led.QuickFlash)
-                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.QuickFlash;
-                        if (led.SlowFlash is not null && (bool)led.SlowFlash)
-                            LEDLight |= TextTerminalCapabilitiesClass.LEDClass.LEDLightControlsEnum.SlowFlash;
-
-                        LEDsSupported.Add(new TextTerminalCapabilitiesClass.LEDClass(LEDColor, LEDLight));
-                    }
-                }
-
                 Common.TextTerminalCapabilities = new TextTerminalCapabilitiesClass(result.TextTerminal.Type == CapabilitiesClass.TypeEnum.Fixed ? TextTerminalCapabilitiesClass.TypeEnum.Fixed : TextTerminalCapabilitiesClass.TypeEnum.Removable,
                                                                                     resolutions,
                                                                                     result.TextTerminal.KeyLock is not null && (bool)result.TextTerminal.KeyLock,
-                                                                                    result.TextTerminal.DisplayLight is not null && (bool)result.TextTerminal.DisplayLight,
                                                                                     result.TextTerminal.Cursor is not null && (bool)result.TextTerminal.Cursor,
-                                                                                    result.TextTerminal.Forms is not null && (bool)result.TextTerminal.Forms,
-                                                                                    LEDsSupported);
+                                                                                    result.TextTerminal.Forms is not null && (bool)result.TextTerminal.Forms);
             }
 
 
