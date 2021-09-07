@@ -156,9 +156,12 @@ namespace XFS4IoT.Common
             Keyboard,
             TextTerminal,
             Printer,
-            SensorsAndIndicators,
             CardEmbosser,
-            BarcodeReader
+            BarcodeReader,
+            Lights,
+            Auxiliaries,
+            VendorMode,
+            VendorApplication
         }
 
         /// <summary>
@@ -175,9 +178,12 @@ namespace XFS4IoT.Common
         /// * ```Keyboard``` - Keyboard interface.
         /// * ```TextTerminal``` - TextTerminal interface.
         /// * ```Printer``` - Printer interface.
-        /// * ```SensorsAndIndicators``` - SensorsAndIndicators interface.
         /// * ```CardEmbosser``` - CardEmbosser interface.
         /// * ```BarcodeReader``` - BarcodeReader interface.
+        /// * ```Lights``` - Lights interface.
+        /// * ```Auxiliaries``` - Auxiliaries interface.
+        /// * ```VendorMode``` - VendorMode interface.
+        /// * ```VendorApplication``` - VendorApplication interface.            
         /// </summary>
         [DataMember(Name = "name")]
         public NameEnum? Name { get; init; }
@@ -349,7 +355,7 @@ namespace XFS4IoT.Common
     [DataContract]
     public sealed class CapabilityPropertiesClass
     {
-        public CapabilityPropertiesClass(string ServiceVersion = null, List<DeviceInformationClass> DeviceInformation = null, VendorModeInfoClass VendorModeIformation = null, bool? PowerSaveControl = null, bool? AntiFraudModule = null, List<string> SynchronizableCommands = null, bool? EndToEndSecurity = null, bool? HardwareSecurityElement = null, bool? ResponseSecurityEnabled = null)
+        public CapabilityPropertiesClass(string ServiceVersion = null, List<DeviceInformationClass> DeviceInformation = null, VendorModeInfoClass VendorModeIformation = null, bool? PowerSaveControl = null, bool? AntiFraudModule = null, List<string> SynchronizableCommands = null, bool? EndToEndSecurity = null, bool? HardwareSecurityElement = null, bool? ResponseSecurityEnabled = null, int? CommandNonceTimeout = null)
         {
             this.ServiceVersion = ServiceVersion;
             this.DeviceInformation = DeviceInformation;
@@ -360,6 +366,7 @@ namespace XFS4IoT.Common
             this.EndToEndSecurity = EndToEndSecurity;
             this.HardwareSecurityElement = HardwareSecurityElement;
             this.ResponseSecurityEnabled = ResponseSecurityEnabled;
+            this.CommandNonceTimeout = CommandNonceTimeout;
         }
 
         /// <summary>
@@ -425,6 +432,26 @@ namespace XFS4IoT.Common
         /// </summary>
         [DataMember(Name = "responseSecurityEnabled")]
         public bool? ResponseSecurityEnabled { get; init; }
+
+        /// <summary>
+        /// If this device supports end to end security and can return a command nonce with the command 
+        /// [Common.GetCommandNonce](#common.getcommandnonce), and the hardware automatically clears the command 
+        /// nonce after a fixed length of time, this property will report the number of seconds between returning
+        /// the command nonce and clearing it. 
+        /// 
+        /// The value is given in seconds but it should not be assumed that the timeout will be accurate to the nearest 
+        /// second. The nonce may also become invalid before the timeout, for example because of a power failure. 
+        /// 
+        /// Hardware may impose a timeout to reduce the chance of an attacker re-using a nonce value or a token. This 
+        /// timeout will be long enough to support normal operations such as dispense and present including creating 
+        /// the required token on the host and passing it to the hardware. For example, a command nonce might time out
+        /// after one hour (that is, 3600 seconds).
+        /// 
+        /// If commandNonceTimeout is not reported, or it has a value of zero, then the command nonce will never 
+        /// timeout. It may still become invalid, for example because of a power failure or when explicitly cleared. 
+        /// </summary>
+        [DataMember(Name = "commandNonceTimeout")]
+        public int? CommandNonceTimeout { get; init; }
 
     }
 

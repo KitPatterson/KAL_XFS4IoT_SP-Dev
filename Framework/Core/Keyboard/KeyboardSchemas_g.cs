@@ -286,7 +286,7 @@ namespace XFS4IoT.Keyboard
             [DataContract]
             public sealed class FksClass
             {
-                public FksClass(int? XPos = null, int? YPos = null, int? XSize = null, int? YSize = null, KeyTypeEnum? KeyType = null, string Fk = null, string ShiftFK = null)
+                public FksClass(int? XPos = null, int? YPos = null, int? XSize = null, int? YSize = null, KeyTypeEnum? KeyType = null, Dictionary<string, string> Fk = null, Dictionary<string, string> ShiftFK = null)
                 {
                     this.XPos = XPos;
                     this.YPos = YPos;
@@ -355,16 +355,16 @@ namespace XFS4IoT.Keyboard
                 /// This property is not required if the *keyType* is omitted.
                 /// </summary>
                 [DataMember(Name = "fk")]
-                [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
-                public string Fk { get; init; }
+                [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+                public Dictionary<string, string> Fk { get; init; }
 
                 /// <summary>
                 /// Specifies the Function Key associated with the physical key in shifted mode.
                 /// This property is not required if the *keyType* is omitted.
                 /// </summary>
                 [DataMember(Name = "shiftFK")]
-                [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
-                public string ShiftFK { get; init; }
+                [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+                public Dictionary<string, string> ShiftFK { get; init; }
 
             }
 
@@ -384,6 +384,23 @@ namespace XFS4IoT.Keyboard
         /// </summary>
         [DataMember(Name = "frames")]
         public List<FramesClass> Frames { get; init; }
+
+    }
+
+
+    [DataContract]
+    public sealed class KeyClass
+    {
+        public KeyClass(bool? Terminate = null)
+        {
+            this.Terminate = Terminate;
+        }
+
+        /// <summary>
+        /// The key is a terminate key.
+        /// </summary>
+        [DataMember(Name = "terminate")]
+        public bool? Terminate { get; init; }
 
     }
 

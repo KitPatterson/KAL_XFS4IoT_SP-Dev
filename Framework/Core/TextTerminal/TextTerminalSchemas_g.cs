@@ -17,13 +17,12 @@ namespace XFS4IoT.TextTerminal
     [DataContract]
     public sealed class StatusClass
     {
-        public StatusClass(KeyboardEnum? Keyboard = null, KeyLockEnum? KeyLock = null, int? DisplaySizeX = null, int? DisplaySizeY = null, List<LedsClass> Leds = null)
+        public StatusClass(KeyboardEnum? Keyboard = null, KeyLockEnum? KeyLock = null, int? DisplaySizeX = null, int? DisplaySizeY = null)
         {
             this.Keyboard = Keyboard;
             this.KeyLock = KeyLock;
             this.DisplaySizeX = DisplaySizeX;
             this.DisplaySizeY = DisplaySizeY;
-            this.Leds = Leds;
         }
 
         public enum KeyboardEnum
@@ -72,127 +71,6 @@ namespace XFS4IoT.TextTerminal
         [DataTypes(Minimum = 0)]
         public int? DisplaySizeY { get; init; }
 
-        [DataContract]
-        public sealed class LedsClass
-        {
-            public LedsClass(bool? Na = null, bool? Off = null, bool? SlowFlash = null, bool? MediumFlash = null, bool? QuickFlash = null, bool? Continuous = null, bool? Red = null, bool? Green = null, bool? Yellow = null, bool? Blue = null, bool? Cyan = null, bool? Magenta = null, bool? White = null)
-            {
-                this.Na = Na;
-                this.Off = Off;
-                this.SlowFlash = SlowFlash;
-                this.MediumFlash = MediumFlash;
-                this.QuickFlash = QuickFlash;
-                this.Continuous = Continuous;
-                this.Red = Red;
-                this.Green = Green;
-                this.Yellow = Yellow;
-                this.Blue = Blue;
-                this.Cyan = Cyan;
-                this.Magenta = Magenta;
-                this.White = White;
-            }
-
-            /// <summary>
-            /// The Status is not available.
-            /// Type A
-            /// </summary>
-            [DataMember(Name = "na")]
-            public bool? Na { get; init; }
-
-            /// <summary>
-            /// The LED is turned off.
-            /// Type A
-            /// </summary>
-            [DataMember(Name = "off")]
-            public bool? Off { get; init; }
-
-            /// <summary>
-            /// The LED is blinking.
-            /// Type B
-            /// </summary>
-            [DataMember(Name = "slowFlash")]
-            public bool? SlowFlash { get; init; }
-
-            /// <summary>
-            /// The LED is blinking medium frequency.
-            /// Type B
-            /// </summary>
-            [DataMember(Name = "mediumFlash")]
-            public bool? MediumFlash { get; init; }
-
-            /// <summary>
-            /// The LED is blinking quickly.
-            /// Type B
-            /// </summary>
-            [DataMember(Name = "quickFlash")]
-            public bool? QuickFlash { get; init; }
-
-            /// <summary>
-            /// The LED is turned on continuous(steady).
-            /// Type B
-            /// </summary>
-            [DataMember(Name = "continuous")]
-            public bool? Continuous { get; init; }
-
-            /// <summary>
-            /// The LED is red.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "red")]
-            public bool? Red { get; init; }
-
-            /// <summary>
-            /// The LED is green.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "green")]
-            public bool? Green { get; init; }
-
-            /// <summary>
-            /// The LED is yellow.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "yellow")]
-            public bool? Yellow { get; init; }
-
-            /// <summary>
-            /// The LED is blue.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "blue")]
-            public bool? Blue { get; init; }
-
-            /// <summary>
-            /// The LED is cyan.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "cyan")]
-            public bool? Cyan { get; init; }
-
-            /// <summary>
-            /// The LED is magenta.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "magenta")]
-            public bool? Magenta { get; init; }
-
-            /// <summary>
-            /// The LED is white.
-            /// Type C
-            /// </summary>
-            [DataMember(Name = "white")]
-            public bool? White { get; init; }
-
-        }
-
-        /// <summary>
-        /// Specifies array that specifies the state of each LED.
-        /// Specifies the state of the na, off or a combination of the following flags consisting of one type B, 
-        /// and optionally one type C
-        /// </summary>
-        [DataMember(Name = "leds")]
-        public List<LedsClass> Leds { get; init; }
-
     }
 
 
@@ -225,7 +103,7 @@ namespace XFS4IoT.TextTerminal
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(TypeEnum? Type = null, List<ResolutionClass> Resolutions = null, bool? KeyLock = null, bool? DisplayLight = null, bool? Cursor = null, bool? Forms = null, List<LedsClass> Leds = null)
+        public CapabilitiesClass(TypeEnum? Type = null, List<ResolutionClass> Resolutions = null, bool? KeyLock = null, bool? DisplayLight = null, bool? Cursor = null, bool? Forms = null)
         {
             this.Type = Type;
             this.Resolutions = Resolutions;
@@ -233,7 +111,6 @@ namespace XFS4IoT.TextTerminal
             this.DisplayLight = DisplayLight;
             this.Cursor = Cursor;
             this.Forms = Forms;
-            this.Leds = Leds;
         }
 
         public enum TypeEnum
@@ -283,120 +160,6 @@ namespace XFS4IoT.TextTerminal
         /// </summary>
         [DataMember(Name = "forms")]
         public bool? Forms { get; init; }
-
-        [DataContract]
-        public sealed class LedsClass
-        {
-            public LedsClass(bool? Off = null, bool? SlowFlash = null, bool? MediumFlash = null, bool? QuickFlash = null, bool? Continuous = null, bool? Red = null, bool? Green = null, bool? Yellow = null, bool? Blue = null, bool? Cyan = null, bool? Magenta = null, bool? White = null)
-            {
-                this.Off = Off;
-                this.SlowFlash = SlowFlash;
-                this.MediumFlash = MediumFlash;
-                this.QuickFlash = QuickFlash;
-                this.Continuous = Continuous;
-                this.Red = Red;
-                this.Green = Green;
-                this.Yellow = Yellow;
-                this.Blue = Blue;
-                this.Cyan = Cyan;
-                this.Magenta = Magenta;
-                this.White = White;
-            }
-
-            /// <summary>
-            /// The LED can be off. 
-            /// Type:(A)
-            /// </summary>
-            [DataMember(Name = "off")]
-            public bool? Off { get; init; }
-
-            /// <summary>
-            /// The LED can be blinking. 
-            /// Type:(B)
-            /// </summary>
-            [DataMember(Name = "slowFlash")]
-            public bool? SlowFlash { get; init; }
-
-            /// <summary>
-            /// The LED can be blinking medium frequency. 
-            /// Type:(B)
-            /// </summary>
-            [DataMember(Name = "mediumFlash")]
-            public bool? MediumFlash { get; init; }
-
-            /// <summary>
-            /// The LED can be blinking quickly. 
-            /// Type:(B)
-            /// </summary>
-            [DataMember(Name = "quickFlash")]
-            public bool? QuickFlash { get; init; }
-
-            /// <summary>
-            /// The LED can be turned on continuous(steady). 
-            /// Type:(B)
-            /// </summary>
-            [DataMember(Name = "continuous")]
-            public bool? Continuous { get; init; }
-
-            /// <summary>
-            /// The LED can be red. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "red")]
-            public bool? Red { get; init; }
-
-            /// <summary>
-            /// The LED can be green. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "green")]
-            public bool? Green { get; init; }
-
-            /// <summary>
-            /// The LED can be yellow. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "yellow")]
-            public bool? Yellow { get; init; }
-
-            /// <summary>
-            /// The LED can be blue. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "blue")]
-            public bool? Blue { get; init; }
-
-            /// <summary>
-            /// The LED can be cyan. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "cyan")]
-            public bool? Cyan { get; init; }
-
-            /// <summary>
-            /// The LED can be magenta. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "magenta")]
-            public bool? Magenta { get; init; }
-
-            /// <summary>
-            /// The LED can be white. 
-            /// Type:(C)
-            /// </summary>
-            [DataMember(Name = "white")]
-            public bool? White { get; init; }
-
-        }
-
-        /// <summary>
-        /// Specifies which LEDs are available.
-        /// The elements of this array are specified as a combination of the following flags and indicate all 
-        /// of the possible flash rates (type B) and colors (type C) that the LED is capable of handling. 
-        /// If the LED only supports one color then no value of type C is returned.
-        /// </summary>
-        [DataMember(Name = "leds")]
-        public List<LedsClass> Leds { get; init; }
 
     }
 

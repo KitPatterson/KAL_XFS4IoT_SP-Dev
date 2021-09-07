@@ -45,7 +45,7 @@ namespace XFS4IoT.Keyboard.Events
             /// function keys 0-9 and A-F. Otherwise, for each key pressed, the corresponding key value is stored in this property. 
             /// </summary>
             [DataMember(Name = "digit")]
-            [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|res0[1-8]|oem0[1-6]|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
+            [DataTypes(Pattern = "^(one|two|three|four|five|six|seven|eight|nine|[a-f]|enter|cancel|clear|backspace|help|decPoint|shift|doubleZero|tripleZero)$|^fdk(0[1-9]|[12][0-9]|3[0-2])$")]
             public string Digit { get; init; }
 
         }
