@@ -59,7 +59,7 @@ namespace XFS4IoT.KeyManagement
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(int? KeyNum = null, DerivationAlgorithmsClass DerivationAlgorithms = null, KeyCheckModesClass KeyCheckModes = null, string HsmVendor = null, RsaAuthenticationSchemeClass RsaAuthenticationScheme = null, RsaSignatureAlgorithmClass RsaSignatureAlgorithm = null, RsaCryptAlgorithmClass RsaCryptAlgorithm = null, RsaKeyCheckModeClass RsaKeyCheckMode = null, SignatureSchemeClass SignatureScheme = null, EmvImportSchemesClass EmvImportSchemes = null, KeyBlockImportFormatsClass KeyBlockImportFormats = null, bool? KeyImportThroughParts = null, DesKeyLengthClass DesKeyLength = null, CertificateTypesClass CertificateTypes = null, List<LoadCertOptionsClass> LoadCertOptions = null, CrklLoadOptionsClass CrklLoadOptions = null, SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods = null, Dictionary<string, Dictionary<string, KeyAttributesClass>> KeyAttributes = null, Dictionary<string, DecryptAttributesClass> DecryptAttributes = null, Dictionary<string, Dictionary<string, VerifyAttributesClass>> VerifyAttributes = null)
+        public CapabilitiesClass(int? KeyNum = null, DerivationAlgorithmsClass DerivationAlgorithms = null, KeyCheckModesClass KeyCheckModes = null, string HsmVendor = null, RsaAuthenticationSchemeClass RsaAuthenticationScheme = null, RsaSignatureAlgorithmClass RsaSignatureAlgorithm = null, RsaCryptAlgorithmClass RsaCryptAlgorithm = null, RsaKeyCheckModeClass RsaKeyCheckMode = null, SignatureSchemeClass SignatureScheme = null, EmvImportSchemesClass EmvImportSchemes = null, KeyBlockImportFormatsClass KeyBlockImportFormats = null, bool? KeyImportThroughParts = null, DesKeyLengthClass DesKeyLength = null, CertificateTypesClass CertificateTypes = null, List<LoadCertOptionsClass> LoadCertOptions = null, CrklLoadOptionsClass CrklLoadOptions = null, SymmetricKeyManagementMethodsClass SymmetricKeyManagementMethods = null, Dictionary<string, Dictionary<string, Dictionary<string, KeyAttributesClass>>> KeyAttributes = null, Dictionary<string, DecryptAttributesClass> DecryptAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
         {
             this.KeyNum = KeyNum;
             this.DerivationAlgorithms = DerivationAlgorithms;
@@ -717,7 +717,7 @@ namespace XFS4IoT.KeyManagement
         /// Key-value pair of attributes supported by [KeyManagement.ImportKey](#keymanagement.importkey) command for the key to be loaded.
         /// </summary>
         [DataMember(Name = "keyAttributes")]
-        public Dictionary<string, Dictionary<string, KeyAttributesClass>> KeyAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, KeyAttributesClass>>> KeyAttributes { get; init; }
 
         [DataContract]
         public sealed class DecryptAttributesClass
@@ -936,7 +936,7 @@ namespace XFS4IoT.KeyManagement
         /// Key-value pair of attributes supported by the [KeyManagement.ImportKey](#keymanagement.importkey) for the key used for verification before importing the key.
         /// </summary>
         [DataMember(Name = "verifyAttributes")]
-        public Dictionary<string, Dictionary<string, VerifyAttributesClass>> VerifyAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes { get; init; }
 
     }
 

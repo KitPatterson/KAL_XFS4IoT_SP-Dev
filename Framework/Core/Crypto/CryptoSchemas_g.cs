@@ -17,7 +17,7 @@ namespace XFS4IoT.Crypto
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(EmvHashAlgorithmClass EmvHashAlgorithm = null, Dictionary<string, Dictionary<string, CryptoAttributesClass>> CryptoAttributes = null, Dictionary<string, Dictionary<string, AuthenticationAttributesClass>> AuthenticationAttributes = null, Dictionary<string, Dictionary<string, VerifyAttributesClass>> VerifyAttributes = null)
+        public CapabilitiesClass(EmvHashAlgorithmClass EmvHashAlgorithm = null, Dictionary<string, Dictionary<string, Dictionary<string, CryptoAttributesClass>>> CryptoAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, AuthenticationAttributesClass>>> AuthenticationAttributes = null, Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes = null)
         {
             this.EmvHashAlgorithm = EmvHashAlgorithm;
             this.CryptoAttributes = CryptoAttributes;
@@ -154,7 +154,7 @@ namespace XFS4IoT.Crypto
         /// or decrypt data.
         /// </summary>
         [DataMember(Name = "cryptoAttributes")]
-        public Dictionary<string, Dictionary<string, CryptoAttributesClass>> CryptoAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, CryptoAttributesClass>>> CryptoAttributes { get; init; }
 
         [DataContract]
         public sealed class AuthenticationAttributesClass
@@ -232,7 +232,7 @@ namespace XFS4IoT.Crypto
         /// to generate authentication data.
         /// </summary>
         [DataMember(Name = "authenticationAttributes")]
-        public Dictionary<string, Dictionary<string, AuthenticationAttributesClass>> AuthenticationAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, AuthenticationAttributesClass>>> AuthenticationAttributes { get; init; }
 
         [DataContract]
         public sealed class VerifyAttributesClass
@@ -310,7 +310,7 @@ namespace XFS4IoT.Crypto
         /// to verify authentication data.
         /// </summary>
         [DataMember(Name = "verifyAttributes")]
-        public Dictionary<string, Dictionary<string, VerifyAttributesClass>> VerifyAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, VerifyAttributesClass>>> VerifyAttributes { get; init; }
 
     }
 

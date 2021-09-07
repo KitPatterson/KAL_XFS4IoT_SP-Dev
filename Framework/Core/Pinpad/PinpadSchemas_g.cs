@@ -17,7 +17,7 @@ namespace XFS4IoT.PinPad
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(PinFormatsClass PinFormats = null, PresentationAlgorithmsClass PresentationAlgorithms = null, DisplayClass Display = null, bool? IdcConnect = null, ValidationAlgorithmsClass ValidationAlgorithms = null, bool? PinCanPersistAfterUse = null, bool? TypeCombined = null, bool? SetPinblockDataRequired = null, Dictionary<string, Dictionary<string, PinBlockAttributesClass>> PinBlockAttributes = null)
+        public CapabilitiesClass(PinFormatsClass PinFormats = null, PresentationAlgorithmsClass PresentationAlgorithms = null, DisplayClass Display = null, bool? IdcConnect = null, ValidationAlgorithmsClass ValidationAlgorithms = null, bool? PinCanPersistAfterUse = null, bool? TypeCombined = null, bool? SetPinblockDataRequired = null, Dictionary<string, Dictionary<string, Dictionary<string, PinBlockAttributesClass>>> PinBlockAttributes = null)
         {
             this.PinFormats = PinFormats;
             this.PresentationAlgorithms = PresentationAlgorithms;
@@ -365,7 +365,7 @@ namespace XFS4IoT.PinPad
         /// to generate encrypted PIN block.
         /// </summary>
         [DataMember(Name = "pinBlockAttributes")]
-        public Dictionary<string, Dictionary<string, PinBlockAttributesClass>> PinBlockAttributes { get; init; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, PinBlockAttributesClass>>> PinBlockAttributes { get; init; }
 
     }
 
