@@ -434,12 +434,6 @@ namespace XFS4IoTFramework.Common
 
             if (result.KeyManagement is not null)
             {
-                KeyManagementCapabilitiesClass.IDKeyEnum idKeys = KeyManagementCapabilitiesClass.IDKeyEnum.NotSupported;
-                if (result.KeyManagement.IdKey?.Import is not null && (bool)result.KeyManagement.IdKey.Import)
-                    idKeys |= KeyManagementCapabilitiesClass.IDKeyEnum.Import;
-                if (result.KeyManagement.IdKey?.Initialization is not null && (bool)result.KeyManagement.IdKey.Initialization)
-                    idKeys |= KeyManagementCapabilitiesClass.IDKeyEnum.Initialization;
-
                 KeyManagementCapabilitiesClass.KeyCheckModeEnum keyCheckModes = KeyManagementCapabilitiesClass.KeyCheckModeEnum.NotSupported;
                 if (result.KeyManagement.KeyCheckModes?.Self is not null && (bool)result.KeyManagement.KeyCheckModes.Self)
                     keyCheckModes |= KeyManagementCapabilitiesClass.KeyCheckModeEnum.Self;
@@ -579,10 +573,10 @@ namespace XFS4IoTFramework.Common
                 
                 if (result.KeyManagement.KeyAttributes is not null && result.KeyManagement.KeyAttributes.Count > 0)
                 { 
-                    foreach (var (keyUsage, attributes) in result.KeyManagement.KeyAttributes)
+                    foreach (var (keyUsage, algorithms) in result.KeyManagement.KeyAttributes)
                     {
                         Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.KeyAttributeOptionClass>> dicAttributes = new();
-                        foreach (var (attribute, modeOfUses) in attributes)
+                        foreach (var (algorithm, modeOfUses) in algorithms)
                         {
                             Dictionary<string, KeyManagementCapabilitiesClass.KeyAttributeOptionClass> dicModeOfUse = new();
                             foreach (var (modeOfUse, restrict) in modeOfUses)
@@ -595,7 +589,7 @@ namespace XFS4IoTFramework.Common
 
                                 dicModeOfUse.Add(modeOfUse, restricted);
                             }
-                            dicAttributes.Add(attribute, dicModeOfUse);
+                            dicAttributes.Add(algorithm, dicModeOfUse);
                         }
                         keyAttributes.Add(keyUsage, dicAttributes);
                     }
@@ -631,44 +625,43 @@ namespace XFS4IoTFramework.Common
                 Dictionary<string, Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.VerifyMethodClass>>> verifyAttributes = new();
                 if (result.KeyManagement.VerifyAttributes is not null && result.KeyManagement.VerifyAttributes.Count > 0)
                 {
-                    foreach (var (keyUsage, attributes) in result.KeyManagement.VerifyAttributes)
+                    foreach (var (keyUsage, algorithms) in result.KeyManagement.VerifyAttributes)
                     {
                         Dictionary<string, Dictionary<string, KeyManagementCapabilitiesClass.VerifyMethodClass>> dicAttributes = new();
-                        foreach (var (attribute, modeOfUses) in attributes)
+                        foreach (var (algorithm, modeOfUses) in algorithms)
                         {
                             Dictionary<string, KeyManagementCapabilitiesClass.VerifyMethodClass> dicModeOfUse = new();
                             foreach (var (modeOfUse, method) in modeOfUses)
                             {
-                                KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum cryptoMethod = KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.NotSupported;
-                                if (method?.CryptoMethod?.KcvNone is not null && (bool)method?.CryptoMethod?.KcvNone)
-                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVNone;
-                                if (method?.CryptoMethod?.KcvSelf is not null && (bool)method?.CryptoMethod?.KcvSelf)
-                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVSelf;
-                                if (method?.CryptoMethod?.KcvZero is not null && (bool)method?.CryptoMethod?.KcvZero)
-                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVZero;
-                                if (method?.CryptoMethod?.RsassaPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsassaPkcs1V15)
-                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PKCS1_V1_5;
-                                if (method?.CryptoMethod?.RsassaPss is not null && (bool)method?.CryptoMethod?.RsassaPss)
-                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PSS;
-                                if (method?.CryptoMethod?.SigNone is not null && (bool)method?.CryptoMethod?.SigNone)
-                                    cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.SignatureNone;
+                            KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum cryptoMethod = KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.NotSupported;
+                            if (method?.CryptoMethod?.KcvNone is not null && (bool)method?.CryptoMethod?.KcvNone)
+                                cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVNone;
+                            if (method?.CryptoMethod?.KcvSelf is not null && (bool)method?.CryptoMethod?.KcvSelf)
+                                cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVSelf;
+                            if (method?.CryptoMethod?.KcvZero is not null && (bool)method?.CryptoMethod?.KcvZero)
+                                cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.KCVZero;
+                            if (method?.CryptoMethod?.RsassaPkcs1V15 is not null && (bool)method?.CryptoMethod?.RsassaPkcs1V15)
+                                cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PKCS1_V1_5;
+                            if (method?.CryptoMethod?.RsassaPss is not null && (bool)method?.CryptoMethod?.RsassaPss)
+                                cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.RSASSA_PSS;
+                            if (method?.CryptoMethod?.SigNone is not null && (bool)method?.CryptoMethod?.SigNone)
+                                cryptoMethod |= KeyManagementCapabilitiesClass.VerifyMethodClass.CryptoMethodEnum.SignatureNone;
 
-                                KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum hashAlgorithm = KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.NotSupported;
-                                if (method?.HashAlgorithm?.Sha1 is not null && (bool)method?.HashAlgorithm?.Sha1)
-                                    hashAlgorithm |= KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA1;
-                                if (method?.HashAlgorithm?.Sha256 is not null && (bool)method?.HashAlgorithm?.Sha256)
-                                    hashAlgorithm |= KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA256;
+                            KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum hashAlgorithm = KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.NotSupported;
+                            if (method?.HashAlgorithm?.Sha1 is not null && (bool)method?.HashAlgorithm?.Sha1)
+                                hashAlgorithm |= KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA1;
+                            if (method?.HashAlgorithm?.Sha256 is not null && (bool)method?.HashAlgorithm?.Sha256)
+                                hashAlgorithm |= KeyManagementCapabilitiesClass.VerifyMethodClass.HashAlgorithmEnum.SHA256;
 
                                 dicModeOfUse.Add(modeOfUse, new KeyManagementCapabilitiesClass.VerifyMethodClass(cryptoMethod, hashAlgorithm));
                             }
-                            dicAttributes.Add(attribute, dicModeOfUse);
+                            dicAttributes.Add(algorithm, dicModeOfUse);
                         }
                         verifyAttributes.Add(keyUsage, dicAttributes);
                     }
                 }
 
                 Common.KeyManagementCapabilities = new KeyManagementCapabilitiesClass(result.KeyManagement.KeyNum is not null ? (int)result.KeyManagement.KeyNum : 0,
-                                                                                      idKeys,
                                                                                       keyCheckModes,
                                                                                       result.KeyManagement.HsmVendor,
                                                                                       rsaAuthenticationScheme,
@@ -701,10 +694,10 @@ namespace XFS4IoTFramework.Common
                 
                 if (result.Crypto.CryptoAttributes is not null && result.Crypto.CryptoAttributes.Count > 0)
                 {
-                    foreach (var (keyUsage, attributes) in result.Crypto.CryptoAttributes)
+                    foreach (var (keyUsage, algorithms) in result.Crypto.CryptoAttributes)
                     {
                         Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.CryptoAttributesClass>> dicAttributes = new();
-                        foreach (var (attribute, modeOfUses) in attributes)
+                        foreach (var (algorithm, modeOfUses) in algorithms)
                         {
                             Dictionary<string, CryptoCapabilitiesClass.CryptoAttributesClass> dicModeOfUse = new();
                             foreach (var (modeOfUse, method) in modeOfUses)
@@ -729,7 +722,7 @@ namespace XFS4IoTFramework.Common
 
                                 dicModeOfUse.Add(modeOfUse, new CryptoCapabilitiesClass.CryptoAttributesClass(cryptoMethod));
                             }
-                            dicAttributes.Add(attribute, dicModeOfUse);
+                            dicAttributes.Add(algorithm, dicModeOfUse);
                         }
                         cryptoAttributes.Add(keyUsage, dicAttributes);
                     }
@@ -738,10 +731,10 @@ namespace XFS4IoTFramework.Common
                 Dictionary<string, Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>>> authenticationAttributes = new();
                 if (result.Crypto.AuthenticationAttributes is not null && result.Crypto.AuthenticationAttributes.Count > 0)
                 {
-                    foreach (var (keyUsage, attributes) in result.Crypto.AuthenticationAttributes)
+                    foreach (var (keyUsage, algorithms) in result.Crypto.AuthenticationAttributes)
                     {
                         Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>> dicAttributes = new();
-                        foreach (var (attribute, modeOfUses) in attributes)
+                        foreach (var (algorithm, modeOfUses) in algorithms)
                         {
                             Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass> dicModeOfUse = new();
                             foreach (var (modeOfUse, method) in modeOfUses)
@@ -756,7 +749,7 @@ namespace XFS4IoTFramework.Common
 
                                 dicModeOfUse.Add(modeOfUse, new CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass(cryptoAlgorithm, hashAlgorithm));
                             }
-                            dicAttributes.Add(attribute, dicModeOfUse);
+                            dicAttributes.Add(algorithm, dicModeOfUse);
                         }
                         authenticationAttributes.Add(keyUsage, dicAttributes);
                     }
@@ -765,10 +758,10 @@ namespace XFS4IoTFramework.Common
                 Dictionary<string, Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>>> verifyAttributes = new();
                 if (result.Crypto.VerifyAttributes is not null && result.Crypto.VerifyAttributes.Count > 0)
                 {
-                    foreach (var (keyUsage, attributes) in result.Crypto.VerifyAttributes)
+                    foreach (var (keyUsage, algorithms) in result.Crypto.VerifyAttributes)
                     {
                         Dictionary<string, Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass>> dicAttributes = new();
-                        foreach (var (attribute, modeOfUses) in attributes)
+                        foreach (var (algorithm, modeOfUses) in algorithms)
                         {
                             Dictionary<string, CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass> dicModeOfUse = new();
                             foreach (var (modeOfUse, method) in modeOfUses)
@@ -783,7 +776,7 @@ namespace XFS4IoTFramework.Common
 
                                 dicModeOfUse.Add(modeOfUse, new CryptoCapabilitiesClass.VerifyAuthenticationAttributesClass(cryptoAlgorithm, hashAlgorithm));
                             }
-                            dicAttributes.Add(attribute, dicModeOfUse);
+                            dicAttributes.Add(algorithm, dicModeOfUse);
                         }
                         verifyAttributes.Add(keyUsage, dicAttributes);
                     }
@@ -844,10 +837,10 @@ namespace XFS4IoTFramework.Common
                 Dictionary<string, Dictionary<string, Dictionary<string, PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm>>> pinBlockAttributes = new();
                 if (result.PinPad.PinBlockAttributes is not null && result.PinPad.PinBlockAttributes.Count > 0)
                 {
-                    foreach (var (keyUsage, attributes) in result.PinPad.PinBlockAttributes)
+                    foreach (var (keyUsage, algorithms) in result.PinPad.PinBlockAttributes)
                     {
                         Dictionary<string, Dictionary<string, PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm>> pinAlgorithms = new();
-                        foreach (var (attribute, modeOfUses) in attributes)
+                        foreach (var (algorithm, modeOfUses) in algorithms)
                         {
                             Dictionary<string, PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm> pinModeOfUse = new();
                             foreach (var (modeOfUse, method) in modeOfUses)
@@ -872,7 +865,7 @@ namespace XFS4IoTFramework.Common
 
                                 pinModeOfUse.Add(modeOfUse, new PinPadCapabilitiesClass.PinBlockEncryptionAlgorithm(encAlgorithm));
                             }
-                            pinAlgorithms.Add(attribute, pinModeOfUse);
+                            pinAlgorithms.Add(algorithm, pinModeOfUse);
                         }
                         pinBlockAttributes.Add(keyUsage, pinAlgorithms);
                     }
@@ -881,7 +874,7 @@ namespace XFS4IoTFramework.Common
                 Common.PinPadCapabilities = new PinPadCapabilitiesClass(formats,
                                                                         presentationAlgorithms,
                                                                         displayTypes,
-                                                                        result.PinPad.IdConnect is not null && (bool)result.PinPad.IdConnect,
+                                                                        result.PinPad.IdcConnect is not null && (bool)result.PinPad.IdcConnect,
                                                                         validationAlgorithms,
                                                                         result.PinPad.PinCanPersistAfterUse is not null && (bool)result.PinPad.PinCanPersistAfterUse,
                                                                         result.PinPad.TypeCombined is not null && (bool)result.PinPad.TypeCombined,

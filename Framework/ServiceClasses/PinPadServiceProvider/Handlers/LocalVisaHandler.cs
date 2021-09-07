@@ -106,12 +106,6 @@ namespace XFS4IoTFramework.PinPad
                                                            $"No PIN Validation Value specified.");
             }
 
-            if (localVisa.Payload.PvvDigits is null)
-            {
-                return new LocalVisaCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                           $"No PIN Validation Value length specified.");
-            }
-
             Logger.Log(Constants.DeviceClass, "PinPadDev.VerifyPINLocalVISA()");
 
             var result = await Device.VerifyPINLocalVISA(new VerifyPINLocalVISARequest(localVisa.Payload.Pan,

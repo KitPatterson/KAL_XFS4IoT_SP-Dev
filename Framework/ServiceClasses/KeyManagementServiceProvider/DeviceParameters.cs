@@ -444,24 +444,10 @@ namespace XFS4IoTFramework.KeyManagement
 
     public sealed class InitializationRequest
     {
-        public InitializationRequest(string KeyName,
-                                     List<byte> Identification,
-                                     AuthenticationData Authentication = null)
+        public InitializationRequest(AuthenticationData Authentication = null)
         {
-            this.KeyName = KeyName;
-            this.Identification = Identification;
             this.Authentication = Authentication;
         }
-
-        /// <summary>
-        /// Key name to initialize, if this is null, all keys to be deleted
-        /// </summary>
-        public string KeyName { get; init; }
-
-        /// <summary>
-        /// ID key encrypted by the encryption key
-        /// </summary>
-        public List<byte> Identification { get; init; }
 
         /// <summary>
         /// Authentication data required for initializing device
@@ -579,8 +565,7 @@ namespace XFS4IoTFramework.KeyManagement
                                 string IVKey,
                                 int IVKeySlot,
                                 byte Padding,
-                                List<byte> Data,
-                                List<byte> IdentificationData)
+                                List<byte> Data)
         {
             this.KeyName = KeyName;
             this.KeySlot = KeySlot;
@@ -1262,21 +1247,8 @@ namespace XFS4IoTFramework.KeyManagement
 
         public sealed class InitializationInput
         {
-            public InitializationInput(string Key,
-                                       List<byte> Identification)
-            {
-                this.Key = Key;
-                this.Identification = Identification;
-            }
-            /// <summary>
-            /// Key name to initialize
-            /// </summary>
-            public string Key { get; init; }
-
-            /// <summary>
-            /// Identification data
-            /// </summary>
-            public List<byte> Identification { get; init; }
+            public InitializationInput()
+            { }
         }
 
         public StartAuthenticateRequest(CommandEnum Command,
