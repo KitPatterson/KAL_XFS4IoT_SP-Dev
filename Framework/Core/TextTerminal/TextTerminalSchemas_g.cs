@@ -103,12 +103,11 @@ namespace XFS4IoT.TextTerminal
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(TypeEnum? Type = null, List<ResolutionClass> Resolutions = null, bool? KeyLock = null, bool? DisplayLight = null, bool? Cursor = null, bool? Forms = null)
+        public CapabilitiesClass(TypeEnum? Type = null, List<ResolutionClass> Resolutions = null, bool? KeyLock = null, bool? Cursor = null, bool? Forms = null)
         {
             this.Type = Type;
             this.Resolutions = Resolutions;
             this.KeyLock = KeyLock;
-            this.DisplayLight = DisplayLight;
             this.Cursor = Cursor;
             this.Forms = Forms;
         }
@@ -141,13 +140,6 @@ namespace XFS4IoT.TextTerminal
         /// </summary>
         [DataMember(Name = "keyLock")]
         public bool? KeyLock { get; init; }
-
-        /// <summary>
-        /// Specifies whether the text terminal unit has a display light that can be switched ON and OFF with the 
-        /// [TextTerminal.DispLight](#textterminal.displight) command.
-        /// </summary>
-        [DataMember(Name = "displayLight")]
-        public bool? DisplayLight { get; init; }
 
         /// <summary>
         /// Specifies whether the text terminal unit display supports a cursor.
