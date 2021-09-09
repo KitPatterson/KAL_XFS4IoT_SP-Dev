@@ -27,9 +27,42 @@ namespace XFS4IoTServer
         {
             this.KeyManagementService = KeyManagement.IsNotNull($"Unexpected parameter set in the " + nameof(KeyboardServiceClass));
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(KeyboardServiceClass));
-            FirstGetLayoutCommand = true;
             SupportedFunctionKeys = new();
             SupportedFunctionKeysWithShift = new();
+
+            Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()");
+
+            KeyboardLayouts = Device.GetLayoutInfo();
+
+            Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()->");
+
+            KeyboardLayouts.IsNotNull($"The device class must provide keyboard layout information through GetLayoutInfo method call.");
+
+            foreach (var entryType in KeyboardLayouts)
+            {
+                List<string> keys = null;
+                List<string> shiftKeys = null;
+
+                foreach (var frame in entryType.Value)
+                {
+                    foreach (var key in frame.FunctionKeys)
+                    {
+                        if (!string.IsNullOrEmpty(key.Key))
+                            keys.Add(key.Key);
+                        if (!string.IsNullOrEmpty(key.ShiftKey))
+                            shiftKeys.Add(key.ShiftKey);
+                    }
+                }
+
+                if (keys is not null && keys.Count != 0)
+                {
+                    SupportedFunctionKeys.Add(entryType.Key, keys);
+                }
+                if (shiftKeys is not null && shiftKeys.Count != 0)
+                {
+                    SupportedFunctionKeysWithShift.Add(entryType.Key, shiftKeys);
+                }
+            }
         }
 
         /// <summary>
@@ -46,11 +79,6 @@ namespace XFS4IoTServer
         /// KeyManagement service interface
         /// </summary>
         private IKeyManagementServiceClass KeyManagementService { get; init; }
-
-        /// <summary>
-        /// True when the framework received a keyboard layout information from the device class
-        /// </summary>
-        public bool FirstGetLayoutCommand { get; set; }
 
         /// <summary>
         /// Function keys device supported

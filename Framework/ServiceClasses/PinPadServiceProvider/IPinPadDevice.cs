@@ -19,7 +19,8 @@ namespace XFS4IoTFramework.PinPad
         /// <summary>
         /// This command is used to report information in order to verify the PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device. 
         /// The command provides detailed information in order to verify the certification level of the device. 
-        /// Support of this command by the Service Provider does not imply in anyway the certification level achieved by the device
+        /// Support of this command by the Service Provider does not imply in anyway the certification level achieved by the device.
+        /// Return null if it's not supported
         /// </summary>
         PCIPTSDeviceIdClass GetPCIPTSDeviceId();
 

@@ -22,47 +22,6 @@ namespace XFS4IoTFramework.Keyboard
     {
         private Task<GetLayoutCompletion.PayloadData> HandleGetLayout(IGetLayoutEvents events, GetLayoutCommand getLayout, CancellationToken cancel)
         {
-            if (Keyboard.FirstGetLayoutCommand)
-            {
-                Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()");
-
-                Keyboard.KeyboardLayouts = Device.GetLayoutInfo();
-
-                Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()->");
-
-                Keyboard.FirstGetLayoutCommand = false;
-
-                // Update internal variables
-                Keyboard.SupportedFunctionKeys.Clear();
-                Keyboard.SupportedFunctionKeysWithShift.Clear();
-
-                foreach (var entryType in Keyboard.KeyboardLayouts)
-                {
-                    List<string> keys = null;
-                    List<string> shiftKeys = null;
-
-                    foreach (var frame in entryType.Value)
-                    {
-                        foreach (var key in frame.FunctionKeys)
-                        {
-                            if (!string.IsNullOrEmpty(key.Key))
-                                keys.Add(key.Key);
-                            if (!string.IsNullOrEmpty(key.ShiftKey))
-                                shiftKeys.Add(key.ShiftKey);
-                        }
-                    }
-
-                    if (keys is not null && keys.Count != 0)
-                    {
-                        Keyboard.SupportedFunctionKeys.Add(entryType.Key, keys);
-                    }
-                    if (shiftKeys is not null && shiftKeys.Count != 0)
-                    {
-                        Keyboard.SupportedFunctionKeysWithShift.Add(entryType.Key, shiftKeys);
-                    }
-                }
-            }
-
             if (Keyboard.KeyboardLayouts is null)
             {
                 // nothing to report, not keys for the keyboard

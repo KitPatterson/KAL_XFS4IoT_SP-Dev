@@ -134,19 +134,9 @@ namespace XFS4IoTServer
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
 
         /// <summary>
-        /// True when the frameword received a list of PCIPTS device IDs otherwise false
-        /// </summary>
-        public bool FirstPCIPTSInfoCommand { get => PinPadService.FirstPCIPTSInfoCommand; set { } }
-
-        /// <summary>
         /// Return list of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device
         /// </summary>
         public PCIPTSDeviceIdClass PCIPTSDeviceId { get => PinPadService.PCIPTSDeviceId; set { } }
-
-        /// <summary>
-        /// True when the framework received a keyboard layout information from the device class
-        /// </summary>
-        public bool FirstGetLayoutCommand { get => KeyboardService.FirstGetLayoutCommand; set { } }
 
         /// <summary>
         /// Function keys device supported

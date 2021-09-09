@@ -14,11 +14,6 @@ namespace XFS4IoTServer
     public interface IKeyboardService : ICommonService
     {
         /// <summary>
-        /// True when the framework received a keyboard layout information from the device class
-        /// </summary>
-        bool FirstGetLayoutCommand { get; set; }
-
-        /// <summary>
         /// Function keys device supported
         /// </summary>
         Dictionary<EntryModeEnum, List<string>> SupportedFunctionKeys { get; set; }

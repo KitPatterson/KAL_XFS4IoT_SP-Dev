@@ -27,8 +27,14 @@ namespace XFS4IoTServer
         {
             this.KeyManagementService = KeyManagement.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
-            FirstPCIPTSInfoCommand = true;
-            PCIPTSDeviceId = null;
+
+            Logger.Log(Constants.DeviceClass, "PinPadDev.GetPCIPTSDeviceId()");
+
+            PCIPTSDeviceIdClass deviceId = Device.GetPCIPTSDeviceId();
+
+            Logger.Log(Constants.DeviceClass, "PinPadDev.GetPCIPTSDeviceId()->");
+
+            PCIPTSDeviceId = deviceId;
         }
 
         /// <summary>
@@ -101,11 +107,6 @@ namespace XFS4IoTServer
         /// </summary>
         /// <returns></returns>
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => throw new NotSupportedException("The GetSecureKeyEntryStatus method is not supported in the PinPad interface.");
-
-        /// <summary>
-        /// True when the frameword received a list of PCIPTS device IDs otherwise false
-        /// </summary>
-        public bool FirstPCIPTSInfoCommand { get; set; }
 
         /// <summary>
         /// List of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device

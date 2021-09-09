@@ -142,7 +142,7 @@ namespace XFS4IoTFramework.Keyboard
 
                 Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()->");
 
-                Keyboard.FirstGetLayoutCommand = false;
+                Keyboard.KeyboardLayouts.IsNotNull($"The device class must provide keyboard layout information through GetLayoutInfo method call.");
 
                 // Update internal variables
                 Keyboard.SupportedFunctionKeys.Clear();

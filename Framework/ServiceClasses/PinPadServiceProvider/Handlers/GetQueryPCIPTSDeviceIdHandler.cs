@@ -20,18 +20,6 @@ namespace XFS4IoTFramework.PinPad
     {
         private Task<GetQueryPCIPTSDeviceIdCompletion.PayloadData> HandleGetQueryPCIPTSDeviceId(IGetQueryPCIPTSDeviceIdEvents events, GetQueryPCIPTSDeviceIdCommand getQueryPCIPTSDeviceId, CancellationToken cancel)
         {
-            if (PinPad.FirstPCIPTSInfoCommand)
-            {
-                Logger.Log(Constants.DeviceClass, "PinPadDev.GetPCIPTSDeviceId()");
-
-                PCIPTSDeviceIdClass deviceId = Device.GetPCIPTSDeviceId();
-
-                Logger.Log(Constants.DeviceClass, "PinPadDev.GetPCIPTSDeviceId()->");
-
-                PinPad.PCIPTSDeviceId = deviceId;
-                PinPad.FirstPCIPTSInfoCommand = false;
-            }
-
             return Task.FromResult(new GetQueryPCIPTSDeviceIdCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                                     null,
                                                                                     PinPad.PCIPTSDeviceId?.ManufacturerIdentifier,
