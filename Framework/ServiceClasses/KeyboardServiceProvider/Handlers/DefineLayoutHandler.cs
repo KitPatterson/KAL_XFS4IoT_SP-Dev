@@ -33,33 +33,44 @@ namespace XFS4IoTFramework.Keyboard
                                                               $"No key layout data specified.");
             }
 
+            if (defineLayout.Payload.Layout.Data is null &&
+                defineLayout.Payload.Layout.Pin is null &&
+                defineLayout.Payload.Layout.Secure is null)
+            {
+                return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                $"No key mode data specified.");
+            }
+
+            Dictionary<EntryModeEnum, List<LayoutFrameClass>> updateEntryModes = new();
+            if (defineLayout.Payload.Layout.Data is not null)
+                updateEntryModes.Add(EntryModeEnum.Data, defineLayout.Payload.Layout.Data);
+            if (defineLayout.Payload.Layout.Pin is not null)
+                updateEntryModes.Add(EntryModeEnum.Pin, defineLayout.Payload.Layout.Pin);
+            if (defineLayout.Payload.Layout.Secure is not null)
+                updateEntryModes.Add(EntryModeEnum.Secure, defineLayout.Payload.Layout.Secure);
+
             Dictionary<EntryModeEnum, List<FrameClass>> request = new();
 
-            foreach (var entryMode in defineLayout.Payload.Layout)
+            foreach (var entryMode in updateEntryModes)
             {
-                if (entryMode.EntryMode is null)
-                {
-                    return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                  $"No key mode specified.");
-                }
 
-                if (entryMode.Frames is null ||
-                    entryMode.Frames.Count == 0)
+                if (entryMode.Value is null ||
+                    entryMode.Value.Count == 0)
                 {
                     return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                   $"No frames specified.");
                 }
 
                 List<FrameClass> frames = new();
-                foreach (var frame in entryMode.Frames)
+                foreach (var frame in entryMode.Value)
                 {
-                    FrameClass.FloatActionEnum action = FrameClass.FloatActionEnum.NotSupported;
-                    if (frame.FloatAction is not null)
+                    FrameClass.FloatEnum floatAction = FrameClass.FloatEnum.NotSupported;
+                    if (frame.Float is not null)
                     {
-                        if (frame.FloatAction.FloatX is not null && (bool)frame.FloatAction.FloatX)
-                            action |= FrameClass.FloatActionEnum.FloatX;
-                        if (frame.FloatAction.FloatY is not null && (bool)frame.FloatAction.FloatY)
-                            action |= FrameClass.FloatActionEnum.FloatY;
+                        if (frame.Float.X is not null && (bool)frame.Float.X)
+                            floatAction |= FrameClass.FloatEnum.X;
+                        if (frame.Float.Y is not null && (bool)frame.Float.Y)
+                            floatAction |= FrameClass.FloatEnum.Y;
                     }
 
                     if (frame.XPos is null ||
@@ -68,18 +79,18 @@ namespace XFS4IoTFramework.Keyboard
                         frame.YSize is null)
                     {
                         return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                      $"XPos, YPos, XSize, YSize are not specified in the frame. {entryMode.EntryMode}");
+                                                                      $"XPos, YPos, XSize, YSize are not specified in the frame. {entryMode.Key}");
                     }
 
-                    if (frame.Fks is null ||
-                        frame.Fks.Count == 0)
+                    if (frame.Keys is null ||
+                        frame.Keys.Count == 0)
                     {
                         return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                      $"No function keys are specified in the frame. {entryMode.EntryMode}");
+                                                                      $"No function keys are specified in the frame. {entryMode.Key}");
                     }
 
                     List<FrameClass.FunctionKeyClass> functionKeys = new();
-                    foreach (var key in frame.Fks)
+                    foreach (var key in frame.Keys)
                     {
                         if (key.XPos is null ||
                             key.YPos is null ||
@@ -87,56 +98,33 @@ namespace XFS4IoTFramework.Keyboard
                             key.YSize is null)
                         {
                             return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                          $"XPos, YPos, XSize, YSize are not specified in function keys. {entryMode.EntryMode}");
+                                                                          $"XPos, YPos, XSize, YSize are not specified in function keys. {entryMode.Key}");
                         }
 
-                        if (key.KeyType is null)
+                        if (string.IsNullOrEmpty(key.Key) &&
+                            string.IsNullOrEmpty(key.ShiftKey))
                         {
                             return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                          $"KeyType is not specified in function keys. {entryMode.EntryMode}");
-                        }
-
-                        if (key.KeyType is null)
-                        {
-                            return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                          $"KeyType is not specified in function keys. {entryMode.EntryMode}");
-                        }
-
-                        if (string.IsNullOrEmpty(key.Fk) &&
-                            string.IsNullOrEmpty(key.ShiftFK))
-                        {
-                            return new DefineLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                                          $"No function key with shift and non-shift mode is specified. {entryMode.EntryMode}");
+                                                                          $"No function key with shift and non-shift mode is specified. {entryMode.Key}");
                         }
 
                         functionKeys.Add(new FrameClass.FunctionKeyClass((int)key.XPos,
                                                                          (int)key.YPos,
                                                                          (int)key.XSize,
                                                                          (int)key.YSize,
-                                                                         key.KeyType switch
-                                                                         {
-                                                                             LayoutClass.FramesClass.FksClass.KeyTypeEnum.Fk => FrameClass.FunctionKeyClass.KeyTypeEnum.FK,
-                                                                             _ => FrameClass.FunctionKeyClass.KeyTypeEnum.FDK
-                                                                         },
-                                                                         key.Fk,
-                                                                         key.ShiftFK));
+                                                                         key.Key,
+                                                                         key.ShiftKey));
                     }
 
                     frames.Add(new FrameClass((int)frame.XPos, 
                                               (int)frame.YPos, 
                                               (int)frame.XSize, 
                                               (int)frame.YSize, 
-                                              action, 
+                                              floatAction, 
                                               functionKeys));
                 }
 
-                request.Add(entryMode.EntryMode switch
-                            {
-                                LayoutClass.EntryModeEnum.Data => EntryModeEnum.Data,
-                                LayoutClass.EntryModeEnum.Pin => EntryModeEnum.Pin,
-                                _ => EntryModeEnum.Secure,
-                            },
-                            frames);
+                request.Add(entryMode.Key, frames);
             }
 
             Logger.Log(Constants.DeviceClass, "KeyboardDev.DefineLayout()");
@@ -148,7 +136,6 @@ namespace XFS4IoTFramework.Keyboard
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
             {
                 // Update internal layout
-
                 Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()");
 
                 Keyboard.KeyboardLayouts = Device.GetLayoutInfo();
@@ -163,24 +150,30 @@ namespace XFS4IoTFramework.Keyboard
 
                 foreach (var entryType in Keyboard.KeyboardLayouts)
                 {
-                    List<string> fks = null;
-                    List<string> shiftFks = null;
+                    List<string> keys = null;
+                    List<string> shiftKeys = null;
 
                     foreach (var frame in entryType.Value)
                     {
                         foreach (var key in frame.FunctionKeys)
                         {
-                            if (!string.IsNullOrEmpty(key.FK))
-                                fks.Add(key.FK);
-                            if (!string.IsNullOrEmpty(key.ShiftFK))
-                                fks.Add(key.ShiftFK);
+                            if (!string.IsNullOrEmpty(key.Key))
+                                keys.Add(key.Key);
+                            if (!string.IsNullOrEmpty(key.ShiftKey))
+                                shiftKeys.Add(key.ShiftKey);
                         }
                     }
 
-                    if (fks.Count != 0)
-                        Keyboard.SupportedFunctionKeys.Add(entryType.Key, fks);
-                    if (shiftFks.Count != 0)
-                        Keyboard.SupportedFunctionKeysWithShift.Add(entryType.Key, shiftFks);
+                    if (keys is not null &&
+                        keys.Count != 0)
+                    {
+                        Keyboard.SupportedFunctionKeys.Add(entryType.Key, keys);
+                    }
+                    if (shiftKeys is not null &&
+                        shiftKeys.Count != 0)
+                    {
+                        Keyboard.SupportedFunctionKeysWithShift.Add(entryType.Key, shiftKeys);
+                    }
                 }
             }
             

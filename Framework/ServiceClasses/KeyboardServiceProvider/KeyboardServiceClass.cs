@@ -13,16 +13,19 @@ using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoTFramework.Keyboard;
 using XFS4IoTFramework.Common;
+using XFS4IoTFramework.KeyManagement;
 
 namespace XFS4IoTServer
 {
     public partial class KeyboardServiceClass
     {
         public KeyboardServiceClass(IServiceProvider ServiceProvider,
+                                    IKeyManagementServiceClass KeyManagement,
                                     ICommonService CommonService,
                                     ILogger logger)
         : this(ServiceProvider, logger)
         {
+            this.KeyManagementService = KeyManagement.IsNotNull($"Unexpected parameter set in the " + nameof(KeyboardServiceClass));
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(KeyboardServiceClass));
             FirstGetLayoutCommand = true;
             SupportedFunctionKeys = new();
@@ -38,6 +41,11 @@ namespace XFS4IoTServer
         /// Common service interface
         /// </summary>
         private ICommonService CommonService { get; init; }
+
+        /// <summary>
+        /// KeyManagement service interface
+        /// </summary>
+        private IKeyManagementServiceClass KeyManagementService { get; init; }
 
         /// <summary>
         /// True when the framework received a keyboard layout information from the device class
@@ -58,5 +66,10 @@ namespace XFS4IoTServer
         /// Keyboard layout device supported
         /// </summary>
         public Dictionary<EntryModeEnum, List<FrameClass>> KeyboardLayouts { get; set; }
+
+        /// <summary>
+        /// Return secure key entry component status
+        /// </summary>
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
     }
 }

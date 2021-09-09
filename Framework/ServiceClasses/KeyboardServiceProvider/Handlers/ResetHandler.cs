@@ -5,7 +5,6 @@
  *
 \***********************************************************************************************/
 
-
 using System;
 using System.Threading.Tasks;
 using System.Threading;
@@ -13,6 +12,7 @@ using XFS4IoT;
 using XFS4IoTServer;
 using XFS4IoT.Keyboard.Commands;
 using XFS4IoT.Keyboard.Completions;
+using XFS4IoTFramework.KeyManagement;
 
 namespace XFS4IoTFramework.Keyboard
 {
@@ -25,6 +25,12 @@ namespace XFS4IoTFramework.Keyboard
             var result = await Device.ResetDevice(cancel);
 
             Logger.Log(Constants.DeviceClass, $"KeyboardDev.ResetDevice() -> {result.CompletionCode}");
+
+            if (result.CompletionCode == XFS4IoT.Completions.MessagePayload.CompletionCodeEnum.Success)
+            {
+                SecureKeyEntryStatusClass status = Keyboard.GetSecureKeyEntryStatus();
+                status.ResetSecureKeyBuffered();
+            }
 
             return new ResetCompletion.PayloadData(result.CompletionCode,
                                                    result.ErrorDescription);

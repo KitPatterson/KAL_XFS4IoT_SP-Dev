@@ -13,6 +13,7 @@ using XFS4IoTServer;
 using XFS4IoT.Keyboard.Commands;
 using XFS4IoT.Keyboard.Completions;
 using XFS4IoT.Completions;
+using XFS4IoTFramework.KeyManagement;
 
 namespace XFS4IoTFramework.Keyboard
 {
@@ -35,10 +36,56 @@ namespace XFS4IoTFramework.Keyboard
             if (secureKeyEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
-            // TO BE REMOVED
-            await Task.Delay(100, cancel);
+            List<ActiveKeyCalss> keys = new();
+            foreach (var key in secureKeyEntry.Payload.ActiveKeys)
+            {
+                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Data].Contains(key.Key))
+                {
+                    return new SecureKeyEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                    $"Invalid key specified. {key.Key}");
+                }
+                keys.Add(new ActiveKeyCalss(key.Key, key.Value.Terminate is not null && (bool)key.Value.Terminate));
+            }
 
-            return new SecureKeyEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null);
+            Keyboard.GetSecureKeyEntryStatus().ResetSecureKeyBuffered();
+
+            Logger.Log(Constants.DeviceClass, "KeyboardDev.SecureKeyEntry()");
+
+            var result = await Device.SecureKeyEntry(events, 
+                                                     new(secureKeyEntry.Payload.KeyLen switch
+                                                         { 
+                                                             SecureKeyEntryCommand.PayloadData.KeyLenEnum.Number16 => SecureKeyEntryRequest.KeyLenEnum.Length16,
+                                                             SecureKeyEntryCommand.PayloadData.KeyLenEnum.Number32 => SecureKeyEntryRequest.KeyLenEnum.Length32,
+                                                             _ => SecureKeyEntryRequest.KeyLenEnum.Length48,
+                                                         },
+                                                         secureKeyEntry.Payload.AutoEnd is not null && (bool)secureKeyEntry.Payload.AutoEnd,
+                                                         keys,
+                                                         secureKeyEntry.Payload.VerificationType switch
+                                                         {
+                                                             SecureKeyEntryCommand.PayloadData.VerificationTypeEnum.Self => SecureKeyEntryRequest.VerificationTypeEnum.Self,
+                                                             _ => SecureKeyEntryRequest.VerificationTypeEnum.Zero
+                                                         },
+                                                         secureKeyEntry.Payload.CryptoMethod is null ? SecureKeyEntryRequest.CryptoMethodEnum.Default : secureKeyEntry.Payload.CryptoMethod switch
+                                                         {
+                                                             SecureKeyEntryCommand.PayloadData.CryptoMethodEnum.Aes => SecureKeyEntryRequest.CryptoMethodEnum.AES,
+                                                             SecureKeyEntryCommand.PayloadData.CryptoMethodEnum.Des => SecureKeyEntryRequest.CryptoMethodEnum.DES,
+                                                             _ => SecureKeyEntryRequest.CryptoMethodEnum.TripleDES
+                                                         }), 
+                                                         cancel);
+
+            Logger.Log(Constants.DeviceClass, $"KeyboardDev.SecureKeyEntry() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)
+            {
+                Keyboard.GetSecureKeyEntryStatus().SecureKeyBuffered();
+            }
+
+            return new SecureKeyEntryCompletion.PayloadData(result.CompletionCode,
+                                                            result.ErrorDescription,
+                                                            result.ErrorCode,
+                                                            result.Digits,
+                                                            result.Completion,
+                                                            result.KeyCheckValue is not null || result.KeyCheckValue.Count == 0 ? Convert.ToBase64String(result.KeyCheckValue.ToArray()) : null);
         }
     }
 }

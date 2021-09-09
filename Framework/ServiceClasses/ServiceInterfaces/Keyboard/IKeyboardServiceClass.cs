@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using XFS4IoTFramework.Keyboard;
 using XFS4IoTFramework.Common;
+using XFS4IoTFramework.KeyManagement;
 
 namespace XFS4IoTServer
 {
@@ -32,6 +33,11 @@ namespace XFS4IoTServer
         /// Keyboard layout device supported
         /// </summary>
         Dictionary<EntryModeEnum, List<FrameClass>> KeyboardLayouts { get; set; }
+
+        /// <summary>
+        /// Return secure key entry component status
+        /// </summary>
+        public SecureKeyEntryStatusClass GetSecureKeyEntryStatus();
     }
 
     public interface IKeyboardServiceClass : IKeyboardService, IKeyboardUnsolicitedEvents

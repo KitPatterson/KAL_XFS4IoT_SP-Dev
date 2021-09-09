@@ -41,7 +41,7 @@ namespace XFS4IoTServer
             CommonService = new CommonServiceClass(this, logger);
             KeyManagementService = new KeyManagementServiceClass(this, CommonService, logger, persistentData);
             CryptoService = new CryptoServiceClass(this, KeyManagementService, CommonService, logger);
-            KeyboardService = new KeyboardServiceClass(this, CommonService, logger);
+            KeyboardService = new KeyboardServiceClass(this, KeyManagementService, CommonService, logger);
             PinPadService = new PinPadServiceClass(this, KeyManagementService, CommonService, logger);
         }
 
@@ -57,7 +57,7 @@ namespace XFS4IoTServer
         #endregion
 
         #region KeyManagement unsolicited events
-        public Task InitializedEvent(XFS4IoT.KeyManagement.Events.InitializedEvent.PayloadData Payload) => KeyManagementService.InitializedEvent(Payload);
+        public Task InitializedEvent() => KeyManagementService.InitializedEvent();
 
         public Task IllegalKeyAccessEvent(XFS4IoT.KeyManagement.Events.IllegalKeyAccessEvent.PayloadData Payload) => KeyManagementService.IllegalKeyAccessEvent(Payload);
 

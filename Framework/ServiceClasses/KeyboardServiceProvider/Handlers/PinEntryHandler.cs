@@ -30,10 +30,35 @@ namespace XFS4IoTFramework.Keyboard
             if (pinEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
-            // TO BE REMOVED
-            await Task.Delay(100, cancel);
+            List<ActiveKeyCalss> keys = new();
+            foreach (var key in pinEntry.Payload.ActiveKeys)
+            {
+                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Data].Contains(key.Key) &&
+                    !Keyboard.SupportedFunctionKeysWithShift[EntryModeEnum.Data].Contains(key.Key))
+                {
+                    return new PinEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                              $"Invalid key specified. {key.Key}");
+                }
+                keys.Add(new ActiveKeyCalss(key.Key, key.Value.Terminate is not null && (bool)key.Value.Terminate));
+            }
 
-            return new PinEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null);
+            Logger.Log(Constants.DeviceClass, "KeyboardDev.PinEntry()");
+
+            var result = await Device.PinEntry(events, 
+                                               new(pinEntry.Payload.MinLen is null ? 0 : (int)pinEntry.Payload.MinLen,
+                                                   pinEntry.Payload.MaxLen is null ? 0 : (int)pinEntry.Payload.MaxLen,
+                                                   pinEntry.Payload.AutoEnd is not null && (bool)pinEntry.Payload.AutoEnd,
+                                                   pinEntry.Payload.Echo,
+                                                   keys), 
+                                               cancel);
+
+            Logger.Log(Constants.DeviceClass, $"KeyboardDev.PinEntry() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new PinEntryCompletion.PayloadData(result.CompletionCode,
+                                                      result.ErrorDescription,
+                                                      result.ErrorCode,
+                                                      result.Digits,
+                                                      result.Completion);
         }
     }
 }

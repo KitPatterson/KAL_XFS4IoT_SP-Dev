@@ -38,24 +38,28 @@ namespace XFS4IoTFramework.Keyboard
 
                 foreach (var entryType in Keyboard.KeyboardLayouts)
                 {
-                    List<string> fks = null;
-                    List<string> shiftFks = null;
+                    List<string> keys = null;
+                    List<string> shiftKeys = null;
 
                     foreach (var frame in entryType.Value)
                     {
                         foreach (var key in frame.FunctionKeys)
                         {
-                            if (!string.IsNullOrEmpty(key.FK))
-                                fks.Add(key.FK);
-                            if (!string.IsNullOrEmpty(key.ShiftFK))
-                                fks.Add(key.ShiftFK);
+                            if (!string.IsNullOrEmpty(key.Key))
+                                keys.Add(key.Key);
+                            if (!string.IsNullOrEmpty(key.ShiftKey))
+                                shiftKeys.Add(key.ShiftKey);
                         }
                     }
 
-                    if (fks.Count != 0)
-                        Keyboard.SupportedFunctionKeys.Add(entryType.Key, fks);
-                    if (shiftFks.Count != 0)
-                        Keyboard.SupportedFunctionKeysWithShift.Add(entryType.Key, shiftFks);
+                    if (keys is not null && keys.Count != 0)
+                    {
+                        Keyboard.SupportedFunctionKeys.Add(entryType.Key, keys);
+                    }
+                    if (shiftKeys is not null && shiftKeys.Count != 0)
+                    {
+                        Keyboard.SupportedFunctionKeysWithShift.Add(entryType.Key, shiftKeys);
+                    }
                 }
             }
 
@@ -83,57 +87,57 @@ namespace XFS4IoTFramework.Keyboard
                 }
             }
 
-            List<LayoutClass> layoutResult = new();
+            List<LayoutFrameClass> data = null;
+            List<LayoutFrameClass> pin = null;
+            List<LayoutFrameClass> secure = null;
 
             foreach (var entryType in Keyboard.KeyboardLayouts)
             {
-                LayoutClass.EntryModeEnum mode = entryType.Key switch
-                {
-                    EntryModeEnum.Data => LayoutClass.EntryModeEnum.Data,
-                    EntryModeEnum.Pin => LayoutClass.EntryModeEnum.Pin,
-                    _ => LayoutClass.EntryModeEnum.Secure,
-                };
-
-                List<LayoutClass.FramesClass> resultFrames = new();
+                List<LayoutFrameClass> resultFrames = new();
                 foreach (var frame in entryType.Value)
                 {
-                    List<LayoutClass.FramesClass.FksClass> functionKeys = new();
+                    List<LayoutFrameClass.KeysClass> functionKeys = new();
                     foreach (var functionKey in frame.FunctionKeys)
                     {
-                        functionKeys.Add(new LayoutClass.FramesClass.FksClass(functionKey.XPos,
-                                                                              functionKey.YPos,
-                                                                              functionKey.XSize,
-                                                                              functionKey.YSize,
-                                                                              functionKey.KeyType switch
-                                                                              {
-                                                                                  FrameClass.FunctionKeyClass.KeyTypeEnum.FK => LayoutClass.FramesClass.FksClass.KeyTypeEnum.Fk,
-                                                                                  _ => LayoutClass.FramesClass.FksClass.KeyTypeEnum.Fdk
-                                                                              },
-                                                                              functionKey.FK,
-                                                                              functionKey.ShiftFK));
+                        functionKeys.Add(new LayoutFrameClass.KeysClass(functionKey.XPos,
+                                                                        functionKey.YPos,
+                                                                        functionKey.XSize,
+                                                                        functionKey.YSize,
+                                                                        functionKey.Key,
+                                                                        functionKey.ShiftKey));
                     }
 
                     resultFrames.Add(new(frame.XPos, 
                                          frame.YPos, 
                                          frame.XSize, 
                                          frame.YSize,
-                                         frame.FloatAction != FrameClass.FloatActionEnum.NotSupported ? new LayoutClass.FramesClass.FloatActionClass(frame.FloatAction.HasFlag(FrameClass.FloatActionEnum.FloatX), frame.FloatAction.HasFlag(FrameClass.FloatActionEnum.FloatY)) : null,
+                                         frame.FloatAction != FrameClass.FloatEnum.NotSupported ? new LayoutFrameClass.FloatClass(frame.FloatAction.HasFlag(FrameClass.FloatEnum.X), frame.FloatAction.HasFlag(FrameClass.FloatEnum.Y)) : null,
                                          functionKeys));
                 }
 
                 if (inquiry is null ||
-                    inquiry == entryType.Key)
+                    entryType.Key == EntryModeEnum.Data)
                 {
-                    layoutResult.Add(new LayoutClass(mode, resultFrames));
-
-                    if (inquiry is not null)
-                        break;
+                    data = resultFrames;
                 }
+                if (inquiry is null ||
+                    entryType.Key == EntryModeEnum.Pin)
+                {
+                    pin = resultFrames;
+                }
+                if (inquiry is null ||
+                    entryType.Key == EntryModeEnum.Secure)
+                {
+                    secure = resultFrames;
+                }
+
+                if (inquiry is not null)
+                    break;
             }
             
             return Task.FromResult(new GetLayoutCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success,
                                                                        null, 
-                                                                       Layout: layoutResult));
+                                                                       Layout: new LayoutClass(data, pin, secure)));
         }
     }
 }

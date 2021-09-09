@@ -28,18 +28,18 @@ namespace XFS4IoTFramework.Keyboard
     public sealed class FrameClass
     {
         [Flags]
-        public enum FloatActionEnum
+        public enum FloatEnum
         {
             NotSupported = 0,
-            FloatX = 0x0001,
-            FloatY = 0x0002,
+            X = 0x0001,
+            Y = 0x0002,
         }
 
         public FrameClass(int XPos, 
                           int YPos, 
                           int XSize, 
                           int YSize, 
-                          FloatActionEnum FloatAction, 
+                          FloatEnum FloatAction, 
                           List<FunctionKeyClass> FunctionKeys)
         {
             this.XPos = XPos;
@@ -75,7 +75,7 @@ namespace XFS4IoTFramework.Keyboard
         /// <summary>
         /// Specifies if the device can float the touch keyboards
         /// </summary>
-        public FloatActionEnum FloatAction { get; init; }
+        public FloatEnum FloatAction { get; init; }
 
         public sealed class FunctionKeyClass
         {
@@ -83,17 +83,15 @@ namespace XFS4IoTFramework.Keyboard
                                     int YPos,
                                     int XSize, 
                                     int YSize, 
-                                    KeyTypeEnum KeyType, 
-                                    string FK, 
-                                    string ShiftFK)
+                                    string Key, 
+                                    string ShiftKey)
             {
                 this.XPos = XPos;
                 this.YPos = YPos;
                 this.XSize = XSize;
                 this.YSize = YSize;
-                this.KeyType = KeyType;
-                this.FK = FK;
-                this.ShiftFK = ShiftFK;
+                this.Key = Key;
+                this.ShiftKey = ShiftKey;
             }
 
             /// <summary>
@@ -125,32 +123,17 @@ namespace XFS4IoTFramework.Keyboard
             /// </summary>
             public int YSize { get; init; }
 
-            public enum KeyTypeEnum
-            {
-                FK,
-                FDK
-            }
-
-            /// <summary>
-            /// Defines the type of XFS key definition value is represented by *fk* and *shiftFK*.
-            /// If the key is physically present on the device but it is not used, this property can be omitted.
-            /// The following values are possible:
-            /// * ```FK``` - Function Keys are being used.
-            /// * ```FDK``` - Function Descriptor Keys are being used.
-            /// </summary>
-            public KeyTypeEnum KeyType { get; init; }
-
             /// <summary>
             /// Specifies the Function Key associated with the physical area in non-shifted mode.
             /// This property is not required if the *keyType* is omitted.
             /// </summary>
-            public string FK { get; init; }
+            public string Key { get; init; }
 
             /// <summary>
             /// Specifies the Function Key associated with the physical area in shifted mode.
             /// This property is not required if the *keyType* is omitted.
             /// </summary>
-            public string ShiftFK { get; init; }
+            public string ShiftKey { get; init; }
         }
 
         /// <summary>

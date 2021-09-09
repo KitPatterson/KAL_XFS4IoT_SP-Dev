@@ -235,9 +235,10 @@ namespace XFS4IoTFramework.Keyboard
 
         public enum CryptoMethodEnum
         {
+            Default,
             DES,
             TripleDES,
-            AEX
+            AES
         }
 
         public SecureKeyEntryRequest(KeyLenEnum keyLen,

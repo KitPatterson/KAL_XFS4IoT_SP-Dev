@@ -27,10 +27,40 @@ namespace XFS4IoTFramework.Keyboard
             if (dataEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
-            // TO BE REMOVED
-            await Task.Delay(100, cancel);
+            if (dataEntry.Payload.ActiveKeys is null || 
+                dataEntry.Payload.ActiveKeys.Count == 0)
+            {
+                return new DataEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                           $"No active keys are specified.");
+            }
 
-            return new DataEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.Success, null);
+            List<ActiveKeyCalss> keys = new();
+            foreach (var key in dataEntry.Payload.ActiveKeys)
+            {
+                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Data].Contains(key.Key))
+                {
+                    return new DataEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                               $"Invalid key specified. {key.Key}");
+                }
+                keys.Add(new ActiveKeyCalss(key.Key, key.Value.Terminate is not null && (bool)key.Value.Terminate));
+            }
+
+            Logger.Log(Constants.DeviceClass, "KeyboardDev.DataEntry()");
+
+            var result = await Device.DataEntry(events, 
+                                                new(dataEntry.Payload.MaxLen is null ? 0 : (int)dataEntry.Payload.MaxLen,
+                                                    dataEntry.Payload.AutoEnd is null ? false : (bool)dataEntry.Payload.AutoEnd,
+                                                    keys), 
+                                                cancel);
+
+            Logger.Log(Constants.DeviceClass, $"KeyboardDev.DataEntry() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new DataEntryCompletion.PayloadData(result.CompletionCode,
+                                                       result.ErrorDescription,
+                                                       result.ErrorCode,
+                                                       result.Keys,
+                                                       result.PinKeys,
+                                                       result.Completion);
         }
     }
 }
