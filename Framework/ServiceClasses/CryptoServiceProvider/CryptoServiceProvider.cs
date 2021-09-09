@@ -53,7 +53,7 @@ namespace XFS4IoTServer
         #endregion
 
         #region KeyManagement unsolicited events
-        public Task InitializedEvent(InitializedEvent.PayloadData Payload) => KeyManagementService.InitializedEvent(Payload);
+        public Task InitializedEvent() => KeyManagementService.InitializedEvent();
 
         public Task IllegalKeyAccessEvent(XFS4IoT.KeyManagement.Events.IllegalKeyAccessEvent.PayloadData Payload) => KeyManagementService.IllegalKeyAccessEvent(Payload);
 

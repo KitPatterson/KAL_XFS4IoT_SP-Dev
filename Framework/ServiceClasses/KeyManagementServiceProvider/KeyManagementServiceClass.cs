@@ -190,7 +190,6 @@ namespace XFS4IoTServer
         /// Return secure key entry component status
         /// The device specified class reset current status if the stored key components are claered except successful Initialization command.
         /// </summary>
-        /// <returns></returns>
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => SecureKeyEntryStatus;
     }
 }

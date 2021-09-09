@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoT.Common.Events;
 using XFS4IoTFramework.Common;
-using XFS4IoT.PinPad.Events;
-using XFS4IoT.KeyManagement.Events;
 using XFS4IoTFramework.KeyManagement;
+using XFS4IoTFramework.PinPad;
+using XFS4IoTFramework.Keyboard;
 
 namespace XFS4IoTServer
 {
@@ -39,10 +39,10 @@ namespace XFS4IoTServer
                  logger)
         {
             CommonService = new CommonServiceClass(this, logger);
-            CryptoService = new CryptoServiceClass(this, logger);
-            KeyboardService = new KeyboardServiceClass(this, logger);
-            KeyManagementService = new KeyManagementServiceClass(this, logger);
-            PinPadService = new PinPadServiceClass(this, logger);
+            KeyManagementService = new KeyManagementServiceClass(this, CommonService, logger, persistentData);
+            CryptoService = new CryptoServiceClass(this, KeyManagementService, CommonService, logger);
+            KeyboardService = new KeyboardServiceClass(this, KeyManagementService, CommonService, logger);
+            PinPadService = new PinPadServiceClass(this, KeyManagementService, CommonService, logger);
         }
 
         private readonly PinPadServiceClass PinPadService;
@@ -57,7 +57,7 @@ namespace XFS4IoTServer
         #endregion
 
         #region KeyManagement unsolicited events
-        public Task InitializedEvent(XFS4IoT.KeyManagement.Events.InitializedEvent.PayloadData Payload) => KeyManagementService.InitializedEvent(Payload);
+        public Task InitializedEvent() => KeyManagementService.InitializedEvent();
 
         public Task IllegalKeyAccessEvent(XFS4IoT.KeyManagement.Events.IllegalKeyAccessEvent.PayloadData Payload) => KeyManagementService.IllegalKeyAccessEvent(Payload);
 
@@ -132,5 +132,35 @@ namespace XFS4IoTServer
         /// </summary>
         /// <returns></returns>
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
+
+        /// <summary>
+        /// True when the frameword received a list of PCIPTS device IDs otherwise false
+        /// </summary>
+        public bool FirstPCIPTSInfoCommand { get => PinPadService.FirstPCIPTSInfoCommand; set { } }
+
+        /// <summary>
+        /// Return list of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device
+        /// </summary>
+        public PCIPTSDeviceIdClass PCIPTSDeviceId { get => PinPadService.PCIPTSDeviceId; set { } }
+
+        /// <summary>
+        /// True when the framework received a keyboard layout information from the device class
+        /// </summary>
+        public bool FirstGetLayoutCommand { get => KeyboardService.FirstGetLayoutCommand; set { } }
+
+        /// <summary>
+        /// Function keys device supported
+        /// </summary>
+        public Dictionary<EntryModeEnum, List<string>> SupportedFunctionKeys { get => KeyboardService.SupportedFunctionKeys; set { } }
+
+        /// <summary>
+        /// Function keys device supported with shift key
+        /// </summary>
+        public Dictionary<EntryModeEnum, List<string>> SupportedFunctionKeysWithShift { get => KeyboardService.SupportedFunctionKeysWithShift; set { } }
+
+        /// <summary>
+        /// Keyboard layout device supported
+        /// </summary>
+        public Dictionary<EntryModeEnum, List<FrameClass>> KeyboardLayouts { get => KeyboardService.KeyboardLayouts; set { } }
     }
 }
