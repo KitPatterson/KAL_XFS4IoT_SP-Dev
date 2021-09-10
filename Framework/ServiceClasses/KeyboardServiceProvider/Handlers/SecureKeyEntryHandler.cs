@@ -33,13 +33,20 @@ namespace XFS4IoTFramework.Keyboard
                                                                 $"No VerificationType specified.");
             }
 
+            if (!Keyboard.SupportedFunctionKeys.ContainsKey(EntryModeEnum.Secure))
+            {
+                return new SecureKeyEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                $"No secure key entry layout supported.");
+            }
+
             if (secureKeyEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
             List<ActiveKeyCalss> keys = new();
             foreach (var key in secureKeyEntry.Payload.ActiveKeys)
             {
-                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Data].Contains(key.Key))
+                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Secure].Contains(key.Key) &&
+                    !Keyboard.SupportedFunctionKeysWithShift[EntryModeEnum.Secure].Contains(key.Key))
                 {
                     return new SecureKeyEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                     $"Invalid key specified. {key.Key}");

@@ -30,11 +30,16 @@ namespace XFS4IoTFramework.Keyboard
             if (pinEntry.Payload.AutoEnd is null)
                 Logger.Warning(Constants.Framework, $"No AutoEnd specified. use default false.");
 
+            if (!Keyboard.SupportedFunctionKeys.ContainsKey(EntryModeEnum.Pin))
+            {
+                return new PinEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                            $"No Pin entry layout supported.");
+            }
+
             List<ActiveKeyCalss> keys = new();
             foreach (var key in pinEntry.Payload.ActiveKeys)
             {
-                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Data].Contains(key.Key) &&
-                    !Keyboard.SupportedFunctionKeysWithShift[EntryModeEnum.Data].Contains(key.Key))
+                if (!Keyboard.SupportedFunctionKeys[EntryModeEnum.Pin].Contains(key.Key))
                 {
                     return new PinEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                               $"Invalid key specified. {key.Key}");

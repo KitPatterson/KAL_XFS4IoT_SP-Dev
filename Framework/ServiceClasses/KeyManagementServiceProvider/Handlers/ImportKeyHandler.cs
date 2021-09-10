@@ -33,7 +33,7 @@ namespace XFS4IoTFramework.KeyManagement
             if (importKey.Payload.KeyAttributes is null)
             {
                 return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                           $"No key data specified.");
+                                                           $"No key attribute specified.");
             }
 
             if (string.IsNullOrEmpty(importKey.Payload.KeyAttributes.KeyUsage))

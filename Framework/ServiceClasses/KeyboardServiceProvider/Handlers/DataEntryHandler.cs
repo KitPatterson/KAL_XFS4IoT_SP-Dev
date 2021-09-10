@@ -34,6 +34,12 @@ namespace XFS4IoTFramework.Keyboard
                                                            $"No active keys are specified.");
             }
 
+            if (!Keyboard.SupportedFunctionKeys.ContainsKey(EntryModeEnum.Data))
+            {
+                return new DataEntryCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                           $"No Data entry layout supported.");
+            }
+
             List<ActiveKeyCalss> keys = new();
             foreach (var key in dataEntry.Payload.ActiveKeys)
             {

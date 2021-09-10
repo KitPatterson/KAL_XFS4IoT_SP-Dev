@@ -34,14 +34,14 @@ namespace XFS4IoTServer
 
             KeyboardLayouts = Device.GetLayoutInfo();
 
-            Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()->");
+            Logger.Log(Constants.DeviceClass, "KeyboardDev.GetLayoutInfo()-> " + KeyboardLayouts is null || KeyboardLayouts.Count == 0 ? "0" : KeyboardLayouts.Count.ToString());
 
             KeyboardLayouts.IsNotNull($"The device class must provide keyboard layout information through GetLayoutInfo method call.");
 
             foreach (var entryType in KeyboardLayouts)
             {
-                List<string> keys = null;
-                List<string> shiftKeys = null;
+                List<string> keys = new();
+                List<string> shiftKeys = new();
 
                 foreach (var frame in entryType.Value)
                 {
