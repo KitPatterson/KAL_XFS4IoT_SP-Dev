@@ -94,6 +94,26 @@ namespace XFS4IoTFramework.Keyboard
 
     public sealed class DataEntryResult : DeviceResult
     {
+        public sealed class EnteredKey
+        {
+            public EnteredKey(string Key,
+                              EntryCompletionEnum? Completion = null)
+            {
+                this.Key = Key;
+                this.Completion = Completion;
+            }
+
+            /// <summary>
+            /// Key name pressed
+            /// </summary>
+            public string Key { get; init; }
+
+            /// <summary>
+            /// Completion of the entry
+            /// </summary>
+            public EntryCompletionEnum? Completion { get; init; }
+        }
+
         public DataEntryResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                string ErrorDescription = null,
                                DataEntryCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
@@ -101,19 +121,19 @@ namespace XFS4IoTFramework.Keyboard
         {
             this.ErrorCode = ErrorCode;
             this.Keys = 0;
-            PinKeys = null;
+            EnteredKeys = null;
             Completion = null;
         }
 
         public DataEntryResult(MessagePayload.CompletionCodeEnum CompletionCode,
                                int Keys,
-                               List<EntryCompletionEnum> PinKeys,
+                               List<EnteredKey> EnteredKeys,
                                EntryCompletionEnum? Completion)
                 : base(CompletionCode, null)
         {
             this.ErrorCode = null;
             this.Keys = Keys;
-            this.PinKeys = PinKeys;
+            this.EnteredKeys = EnteredKeys;
             this.Completion = Completion;
         }
 
@@ -127,7 +147,7 @@ namespace XFS4IoTFramework.Keyboard
         /// <summary>
         /// Array contains the keys entered by the user 
         /// </summary>
-        public List<EntryCompletionEnum> PinKeys { get; init; }
+        public List<EnteredKey> EnteredKeys { get; init; }
 
         /// <summary>
         /// Specifies the reason for completion of the entry.
@@ -220,13 +240,6 @@ namespace XFS4IoTFramework.Keyboard
 
     public sealed class SecureKeyEntryRequest
     {
-        public enum KeyLenEnum
-        {
-            Length16,
-            Length32,
-            Length48
-        }
-
         public enum VerificationTypeEnum
         {
             Self,
@@ -241,7 +254,7 @@ namespace XFS4IoTFramework.Keyboard
             AES
         }
 
-        public SecureKeyEntryRequest(KeyLenEnum keyLen,
+        public SecureKeyEntryRequest(int KeyLen,
                                bool AutoEnd,
                                List<ActiveKeyCalss> ActiveKeys,
                                VerificationTypeEnum VerificationType,
@@ -259,7 +272,7 @@ namespace XFS4IoTFramework.Keyboard
         /// 32 for a double-length key and 48 for a triple-length key.
         /// The only valid values are 16, 32 and 48.
         /// </summary>
-        public KeyLenEnum KeyLen { get; init; }
+        public int KeyLen { get; init; }
 
         /// <summary>
         /// If autoEnd is set to true, the Service Provider terminates the command when the maximum number of encryption 

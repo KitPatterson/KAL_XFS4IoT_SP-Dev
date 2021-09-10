@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Keyboard;
 using XFS4IoT.Keyboard.Commands;
 using XFS4IoT.Keyboard.Completions;
 using XFS4IoT.Completions;
@@ -49,17 +49,26 @@ namespace XFS4IoTFramework.Keyboard
 
             var result = await Device.DataEntry(events, 
                                                 new(dataEntry.Payload.MaxLen is null ? 0 : (int)dataEntry.Payload.MaxLen,
-                                                    dataEntry.Payload.AutoEnd is null ? false : (bool)dataEntry.Payload.AutoEnd,
+                                                    dataEntry.Payload.AutoEnd is not null && (bool)dataEntry.Payload.AutoEnd,
                                                     keys), 
                                                 cancel);
 
             Logger.Log(Constants.DeviceClass, $"KeyboardDev.DataEntry() -> {result.CompletionCode}, {result.ErrorCode}");
 
+            List<KeyPressedClass> keysPressed = null;
+            if (result.EnteredKeys is not null &&
+                result.EnteredKeys.Count > 0)
+            {
+                keysPressed = new();
+                foreach (var key in result.EnteredKeys)
+                    keysPressed.Add(new(key.Completion, key.Key));
+            }
+
             return new DataEntryCompletion.PayloadData(result.CompletionCode,
                                                        result.ErrorDescription,
                                                        result.ErrorCode,
                                                        result.Keys,
-                                                       result.PinKeys,
+                                                       keysPressed,
                                                        result.Completion);
         }
     }

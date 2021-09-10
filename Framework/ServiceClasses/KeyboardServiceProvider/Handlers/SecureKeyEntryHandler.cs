@@ -54,9 +54,9 @@ namespace XFS4IoTFramework.Keyboard
             var result = await Device.SecureKeyEntry(events, 
                                                      new(secureKeyEntry.Payload.KeyLen switch
                                                          { 
-                                                             SecureKeyEntryCommand.PayloadData.KeyLenEnum.Number16 => SecureKeyEntryRequest.KeyLenEnum.Length16,
-                                                             SecureKeyEntryCommand.PayloadData.KeyLenEnum.Number32 => SecureKeyEntryRequest.KeyLenEnum.Length32,
-                                                             _ => SecureKeyEntryRequest.KeyLenEnum.Length48,
+                                                             SecureKeyEntryCommand.PayloadData.KeyLenEnum.Number16 => 16,
+                                                             SecureKeyEntryCommand.PayloadData.KeyLenEnum.Number32 => 32,
+                                                             _ => 48,
                                                          },
                                                          secureKeyEntry.Payload.AutoEnd is not null && (bool)secureKeyEntry.Payload.AutoEnd,
                                                          keys,
