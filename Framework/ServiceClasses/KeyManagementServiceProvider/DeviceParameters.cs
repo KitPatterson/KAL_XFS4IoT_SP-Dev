@@ -142,86 +142,6 @@ namespace XFS4IoTFramework.KeyManagement
 
     public class ImportKeyBaseRequest
     {
-        public ImportKeyBaseRequest(string KeyName,
-                                    string KeyUsage,
-                                    string Algorithm,
-                                    string ModeOfUse,
-                                    string RestrictedKeyUsage = null)
-        {
-            this.KeyName = KeyName;
-            this.KeyUsage = KeyUsage;
-            this.Algorithm = Algorithm;
-            this.ModeOfUse = ModeOfUse;
-            this.RestrictedKeyUsage = RestrictedKeyUsage;
-        }
-
-        /// <summary>
-        /// Specifies the key name to store
-        /// </summary>
-        public string KeyName { get; init; }
-
-        /// <summary>
-        /// Key usage associated with the key to be stored
-        /// </summary>
-        public string KeyUsage { get; init; }
-
-        /// <summary>
-        /// Algorithm associated with key usage
-        /// </summary>
-        public string Algorithm { get; init; }
-
-        /// <summary>
-        /// Mode of use associated with the Algorithm
-        /// </summary>
-        public string ModeOfUse { get; init; }
-
-        /// <summary>
-        /// Restricted key usage
-        /// </summary>
-        public string RestrictedKeyUsage { get; init; }
-    }
-
-    public sealed class ImportKeyPartRequest : ImportKeyBaseRequest
-    {
-        public ImportKeyPartRequest(string KeyName,
-                                    int ComponentNumber,
-                                    string KeyUsage,
-                                    string Algorithm,
-                                    string ModeOfUse,
-                                    string RestrictedKeyUsage = null)
-            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
-        {
-            this.ComponentNumber = ComponentNumber;
-        }
-
-        /// <summary>
-        /// Number of component to store temporarily
-        /// </summary>
-        public int ComponentNumber { get; init; }
-    }
-
-    public sealed class AssemblyKeyPartsRequest : ImportKeyBaseRequest
-    {
-        public AssemblyKeyPartsRequest(string KeyName,
-                                       int KeySlot,
-                                       string KeyUsage,
-                                       string Algorithm,
-                                       string ModeOfUse,
-                                       string RestrictedKeyUsage = null)
-            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
-        {
-            this.KeySlot = KeySlot;
-        }
-
-        /// <summary>
-        /// Key slot to use, if the device class needs to use specific number, update it in the result
-        /// </summary>
-        public int KeySlot { get; init; }
-    }
-
-    public sealed class ImportKeyRequest : ImportKeyBaseRequest
-    {
-
         public sealed class VerifyAttributeClass
         {
             public enum VerifyMethodEnum
@@ -270,6 +190,101 @@ namespace XFS4IoTFramework.KeyManagement
             public HashAlgorithmEnum? HashAlgorithm { get; init; }
         }
 
+        public ImportKeyBaseRequest(string KeyName,
+                                    string KeyUsage,
+                                    string Algorithm,
+                                    string ModeOfUse,
+                                    string RestrictedKeyUsage = null,
+                                    VerifyAttributeClass VerifyAttribute = null,
+                                    string VendorAttribute = null)
+        {
+            this.KeyName = KeyName;
+            this.KeyUsage = KeyUsage;
+            this.Algorithm = Algorithm;
+            this.ModeOfUse = ModeOfUse;
+            this.RestrictedKeyUsage = RestrictedKeyUsage;
+            this.VerifyAttribute = VerifyAttribute;
+            this.VendorAttribute = VendorAttribute;
+        }
+
+        /// <summary>
+        /// Specifies the key name to store
+        /// </summary>
+        public string KeyName { get; init; }
+
+        /// <summary>
+        /// Key usage associated with the key to be stored
+        /// </summary>
+        public string KeyUsage { get; init; }
+
+        /// <summary>
+        /// Algorithm associated with key usage
+        /// </summary>
+        public string Algorithm { get; init; }
+
+        /// <summary>
+        /// Mode of use associated with the Algorithm
+        /// </summary>
+        public string ModeOfUse { get; init; }
+
+        /// <summary>
+        /// Restricted key usage
+        /// </summary>
+        public string RestrictedKeyUsage { get; init; }
+
+        /// <summary>
+        /// Verify data if it's requested
+        /// </summary>
+        public VerifyAttributeClass VerifyAttribute { get; init; }
+
+        /// <summary>
+        /// Vendor specific attributes
+        /// </summary>
+        public string VendorAttribute { get; init; }
+    }
+
+    public sealed class ImportKeyPartRequest : ImportKeyBaseRequest
+    {
+        public ImportKeyPartRequest(string KeyName,
+                                    int ComponentNumber,
+                                    string KeyUsage,
+                                    string Algorithm,
+                                    string ModeOfUse,
+                                    string RestrictedKeyUsage = null)
+            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage: RestrictedKeyUsage)
+        {
+            this.ComponentNumber = ComponentNumber;
+        }
+
+        /// <summary>
+        /// Number of component to store temporarily
+        /// </summary>
+        public int ComponentNumber { get; init; }
+    }
+
+    public sealed class AssemblyKeyPartsRequest : ImportKeyBaseRequest
+    {
+        public AssemblyKeyPartsRequest(string KeyName,
+                                       int KeySlot,
+                                       string KeyUsage,
+                                       string Algorithm,
+                                       string ModeOfUse,
+                                       string RestrictedKeyUsage = null,
+                                       VerifyAttributeClass VerifyAttribute = null,
+                                       string VendorAttribute = null)
+            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage, VerifyAttribute, VendorAttribute)
+        {
+            this.KeySlot = KeySlot;
+        }
+
+        /// <summary>
+        /// Key slot to use, if the device class needs to use specific number, update it in the result
+        /// </summary>
+        public int KeySlot { get; init; }
+    }
+
+    public sealed class ImportKeyRequest : ImportKeyBaseRequest
+    {
         public sealed class DecryptAttributeClass
         {
             public enum DecryptMethodEnum
@@ -311,12 +326,12 @@ namespace XFS4IoTFramework.KeyManagement
                                 string ModeOfUse,
                                 string RestrictedKeyUsage = null,
                                 VerifyAttributeClass VerifyAttribute = null,
-                                DecryptAttributeClass DecryptAttribute = null)
-            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage)
+                                DecryptAttributeClass DecryptAttribute = null,
+                                string VendorAttribute = null)
+            : base(KeyName, KeyUsage, Algorithm, ModeOfUse, RestrictedKeyUsage, VerifyAttribute, VendorAttribute)
         {
             this.KeySlot = KeySlot;
             this.KeyData = KeyData;
-            this.VerifyAttribute = VerifyAttribute;
             this.DecryptAttribute = DecryptAttribute;
         }
 
@@ -329,11 +344,6 @@ namespace XFS4IoTFramework.KeyManagement
         /// Key data to load
         /// </summary>
         public List<byte> KeyData { get; init; }
-
-        /// <summary>
-        /// Verify data if it's requested
-        /// </summary>
-        public VerifyAttributeClass VerifyAttribute { get; init; }
 
         /// <summary>
         /// Decrypt key before loading key specified
@@ -577,7 +587,6 @@ namespace XFS4IoTFramework.KeyManagement
             this.IVKeySlot = IVKeySlot;
             this.Padding = Padding;
             this.Data = Data;
-            this.IdentificationData = IdentificationData;
         }
 
         /// <summary>
@@ -630,14 +639,6 @@ namespace XFS4IoTFramework.KeyManagement
         /// Data to be used for key derivation.
         /// </summary>
         public List<byte> Data { get; init; }
-
-        /// <summary>
-        /// Specifies the key owner identification.
-        /// It is a handle to the encryption module and is returned to the application in the[KeyManagement.Initialization] (#keymanagement.initialization) command.
-        /// See idKey property in the capabilities for whether this value is required.
-        /// If not required, this field should not be set.The use of this parameter is vendor dependent.
-        /// </summary>
-        public List<byte> IdentificationData { get; init; }
     }
 
     public sealed class DeriveKeyResult : DeviceResult
