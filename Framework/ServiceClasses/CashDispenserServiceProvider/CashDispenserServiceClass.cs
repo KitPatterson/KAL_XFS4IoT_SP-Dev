@@ -98,7 +98,7 @@ namespace XFS4IoTServer
             if (mix.Type == Mix.TypeEnum.Table)
             {
                 // Save table mix set by the application
-                Dictionary<int, Mix> tableMixes = PersistentData.Load<Dictionary<int, Mix>>(typeof(Mix).FullName);
+                Dictionary<int, Mix> tableMixes = PersistentData.Load<Dictionary<int, Mix>>(ServiceProvider.Name + typeof(Mix).FullName);
                 if (tableMixes is null)
                     tableMixes = new();
 
@@ -106,7 +106,7 @@ namespace XFS4IoTServer
                     tableMixes.Remove(mixNumber);// Replace exiting one
                 tableMixes.Add(mixNumber, mix);
 
-                if (!PersistentData.Store(typeof(Mix).FullName, tableMixes))
+                if (!PersistentData.Store(ServiceProvider.Name + typeof(Mix).FullName, tableMixes))
                 {
                     Logger.Warning(Constants.Framework, "Failed to save persistent data." + typeof(Mix).FullName);
                 }

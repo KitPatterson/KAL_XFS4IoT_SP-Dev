@@ -364,9 +364,11 @@ namespace XFS4IoTFramework.KeyManagement
                                                            ImportKeyCompletion.PayloadData.ErrorCodeEnum.KeyNoValue);
                 }
 
-                if (importKey.Payload.VerificationData is null &&
+                if (verifyKeyDetail.KeyName != "_HostCert" &&
+                    importKey.Payload.VerificationData is null &&
                     importKey.Payload.VerifyAttributes is null)
                 {
+                    // _HostCert is a public key loaded with the host token to verify key token, key token contains vertification data and no need to specify verification data and attribute
                     return new ImportKeyCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                $"No verification data and verify attribute specified.");
                 }
