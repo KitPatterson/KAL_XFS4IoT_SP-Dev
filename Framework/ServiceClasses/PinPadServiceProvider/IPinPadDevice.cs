@@ -64,5 +64,13 @@ namespace XFS4IoTFramework.PinPad
                                          PINBlockRequest request, 
                                          CancellationToken cancellation);
 
+
+        /// <summary>
+        /// The PIN, which was entered with the EnterPin command, is combined with the requisite data specified by the IDC presentation algorithm and presented to the smartcard contained in the ID card unit.
+        /// The result of the presentation is returned to the application. 
+        /// This command will clear the PIN unless the application has requested that the PIN be maintained through the MaintainPin command.
+        /// </summary>
+        Task<PresentIDCResult> PresentIDC(PresentIDCRequest request, 
+                                        CancellationToken cancellation);
     }
 }

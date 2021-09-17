@@ -353,4 +353,100 @@ namespace XFS4IoTFramework.PinPad
         /// </summary>
         public List<byte> PINBlock { get; init; }
     }
+
+    public sealed class PresentIDCRequest
+    {
+        public PresentIDCRequest(string ChipProtocol,
+                                 List<byte> ChipData,
+                                 PresentClearClass PresentClear)
+        {
+            this.ChipProtocol = ChipProtocol;
+            this.ChipData = ChipData;
+            this.PresentClear = PresentClear;
+        }
+        /// <summary>
+        /// Identifies the protocol that is used to communicate with the chip. Possible values are: 
+        /// (see command [chipProtocols](#common.capabilities.completion.properties.cardreader.chipProtocols) in the Identification Card Device Class Interface)
+        /// </summary>
+        public string ChipProtocol { get; init; }
+
+        /// <summary>
+        /// The Base64 encoded data to be sent to the chip.
+        /// </summary>
+        public List<byte> ChipData { get; init; }
+
+        public sealed class PresentClearClass
+        {
+            public PresentClearClass(int PinPointer, int PinOffset)
+            {
+                this.PinPointer = PinPointer;
+                this.PinOffset = PinOffset;
+            }
+
+            /// <summary>
+            /// The byte offset where to start inserting the PIN into chipData. 
+            /// The leftmost byte is numbered zero. See below for an example
+            /// </summary>
+            public int PinPointer { get; init; }
+
+            /// <summary>
+            /// The bit offset within the byte specified by *pinPointer* property where to start inserting the PIN. 
+            /// The leftmost bit numbered zero.
+            /// </summary>
+            public int PinOffset { get; init; }
+
+        }
+
+        /// <summary>
+        /// Contains the data required
+        /// </summary>
+        public PresentClearClass PresentClear { get; init; }
+    }
+
+    public sealed class PresentIDCResult : DeviceResult
+    {
+        public enum ErrorCodeEnum
+        {
+            KeyNotFound,
+            AccessDenied,
+            KeyNoValue,
+            UseViolation,
+            NoPin,
+            FormatNotSupported,
+            InvalidKeyLength
+        }
+
+        public PresentIDCResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                              string ErrorDescription = null,
+                              PresentIDCCompletion.PayloadData.ErrorCodeEnum? ErrorCode = null)
+            : base(CompletionCode, ErrorDescription)
+        {
+            this.ErrorCode = ErrorCode;
+            this.ChipProtocol = string.Empty;
+            this.ChipData = null;
+        }
+
+        public PresentIDCResult(MessagePayload.CompletionCodeEnum CompletionCode,
+                                string ChipProtocol,
+                                List<byte> ChipData)
+                : base(CompletionCode, null)
+        {
+            this.ErrorCode = null;
+            this.ChipProtocol = ChipProtocol;
+            this.ChipData = ChipData;
+        }
+
+        public PresentIDCCompletion.PayloadData.ErrorCodeEnum? ErrorCode { get; init; }
+
+        /// <summary>
+        /// Identifies the protocol that was used to communicate with the chip. 
+        /// This property contains the same value as the corresponding property in the input.
+        /// </summary>
+        public string ChipProtocol { get; init; }
+
+        /// <summary>
+        /// The Base64 encoded data responded from the chip.
+        /// </summary>
+        public List<byte> ChipData { get; init; }
+    }
 }
