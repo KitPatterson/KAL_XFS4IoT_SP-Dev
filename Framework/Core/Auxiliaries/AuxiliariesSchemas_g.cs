@@ -700,34 +700,26 @@ namespace XFS4IoT.Auxiliaries
                 this.Continuous = Continuous;
             }
 
-
             [DataMember(Name = "notAvailable")]
             public bool? NotAvailable { get; init; }
-
 
             [DataMember(Name = "off")]
             public bool? Off { get; init; }
 
-
             [DataMember(Name = "keypress")]
             public bool? Keypress { get; init; }
-
 
             [DataMember(Name = "exclamation")]
             public bool? Exclamation { get; init; }
 
-
             [DataMember(Name = "warning")]
             public bool? Warning { get; init; }
-
 
             [DataMember(Name = "error")]
             public bool? Error { get; init; }
 
-
             [DataMember(Name = "critical")]
             public bool? Critical { get; init; }
-
 
             [DataMember(Name = "continuous")]
             public bool? Continuous { get; init; }
@@ -892,22 +884,17 @@ namespace XFS4IoT.Auxiliaries
                 this.Recovered = Recovered;
             }
 
-
             [DataMember(Name = "notAvailable")]
             public bool? NotAvailable { get; init; }
-
 
             [DataMember(Name = "low")]
             public bool? Low { get; init; }
 
-
             [DataMember(Name = "engaged")]
             public bool? Engaged { get; init; }
 
-
             [DataMember(Name = "powering")]
             public bool? Powering { get; init; }
-
 
             [DataMember(Name = "recovered")]
             public bool? Recovered { get; init; }
@@ -1142,126 +1129,95 @@ namespace XFS4IoT.Auxiliaries
             this.MicrophoneVolume = MicrophoneVolume;
         }
 
-
         [DataMember(Name = "operatorSwitch")]
         public OperatorSwitchStateClass OperatorSwitch { get; init; }
-
 
         [DataMember(Name = "tamper")]
         public TamperSensorStateClass Tamper { get; init; }
 
-
         [DataMember(Name = "intTamperSensorState")]
         public IntTamperSensorStateClass IntTamperSensorState { get; init; }
-
 
         [DataMember(Name = "seismicSensor")]
         public SeismicSensorStateClass SeismicSensor { get; init; }
 
-
         [DataMember(Name = "heatSensor")]
         public HeatSensorStateClass HeatSensor { get; init; }
-
 
         [DataMember(Name = "proximitySensor")]
         public ProximitySensorStateClass ProximitySensor { get; init; }
 
-
         [DataMember(Name = "ambientLightSensor")]
         public AmbientLightSensorStateClass AmbientLightSensor { get; init; }
-
 
         [DataMember(Name = "enhancedAudioSensor")]
         public EnhancedAudioSensorStateClass EnhancedAudioSensor { get; init; }
 
-
         [DataMember(Name = "bootSwitchSensor")]
         public BootSwitchSensorStateClass BootSwitchSensor { get; init; }
-
 
         [DataMember(Name = "displaySensor")]
         public DisplaySensorStateClass DisplaySensor { get; init; }
 
-
         [DataMember(Name = "operatorCallButtonSensor")]
         public OperatorCallButtonSensorStateClass OperatorCallButtonSensor { get; init; }
-
 
         [DataMember(Name = "handsetSensor")]
         public HandsetSensorStateClass HandsetSensor { get; init; }
 
-
         [DataMember(Name = "headsetMicrophoneSensor")]
         public HeadsetMicrophoneSensorStateClass HeadsetMicrophoneSensor { get; init; }
-
 
         [DataMember(Name = "FasciaMicrophoneSensor")]
         public FasciaMicrophoneSensorStateClass FasciaMicrophoneSensor { get; init; }
 
-
         [DataMember(Name = "safeDoor")]
         public SafeDoorStateClass SafeDoor { get; init; }
-
 
         [DataMember(Name = "vandalShield")]
         public VandalShieldStateClass VandalShield { get; init; }
 
-
         [DataMember(Name = "cabinetFrontDoor")]
         public CabinetFrontDoorStateClass CabinetFrontDoor { get; init; }
-
 
         [DataMember(Name = "cabinetRearDoor")]
         public CabinetRearDoorStateClass CabinetRearDoor { get; init; }
 
-
         [DataMember(Name = "cabinetLeftDoor")]
         public CabinetLeftDoorStateClass CabinetLeftDoor { get; init; }
-
 
         [DataMember(Name = "cabinetRightDoor")]
         public CabinetRightDoorStateClass CabinetRightDoor { get; init; }
 
-
         [DataMember(Name = "openClosedIndicator")]
         public OpenClosedIndicatorStateClass OpenClosedIndicator { get; init; }
-
 
         [DataMember(Name = "audio")]
         public AudioStateClass Audio { get; init; }
 
-
         [DataMember(Name = "heating")]
         public HeatingStateClass Heating { get; init; }
-
 
         [DataMember(Name = "consumerDisplayBacklight")]
         public ConsumerDisplayBacklightStateClass ConsumerDisplayBacklight { get; init; }
 
-
         [DataMember(Name = "signageDisplay")]
         public SignageDisplayStateClass SignageDisplay { get; init; }
-
 
         [DataMember(Name = "volume")]
         public VolumeStateClass Volume { get; init; }
 
-
         [DataMember(Name = "UPS")]
         public UPSStateClass UPS { get; init; }
-
 
         [DataMember(Name = "audibleAlarm")]
         public AudibleAlarmStateClass AudibleAlarm { get; init; }
 
-
         [DataMember(Name = "enhancedAudioControl")]
         public EnhancedAudioControlStateClass EnhancedAudioControl { get; init; }
 
-
         [DataMember(Name = "enhancedMicrophoneControl")]
         public EnhancedMicrophoneControlStateClass EnhancedMicrophoneControl { get; init; }
-
 
         [DataMember(Name = "microphoneVolume")]
         public MicrophoneVolumeStateClass MicrophoneVolume { get; init; }

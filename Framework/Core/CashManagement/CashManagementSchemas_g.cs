@@ -392,10 +392,8 @@ namespace XFS4IoT.CashManagement
             this.CashItems = CashItems;
         }
 
-
         [DataMember(Name = "types")]
         public StorageCashTypesClass Types { get; init; }
-
 
         [DataMember(Name = "items")]
         public StorageCashItemTypesClass Items { get; init; }
@@ -451,10 +449,8 @@ namespace XFS4IoT.CashManagement
             this.MaxRetracts = MaxRetracts;
         }
 
-
         [DataMember(Name = "types")]
         public StorageCashTypesClass Types { get; init; }
-
 
         [DataMember(Name = "items")]
         public StorageCashItemTypesClass Items { get; init; }
@@ -855,14 +851,11 @@ namespace XFS4IoT.CashManagement
             this.Status = Status;
         }
 
-
         [DataMember(Name = "capabilities")]
         public StorageCashCapabilitiesClass Capabilities { get; init; }
 
-
         [DataMember(Name = "configuration")]
         public StorageCashConfigurationClass Configuration { get; init; }
-
 
         [DataMember(Name = "status")]
         public StorageCashStatusClass Status { get; init; }
@@ -899,10 +892,8 @@ namespace XFS4IoT.CashManagement
             this.Status = Status;
         }
 
-
         [DataMember(Name = "configuration")]
         public StorageCashConfigurationClass Configuration { get; init; }
-
 
         [DataMember(Name = "status")]
         public StorageSetCashStatusClass Status { get; init; }

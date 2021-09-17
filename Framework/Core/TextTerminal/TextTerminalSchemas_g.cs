@@ -29,14 +29,14 @@ namespace XFS4IoT.TextTerminal
         {
             On,
             Off,
-            Na
+            NotAvailable
         }
 
         /// <summary>
-        /// Specifies the state of the keyboard in the text terminal unit as one of the following flags:
+        /// Specifies the state of the keyboard in the text terminal unit as one of the following values:
         /// * ```on``` - The keyboard is activated.
         /// * ```off``` - The keyboard is not activated.
-        /// * ```na``` - The keyboard is not available.
+        /// * ```notAvailable``` - The keyboard is not available.
         /// </summary>
         [DataMember(Name = "keyboard")]
         public KeyboardEnum? Keyboard { get; init; }
@@ -45,14 +45,14 @@ namespace XFS4IoT.TextTerminal
         {
             On,
             Off,
-            Na
+            NotAvailable
         }
 
         /// <summary>
-        /// Specifies the state of the keyboard lock of the text terminal unit as one of the following flags:
+        /// Specifies the state of the keyboard lock of the text terminal unit as one of the following values:
         /// * ```on``` - The keyboard lock switch is activated.
         /// * ```off``` - The keyboard lock switch is not activated.
-        /// * ```na``` - The keyboard lock switch is not available.
+        /// * ```notAvailable``` - The keyboard lock switch is not available.
         /// </summary>
         [DataMember(Name = "keyLock")]
         public KeyLockEnum? KeyLock { get; init; }
@@ -265,6 +265,23 @@ namespace XFS4IoT.TextTerminal
     {
         Relative,
         Absolute
+    }
+
+
+    [DataContract]
+    public sealed class KeyClass
+    {
+        public KeyClass(bool? Terminate = null)
+        {
+            this.Terminate = Terminate;
+        }
+
+        /// <summary>
+        /// The key is a terminate key.
+        /// </summary>
+        [DataMember(Name = "terminate")]
+        public bool? Terminate { get; init; }
+
     }
 
 

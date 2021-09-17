@@ -36,7 +36,6 @@ namespace XFS4IoT.Keyboard.Events
                 this.Digit = Digit;
             }
 
-
             [DataMember(Name = "completion")]
             public EntryCompletionEnum? Completion { get; init; }
 

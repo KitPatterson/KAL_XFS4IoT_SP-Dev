@@ -49,15 +49,24 @@ namespace XFS4IoT.Common
     }
 
 
+    public enum ExchangeEnum
+    {
+        NotSupported,
+        Active,
+        Inactive
+    }
+
+
     [DataContract]
     public sealed class StatusPropertiesClass
     {
-        public StatusPropertiesClass(DeviceEnum? Device = null, PositionStatusEnum? DevicePosition = null, int? PowerSaveRecoveryTime = null, AntiFraudModuleEnum? AntiFraudModule = null)
+        public StatusPropertiesClass(DeviceEnum? Device = null, PositionStatusEnum? DevicePosition = null, int? PowerSaveRecoveryTime = null, AntiFraudModuleEnum? AntiFraudModule = null, ExchangeEnum? Exchange = null)
         {
             this.Device = Device;
             this.DevicePosition = DevicePosition;
             this.PowerSaveRecoveryTime = PowerSaveRecoveryTime;
             this.AntiFraudModule = AntiFraudModule;
+            this.Exchange = Exchange;
         }
 
         public enum DeviceEnum
@@ -128,6 +137,9 @@ namespace XFS4IoT.Common
         [DataMember(Name = "antiFraudModule")]
         public AntiFraudModuleEnum? AntiFraudModule { get; init; }
 
+        [DataMember(Name = "exchange")]
+        public ExchangeEnum? Exchange { get; init; }
+
     }
 
 
@@ -183,7 +195,7 @@ namespace XFS4IoT.Common
         /// * ```Lights``` - Lights interface.
         /// * ```Auxiliaries``` - Auxiliaries interface.
         /// * ```VendorMode``` - VendorMode interface.
-        /// * ```VendorApplication``` - VendorApplication interface.            
+        /// * ```VendorApplication``` - VendorApplication interface.
         /// </summary>
         [DataMember(Name = "name")]
         public NameEnum? Name { get; init; }
@@ -448,7 +460,7 @@ namespace XFS4IoT.Common
         /// after one hour (that is, 3600 seconds).
         /// 
         /// If commandNonceTimeout is not reported, or it has a value of zero, then the command nonce will never 
-        /// timeout. It may still become invalid, for example because of a power failure or when explicitly cleared. 
+        /// timeout. It may still become invalid, for example because of a power failure or when explicitly cleared.
         /// </summary>
         [DataMember(Name = "commandNonceTimeout")]
         public int? CommandNonceTimeout { get; init; }

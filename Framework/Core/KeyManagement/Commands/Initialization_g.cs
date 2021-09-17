@@ -43,7 +43,6 @@ namespace XFS4IoT.KeyManagement.Commands
                     this.Data = Data;
                 }
 
-
                 [DataMember(Name = "method")]
                 public SigningMethodEnum? Method { get; init; }
 

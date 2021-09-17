@@ -50,7 +50,6 @@ namespace XFS4IoT.Storage
         [DataTypes(Minimum = 0)]
         public int? Capacity { get; init; }
 
-
         [DataMember(Name = "status")]
         public StatusEnum? Status { get; init; }
 
