@@ -67,8 +67,28 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
 
     // Parse
     // Check format
+
     // Find Nonce
+    char const *const nonceStrOffset = strstr(Token, NonceStr);
+    if (nonceStrOffset != Token)
+    {
+        Log("ValidateToken: First key must be NONCE => false");
+        return false;
+    }
     // Find HMAC
+    char const* const HMACStrOffset = strstr(Token, HMACSHA256Str);
+    if (HMACStrOffset == 0)
+    {
+        Log("ValidateToken: No HMAC key found => false");
+        return false;
+    }
+    // HMAC must be 64 characters
+    int HMACLen = TokenStringLength - (HMACStrOffset - Token);
+    if ( HMACLen != 64 + sizeof(HMACSHA256Str) + 1)
+    {
+        LogV("ValidateToken: HMACSHA256 key value too short. %d bytes, should be 64 => false", HMACLen );
+        return false; 
+    }
     // Find other keys
     // 
     // Check 

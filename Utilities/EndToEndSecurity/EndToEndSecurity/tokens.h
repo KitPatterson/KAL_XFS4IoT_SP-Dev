@@ -8,7 +8,7 @@
 // Token keys and other details
 
 char const NonceStr[] = "NONCE";
-char const HMACSHA256Str[] = "HMACSHA258";
+char const HMACSHA256Str[] = "HMACSHA256";
 // length of the HMAC SHA256 string - 256 bit
 #define HMACSHA256Len (64U)
 char const TokenFormatStr[] = "TOKENFORMAT";

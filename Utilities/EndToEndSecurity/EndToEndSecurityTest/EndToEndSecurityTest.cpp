@@ -53,8 +53,9 @@ namespace EndToEndSecurityTest
                                      "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777" // 700
                                      "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888" // 800
                                      "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" // 900
-                                     "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" // 1000
-                                     "123456789012345678901234"; // 1024
+                                     "000000000000000000000000000000000000000000000000,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A734" //1000
+                                    //123456789012345678901234"; // 1024
+                                     "7B15434916FEA6AC16F3D2F2"; // 1024
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, true);
         }
@@ -72,7 +73,7 @@ namespace EndToEndSecurityTest
                                      "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777" // 700
                                      "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888" // 800
                                      "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" // 900
-                                     "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" // 1000
+                                     "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" //1000
                                      "1234567890123456789012345"; // 1025
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, false);
@@ -127,5 +128,24 @@ namespace EndToEndSecurityTest
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, false);
         }
+        TEST_METHOD(ValidateTokenNoNonce)
+        {
+            char const testToken[] = "MISNG=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(ValidateTokenNoHMAC)
+        {
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA000=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(ValidateTokenMACTooSort)
+        {
+            char const testToken[] = "NONCE=12,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+
     };
 }
