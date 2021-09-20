@@ -26,9 +26,9 @@ void LogV(char const* const Message, ...);
 /// <param name="Token">Null terminated token string</param>
 /// <param name="TokenSize">Token buffer size, including null</param>
 /// <returns>true or false</returns>
-bool ValidateToken( char const *const Token, size_t TokenSize )
+bool ValidateToken(char const* const Token, size_t TokenSize)
 {
-    LogV("ValidateToken( Token=\"%.1024s\", TokenSize=%d )", Token, TokenSize );
+    LogV("ValidateToken( Token=\"%.1024s\", TokenSize=%d )", Token, TokenSize);
 
     // Parameter checking. 
     // Consider the token to be an untrusted value, so maximum validity checking. 
@@ -38,10 +38,10 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
         Log("ValidateToken: Null token => false");
         return false;
     }
-   
-    unsigned int TokenStringLength = strlen(Token)+1;       // Plus null
+
+    unsigned int TokenStringLength = strlen(Token) + 1;       // Plus null
     // Zero length string.
-    if (TokenStringLength == 1) 
+    if (TokenStringLength == 1)
     {
         Log("ValidateToken: Empty token => false");
         return false;
@@ -67,6 +67,57 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
 
     // Parse
     // Check format
+    bool inKeyName = true; // true for key name, false for value
+    int symbolLength = 0; 
+    for (char const* offset = Token; offset < Token + TokenStringLength - 1; offset++)
+    {
+        char thisChar = *offset;
+        if (inKeyName)
+        {
+            if (thisChar == '=')
+            { 
+                if (symbolLength == 0)
+                {
+                    Log("ValidateToken: Missing key name");
+                    return false; 
+                }
+                inKeyName = false; 
+                symbolLength = 0; 
+            }
+            else if (!isalnum(thisChar))
+            {
+                Log("ValidateToken: Invalid character in key name");
+                return false;
+            }
+            else
+                symbolLength++;
+        }
+        else
+        {
+            if (thisChar == ',')
+            {
+                if (symbolLength == 0)
+                {
+                    Log("ValidateToken: Missing value");
+                    return false;
+                }
+                inKeyName = true;
+                symbolLength = 0; 
+            }
+            else if (!isalnum(thisChar))
+            {
+                Log("ValidateToken: Invalid character in value");
+                return false;
+            }
+            else
+                symbolLength++;
+        }
+    }
+    if (inKeyName || symbolLength == 0)
+    {
+        Log("ValidateToken: Missing value");
+        return false; 
+    }
 
     // Find Nonce
     char const *const nonceStrOffset = strstr(Token, NonceStr);
@@ -86,7 +137,7 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
     int HMACLen = TokenStringLength - (HMACStrOffset - Token);
     if ( HMACLen != 64 + sizeof(HMACSHA256Str) + 1)
     {
-        LogV("ValidateToken: HMACSHA256 key value too short. %d bytes, should be 64 => false", HMACLen );
+        LogV("ValidateToken: HMACSHA256 value is too short. %d bytes, should be 64 => false", (HMACLen-/*HMACSHA256=*/11 -1));
         return false; 
     }
     // Find other keys

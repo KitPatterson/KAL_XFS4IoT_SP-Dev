@@ -23,24 +23,24 @@ extern "C" void FatalError(char const* const Message)
 
 namespace EndToEndSecurityTest
 {
-    TEST_CLASS(EndToEndSecurityTest)
+    TEST_CLASS(ValidateTokenTest)
     {
     public:
         
-        TEST_METHOD(ValidateTokenMinLength)
+        TEST_METHOD(TokenMinLength)
         {
             char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, true);
         }
-        TEST_METHOD(ValidateTokenTooShort)
+        TEST_METHOD(TokenTooShort)
         {
             // HMAC one character too short. 
             char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0163,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F";
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenVeryLong)
+        TEST_METHOD(TokenVeryLong)
         {
             // Maximum token length = 1024 bytes
             //                        1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
@@ -59,7 +59,7 @@ namespace EndToEndSecurityTest
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, true);
         }
-        TEST_METHOD(ValidateTokenTooLong)
+        TEST_METHOD(TokenTooLong)
         {
             // Maximum token length = 1024 bytes
             //                        0000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990
@@ -78,7 +78,7 @@ namespace EndToEndSecurityTest
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenVeryTooLong)
+        TEST_METHOD(TokenVeryTooLong)
         {
             // Maximum token length = 1024 bytes
             //                        0000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990
@@ -116,33 +116,71 @@ namespace EndToEndSecurityTest
             auto result = ValidateToken(testToken, sizeof(testToken));
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenEmptyString)
+        TEST_METHOD(TokenEmptyString)
         {
             char const testToken[] = "";
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenNull)
+        TEST_METHOD(TokenNull)
         {
             char const *const testToken = nullptr;
             auto result = ValidateToken( testToken, sizeof(testToken)  );
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenNoNonce)
+
+        TEST_METHOD(KeyNameMissing)
+        {
+            char const testToken[] = "NONCE=1,=2,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(KeyMissing)
+        {
+            char const testToken[] = "NONCE=1=2,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(ValueMissing)
+        {
+            char const testToken[] = "NONCE=,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(KeyEqualsMissing)
+        {
+            char const testToken[] = "NONCE=1,2,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+
+        TEST_METHOD(NoNonce)
         {
             char const testToken[] = "MISNG=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
             auto result = ValidateToken(testToken, sizeof(testToken));
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenNoHMAC)
+        TEST_METHOD(NoHMAC)
         {
             char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA000=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
             auto result = ValidateToken(testToken, sizeof(testToken));
             Assert::AreEqual(result, false);
         }
-        TEST_METHOD(ValidateTokenMACTooSort)
+        TEST_METHOD(MACTooSort)
         {
             char const testToken[] = "NONCE=12,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(MACNoValue)
+        {
+            char const testToken[] = "NONCE=12,TOKENFORMAT=1,TOKENLENGTH=0164,VALUE=11111111111111111111111111111111111111111111111111111111,HMACSHA256=";
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::AreEqual(result, false);
+        }
+        TEST_METHOD(MACInvalidKey)
+        {
+            char const testToken[] = "NONCE=12,TOKENFORMAT=1,TOKENLENGTH=0164,VALUE=111111111111111111111111111111111111111111111111111111111,HMACSHA256";
             auto result = ValidateToken(testToken, sizeof(testToken));
             Assert::AreEqual(result, false);
         }
