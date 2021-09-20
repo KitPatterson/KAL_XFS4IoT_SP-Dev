@@ -4,6 +4,11 @@
 #include "pch.h"
 #include "framework.h"
 
+// Customisation points
+extern void FatalError(char const* const Message);
+extern void Log(char const* const Message);
+
+// Token details
 char const NonceStr[] = "NONCE";
 char const HMACSHA256Str[] = "HMACSHA258";
 #define HMACSHA256Len (64U)
@@ -21,16 +26,23 @@ unsigned int const MinTokenLength = sizeof(NonceStr)-1 + 2 + 1 +          // NON
 /// <summary>
 /// Validate that a token has a valid format.
 /// </summary>
+/// <description> 
+/// Takes a token string and reports if it is valid or not. If the token is valid then it is safe 
+/// to proceed with the operation protected by the token. If not, the operation should fail with an 
+/// error. 
+/// The token still is assumed to be unsafe and may have been passed by an attacker. Everything 
+/// possible will be done to avoid invalid behaviour due to a hostile token. 
+/// </description>
+/// 
 /// <param name="Token">Null terminated token string</param>
 /// <param name="TokenSize">Token buffer size, including null</param>
 /// <returns>true or false</returns>
 bool ValidateToken( char const *const Token, size_t TokenSize )
 {
-
     // Parameter checking. 
     // Consider the token to be an untrusted value, so maximum validity checking. 
     if (Token == NULL) return false;                                // Null token
-    printf(Token);
+    Log(Token);
    
     unsigned int TokenStringLength = strlen(Token)+1;       // Plus null
     if (TokenStringLength == 1) return false;               // Zero length string.

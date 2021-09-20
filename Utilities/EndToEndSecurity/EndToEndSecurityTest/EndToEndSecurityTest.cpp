@@ -4,6 +4,17 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+extern "C" void Log(char const* const Message)
+{
+	Logger::WriteMessage( Message );
+};
+
+extern "C" void FatalError(char const* const Message)
+{
+	using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+	Assert::Fail(ToString(Message).c_str());
+}
+
 namespace EndToEndSecurityTest
 {
 	TEST_CLASS(EndToEndSecurityTest)
