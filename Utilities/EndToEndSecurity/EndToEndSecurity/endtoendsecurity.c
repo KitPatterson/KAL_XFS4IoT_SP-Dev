@@ -1,5 +1,8 @@
-// EndToEndSecurity.cpp : Defines the functions for the static library.
-//
+/***********************************************************************************************\
+ * (C) KAL ATM Software GmbH, 2021
+ * KAL ATM Software GmbH licenses this file to you under the MIT license.
+ * See the LICENSE file in the project root for more information.
+\***********************************************************************************************/
 
 #include "pch.h"
 #include "framework.h"
@@ -22,6 +25,9 @@ unsigned int const MinTokenLength = sizeof(NonceStr)-1 + 2 + 1 +          // NON
                                     sizeof(TokenLengthStr)-1 + 2 + 4 +    // TOKENLENGTH=0164,
                                     sizeof(HMACSHA256Str)-1 + 1 + HMACSHA256Len + //HMACSHA256=1234567890123456789012345678901234567890123456789012345678901234
                                     1;                                    // null terminated
+
+// Max permitted token length, as defined in XFS Spec. (In bytes, plus null)
+unsigned int const MaxTokenLength = 1024 + 1; 
 
 /// <summary>
 /// Validate that a token has a valid format.
@@ -48,6 +54,7 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
     if (TokenStringLength == 1) return false;               // Zero length string.
     if (TokenStringLength != TokenSize) return false;       // Buffer length and string size don't match
     if (TokenStringLength < MinTokenLength) return false;   // Token is too short to be valid
+    if (TokenStringLength > MaxTokenLength) return false;   // Token is too long (and might cause buffer overflows.) 
 
     return true;
 }
