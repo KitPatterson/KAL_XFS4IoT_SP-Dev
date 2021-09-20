@@ -6,28 +6,20 @@
 
 #include "pch.h"
 #include "framework.h"
+#include "tokens.h"
+#include "extensionpoints.h"
 
-// Customisation points
-extern void FatalError(char const* const Message);
-extern void Log(char const* const Message);
+// Utility functions
+char LogVBuffer[4096];
+void LogV(char const *const Message, ...)
+{
+    va_list vl;
+    va_start(vl, Message);
+    vsprintf_s(LogVBuffer, sizeof(LogVBuffer), Message, vl);
+    va_end(vl);
 
-// Token details
-char const NonceStr[] = "NONCE";
-char const HMACSHA256Str[] = "HMACSHA258";
-#define HMACSHA256Len (64U)
-char const TokenFormatStr[] = "TOKENFORMAT";
-char const TokenLengthStr[] = "TOKENLENGTH";
-
-// Absolute minimum token length, including null. 
-// NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2
-unsigned int const MinTokenLength = sizeof(NonceStr)-1 + 2 + 1 +          // NONCE=1,
-                                    sizeof(TokenFormatStr)-1 + 2 + 1 +    // TOKENFORMAT=1,
-                                    sizeof(TokenLengthStr)-1 + 2 + 4 +    // TOKENLENGTH=0164,
-                                    sizeof(HMACSHA256Str)-1 + 1 + HMACSHA256Len + //HMACSHA256=1234567890123456789012345678901234567890123456789012345678901234
-                                    1;                                    // null terminated
-
-// Max permitted token length, as defined in XFS Spec. (In bytes, plus null)
-unsigned int const MaxTokenLength = 1024 + 1; 
+    Log(LogVBuffer);
+}
 
 /// <summary>
 /// Validate that a token has a valid format.
@@ -45,10 +37,18 @@ unsigned int const MaxTokenLength = 1024 + 1;
 /// <returns>true or false</returns>
 bool ValidateToken( char const *const Token, size_t TokenSize )
 {
+    LogV("ValidateToken:");
+
     // Parameter checking. 
     // Consider the token to be an untrusted value, so maximum validity checking. 
-    if (Token == NULL) return false;                                // Null token
-    Log(Token);
+    // Null token
+    if (Token == NULL)
+    {
+        Log("ValidateToken: Null token => false");
+        return false;
+    }
+
+    LogV("ValidateToken: Token=%s", Token);
    
     unsigned int TokenStringLength = strlen(Token)+1;       // Plus null
     if (TokenStringLength == 1) return false;               // Zero length string.
@@ -56,5 +56,16 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
     if (TokenStringLength < MinTokenLength) return false;   // Token is too short to be valid
     if (TokenStringLength > MaxTokenLength) return false;   // Token is too long (and might cause buffer overflows.) 
 
+    // Parse
+    // Check format
+    // Find Nonce
+    // Find HMAC
+    // Find other keys
+    // 
+    // Check 
+    // Check Token Nonce matches current nonce
+    // Check HMAC matches calculated HMAC
+
+    LogV("ValidateToken: => true");
     return true;
 }

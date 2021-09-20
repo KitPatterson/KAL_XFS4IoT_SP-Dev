@@ -24,6 +24,12 @@
     <ClInclude Include="endtoendsecurity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tokens.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extensionpoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="endtoendsecurity.c">

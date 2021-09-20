@@ -153,6 +153,8 @@
   <ItemGroup>
     <ClInclude Include="endtoendsecurity.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="extensionpoints.h" />
+    <ClInclude Include="tokens.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
