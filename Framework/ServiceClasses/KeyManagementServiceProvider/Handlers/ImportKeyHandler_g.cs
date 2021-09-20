@@ -55,6 +55,7 @@ namespace XFS4IoTFramework.KeyManagement
             {
                 InvalidDataException => ImportKeyCompletion.PayloadData.CompletionCodeEnum.InvalidData,
                 NotImplementedException => ImportKeyCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TaskCanceledException or OperationCanceledException => ImportKeyCompletion.PayloadData.CompletionCodeEnum.Canceled,
                 _ => ImportKeyCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 

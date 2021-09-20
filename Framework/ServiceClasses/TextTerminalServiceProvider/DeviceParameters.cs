@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using XFS4IoTServer;
 using XFS4IoT.Completions;
-using XFS4IoT.Dispenser.Commands;
-using XFS4IoT.Dispenser.Completions;
 using XFS4IoTFramework.Common;
 using XFS4IoTFramework.CashManagement;
 using XFS4IoT;
@@ -73,39 +71,6 @@ namespace XFS4IoTFramework.TextTerminal
         /// SizeY for the new resolution.
         /// </summary>
         public int SizeY { get; init; }
-    }
-
-    public sealed class LEDOnRequest
-    {
-        public enum LEDCommandEnum
-        {
-            SlowFlash, MediumFlash, QuickFlash, Continuous
-        }
-
-        public enum LEDColorEnum
-        {
-            Default = 0, Red, Green, Yellow, Blue, Cyan, Magenta, White
-        }
-
-        public LEDOnRequest(int LEDNumber, LEDCommandEnum Command, LEDColorEnum Colour)
-        {
-            this.LEDNumber = LEDNumber;
-            this.Command = Command;
-            this.Colour = Colour;
-        }
-
-        /// <summary>
-        /// LED Number to turn on.
-        /// </summary>
-        public int LEDNumber { get; init; }
-        /// <summary>
-        /// Action to set the LED.
-        /// </summary>
-        public LEDCommandEnum Command { get; init; }
-        /// <summary>
-        /// Colour to set the light.
-        /// </summary>
-        public LEDColorEnum Colour { get; init; }
     }
 
     public sealed class ClearScreenRequest

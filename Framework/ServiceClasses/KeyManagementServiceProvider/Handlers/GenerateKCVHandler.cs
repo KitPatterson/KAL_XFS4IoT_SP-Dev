@@ -65,7 +65,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                              GenerateKCVCompletion.PayloadData.ErrorCodeEnum.ModeNotSupported);
 
             }
-            Logger.Log(Constants.DeviceClass, "KeyManagement.GenerateKCV()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.GenerateKCV()");
 
             var result = await Device.GenerateKCV(new GenerateKCVRequest(generateKCV.Payload.Key,
                                                                          generateKCV.Payload.KeyCheckMode switch
@@ -74,7 +74,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                              _ => GenerateKCVRequest.KeyCheckValueEnum.Zero
                                                                          }), cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.GenerateKCV() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.GenerateKCV() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new GenerateKCVCompletion.PayloadData(result.CompletionCode,
                                                          result.ErrorDescription,

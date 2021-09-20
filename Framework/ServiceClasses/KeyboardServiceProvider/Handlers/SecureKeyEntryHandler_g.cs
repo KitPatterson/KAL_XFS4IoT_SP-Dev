@@ -55,6 +55,7 @@ namespace XFS4IoTFramework.Keyboard
             {
                 InvalidDataException => SecureKeyEntryCompletion.PayloadData.CompletionCodeEnum.InvalidData,
                 NotImplementedException => SecureKeyEntryCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TaskCanceledException or OperationCanceledException => SecureKeyEntryCompletion.PayloadData.CompletionCodeEnum.Canceled,
                 _ => SecureKeyEntryCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 

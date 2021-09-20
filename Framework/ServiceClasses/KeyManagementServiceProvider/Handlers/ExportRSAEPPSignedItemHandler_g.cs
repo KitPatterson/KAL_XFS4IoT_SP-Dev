@@ -55,6 +55,7 @@ namespace XFS4IoTFramework.KeyManagement
             {
                 InvalidDataException => ExportRSAEPPSignedItemCompletion.PayloadData.CompletionCodeEnum.InvalidData,
                 NotImplementedException => ExportRSAEPPSignedItemCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TaskCanceledException or OperationCanceledException => ExportRSAEPPSignedItemCompletion.PayloadData.CompletionCodeEnum.Canceled,
                 _ => ExportRSAEPPSignedItemCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 

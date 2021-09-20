@@ -25,7 +25,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                 $"No certification type specified.");
             }
 
-            Logger.Log(Constants.DeviceClass, "KeyManagement.ExportCertificate()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.ExportCertificate()");
 
             var result = await Device.ExportCertificate(new ExportCertificateRequest(getCertificate.Payload.GetCertificate switch
                                                                                      {
@@ -34,7 +34,7 @@ namespace XFS4IoTFramework.KeyManagement
                                                                                          _ => ExportCertificateRequest.CertificateTypeEnum.HostKey,
                                                                                      }), cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.ExportCertificate() -> {result.CompletionCode}, {result.ErrorCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ExportCertificate() -> {result.CompletionCode}, {result.ErrorCode}");
 
             return new GetCertificateCompletion.PayloadData(result.CompletionCode,
                                                             result.ErrorDescription,

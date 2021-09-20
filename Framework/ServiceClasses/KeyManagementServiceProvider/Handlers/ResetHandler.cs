@@ -17,11 +17,11 @@ namespace XFS4IoTFramework.KeyManagement
     {
         private async Task<ResetCompletion.PayloadData> HandleReset(IResetEvents events, ResetCommand reset, CancellationToken cancel)
         {
-            Logger.Log(Constants.DeviceClass, "KeyManagement.ResetDevice()");
+            Logger.Log(Constants.DeviceClass, "KeyManagementDev.ResetDevice()");
 
             var result = await Device.ResetDevice(cancel);
 
-            Logger.Log(Constants.DeviceClass, $"KeyManagement.ResetDevice() -> {result.CompletionCode}");
+            Logger.Log(Constants.DeviceClass, $"KeyManagementDev.ResetDevice() -> {result.CompletionCode}");
 
             return new ResetCompletion.PayloadData(result.CompletionCode,
                                                    result.ErrorDescription);
