@@ -10,16 +10,7 @@
 #include "extensionpoints.h"
 
 // Utility functions
-char LogVBuffer[4096];
-void LogV(char const *const Message, ...)
-{
-    va_list vl;
-    va_start(vl, Message);
-    vsprintf_s(LogVBuffer, sizeof(LogVBuffer), Message, vl);
-    va_end(vl);
-
-    Log(LogVBuffer);
-}
+void LogV(char const* const Message, ...);
 
 /// <summary>
 /// Validate that a token has a valid format.
@@ -37,7 +28,7 @@ void LogV(char const *const Message, ...)
 /// <returns>true or false</returns>
 bool ValidateToken( char const *const Token, size_t TokenSize )
 {
-    LogV("ValidateToken:");
+    LogV("ValidateToken( Token=\"%.1024s\", TokenSize=%d )", Token, TokenSize );
 
     // Parameter checking. 
     // Consider the token to be an untrusted value, so maximum validity checking. 
@@ -47,14 +38,32 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
         Log("ValidateToken: Null token => false");
         return false;
     }
-
-    LogV("ValidateToken: Token=%s", Token);
    
     unsigned int TokenStringLength = strlen(Token)+1;       // Plus null
-    if (TokenStringLength == 1) return false;               // Zero length string.
-    if (TokenStringLength != TokenSize) return false;       // Buffer length and string size don't match
-    if (TokenStringLength < MinTokenLength) return false;   // Token is too short to be valid
-    if (TokenStringLength > MaxTokenLength) return false;   // Token is too long (and might cause buffer overflows.) 
+    // Zero length string.
+    if (TokenStringLength == 1) 
+    {
+        Log("ValidateToken: Empty token => false");
+        return false;
+    }
+    // Buffer length and string size don't match
+    if (TokenStringLength != TokenSize)
+    {
+        Log("ValidateToken: TokenSize didn't match token length => false");
+        return false;
+    }
+    // Token is too short to be valid
+    if (TokenStringLength < MinTokenLength)
+    {
+        Log("ValidateToken: Token is too short => false");
+        return false;
+    }
+    // Token is too long (and might cause buffer overflows.) 
+    if (TokenStringLength > MaxTokenLength)
+    {
+        Log("ValidateToken: Token is too long. Max length=1024 bytes => false");
+        return false;
+    }
 
     // Parse
     // Check format
@@ -65,7 +74,21 @@ bool ValidateToken( char const *const Token, size_t TokenSize )
     // Check 
     // Check Token Nonce matches current nonce
     // Check HMAC matches calculated HMAC
-
     LogV("ValidateToken: => true");
     return true;
 }
+
+/// <summary>
+/// VArg version of Log()
+/// </summary>
+char LogVBuffer[2048];
+void LogV(char const* const Message, ...)
+{
+    va_list vl;
+    va_start(vl, Message);
+    vsprintf_s(LogVBuffer, sizeof(LogVBuffer), Message, vl);
+    va_end(vl);
+
+    Log(LogVBuffer);
+}
+
