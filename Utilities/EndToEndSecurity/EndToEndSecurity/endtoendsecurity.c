@@ -11,6 +11,8 @@
 
 // Utility functions
 void LogV(char const* const Message, ...);
+bool CheckNibble(char nibble);
+unsigned int ConvertHex(char high, char low);
 
 // Create a reference to the Nonce handling functions - this is just to create a compile error 
 // if these functions aren't implemented. 
@@ -132,7 +134,7 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
         return false;
     }
     char const* const nonceValOffset = strchr(Token, '=') + 1; // Skip over '='
-    if (nonceValOffset == 1)
+    if (nonceValOffset == (char*)1)
     {
         Log("ValidateToken: NONCE doesn't have a value => false");
         return false;
@@ -152,19 +154,38 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
         return false;
     }
     // HMAC must be 64 characters
-    int HMACLen = TokenStringLength - (HMACStrOffset - Token);
-    if ( HMACLen != 64 + sizeof(HMACSHA256Str) + 1)
+    int HMACLen = TokenStringLength - (HMACStrOffset - Token) - (sizeof(HMACSHA256Str) + 1);
+    if ( HMACLen != 64 )
     {
         LogV("ValidateToken: HMACSHA256 value is too short. %d bytes, should be 64 => false", (HMACLen-/*HMACSHA256=*/11 -1));
         return false; 
     }
+    static char TokenHMAC[32]; 
+    char const* bytePtr = HMACStrOffset + sizeof(HMACSHA256Str);
+    for (unsigned int i = 0; i < 32; i++)
+    {
+        char highNibble = *bytePtr++;
+        char lowNibble  = *bytePtr++;
+        if (!CheckNibble(highNibble) || !CheckNibble(lowNibble))
+        {
+            LogV("ValidateToken: Non-HEX byte in HMAC (%c%c) => false", highNibble, lowNibble );
+            return false; 
+        }
+        TokenHMAC[i] = ConvertHex(highNibble, lowNibble);
+    }
+
+    if (!CheckHMAC(TokenHMAC))
+    {
+        LogV("ValidateToken: Invalid HMAC => false");
+        return false;
+    }
+
     // Find other keys
     // 
-    // Check 
     // Check Token Nonce matches current nonce
-    bool nonceValid = CompareNonce(nonceValOffset, nonceValEnd - nonceValOffset );
-    if (nonceValid == false)
+    if (CompareNonce(nonceValOffset, nonceValEnd - nonceValOffset) == false)
     {
+        LogV("ValidateToken: Token nonce doesn't match current hardware nonce.");
         return false; 
     }
 
@@ -173,6 +194,27 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
 
     LogV("ValidateToken: => true");
     return true;
+}
+
+bool CheckNibble(char nibble)
+{
+    return !(nibble < 'A' && nibble >'F' && nibble < '0' && nibble >'9');
+}
+
+unsigned int ConvertNibble(char nibble);
+unsigned int ConvertHex(char high, char low)
+{
+    return ConvertNibble(high) << 4 | ConvertNibble(low);
+}
+
+unsigned int ConvertNibble(char nibble)
+{
+    if (nibble >= '0' && nibble <= '9') return nibble - '0';
+    else if (nibble >= 'A' && nibble <= 'F') return nibble - 'A' + 10;
+
+    // Should have been checked before calling this. 
+    FatalError("Invalid nibble");
+    return 0; 
 }
 
 /// <summary>

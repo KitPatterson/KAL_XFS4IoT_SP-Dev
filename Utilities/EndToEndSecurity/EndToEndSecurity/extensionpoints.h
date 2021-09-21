@@ -52,3 +52,6 @@ extern bool CompareNonce(char const* const CommandNonce, unsigned int NonceLengt
 
 // clear the current nonce value. 
 extern void ClearNonce();
+
+// TokenHMAC is a 32 byte buffer. 
+extern bool CheckHMAC(char const* const TokenHMAC);
