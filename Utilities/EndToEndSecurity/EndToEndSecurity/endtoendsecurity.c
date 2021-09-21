@@ -12,6 +12,11 @@
 // Utility functions
 void LogV(char const* const Message, ...);
 
+// Create a reference to the Nonce handling functions - this is just to create a compile error 
+// if these functions aren't implemented. 
+void* Pull1 = NewNonce; 
+void* Pull2 = ClearNonce; 
+
 /// <summary>
 /// Validate that a token has a valid format.
 /// </summary>
@@ -126,6 +131,19 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
         Log("ValidateToken: First key must be NONCE => false");
         return false;
     }
+    char const* const nonceValOffset = strchr(Token, '=') + 1; // Skip over '='
+    if (nonceValOffset == 1)
+    {
+        Log("ValidateToken: NONCE doesn't have a value => false");
+        return false;
+    }
+    char const* const nonceValEnd = strchr(Token, ',');
+    if (nonceValEnd == 0)
+    {
+        Log("ValidateToken: NONCE value is invalid => false");
+        return false;
+    }
+
     // Find HMAC
     char const* const HMACStrOffset = strstr(Token, HMACSHA256Str);
     if (HMACStrOffset == 0)
@@ -144,7 +162,15 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
     // 
     // Check 
     // Check Token Nonce matches current nonce
+    bool nonceValid = CompareNonce(nonceValOffset, nonceValEnd - nonceValOffset );
+    if (nonceValid == false)
+    {
+        return false; 
+    }
+
     // Check HMAC matches calculated HMAC
+
+
     LogV("ValidateToken: => true");
     return true;
 }
