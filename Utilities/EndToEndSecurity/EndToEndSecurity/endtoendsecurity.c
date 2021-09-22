@@ -174,7 +174,9 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
         TokenHMAC[i] = ConvertHex(highNibble, lowNibble);
     }
 
-    if (!CheckHMAC(TokenHMAC))
+    if (TokenStringLength <= HMACSHA256Len) FatalError("Unexpected token length");
+    unsigned int TokenExcludingHMACLen = (unsigned int)(TokenStringLength - HMACSHA256Len -1);
+    if (!CheckHMAC(Token, TokenExcludingHMACLen,  TokenHMAC))
     {
         LogV("ValidateToken: Invalid HMAC => false");
         return false;

@@ -40,8 +40,12 @@ extern "C" bool CompareNonce(char const* const CommandNonce, unsigned int NonceL
 }
 
 static std::string ExpectedHMAC = ""; 
-extern "C" bool CheckHMAC(char const* const TokenHMAC)
+static std::string LastToken = ""; 
+extern "C" bool CheckHMAC(char const* const Token, unsigned int TokenLength, char const* const TokenHMAC)
 {
+    Assert::IsNotNull(Token);
+    Assert::IsNotNull(TokenHMAC);
+
     static char TokenHMACString[65];
     for (unsigned int i = 0; i < 32; i++)
     {
@@ -49,7 +53,10 @@ extern "C" bool CheckHMAC(char const* const TokenHMAC)
     }
 
     bool result = std::string(TokenHMACString,64) == ExpectedHMAC; 
+
     ExpectedHMAC = ""; 
+    LastToken = std::string(Token, TokenLength);
+
     return result;
 }
 
@@ -279,6 +286,8 @@ namespace EndToEndSecurityTest
             auto result = ValidateToken(testToken, sizeof(testToken));
 
             Assert::IsTrue(result);
+            Assert::AreEqual(std::string(""), ExpectedHMAC);
+            Assert::AreEqual(std::string("NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256="), LastToken);
         }
         TEST_METHOD(WrongHMAC)
         {
@@ -289,6 +298,8 @@ namespace EndToEndSecurityTest
             auto result = ValidateToken(testToken, sizeof(testToken));
 
             Assert::IsFalse(result);
+            Assert::AreEqual(std::string(""), ExpectedHMAC);
+            Assert::AreEqual(std::string("NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256="), LastToken);
         }
     };
 }
