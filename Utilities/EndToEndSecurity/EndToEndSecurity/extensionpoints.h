@@ -20,7 +20,7 @@
 extern void FatalError(char const* const Message);
 
 /// <summary>
-/// Log a text message for later debugging.
+/// Log a text message for debugging.
 /// </summary>
 /// <param name="Message">Text message for debugging</param>
 extern void Log(char const* const Message);
@@ -46,12 +46,38 @@ extern void Log(char const* const Message);
 /// <param name="Nonce">Output parameter pointing to the null terminated nonce string</param>
 extern void NewNonce( char const ** Nonce );
 
-// Compare given nonce string to the current stored nonce value. 
-// input nonce is _not_ null terminated
+/// <summary>
+/// Compare given nonce string to the current stored nonce value. 
+/// </summary>
+/// <remarks>
+/// Note that the comparison should be 'constant time' - if length of time taken to compare 
+/// the values varies then this could be used by an attacker to find the correct value. An attacker 
+/// can gradually vary the nonce to find the slowest comparison, which will match the correct nonce. 
+/// </remarks>
+/// <param name="CommandNonce">input nonce is _not_ null terminated</param>
+/// <param name="NonceLength">Number of characters in the nonce</param>
+/// <returns>return true if the value is correct</returns>
 extern bool CompareNonce(char const* const CommandNonce, unsigned int NonceLength);
 
-// clear the current nonce value. 
+/// <summary>
+/// Clear the current nonce value. 
+/// </summary>
 extern void ClearNonce();
 
-// TokenHMAC is a 32 byte buffer. 
+/// <summary>
+/// Check that the binary HMAC value matches the calculated value
+/// </summary>
+/// <remarks>
+/// This is the core check on the token, to validate that it was created by a system that knows
+/// the shared HMAC key. 
+/// This routine must use the XFSAuthenticateDevice key to calculate the HMAC over the given string,
+/// and compare that to the given value. 
+/// Note that the comparison should be 'constant time' - if length of time taken to compare 
+/// the values varies then this could be used by an attacker to find the correct value. An attacker 
+/// can gradually vary the nonce to find the slowest comparison, which will match the correct nonce. 
+/// </remarks>
+/// <param name="Token">Token string - not null terminated</param>
+/// <param name="TokenLength">Number of characters to be used from the Token string</param>
+/// <param name="TokenHMAC">A 32 byte binary buffer</param>
+/// <returns>true if the HMAC matches the correct value for this token</returns>
 extern bool CheckHMAC(char const *const Token, unsigned int TokenLength, char const* const TokenHMAC);
