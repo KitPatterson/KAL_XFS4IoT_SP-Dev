@@ -35,5 +35,20 @@ jobs:
     - name: Package
       run: dotnet pack Framework -p:PackageVersion=${{ github.event.inputs.version }} -o nuget --no-build
       
+    - name: Create release
+      run: |
+        set -x
+        
+        assets=()
+        for asset in ./nuget/*.nupkg; do
+          assets+=("-a" "$asset")
+        done
+        for asset in ./nuget/*.snupkg; do
+          assets+=("-a" "$asset")
+        done
+        hub release create -p "${assets[@]}" -m "v${{ github.event.inputs.version }}" "v${{ github.event.inputs.version }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
     - name: Push packages to GitHub
-      run: dotnet nuget push nuget/*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate --no-symbols true
+      run: dotnet nuget push nuget/*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
