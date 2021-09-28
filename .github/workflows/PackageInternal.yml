@@ -51,4 +51,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Push packages to GitHub
-      run: dotnet nuget push nuget/*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+      run: dotnet nuget push nuget/* -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
