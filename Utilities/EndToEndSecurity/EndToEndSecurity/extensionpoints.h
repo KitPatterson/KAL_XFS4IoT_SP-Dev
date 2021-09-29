@@ -57,7 +57,7 @@ extern void NewNonce( char const ** Nonce );
 /// <param name="CommandNonce">input nonce is _not_ null terminated</param>
 /// <param name="NonceLength">Number of characters in the nonce</param>
 /// <returns>return true if the value is correct</returns>
-extern bool CompareNonce(char const* const CommandNonce, unsigned int NonceLength);
+extern bool CompareNonce(char const* const CommandNonce, size_t NonceLength);
 
 /// <summary>
 /// Clear the current nonce value. 
@@ -80,4 +80,4 @@ extern void ClearNonce();
 /// <param name="TokenLength">Number of characters to be used from the Token string</param>
 /// <param name="TokenHMAC">A 32 byte binary buffer</param>
 /// <returns>true if the HMAC matches the correct value for this token</returns>
-extern bool CheckHMAC(char const *const Token, unsigned int TokenLength, char const* const TokenHMAC);
+extern bool CheckHMAC(char const *const Token, unsigned int TokenLength, unsigned char const* const TokenHMAC);

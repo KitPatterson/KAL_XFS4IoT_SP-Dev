@@ -46,7 +46,7 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
         return false;
     }
 
-    unsigned int TokenStringLength = strlen(Token) + 1;       // Plus null
+    size_t TokenStringLength = strlen(Token) + 1;       // Plus null
     // Zero length string.
     if (TokenStringLength == 1)
     {
@@ -154,7 +154,7 @@ bool ValidateToken(char const* const Token, size_t TokenSize)
         return false;
     }
     // HMAC must be 64 characters
-    int HMACLen = TokenStringLength - (HMACStrOffset - Token) - (sizeof(HMACSHA256Str) + 1);
+    size_t HMACLen = TokenStringLength - (HMACStrOffset - Token) - (sizeof(HMACSHA256Str) + 1);
     if ( HMACLen != 64 )
     {
         LogV("ValidateToken: HMACSHA256 value is too short. %d bytes, should be 64 => false", (HMACLen-/*HMACSHA256=*/11 -1));

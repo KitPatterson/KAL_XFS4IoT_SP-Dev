@@ -33,7 +33,7 @@ extern "C" void ClearNonce()
     CurrentNonce = "";
 }
 
-extern "C" bool CompareNonce(char const* const CommandNonce, unsigned int NonceLength )
+extern "C" bool CompareNonce(char const* const CommandNonce, unsigned long NonceLength )
 {
     std::string nonce = std::string(CommandNonce, NonceLength);
     return nonce == CurrentNonce;
@@ -41,7 +41,7 @@ extern "C" bool CompareNonce(char const* const CommandNonce, unsigned int NonceL
 
 static std::string ExpectedHMAC = ""; 
 static std::string LastToken = ""; 
-extern "C" bool CheckHMAC(char const* const Token, unsigned int TokenLength, char const* const TokenHMAC)
+extern "C" bool CheckHMAC(char const* const Token, unsigned int TokenLength, unsigned char const* const TokenHMAC)
 {
     Assert::IsNotNull(Token);
     Assert::IsNotNull(TokenHMAC);
