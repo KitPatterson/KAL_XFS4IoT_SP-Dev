@@ -17,6 +17,7 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
