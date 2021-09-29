@@ -8,6 +8,11 @@
 // This file defines the functions that must be implemented to complete the end to end security 
 // support. These will be implemented for each hardware device. 
 
+#ifdef __cplusplus
+#define C_LINKAGE "C"
+#else 
+#define C_LINKAGE
+#endif 
 
 /// <summary>
 /// A programatic error has occured
@@ -17,13 +22,13 @@
 /// may not continue to run. This could include errors up to and including memory corruption. 
 /// </remarks> 
 /// <param name="Message">A text message explaining what has happened</param>
-extern void FatalError(char const* const Message);
+extern C_LINKAGE void FatalError(char const* const Message);
 
 /// <summary>
 /// Log a text message for debugging.
 /// </summary>
 /// <param name="Message">Text message for debugging</param>
-extern void Log(char const* const Message);
+extern C_LINKAGE void Log(char const* const Message);
 
 /// <summary>
 /// Create a new Nonce value. 
@@ -44,7 +49,7 @@ extern void Log(char const* const Message);
 /// i.e. until the nonce is cleared (or the machine is restarted.) 
 /// </remarks>
 /// <param name="Nonce">Output parameter pointing to the null terminated nonce string</param>
-extern void NewNonce( char const ** Nonce );
+extern C_LINKAGE void NewNonce( char const ** Nonce );
 
 /// <summary>
 /// Compare given nonce string to the current stored nonce value. 
@@ -57,12 +62,12 @@ extern void NewNonce( char const ** Nonce );
 /// <param name="CommandNonce">input nonce is _not_ null terminated</param>
 /// <param name="NonceLength">Number of characters in the nonce</param>
 /// <returns>return true if the value is correct</returns>
-extern bool CompareNonce(char const* const CommandNonce, size_t NonceLength);
+extern C_LINKAGE bool CompareNonce(char const* const CommandNonce, size_t NonceLength);
 
 /// <summary>
 /// Clear the current nonce value. 
 /// </summary>
-extern void ClearNonce();
+extern C_LINKAGE void ClearNonce();
 
 /// <summary>
 /// Check that the binary HMAC value matches the calculated value
@@ -80,4 +85,4 @@ extern void ClearNonce();
 /// <param name="TokenLength">Number of characters to be used from the Token string</param>
 /// <param name="TokenHMAC">A 32 byte binary buffer</param>
 /// <returns>true if the HMAC matches the correct value for this token</returns>
-extern bool CheckHMAC(char const *const Token, unsigned int TokenLength, unsigned char const* const TokenHMAC);
+extern C_LINKAGE bool CheckHMAC(char const *const Token, unsigned int TokenLength, unsigned char const* const TokenHMAC);
