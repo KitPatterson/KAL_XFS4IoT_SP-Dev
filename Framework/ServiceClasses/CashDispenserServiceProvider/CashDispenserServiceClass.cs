@@ -40,6 +40,12 @@ namespace XFS4IoTServer
 
             this.CashManagementService = CashManagementService.IsNotNull($"Unexpected parameter set in the " + nameof(CashDispenserServiceClass));
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(CashDispenserServiceClass));
+
+            this.Mixes = new()
+            {
+                { 1, new MinNumberMix(1, logger) },
+                { 2, new EqualEmptyingMix(2, logger) }
+            };
         }
 
         /// <summary>
@@ -154,10 +160,6 @@ namespace XFS4IoTServer
         /// <summary>
         /// Supported Mix algorithm
         /// </summary>
-        private readonly Dictionary<int, Mix> Mixes = new()
-        {
-            { 1, new MinNumberMix(1) },
-            { 2, new EqualEmptyingMix(2) }
-        };
+        private readonly Dictionary<int, Mix> Mixes;
     }
 }
