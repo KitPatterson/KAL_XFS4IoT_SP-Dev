@@ -26,7 +26,7 @@
     <!--Generate Symbol package. -->
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <!--Link to Github when SourceLink is enabled and "JustMyCode" is disabled. -->
