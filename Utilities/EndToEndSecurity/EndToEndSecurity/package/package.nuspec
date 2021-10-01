@@ -2,10 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>KAL.XFS4IoT.SP-Dev.Framework.Native.EndToEnd</id>
-        <version>0.1</version>
         <authors>XFS4IoTFramework</authors>
         <license type="expression">MIT</license>
+        <version>$version$</version>
         <projectUrl>https://github.com/KAL-ATM-Software/KAL_XFS4IoT_SP-Dev</projectUrl>
+        <repository type="git" url="$GithubURL$"/>
         <description>Native support components for End to End security</description>
         <tags>native</tags>
         <dependencies>
