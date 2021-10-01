@@ -57,7 +57,7 @@ namespace XFS4IoTFramework.CashDispenser
         {
             this.Values = Cols;
             this.Mixes = Mixes;
-            this.Logger = Logger ?? throw new ArgumentNullException(nameof(Logger));
+            this.Logger = Logger.IsNotNull();
         }
 
         public override Denomination Calculate(Dictionary<string, double> CurrencyAmounts, Dictionary<string, CashUnit> CashUnits, int MaxDispensableItems )
@@ -169,7 +169,7 @@ namespace XFS4IoTFramework.CashDispenser
                    (int)SubTypeEmum.MinimumNumberOfBills, 
                    "Minimum Number Of Bills")
         {
-            this.Logger = Logger ?? throw new ArgumentNullException(nameof(Logger));
+            this.Logger = Logger.IsNotNull();
         }
 
         /// <summary>
@@ -420,7 +420,7 @@ namespace XFS4IoTFramework.CashDispenser
                    (int)SubTypeEmum.EqualEmptyingOfCashUnits,
                    "Equal emptying of cash units")
         {
-            this.Logger = Logger ?? throw new ArgumentNullException(nameof(Logger));
+            this.Logger = Logger.IsNotNull();
         }
 
         /// <summary>

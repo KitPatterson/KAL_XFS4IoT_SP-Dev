@@ -46,7 +46,7 @@ namespace XFS4IoTFramework.CashDispenser
                           ILogger Logger )
         {
             this.CurrencyAmounts = CurrencyAmounts;
-            this.Logger = Logger ?? throw new ArgumentNullException(nameof(Logger));
+            this.Logger = Logger.IsNotNull();
             if (Values is not null)
             {
                 // Copy only value positive
