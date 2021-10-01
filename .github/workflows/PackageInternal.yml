@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-
+    name: Build Framework
     runs-on: ubuntu-latest
 
     steps:
@@ -52,3 +52,51 @@ jobs:
       
     - name: Push packages to GitHub
       run: dotnet nuget push nuget/* -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+
+  buildE2E:
+    name: Build E2E
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://nuget.pkg.github.com/KAL-ATM-Software/index.json
+        dotnet-version: 5.0.x
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.3
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.x'
+
+    - name: Build E2E x64 Debug
+      run: |
+        msbuild .\Utilities\EndToEndSecurity\EndToEndSecurity.sln /p:"Configuration=Debug;Platform=x64;Version=${{ github.event.inputs.version }};GithubURL=https://github.com/${{ github.repository }}.git"
+
+    - name: Build E2E x64 Release
+      run: |
+        msbuild .\Utilities\EndToEndSecurity\EndToEndSecurity.sln /p:"Configuration=Release;Platform=x64;Version=${{ github.event.inputs.version }};GithubURL=https://github.com/${{ github.repository }}.git"
+
+    - name: Build E2E x86 Debug
+      run: |
+        msbuild .\Utilities\EndToEndSecurity\EndToEndSecurity.sln /p:"Configuration=Debug;Platform=x86;Version=${{ github.event.inputs.version }};GithubURL=https://github.com/${{ github.repository }}.git"
+
+    - name: Build E2E x86 Release
+      run: |
+        msbuild .\Utilities\EndToEndSecurity\EndToEndSecurity.sln /p:"Configuration=Release;Platform=x86;Version=${{ github.event.inputs.version }};GithubURL=https://github.com/${{ github.repository }}.git"
+
+    - name: Upload Nuget Package
+      run: |
+        gh release upload "v${{ github.event.inputs.version }}" .\Utilities\EndToEndSecurity\EndToEndSecurity\KAL.XFS4IoT.SP-Dev.Framework.Native.EndToEnd.${{ github.event.inputs.version }}.nupkg
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push package to GitHub
+      run: dotnet nuget push .\Utilities\EndToEndSecurity\EndToEndSecurity\KAL.XFS4IoT.SP-Dev.Framework.Native.EndToEnd.${{ github.event.inputs.version }}.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
