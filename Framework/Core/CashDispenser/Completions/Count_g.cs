@@ -44,7 +44,7 @@ namespace XFS4IoT.CashDispenser.Completions
             /// <summary>
             /// Specifies the error code if applicable. Following values are possible:
             /// 
-            /// * ```cashUnitError``` - A cash unit caused a problem. A CashManagement.CashUnitErrorEvent will be posted with the details.
+            /// * ```cashUnitError``` - A cash unit caused a problem. A [Storage.StorageErrorEvent](#storage.storageerrorevent) will be posted with the details.
             /// * ```unsupportedPosition``` - The position specified is not supported.
             /// * ```safeDoorOpen``` - The safe door is open. This device requires the safe door to be closed in order to perform this operation.
             /// * ```exchangeActive``` - The device is in an exchange state (see 
@@ -56,68 +56,77 @@ namespace XFS4IoT.CashDispenser.Completions
             [DataContract]
             public sealed class CountedCashUnitsClass
             {
-                public CountedCashUnitsClass(string PhysicalPositionName = null, string UnitId = null, int? Dispensed = null, int? Counted = null, StatusEnum? Status = null)
+                public CountedCashUnitsClass(int? Dispensed = null, int? Counted = null, ReplenishmentStatusEnum? ReplenishmentStatus = null, StatusEnum? Status = null)
                 {
-                    this.PhysicalPositionName = PhysicalPositionName;
-                    this.UnitId = UnitId;
                     this.Dispensed = Dispensed;
                     this.Counted = Counted;
+                    this.ReplenishmentStatus = ReplenishmentStatus;
                     this.Status = Status;
                 }
 
                 /// <summary>
-                /// Specifies which cash unit was emptied and counted. This name is the same as the 
-                /// *physicalPositionName* in the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) completion message.
-                /// </summary>
-                [DataMember(Name = "physicalPositionName")]
-                public string PhysicalPositionName { get; init; }
-
-                /// <summary>
-                /// Cash unit ID. This is the identifier defined in the *unitID* field in the [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) completion message.
-                /// </summary>
-                [DataMember(Name = "unitId")]
-                public string UnitId { get; init; }
-
-                /// <summary>
-                /// The number of items that were dispensed during the emptying of the cash unit.
+                /// The number of items that were dispensed during the emptying of the storage unit.
+                /// <example>100</example>
                 /// </summary>
                 [DataMember(Name = "dispensed")]
+                [DataTypes(Minimum = 1)]
                 public int? Dispensed { get; init; }
 
                 /// <summary>
-                /// The number of items that were counted during the emptying of the cash unit.
+                /// The number of items that were counted during the emptying of the storage unit.
+                /// <example>100</example>
                 /// </summary>
                 [DataMember(Name = "counted")]
+                [DataTypes(Minimum = 1)]
                 public int? Counted { get; init; }
 
-                public enum StatusEnum
+                public enum ReplenishmentStatusEnum
                 {
                     Ok,
                     Full,
                     High,
                     Low,
-                    Empty,
+                    Empty
+                }
+
+                /// <summary>
+                /// The state of the media in the unit if it can be determined. Note that overall 
+                /// [status](#storage.getstorage.completion.properties.storage.unit1.status) of the storage unit must
+                /// be taken into account when deciding whether the storage unit is usable and whether replenishment status
+                /// is applicable. In particular, if the overall status is _missing_ this will not be reported.
+                /// The following values are possible:
+                /// 
+                /// * ```ok``` - The storage unit media is in a good state.
+                /// * ```full``` - The storage unit is full.
+                /// * ```high``` - The storage unit is almost full (either sensor based or exceeded the 
+                /// [highThreshold](#storage.getstorage.completion.properties.storage.unit1.cash.configuration.highthreshold).
+                /// * ```low``` - The storage unit is almost empty (either sensor based or below the 
+                /// [lowThreshold](#storage.getstorage.completion.properties.storage.unit1.cash.configuration.lowthreshold)). 
+                /// * ```empty``` - The storage unit is empty, or insufficient items in the storage unit are preventing further 
+                /// dispense operations.
+                /// </summary>
+                [DataMember(Name = "replenishmentStatus")]
+                public ReplenishmentStatusEnum? ReplenishmentStatus { get; init; }
+
+                public enum StatusEnum
+                {
+                    Ok,
                     Inoperative,
                     Missing,
-                    NoValue,
-                    NoReference,
+                    NotConfigured,
                     Manipulated
                 }
 
                 /// <summary>
-                /// Supplies the status of the cash unit. Following values are possible:
+                /// The state of the unit. The following values are possible:
                 /// 
-                /// * ```ok``` - The cash unit is in a good state.
-                /// * ```full``` - The cash unit is full.
-                /// * ```high``` - The cash unit is almost full (i.e. reached or exceeded the threshold defined by *maximum*). 
-                /// * ```low``` - The cash unit is almost empty (i.e. reached or below the threshold defined by *minimum*). 
-                /// * ```empty``` - The cash unit is empty, or insufficient items in the cash unit are preventing further dispense operations.
-                /// * ```inoperative``` - The cash unit is inoperative.
-                /// * ```missing``` - The cash unit is missing.
-                /// * ```noValue``` - The values of the specified cash unit are not available.
-                /// * ```noReference``` - There is no reference value available for the notes in this cash unit. The cash unit has not been calibrated.
-                /// * ```manipulated``` - The cash unit has been inserted (including removal followed by a reinsertion) when the device 
-                /// was not in the exchange state. This cash unit cannot be dispensed from.
+                /// * ```ok``` - The storage unit is in a good state.
+                /// * ```inoperative``` - The storage unit is inoperative.
+                /// * ```missing``` - The storage unit is missing.
+                /// * ```notConfigured``` - The storage unit has not been configured for use.
+                /// * ```manipulated``` - The storage unit has been inserted (including removal followed by a reinsertion) when 
+                /// the device was not in the exchange state - see [Storage.StartExchange](#storage.startexchange). This storage 
+                /// unit cannot be used. Only applies to services which support the exchange state.
                 /// </summary>
                 [DataMember(Name = "status")]
                 public StatusEnum? Status { get; init; }

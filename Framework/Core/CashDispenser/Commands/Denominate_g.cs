@@ -27,30 +27,18 @@ namespace XFS4IoT.CashDispenser.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, int? TellerID = null, int? MixNumber = null, DenominationClass Denomination = null)
+            public PayloadData(int Timeout, DenominationClass Denomination = null, string Mix = null, int? TellerID = null)
                 : base(Timeout)
             {
-                this.TellerID = TellerID;
-                this.MixNumber = MixNumber;
                 this.Denomination = Denomination;
+                this.Mix = Mix;
+                this.TellerID = TellerID;
             }
-
-            /// <summary>
-            /// Identification of teller. This field is ignored if the device is a Self-Service CashDispenser.
-            /// </summary>
-            [DataMember(Name = "tellerID")]
-            public int? TellerID { get; init; }
-
-            /// <summary>
-            /// Mix algorithm or house mix table to be used.
-            /// </summary>
-            [DataMember(Name = "mixNumber")]
-            public int? MixNumber { get; init; }
 
             [DataContract]
             public sealed class DenominationClass
             {
-                public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, int> Values = null, int? CashBox = null)
+                public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, double> Values = null, Dictionary<string, double> CashBox = null)
                 {
                     this.Currencies = Currencies;
                     this.Values = Values;
@@ -58,35 +46,53 @@ namespace XFS4IoT.CashDispenser.Commands
                 }
 
                 /// <summary>
-                /// "List of currency and amount combinations for denomination. There will be one entry for each currency
-                /// in the denomination. The property name is the currency name in ISO format (e.g. "EUR").
+                /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
+                /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
+                /// omitted on a request if _values_ specifies the entire request.
                 /// </summary>
                 [DataMember(Name = "currencies")]
                 public Dictionary<string, double> Currencies { get; init; }
 
                 /// <summary>
-                /// This list specifies the number of items to take from the cash units. 
-                /// Each entry uses a cashunit object name as stated by the 
-                /// [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) command. The value of the entry is the 
-                /// number of items to take from that unit.
-                /// If the application does not wish to specify a denomination, it should omit the values property.
+                /// This list specifies the number of items to take from the cash units. If specified in a request, the output 
+                /// denomination must include these items.
+                /// 
+                /// The property name is storage unit object name as stated by the [Storage.GetStorage](#storage.getstorage)
+                /// command. The value of the entry is the number of items to take from that unit.
                 /// </summary>
                 [DataMember(Name = "values")]
-                public Dictionary<string, int> Values { get; init; }
+                public Dictionary<string, double> Values { get; init; }
 
                 /// <summary>
-                /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.
+                /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
+                /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
+                /// omitted on a request if _values_ specifies the entire request.
                 /// </summary>
                 [DataMember(Name = "cashBox")]
-                public int? CashBox { get; init; }
+                public Dictionary<string, double> CashBox { get; init; }
 
             }
 
             /// <summary>
-            /// Denomination object describing the contents of the denomination operation.
+            /// Specifies a denomination or a denomination request.
             /// </summary>
             [DataMember(Name = "denomination")]
             public DenominationClass Denomination { get; init; }
+
+            /// <summary>
+            /// Mix algorithm or house mix table to be used as defined by mixes reported by
+            /// [CashDispenser.GetMixTypes](#cashdispenser.getmixtypes). May be omitted if the request is entirely specified
+            /// by _counts_.
+            /// <example>mix1</example>
+            /// </summary>
+            [DataMember(Name = "mix")]
+            public string Mix { get; init; }
+
+            /// <summary>
+            /// Only applies to Teller Dispensers. Identification of teller.
+            /// </summary>
+            [DataMember(Name = "tellerID")]
+            public int? TellerID { get; init; }
 
         }
     }

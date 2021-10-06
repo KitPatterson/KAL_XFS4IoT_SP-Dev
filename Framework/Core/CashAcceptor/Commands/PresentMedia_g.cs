@@ -27,66 +27,36 @@ namespace XFS4IoT.CashAcceptor.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, PositionEnum? Position = null)
+            public PayloadData(int Timeout, string Position = null)
                 : base(Timeout)
             {
                 this.Position = Position;
             }
 
-            public enum PositionEnum
-            {
-                Null,
-                InLeft,
-                InRight,
-                InCenter,
-                InTop,
-                InBottom,
-                InFront,
-                InRear,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear
-            }
-
             /// <summary>
-            /// Describes the position where the media is to be presented. Following values are possible:
+            /// Supplies the input or output position as one of the following values. If not specified, the default position
+            /// applies.
             /// 
-            /// "null": The default configuration information should be used.
-            /// 
-            /// "inLeft": Present items to the left input position.
-            /// 
-            /// "inRight": Present items to the right input position.
-            /// 
-            /// "inCenter": Present items to of the center input position.
-            /// 
-            /// "inTop": Present items to the top input position.
-            /// 
-            /// "inBottom": Present items to the bottom input position.
-            /// 
-            /// "inFront": Present items to the front input position.
-            /// 
-            /// "inRear": Present items to the rear input position.
-            /// 
-            /// "outLeft": Present items to the left output position.
-            /// 
-            /// "outRight": Present items to the right output position.
-            /// 
-            /// "outCenter": Present items to the center output position.
-            /// 
-            /// "outTop": Present items to the top output position.
-            /// 
-            /// "outBottom": Present items to the bottom output position.
-            /// 
-            /// "outFront": Present items to the front output position.
-            /// 
-            /// "outRear": Present items to of the rear output position.
+            /// * ```inDefault``` - Default input position.
+            /// * ```inLeft``` - Left input position.
+            /// * ```inRight``` - Right input position.
+            /// * ```inCenter``` - Center input position.
+            /// * ```inTop``` - Top input position.
+            /// * ```inBottom``` - Bottom input position.
+            /// * ```inFront``` - Front input position.
+            /// * ```inRear``` - Rear input position.
+            /// * ```outDefault``` - Default output position.
+            /// * ```outLeft``` - Left output position.
+            /// * ```outRight``` - Right output position.
+            /// * ```outCenter``` - Center output position.
+            /// * ```outTop``` - Top output position.
+            /// * ```outBottom``` - Bottom output position.
+            /// * ```outFront``` - Front output position.
+            /// * ```outRear``` - Rear output position.
+            /// <example>inLeft</example>
             /// </summary>
             [DataMember(Name = "position")]
-            public PositionEnum? Position { get; init; }
+            public string Position { get; init; }
 
         }
     }

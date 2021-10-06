@@ -35,7 +35,7 @@ namespace XFS4IoT.CashAcceptor.Commands
 
             public enum PositionEnum
             {
-                Null,
+                OutDefault,
                 OutLeft,
                 OutRight,
                 OutCenter,
@@ -46,23 +46,16 @@ namespace XFS4IoT.CashAcceptor.Commands
             }
 
             /// <summary>
-            /// Describes the position where the items are to be moved. Following values are possible:
+            /// Supplies the output position as one of the following values:
             /// 
-            /// "null": The default configuration information should be used.
-            /// 
-            /// "outLeft": Move items to the left output position.
-            /// 
-            /// "outRight": Move items to the right output position.
-            /// 
-            /// "outCenter": Move items to the center output position.
-            /// 
-            /// "outTop": Move items to the top output position.
-            /// 
-            /// "outBottom": Move items to the bottom output position.
-            /// 
-            /// "outFront": Move items to the front output position.
-            /// 
-            /// "outRear": Move items to the rear output position.
+            /// * ```outDefault``` - Default output position.
+            /// * ```outLeft``` - Left output position.
+            /// * ```outRight``` - Right output position.
+            /// * ```outCenter``` - Center output position.
+            /// * ```outTop``` - Top output position.
+            /// * ```outBottom``` - Bottom output position.
+            /// * ```outFront``` - Front output position.
+            /// * ```outRear``` - Rear output position.
             /// </summary>
             [DataMember(Name = "position")]
             public PositionEnum? Position { get; init; }

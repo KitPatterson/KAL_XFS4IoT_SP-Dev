@@ -27,95 +27,134 @@ namespace XFS4IoT.CashAcceptor.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, int? TellerID = null, bool? UseRecycleUnits = null, OutputPositionEnum? OutputPosition = null, InputPositionEnum? InputPosition = null)
+            public PayloadData(int Timeout, int? TellerID = null, bool? UseRecycleUnits = null, OutputPositionEnum? OutputPosition = null, InputPositionEnum? InputPosition = null, int? TotalItemsLimit = null, List<AmountLimitClass> AmountLimit = null)
                 : base(Timeout)
             {
                 this.TellerID = TellerID;
                 this.UseRecycleUnits = UseRecycleUnits;
                 this.OutputPosition = OutputPosition;
                 this.InputPosition = InputPosition;
+                this.TotalItemsLimit = TotalItemsLimit;
+                this.AmountLimit = AmountLimit;
             }
 
             /// <summary>
             /// Identification of teller. This field is not applicable to Self-Service devices and should be omitted.
             /// </summary>
             [DataMember(Name = "tellerID")]
+            [DataTypes(Minimum = 0)]
             public int? TellerID { get; init; }
 
             /// <summary>
             /// Specifies whether or not the recycle cash units should be used when items are cashed in on a 
-            /// successful CashAcceptor.CashInEnd command. This parameter will be ignored if there are no recycle cash units or the hardware does not support this.
+            /// successful [CashAcceptor.CashInEnd](#cashacceptor.cashinend) command. This parameter will be ignored if 
+            /// there are no recycle cash units or the hardware does not support this.
             /// </summary>
             [DataMember(Name = "useRecycleUnits")]
             public bool? UseRecycleUnits { get; init; }
 
             public enum OutputPositionEnum
             {
-                Null,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear
+                OutDefault,
+                OutLeft,
+                OutRight,
+                OutCenter,
+                OutTop,
+                OutBottom,
+                OutFront,
+                OutRear
             }
 
             /// <summary>
-            /// The output position where the items will be presented to the customer in the case of a rollback. Following values are possible:
+            /// Supplies the output position as one of the following values:
             /// 
-            /// "null": The items will be presented to the default configuration.
-            /// 
-            /// "left": The items will be presented to the left output position.
-            /// 
-            /// "right": The items will be presented to the right output position.
-            /// 
-            /// "center": The items will be presented to the center output position.
-            /// 
-            /// "top": The items will be presented to the top output position.
-            /// 
-            /// "bottom": The items will be presented to the bottom output position.
-            /// 
-            /// "front": The items will be presented to the front output position.
-            /// 
-            /// "rear": The items will be presented to the rear output position.
+            /// * ```outDefault``` - Default output position.
+            /// * ```outLeft``` - Left output position.
+            /// * ```outRight``` - Right output position.
+            /// * ```outCenter``` - Center output position.
+            /// * ```outTop``` - Top output position.
+            /// * ```outBottom``` - Bottom output position.
+            /// * ```outFront``` - Front output position.
+            /// * ```outRear``` - Rear output position.
             /// </summary>
             [DataMember(Name = "outputPosition")]
             public OutputPositionEnum? OutputPosition { get; init; }
 
             public enum InputPositionEnum
             {
-                Null,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear
+                InDefault,
+                InLeft,
+                InRight,
+                InCenter,
+                InTop,
+                InBottom,
+                InFront,
+                InRear
             }
 
             /// <summary>
-            /// Specifies from which position the cash should be inserted. Following values are possible:
+            /// Supplies the input position as one of the following values:
             /// 
-            /// "null": The cash is inserted from the default configuration.
-            /// 
-            /// "left": The cash is inserted from the left input position.
-            /// 
-            /// "right": The cash is inserted from the right input position.
-            /// 
-            /// "center": The cash is inserted from the center input position.
-            /// 
-            /// "top": The cash is inserted from the top input position.
-            /// 
-            /// "bottom": The cash is inserted from the bottom input position.
-            /// 
-            /// "front": The cash is inserted from the front input position.
-            /// 
-            /// "rear": The cash is inserted from the rear input position.
+            /// * ```inDefault``` - Default input position.
+            /// * ```inLeft``` - Left input position.
+            /// * ```inRight``` - Right input position.
+            /// * ```inCenter``` - Center input position.
+            /// * ```inTop``` - Top input position.
+            /// * ```inBottom``` - Bottom input position.
+            /// * ```inFront``` - Front input position.
+            /// * ```inRear``` - Rear input position.
             /// </summary>
             [DataMember(Name = "inputPosition")]
             public InputPositionEnum? InputPosition { get; init; }
+
+            /// <summary>
+            /// If set to a non-zero value, specifies a limit on the total number of items to be accepted during the cash-in
+            /// transaction. If set to a zero value, this limitation will not be performed. This limitation can only be used
+            /// if [byTotalItems](#common.capabilities.completion.properties.cashacceptor.cashinlimit.bytotalitems) is true.
+            /// </summary>
+            [DataMember(Name = "totalItemsLimit")]
+            [DataTypes(Minimum = 0)]
+            public int? TotalItemsLimit { get; init; }
+
+            [DataContract]
+            public sealed class AmountLimitClass
+            {
+                public AmountLimitClass(string Currency = null, double? Value = null)
+                {
+                    this.Currency = Currency;
+                    this.Value = Value;
+                }
+
+                /// <summary>
+                /// ISO 4217 currency.
+                /// <example>USD</example>
+                /// </summary>
+                [DataMember(Name = "currency")]
+                public string Currency { get; init; }
+
+                /// <summary>
+                /// Absolute value of all contents, 0 if mixed. May only be modified in an exchange state if applicable. May be 
+                /// a floating point value to allow for coins and notes which have a value which is not a whole multiple 
+                /// of the currency unit.
+                /// <example>20</example>
+                /// </summary>
+                [DataMember(Name = "value")]
+                public double? Value { get; init; }
+
+            }
+
+            /// <summary>
+            /// If specified, provides a list of the maximum amount of one or more currencies to be accepted during the 
+            /// cash-in transaction. This limitation can only be used if
+            /// [byAmount](#common.capabilities.completion.properties.cashacceptor.cashinlimit.byamount) is true.
+            /// 
+            /// If not specified, no currency specific limit is placed on the transaction.
+            /// 
+            /// If specified for one currency and the device can handle multiple currencies in a single cash-in transaction, 
+            /// any currencies not defined in this array are refused.
+            /// </summary>
+            [DataMember(Name = "amountLimit")]
+            public List<AmountLimitClass> AmountLimit { get; init; }
 
         }
     }

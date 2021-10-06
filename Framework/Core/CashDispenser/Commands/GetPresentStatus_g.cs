@@ -36,37 +36,38 @@ namespace XFS4IoT.CashDispenser.Commands
 
             public enum PositionEnum
             {
-                Default,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear
+                OutDefault,
+                OutLeft,
+                OutRight,
+                OutCenter,
+                OutTop,
+                OutBottom,
+                OutFront,
+                OutRear
             }
 
             /// <summary>
-            /// Required output position. Following values are possible:
+            /// Supplies the output position as one of the following values:
             /// 
-            /// * ```default``` - The default configuration.
-            /// * ```left``` - The left output position.
-            /// * ```right``` - The right output position.
-            /// * ```center``` - The center output position.
-            /// * ```top``` - The top output position.
-            /// * ```bottom``` - The bottom output position.
-            /// * ```front``` - The front output position.
-            /// * ```rear``` - The rear output position.
+            /// * ```outDefault``` - Default output position.
+            /// * ```outLeft``` - Left output position.
+            /// * ```outRight``` - Right output position.
+            /// * ```outCenter``` - Center output position.
+            /// * ```outTop``` - Top output position.
+            /// * ```outBottom``` - Bottom output position.
+            /// * ```outFront``` - Front output position.
+            /// * ```outRear``` - Rear output position.
             /// </summary>
             [DataMember(Name = "position")]
             public PositionEnum? Position { get; init; }
 
             /// <summary>
             /// A nonce value to be used when creating the end to end security token in the 
-            /// response. See the API documentation on end to end security for more details.
+            /// response. See the generic end to end security documentation for more details.
+            /// <example>646169ECDD0E440C2CECC8DDD7C27C22</example>
             /// </summary>
             [DataMember(Name = "nonce")]
-            [DataTypes(Pattern = "^[0-9A-F]{32}$|^[0-9]*$")]
+            [DataTypes(Pattern = @"^[0-9A-F]{32}$|^[0-9]*$")]
             public string Nonce { get; init; }
 
         }

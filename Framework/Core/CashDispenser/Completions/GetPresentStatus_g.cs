@@ -26,13 +26,12 @@ namespace XFS4IoT.CashDispenser.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, DenominationClass Denomination = null, PresentStateEnum? PresentState = null, List<string> Extra = null, string Token = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, DenominationClass Denomination = null, PresentStateEnum? PresentState = null, string Token = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
                 this.Denomination = Denomination;
                 this.PresentState = PresentState;
-                this.Extra = Extra;
                 this.Token = Token;
             }
 
@@ -52,7 +51,7 @@ namespace XFS4IoT.CashDispenser.Completions
             [DataContract]
             public sealed class DenominationClass
             {
-                public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, int> Values = null, int? CashBox = null)
+                public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, double> Values = null, Dictionary<string, double> CashBox = null)
                 {
                     this.Currencies = Currencies;
                     this.Values = Values;
@@ -60,37 +59,35 @@ namespace XFS4IoT.CashDispenser.Completions
                 }
 
                 /// <summary>
-                /// "List of currency and amount combinations for denomination. There will be one entry for each currency
-                /// in the denomination. The property name is the currency name in ISO format (e.g. "EUR").
+                /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
+                /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
+                /// omitted on a request if _values_ specifies the entire request.
                 /// </summary>
                 [DataMember(Name = "currencies")]
                 public Dictionary<string, double> Currencies { get; init; }
 
                 /// <summary>
-                /// This list specifies the number of items to take from the cash units. 
-                /// Each entry uses a cashunit object name as stated by the 
-                /// [CashManagement.GetCashUnitInfo](#cashmanagement.getcashunitinfo) command. The value of the entry is the 
-                /// number of items to take from that unit.
-                /// If the application does not wish to specify a denomination, it should omit the values property.
+                /// This list specifies the number of items to take from the cash units. If specified in a request, the output 
+                /// denomination must include these items.
+                /// 
+                /// The property name is storage unit object name as stated by the [Storage.GetStorage](#storage.getstorage)
+                /// command. The value of the entry is the number of items to take from that unit.
                 /// </summary>
                 [DataMember(Name = "values")]
-                public Dictionary<string, int> Values { get; init; }
+                public Dictionary<string, double> Values { get; init; }
 
                 /// <summary>
-                /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.
+                /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
+                /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
+                /// omitted on a request if _values_ specifies the entire request.
                 /// </summary>
                 [DataMember(Name = "cashBox")]
-                public int? CashBox { get; init; }
+                public Dictionary<string, double> CashBox { get; init; }
 
             }
 
             /// <summary>
-            /// Denomination structure which contains the amount dispensed 
-            /// from the specified output position and the number of items dispensed from each cash unit. 
-            /// Where the capability *moveItems* reports *toStacker* this 
-            /// value is cumulative across a series of CashDispenser.Dispense calls that add additional items to the stacker.
-            /// Where mixed currencies were dispensed the *amount* field in the returned denomination structure will be 
-            /// zero and the *currencyID* field will be omitted.
+            /// Specifies a denomination or a denomination request.
             /// </summary>
             [DataMember(Name = "denomination")]
             public DenominationClass Denomination { get; init; }
@@ -113,14 +110,9 @@ namespace XFS4IoT.CashDispenser.Completions
             public PresentStateEnum? PresentState { get; init; }
 
             /// <summary>
-            /// Pointer to a list of vendor-specific, or any other extended, information. 
-            /// The information is returned as a series of “key=value” strings so that it is easily extensible by Service Providers.
-            /// </summary>
-            [DataMember(Name = "extra")]
-            public List<string> Extra { get; init; }
-
-            /// <summary>
-            /// $ref: ../Docs/PresentStatusToken.md
+            /// The present status token that protects the present status. See 
+            /// the generic end to end document for more information. 
+            /// <example>NONCE=1414,TOKENFORMAT=1,TOKENLENGTH=0268,DISPENSEID=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2,DISPENSED1=50.00EUR,PRESENTED1=YES,PRESENTEDAMOUNT1=50.00EUR,RETRACTED1=NO,HMACSHA256=55D123E9EE64F0CC3D1CD4F953348B441E521BBACCD6998C6F51D645D71E6C83</example>
             /// </summary>
             [DataMember(Name = "token")]
             public string Token { get; init; }

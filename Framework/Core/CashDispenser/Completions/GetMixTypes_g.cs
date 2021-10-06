@@ -26,55 +26,61 @@ namespace XFS4IoT.CashDispenser.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, List<MixTypesClass> MixTypes = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, Dictionary<string, MixesClass> Mixes = null)
                 : base(CompletionCode, ErrorDescription)
             {
-                this.MixTypes = MixTypes;
+                this.Mixes = Mixes;
             }
 
             [DataContract]
-            public sealed class MixTypesClass
+            public sealed class MixesClass
             {
-                public MixTypesClass(int? MixNumber = null, MixTypeEnum? MixType = null, int? SubType = null, string Name = null)
+                public MixesClass(TypeEnum? Type = null, string Algorithm = null, string Name = null)
                 {
-                    this.MixNumber = MixNumber;
-                    this.MixType = MixType;
-                    this.SubType = SubType;
+                    this.Type = Type;
+                    this.Algorithm = Algorithm;
                     this.Name = Name;
                 }
 
-                /// <summary>
-                /// Number identifying the mix algorithm or the house mix table. 
-                /// This number can be passed to the CashDispenser.MixTable, CashDispenser.Dispense and CashDispenser.Denominate commands.
-                /// </summary>
-                [DataMember(Name = "mixNumber")]
-                public int? MixNumber { get; init; }
-
-                public enum MixTypeEnum
+                public enum TypeEnum
                 {
-                    MixAlgorithm,
-                    MixTable
+                    Individual,
+                    Algorithm,
+                    Table
                 }
 
                 /// <summary>
-                /// Specifies whether the mix type is an algorithm or a house mix table. Possible values are ```mixAlgorithm``` and
-                /// ```mixTable```.
+                /// Specifies the mix type as one of the following:
+                /// 
+                /// * ```individual``` - the mix is not calculated by the service, completely specified by the application.
+                /// * ```algorithm``` - the mix is calculated using one of the algorithms specified by _algorithm_.
+                /// * ```table``` - the mix is calculated using a mix table - see
+                /// [CashDispenser.GetMixTable](#cashdispenser.getmixtable)
+                /// <example>algorithm</example>
                 /// </summary>
-                [DataMember(Name = "mixType")]
-                public MixTypeEnum? MixType { get; init; }
+                [DataMember(Name = "type")]
+                public TypeEnum? Type { get; init; }
 
                 /// <summary>
-                /// Contains a vendor-defined number that identifies the type of algorithm. 
-                /// Individual vendor-defined mix algorithms are defined above hexadecimal 7FFF. 
-                /// Mix algorithms which are provided by the Service are in the range hexadecimal 8000 - 8FFF. 
-                /// Application defined mix algorithms start at hexadecimal 9000. All numbers below 8000 hexadecimal are reserved. 
-                /// If *mixType* is "mixTable", this value will be zero.
+                /// If _type_ is _algorithm_, specifies the algorithm type as one of the following. There are three pre-defined
+                /// algorithms, additional vendor-defined algorithms can also be defined. Omitted if the mix is not an algorithm.
+                /// 
+                /// * ```minimumBills``` - Select a mix requiring the minimum possible number of items.
+                /// * ```equalEmptying``` - The denomination is selected based upon criteria which ensure that over the course 
+                /// of its operation the storage units will empty as far as possible at the same rate and will therefore go 
+                /// low and then empty at approximately the same time.
+                /// * ```maxCashUnits``` - The denomination will be selected based upon criteria which ensures the maximum 
+                /// number of storage units are used.
+                /// * ```&lt;vendor-defined mix&gt;``` - A vendor defined mix algorithm
+                /// <example>minimumBills</example>
                 /// </summary>
-                [DataMember(Name = "subType")]
-                public int? SubType { get; init; }
+                [DataMember(Name = "algorithm")]
+                [DataTypes(Pattern = @"^minimumBills$|^equalEmptying$|^maxCashUnits$|^[A-Za-z0-9]*$")]
+                public string Algorithm { get; init; }
 
                 /// <summary>
-                /// Name of the table/algorithm used.
+                /// Name of the table or algorithm used. May be omitted.
+                /// <example>Minimum Bills</example>
                 /// </summary>
                 [DataMember(Name = "name")]
                 public string Name { get; init; }
@@ -82,10 +88,12 @@ namespace XFS4IoT.CashDispenser.Completions
             }
 
             /// <summary>
-            /// Array of mix type objects.
+            /// Object containing mix specifications. The property name of each mix can be used as the _mix_ in the 
+            /// [CashDispenser.GetMixTable](#cashdispenser.getmixtable), [CashDispenser.Dispense](#cashdispenser.dispense)
+            /// and [CashDispenser.Denominate](#cashdispenser.denominate) commands.
             /// </summary>
-            [DataMember(Name = "mixTypes")]
-            public List<MixTypesClass> MixTypes { get; init; }
+            [DataMember(Name = "mixes")]
+            public Dictionary<string, MixesClass> Mixes { get; init; }
 
         }
     }

@@ -35,27 +35,27 @@ namespace XFS4IoT.CashDispenser.Commands
 
             public enum PositionEnum
             {
-                Default,
-                Left,
-                Right,
-                Center,
-                Top,
-                Bottom,
-                Front,
-                Rear
+                OutDefault,
+                OutLeft,
+                OutRight,
+                OutCenter,
+                OutTop,
+                OutBottom,
+                OutFront,
+                OutRear
             }
 
             /// <summary>
-            /// Output position where the amount is to be presented. Following values are possible:
+            /// Supplies the output position as one of the following values:
             /// 
-            /// * ```default``` - The default configuration.
-            /// * ```left``` - The left output position.
-            /// * ```right``` - The right output position.
-            /// * ```center``` - The center output position.
-            /// * ```top``` - The top output position.
-            /// * ```bottom``` - The bottom output position.
-            /// * ```front``` - The front output position.
-            /// * ```rear``` - The rear output position.
+            /// * ```outDefault``` - Default output position.
+            /// * ```outLeft``` - Left output position.
+            /// * ```outRight``` - Right output position.
+            /// * ```outCenter``` - Center output position.
+            /// * ```outTop``` - Top output position.
+            /// * ```outBottom``` - Bottom output position.
+            /// * ```outFront``` - Front output position.
+            /// * ```outRear``` - Rear output position.
             /// </summary>
             [DataMember(Name = "position")]
             public PositionEnum? Position { get; init; }
