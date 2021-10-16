@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XFS4IoTFramework.CashManagement
+namespace XFS4IoTFramework.Storage
 {
     /// <summary>
     /// Breakdown item counters associated with the BankNoteID

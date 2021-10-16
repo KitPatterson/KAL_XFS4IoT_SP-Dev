@@ -3,11 +3,10 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Storage interface.
- * IStorageDevice.cs uses automatically generated parts.
 \***********************************************************************************************/
 
-
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using XFS4IoTServer;
@@ -17,34 +16,47 @@ namespace XFS4IoTFramework.Storage
 {
     public interface IStorageDevice : IDevice
     {
+        #region Card
 
         /// <summary>
-        /// This command is used to obtain information regarding the status, capabilities and contents of storage units. Thecapabilities of the storage unit can be used to dynamically configure the storage unit using[Storage.SetStorage](#storage.setstorage).
+        /// Return storage information for current configuration and capabilities on the startup.
         /// </summary>
-        Task<XFS4IoT.Storage.Completions.GetStorageCompletion.PayloadData> GetStorage(IGetStorageEvents events, 
-                                                                                      XFS4IoT.Storage.Commands.GetStorageCommand.PayloadData payload, 
-                                                                                      CancellationToken cancellation);
+        /// <returns></returns>
+        bool GetCardStorageConfiguration(out Dictionary<string, CardUnitStorageConfiguration> newCardUnits);
 
         /// <summary>
-        /// This command is used to adjust information about the configuration and contents of the device's storage units.Only fields that are to be changed need to be set in the payload of this command; values that are not meant to change can be omitted.This command generates the [Storage.StorageChangedEvent](#storage.storagechangedevent) to inform applications that storage unit information has been changed.Only a subset of the information reported by [Storage.GetStorage](#storage.getstorage) may be modified by this command therefore the payload is a subset of the GetStorage output. In addition, if the service supports an exchange state, only a subset of the information which may be modified by this command can be modified unless the service is in an exchange state. The descriptions of each field list which can be modified at any point using this command; any other changes must be performed while in an exchange state.The values set by this command are persistent.
+        /// This method is call after card is moved to the storage. Move or Reset command.
         /// </summary>
-        Task<XFS4IoT.Storage.Completions.SetStorageCompletion.PayloadData> SetStorage(ISetStorageEvents events, 
-                                                                                      XFS4IoT.Storage.Commands.SetStorageCommand.PayloadData payload, 
-                                                                                      CancellationToken cancellation);
+        /// <returns>Return true if the device maintains hardware counters for the card units</returns>
+        bool GetCardUnitCounts(out Dictionary<string, CardUnitCount> unitCounts);
+
+        /// <summary>
+        /// This methid is called if the storage threshold is set to zero to report hardware status, otherwise the framework will not make a call.
+        /// </summary>
+        /// <returns>Return true if the device maintains hardware card unit status</returns>
+        bool GetCardUnitStatus(string storageId, out CardUnitStatus unitStatus);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Return operation is completed successfully or not and report updates storage information.</returns>
+        Task<SetCardStorageResult> SetCardStorageAsync(SetCardStorageRequest request, CancellationToken cancellation);
+
+        #endregion
+
+        #region Cash
+
+        #endregion
 
         /// <summary>
         /// $ref: ../Docs/StartExchangeDescription.md
         /// </summary>
-        Task<XFS4IoT.Storage.Completions.StartExchangeCompletion.PayloadData> StartExchange(IStartExchangeEvents events, 
-                                                                                            XFS4IoT.Storage.Commands.StartExchangeCommand.PayloadData payload, 
-                                                                                            CancellationToken cancellation);
+        Task<StartExchangeResult> StartExchangeAsync(CancellationToken cancellation);
 
         /// <summary>
         /// $ref: ../Docs/EndExchangeDescription.md
         /// </summary>
-        Task<XFS4IoT.Storage.Completions.EndExchangeCompletion.PayloadData> EndExchange(IEndExchangeEvents events, 
-                                                                                        XFS4IoT.Storage.Commands.EndExchangeCommand.PayloadData payload, 
-                                                                                        CancellationToken cancellation);
+        Task<EndExchangeResult> EndExchangeAsync(CancellationToken cancellation);
 
     }
 }

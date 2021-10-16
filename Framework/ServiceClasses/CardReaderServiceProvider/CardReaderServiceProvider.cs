@@ -14,9 +14,11 @@ using System.Threading.Tasks;
 
 using XFS4IoT;
 using XFS4IoT.CardReader.Events;
+using XFS4IoT.Storage.Events;
 using XFS4IoT.Common.Events;
 using XFS4IoTFramework.Common;
 using XFS4IoTFramework.CardReader;
+using XFS4IoTFramework.Storage;
 
 namespace XFS4IoTServer
 {
@@ -28,9 +30,9 @@ namespace XFS4IoTServer
     /// It's possible to create other service provider types by combining multiple service classes in the 
     /// same way. 
     /// </remarks>
-    public class CardReaderServiceProvider : ServiceProvider, ICardReaderServiceClass, ICommonServiceClass
+    public class CardReaderServiceProvider : ServiceProvider, ICardReaderServiceClass, ICommonServiceClass, ILightsServiceClass, IStorageServiceClass
     {
-        public CardReaderServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger)
+        public CardReaderServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger, IPersistentData persistentData)
             :
             base(endpointDetails,
                  ServiceName,
@@ -39,18 +41,26 @@ namespace XFS4IoTServer
                  logger)
         {
             CommonService = new CommonServiceClass(this, logger);
-            CardReader = new CardReaderServiceClass(this, CommonService, logger);
+            StorageService = new StorageServiceClass(this, CommonService, logger, persistentData, StorageTypeEnum.Card);
+            CardReader = new CardReaderServiceClass(this, CommonService, StorageService, logger);
         }
 
         private readonly CardReaderServiceClass CardReader;
         private readonly CommonServiceClass CommonService;
+        private readonly StorageServiceClass StorageService;
 
         #region CardReader unsolicited events
         public Task MediaRemovedEvent() => CardReader.MediaRemovedEvent();
 
-        public Task RetainBinThresholdEvent(RetainBinThresholdEvent.PayloadData Payload) => CardReader.RetainBinThresholdEvent(Payload);
-
         public Task CardActionEvent(CardActionEvent.PayloadData Payload) => CardReader.CardActionEvent(Payload);
+        #endregion
+
+        #region Storage unsolic events
+        public Task StorageThresholdEvent(StorageThresholdEvent.PayloadData Payload) => StorageService.StorageThresholdEvent(Payload);
+
+        public Task StorageChangedEvent(StorageChangedEvent.PayloadData Payload) => StorageService.StorageChangedEvent(Payload);
+
+        public Task StorageErrorEvent(StorageErrorEvent.PayloadData Payload) => StorageService.StorageErrorEvent(Payload);
         #endregion
 
         #region Common unsolicited events
@@ -63,10 +73,44 @@ namespace XFS4IoTServer
         public Task ExchangeStateChangedEvent(ExchangeStateChangedEvent.PayloadData Payload) => CommonService.ExchangeStateChangedEvent(Payload);
         #endregion
 
+        #region StorageCard
+
+        /// <summary>
+        /// Update storage count from the framework after media movement command is processed
+        /// </summary>
+        public async Task UpdateCardStorageCount(string storageId, int count) => await StorageService.UpdateCardStorageCount(storageId, count);
+
+        /// <summary>
+        /// Return which type of storage SP is using
+        /// </summary>
+        public StorageTypeEnum StorageType { get => StorageService.StorageType; set { } }
+
+        /// <summary>
+        /// Store CardUnits and CashUnits persistently
+        /// </summary>
+        public void StorePersistent() => StorageService.StorePersistent();
+
+        /// <summary>
+        /// Card storage structure information of this device
+        /// </summary>
+        public Dictionary<string, CardUnitStorage> CardUnits { get => StorageService.CardUnits; set { } }
+
+        /// <summary>
+        /// Cash storage structure information of this device
+        /// </summary>
+        public Dictionary<string, CashUnitStorage> CashUnits { get => StorageService.CashUnits; set { } }
+
+        #endregion
+
         /// <summary>
         /// Stores CardReader interface capabilites internally
         /// </summary>
         public CardReaderCapabilitiesClass CardReaderCapabilities { get => CommonService.CardReaderCapabilities; set => CommonService.CardReaderCapabilities = value; }
+
+        /// <summary>
+        /// Card storage information device supports 
+        /// </summary>
+        public Dictionary<string, CardUnitStorage> CardStorages { get => StorageService.CardUnits; set => StorageService.CardUnits = value; }
 
     }
 }

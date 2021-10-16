@@ -11,8 +11,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XFS4IoTFramework.CashManagement
+namespace XFS4IoTFramework.Storage
 {
+    [Serializable()]
+    public sealed record CashUnitStorage
+    {
+        public enum StatusEnum
+        {
+            Good,
+            Inoperative,
+            Missing,
+            NotConfigured,
+            Manipulated,
+        }
+
+        /// <summary>
+        /// Fixed physical name for the position.
+        /// </summary>
+        public string PositionName { get; init; }
+
+        /// <summary>
+        /// Fixed physical name for the position.
+        /// </summary>
+        public int Capacity { get; init; }
+
+        /// <summary>
+        /// Status of this storage
+        /// </summary>
+        public StatusEnum Status { get; set; }
+
+        /// <summary>
+        /// The storage unit's serial number if it can be read electronically.
+        /// </summary>
+        public string SerialNumber { get; init; }
+
+        /// <summary>
+        /// Card Unit information
+        /// </summary>
+        public CashUnit Unit { get; init; }
+    }
+
     /// <summary>
     /// Cash Unit strcuture the device class supports
     /// </summary>

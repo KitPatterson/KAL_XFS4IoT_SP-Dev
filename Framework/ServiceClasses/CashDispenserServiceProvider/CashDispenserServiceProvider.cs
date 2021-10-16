@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoT.CashManagement.Events;
 using XFS4IoT.Common.Events;
+using XFS4IoT.Storage.Events;
 using XFS4IoT.CashDispenser.Events;
 using XFS4IoTFramework.CashDispenser;
 using XFS4IoTFramework.CashManagement;
@@ -29,7 +30,7 @@ namespace XFS4IoTServer
     /// It's possible to create other service provider types by combining multiple service classes in the 
     /// same way. 
     /// </remarks>
-    public class CashDispenserServiceProvider : ServiceProvider, ICashDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass
+    public class CashDispenserServiceProvider : ServiceProvider, ICashDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass, ILightsServiceClass
     {
         public CashDispenserServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger, IPersistentData persistentData)
             :
@@ -47,24 +48,10 @@ namespace XFS4IoTServer
         private readonly CashDispenserServiceClass CashDispenserService;
         private readonly CashManagementServiceClass CashManagementService;
         private readonly CommonServiceClass CommonService;
-
-
-        #region CashDispenser unsolicited events
-        public Task ItemsTakenEvent(ItemsTakenEvent.PayloadData Payload) => CashDispenserService.ItemsTakenEvent(Payload);
-
-        public Task ShutterStatusChangedEvent(ShutterStatusChangedEvent.PayloadData Payload) => CashDispenserService.ShutterStatusChangedEvent(Payload);
-
-        public Task MediaDetectedEvent(MediaDetectedEvent.PayloadData Payload) => CashDispenserService.MediaDetectedEvent(Payload);
-
-        public Task ItemsPresentedEvent() => CashDispenserService.ItemsPresentedEvent();
-        #endregion
+        private readonly StorageServiceClass StorageService;
 
         #region CashManagement unsolicited events
         public Task TellerInfoChangedEvent(TellerInfoChangedEvent.PayloadData Payload) => CashManagementService.TellerInfoChangedEvent(Payload);
-
-        public Task CashUnitThresholdEvent(CashUnitThresholdEvent.PayloadData Payload) => CashManagementService.CashUnitThresholdEvent(Payload);
-
-        public Task CashUnitInfoChangedEvent(CashUnitInfoChangedEvent.PayloadData Payload) => CashManagementService.CashUnitInfoChangedEvent(Payload);
 
         public Task SafeDoorOpenEvent() => CashManagementService.SafeDoorOpenEvent();
 
@@ -79,6 +66,14 @@ namespace XFS4IoTServer
         public Task NonceClearedEvent(NonceClearedEvent.PayloadData Payload) => CommonService.NonceClearedEvent(Payload);
 
         public Task ExchangeStateChangedEvent(ExchangeStateChangedEvent.PayloadData Payload) => CommonService.ExchangeStateChangedEvent(Payload);
+        #endregion
+
+        #region Storage unsolic events
+        public Task StorageThresholdEvent(StorageThresholdEvent.PayloadData Payload) => StorageService.StorageThresholdEvent(Payload);
+
+        public Task StorageChangedEvent(StorageChangedEvent.PayloadData Payload) => StorageService.StorageChangedEvent(Payload);
+
+        public Task StorageErrorEvent(StorageErrorEvent.PayloadData Payload) => StorageService.StorageErrorEvent(Payload);
         #endregion
 
         /// <summary>

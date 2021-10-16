@@ -121,7 +121,6 @@ namespace XFS4IoTFramework.Common
 
         public CashDispenserCapabilitiesClass(TypeEnum Type,
                                               int MaxDispenseItems,
-                                              bool Shutter,
                                               bool ShutterControl,
                                               Dictionary<RetractAreaEnum, bool> RetractAreas,
                                               Dictionary<RetractTransportActionEnum, bool> RetractTransportActions,
@@ -129,22 +128,18 @@ namespace XFS4IoTFramework.Common
                                               bool IntermediateStacker,
                                               bool ItemsTakenSensor,
                                               Dictionary<OutputPositionEnum, bool> OutputPositons,
-                                              Dictionary<MoveItemEnum, bool> MoveItems,
-                                              bool PrepareDispense)
+                                              Dictionary<MoveItemEnum, bool> MoveItems)
         {
             this.Type = Type;
             this.MaxDispenseItems = MaxDispenseItems;
-            this.Shutter = Shutter;
             this.ShutterControl = ShutterControl;
             this.RetractAreas = RetractAreas;
-            this.PrepareDispense = PrepareDispense;
             this.RetractTransportActions = RetractTransportActions;
             this.RetractStackerActions = RetractStackerActions;
             this.IntermediateStacker = IntermediateStacker;
             this.ItemsTakenSensor = ItemsTakenSensor;
             this.OutputPositons = OutputPositons;
             this.MoveItems = MoveItems;
-            this.PrepareDispense = PrepareDispense;
         }
 
         /// <summary>
@@ -166,6 +161,7 @@ namespace XFS4IoTFramework.Common
         /// If set to TRUE the shutter is controlled implicitly by the Service. 
         /// If set to FALSE the shutter must be controlled explicitly by the application
         /// using the Dispenser.OpenShutter and the Dispenser.CloseShutter commands.
+        /// This property is always true if the device has no shutter. This field applies to all shutters and all positions.
         /// </summary>
         public bool ShutterControl { get; init; }
 
@@ -203,13 +199,5 @@ namespace XFS4IoTFramework.Common
         /// Move items from stacker or transport to the unit
         /// </summary>
         public Dictionary<MoveItemEnum, bool> MoveItems { get; init; }
-
-        /// <summary>
-        /// On some hardware it can take a significant amount of time for the dispenser to get ready to dispense media. 
-        /// On this type of hardware the Dispenser.PrepareDispense command can be used to improve transaction performance.
-        /// This flag indicates if the hardware requires the application to use the Dispenser.PrepareDispense command
-        /// to maximize transaction performance.
-        /// </summary>
-        public bool PrepareDispense { get; init; }
     }
 }

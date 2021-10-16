@@ -21,10 +21,10 @@ namespace XFS4IoTServer
     public partial class CashDispenserServiceClass
     {
         public CashDispenserServiceClass(IServiceProvider ServiceProvider,
-                                     ICashManagementService CashManagementService,
-                                     ICommonService CommonService,
-                                     ILogger logger, 
-                                     IPersistentData PersistentData)
+                                         ICashManagementService CashManagementService,
+                                         ICommonService CommonService,
+                                         ILogger logger, 
+                                         IPersistentData PersistentData)
             : this(ServiceProvider, logger)
         {
             this.PersistentData = PersistentData.IsNotNull($"No persistent data interface is set. " + typeof(Mix).FullName);

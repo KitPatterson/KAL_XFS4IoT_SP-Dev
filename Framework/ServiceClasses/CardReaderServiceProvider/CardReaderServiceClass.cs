@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XFS4IoT;
 using XFS4IoTFramework.Common;
+using XFS4IoTFramework.Storage;
 
 namespace XFS4IoTServer
 {
@@ -19,10 +20,12 @@ namespace XFS4IoTServer
     {
         public CardReaderServiceClass(IServiceProvider ServiceProvider,
                                       ICommonService CommonService,
+                                      IStorageServiceClass StorageService,
                                       ILogger logger)
             : this(ServiceProvider, logger)
         {
             this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(CardReaderServiceClass));
+            this.StorageService = StorageService.IsNotNull($"Unexpected parameter set in the " + nameof(CardReaderServiceClass));
         }
 
         /// <summary>
@@ -33,6 +36,17 @@ namespace XFS4IoTServer
         /// <summary>
         /// Common service interface
         /// </summary>
-        private ICommonService CommonService { get; init; }
+        public ICommonService CommonService { get; init; }
+
+
+        /// <summary>
+        /// Card storage information device supports 
+        /// </summary>
+        public Dictionary<string, CardUnitStorage> CardStorages { get => StorageService.CardUnits; set => StorageService.CardUnits = value; }
+
+        /// <summary>
+        /// Storage service interface
+        /// </summary>
+        public IStorageServiceClass StorageService { get; init;  }
     }
 }

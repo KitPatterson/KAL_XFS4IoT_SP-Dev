@@ -3,16 +3,13 @@
  * KAL ATM Software GmbH licenses this file to you under the MIT license.
  * See the LICENSE file in the project root for more information.
  *
- * This file was created automatically as part of the XFS4IoT Storage interface.
- * EndExchangeHandler.cs uses automatically generated parts.
 \***********************************************************************************************/
 
 
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoT.Completions;
 using XFS4IoT.Storage.Commands;
 using XFS4IoT.Storage.Completions;
 
@@ -20,17 +17,25 @@ namespace XFS4IoTFramework.Storage
 {
     public partial class EndExchangeHandler
     {
-
-        private Task<EndExchangeCompletion.PayloadData> HandleEndExchange(IEndExchangeEvents events, EndExchangeCommand endExchange, CancellationToken cancel)
+        private async Task<EndExchangeCompletion.PayloadData> HandleEndExchange(IEndExchangeEvents events, EndExchangeCommand endExchange, CancellationToken cancel)
         {
-            //ToDo: Implement HandleEndExchange for Storage.
-            
-            #if DEBUG
-                throw new NotImplementedException("HandleEndExchange for Storage is not implemented in EndExchangeHandler.cs");
-            #else
-                #error HandleEndExchange for Storage is not implemented in EndExchangeHandler.cs
-            #endif
-        }
+            if (Storage.StorageType == StorageTypeEnum.Cash)
+            {
+                if (Storage.CashManagementCapabilities is null ||
+                    Storage.CashManagementCapabilities.ExchangeTypes == Common.CashManagementCapabilitiesClass.ExchangeTypesEnum.NotSupported)
+                {
+                    return new EndExchangeCompletion.PayloadData(MessagePayload.CompletionCodeEnum.UnsupportedCommand,
+                                                                 $"No capabilites reported via CashManagement for the exchange operation.");
+                }
+            }
 
+            Logger.Log(Constants.DeviceClass, "StorageDev.EndExchangeAsync()");
+            var result = await Device.EndExchangeAsync(cancel);
+            Logger.Log(Constants.DeviceClass, $"StorageDev.EndExchangeAsync() -> {result.CompletionCode}, {result.ErrorCode}");
+
+            return new EndExchangeCompletion.PayloadData(result.CompletionCode,
+                                                         result.ErrorDescription,
+                                                         result.ErrorCode);
+        }
     }
 }

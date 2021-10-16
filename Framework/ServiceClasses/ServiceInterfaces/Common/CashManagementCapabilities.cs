@@ -24,9 +24,6 @@ namespace XFS4IoTFramework.Common
         {
             NotSupported = 0,
             ByHand = 0x0001,
-            ToCassettes = 0x0002,
-            ClearRecycler = 0x0004,
-            DepositInto = 0x0008,
         }
 
         [Flags]
@@ -42,15 +39,13 @@ namespace XFS4IoTFramework.Common
                                                ItemInfoTypesEnum ItemInfoTypes,
                                                bool SafeDoor,
                                                bool CashBox,
-                                               bool ClassificationList,
-                                               bool PhysicalNoteList)
+                                               bool ClassificationList)
         {
             this.ExchangeTypes = ExchangeTypes;
             this.ItemInfoTypes = ItemInfoTypes;
             this.SafeDoor = SafeDoor;
             this.CashBox = CashBox;
             this.ClassificationList = ClassificationList;
-            this.PhysicalNoteList = PhysicalNoteList;
         }
 
         /// <summary>
@@ -79,11 +74,5 @@ namespace XFS4IoTFramework.Common
         /// supporting the associated operations. This can either be TRUE if the device has the capability or FALSE if it does not.
         /// </summary>
         public bool ClassificationList { get; init; }
-
-        /// <summary>
-        /// Specifies whether the Service supports note number lists on physical cash units.
-        /// This can either be TRUE if the Service has the capability or FALSE if it does not.
-        /// </summary>
-        public bool PhysicalNoteList { get; init; }
     }
 }

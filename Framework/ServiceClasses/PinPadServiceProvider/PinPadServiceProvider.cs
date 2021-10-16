@@ -28,7 +28,7 @@ namespace XFS4IoTServer
     /// It's possible to create other service provider types by combining multiple service classes in the 
     /// same way. 
     /// </remarks>
-    public class PinPadServiceProvider : ServiceProvider, IPinPadServiceClass, IKeyManagementServiceClass, IKeyboardServiceClass, ICryptoServiceClass, ICommonServiceClass
+    public class PinPadServiceProvider : ServiceProvider, IPinPadServiceClass, IKeyManagementServiceClass, IKeyboardServiceClass, ICryptoServiceClass, ICommonServiceClass, ILightsServiceClass
     {
         public PinPadServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger, IPersistentData persistentData)
             :
