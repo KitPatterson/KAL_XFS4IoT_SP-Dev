@@ -36,18 +36,17 @@ namespace XFS4IoT.CardReader.Events
             }
 
             /// <summary>
-            /// Specifies where the card was moved to or if it is jammed as one of the following:
+            /// Specifies a card position or jammed state as one of the following:
             /// 
-            /// * ```exit``` - The card was moved to the exit position.
-            /// * ```transport``` - The card was moved to the transport position.
-            /// * ```&lt;storage unit identifier&gt;``` - The card was moved to the storage unit with matching
-            ///   [identifier](#storage.getstorage.completion.properties.storage.unit1). The storage unit type must be
-            ///   either *retain*.
-            /// * ```jammed``` - The card is jammed in the device.
+            /// * ```exit``` - A card is at the exit position.
+            /// * ```transport``` - A card is in to the transport position.
+            /// * ```&lt;storage unit identifier&gt;``` - A card is in the
+            ///   [identifed](#storage.getstorage.completion.properties.storage.unit1) *retain* or *park* storage unit.
+            /// * ```jammed``` - A card is jammed in the device.
             /// <example>retn1</example>
             /// </summary>
             [DataMember(Name = "position")]
-            [DataTypes(Pattern = @"^exit$|^transport$|^.{1,5}$")]
+            [DataTypes(Pattern = @"^exit$|^transport$|^jammed$|^.{1,5}$")]
             public string Position { get; init; }
 
         }
