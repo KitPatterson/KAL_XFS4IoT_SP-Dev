@@ -94,9 +94,7 @@ namespace XFS4IoT.CashDispenser.Completions
             public Dictionary<string, double> Values { get; init; }
 
             /// <summary>
-            /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
-            /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
-            /// omitted on a request if _values_ specifies the entire request.
+            /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.
             /// </summary>
             [DataMember(Name = "cashBox")]
             public Dictionary<string, double> CashBox { get; init; }

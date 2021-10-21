@@ -26,7 +26,7 @@ namespace XFS4IoT.CashAcceptor.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, PositionEnum? Position = null, PresentStateEnum? PresentState = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null, CashManagement.StorageCashCountsClass ReturnedItems = null, CashManagement.StorageCashCountsClass TotalReturnedItems = null, CashManagement.StorageCashCountsClass RemainingItems = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, CashManagement.OutputPositionEnum? Position = null, PresentStateEnum? PresentState = null, AdditionalBunchesEnum? AdditionalBunches = null, int? BunchesRemaining = null, CashManagement.StorageCashCountsClass ReturnedItems = null, CashManagement.StorageCashCountsClass TotalReturnedItems = null, CashManagement.StorageCashCountsClass RemainingItems = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.Position = Position;
@@ -38,32 +38,8 @@ namespace XFS4IoT.CashAcceptor.Completions
                 this.RemainingItems = RemainingItems;
             }
 
-            public enum PositionEnum
-            {
-                OutDefault,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear
-            }
-
-            /// <summary>
-            /// Supplies the output position as one of the following values:
-            /// 
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
-            /// </summary>
             [DataMember(Name = "position")]
-            public PositionEnum? Position { get; init; }
+            public CashManagement.OutputPositionEnum? Position { get; init; }
 
             public enum PresentStateEnum
             {

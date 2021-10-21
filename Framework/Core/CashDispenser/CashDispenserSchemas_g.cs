@@ -17,7 +17,7 @@ namespace XFS4IoT.CashDispenser
     [DataContract]
     public sealed class OutPosClass
     {
-        public OutPosClass(PositionEnum? Position = null, ShutterEnum? Shutter = null, PositionStatusEnum? PositionStatus = null, TransportEnum? Transport = null, TransportStatusEnum? TransportStatus = null, JammedShutterPositionEnum? JammedShutterPosition = null)
+        public OutPosClass(CashManagement.OutputPositionEnum? Position = null, ShutterEnum? Shutter = null, PositionStatusEnum? PositionStatus = null, TransportEnum? Transport = null, TransportStatusEnum? TransportStatus = null, JammedShutterPositionEnum? JammedShutterPosition = null)
         {
             this.Position = Position;
             this.Shutter = Shutter;
@@ -27,32 +27,8 @@ namespace XFS4IoT.CashDispenser
             this.JammedShutterPosition = JammedShutterPosition;
         }
 
-        public enum PositionEnum
-        {
-            OutDefault,
-            OutLeft,
-            OutRight,
-            OutCenter,
-            OutTop,
-            OutBottom,
-            OutFront,
-            OutRear
-        }
-
-        /// <summary>
-        /// Supplies the output position as one of the following values:
-        /// 
-        /// * ```outDefault``` - Default output position.
-        /// * ```outLeft``` - Left output position.
-        /// * ```outRight``` - Right output position.
-        /// * ```outCenter``` - Center output position.
-        /// * ```outTop``` - Top output position.
-        /// * ```outBottom``` - Bottom output position.
-        /// * ```outFront``` - Front output position.
-        /// * ```outRear``` - Rear output position.
-        /// </summary>
         [DataMember(Name = "position")]
-        public PositionEnum? Position { get; init; }
+        public CashManagement.OutputPositionEnum? Position { get; init; }
 
         public enum ShutterEnum
         {
@@ -538,6 +514,130 @@ namespace XFS4IoT.CashDispenser
         /// </summary>
         [DataMember(Name = "moveItems")]
         public MoveItemsClass MoveItems { get; init; }
+
+    }
+
+
+    [DataContract]
+    public sealed class MixClass
+    {
+        public MixClass(TypeEnum? Type = null, string Algorithm = null, string Name = null)
+        {
+            this.Type = Type;
+            this.Algorithm = Algorithm;
+            this.Name = Name;
+        }
+
+        public enum TypeEnum
+        {
+            Individual,
+            Algorithm,
+            Table
+        }
+
+        /// <summary>
+        /// Specifies the mix type as one of the following:
+        /// 
+        /// * ```individual``` - the mix is not calculated by the service, completely specified by the application.
+        /// * ```algorithm``` - the mix is calculated using one of the algorithms specified by _algorithm_.
+        /// * ```table``` - the mix is calculated using a mix table - see
+        /// [CashDispenser.GetMixTable](#cashdispenser.getmixtable)
+        /// <example>algorithm</example>
+        /// </summary>
+        [DataMember(Name = "type")]
+        public TypeEnum? Type { get; init; }
+
+        /// <summary>
+        /// If _type_ is _algorithm_, specifies the algorithm type as one of the following. There are three pre-defined
+        /// algorithms, additional vendor-defined algorithms can also be defined. Omitted if the mix is not an algorithm.
+        /// 
+        /// * ```minimumBills``` - Select a mix requiring the minimum possible number of items.
+        /// * ```equalEmptying``` - The denomination is selected based upon criteria which ensure that over the course 
+        /// of its operation the storage units will empty as far as possible at the same rate and will therefore go 
+        /// low and then empty at approximately the same time.
+        /// * ```maxCashUnits``` - The denomination will be selected based upon criteria which ensures the maximum 
+        /// number of storage units are used.
+        /// * ```&lt;vendor-defined mix&gt;``` - A vendor defined mix algorithm
+        /// <example>minimumBills</example>
+        /// </summary>
+        [DataMember(Name = "algorithm")]
+        [DataTypes(Pattern = @"^minimumBills$|^equalEmptying$|^maxCashUnits$|^[A-Za-z0-9]*$")]
+        public string Algorithm { get; init; }
+
+        /// <summary>
+        /// Name of the table or algorithm used. May be omitted.
+        /// <example>Minimum Bills</example>
+        /// </summary>
+        [DataMember(Name = "name")]
+        public string Name { get; init; }
+
+    }
+
+
+    [DataContract]
+    public sealed class DenominationClass
+    {
+        public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, double> Values = null, Dictionary<string, double> CashBox = null)
+        {
+            this.Currencies = Currencies;
+            this.Values = Values;
+            this.CashBox = CashBox;
+        }
+
+        /// <summary>
+        /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
+        /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
+        /// omitted on a request if _values_ specifies the entire request.
+        /// </summary>
+        [DataMember(Name = "currencies")]
+        public Dictionary<string, double> Currencies { get; init; }
+
+        /// <summary>
+        /// This list specifies the number of items to take from the cash units. If specified in a request, the output 
+        /// denomination must include these items.
+        /// 
+        /// The property name is storage unit object name as stated by the [Storage.GetStorage](#storage.getstorage)
+        /// command. The value of the entry is the number of items to take from that unit.
+        /// </summary>
+        [DataMember(Name = "values")]
+        public Dictionary<string, double> Values { get; init; }
+
+        /// <summary>
+        /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.
+        /// </summary>
+        [DataMember(Name = "cashBox")]
+        public Dictionary<string, double> CashBox { get; init; }
+
+    }
+
+
+    [DataContract]
+    public sealed class DenominateRequestClass
+    {
+        public DenominateRequestClass(DenominationClass Denomination = null, string Mix = null, int? TellerID = null)
+        {
+            this.Denomination = Denomination;
+            this.Mix = Mix;
+            this.TellerID = TellerID;
+        }
+
+        [DataMember(Name = "denomination")]
+        public DenominationClass Denomination { get; init; }
+
+        /// <summary>
+        /// Mix algorithm or house mix table to be used as defined by mixes reported by
+        /// [CashDispenser.GetMixTypes](#cashdispenser.getmixtypes). May be omitted if the request is entirely specified
+        /// by _counts_.
+        /// <example>mix1</example>
+        /// </summary>
+        [DataMember(Name = "mix")]
+        public string Mix { get; init; }
+
+        /// <summary>
+        /// Only applies to Teller Dispensers. Identification of teller.
+        /// </summary>
+        [DataMember(Name = "tellerID")]
+        public int? TellerID { get; init; }
 
     }
 

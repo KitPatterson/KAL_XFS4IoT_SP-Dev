@@ -14,6 +14,40 @@ using System.Runtime.Serialization;
 namespace XFS4IoT.CashManagement
 {
 
+    public enum PositionEnum
+    {
+        InDefault,
+        InLeft,
+        InRight,
+        InCenter,
+        InTop,
+        InBottom,
+        InFront,
+        InRear,
+        OutDefault,
+        OutLeft,
+        OutRight,
+        OutCenter,
+        OutTop,
+        OutBottom,
+        OutFront,
+        OutRear
+    }
+
+
+    public enum OutputPositionEnum
+    {
+        OutDefault,
+        OutLeft,
+        OutRight,
+        OutCenter,
+        OutTop,
+        OutBottom,
+        OutFront,
+        OutRear
+    }
+
+
     [DataContract]
     public sealed class StatusClass
     {
@@ -881,19 +915,6 @@ namespace XFS4IoT.CashManagement
     }
 
 
-    public enum OutputPositionEnum
-    {
-        OutDefault,
-        OutLeft,
-        OutRight,
-        OutCenter,
-        OutTop,
-        OutBottom,
-        OutFront,
-        OutRear
-    }
-
-
     [DataContract]
     public sealed class TellerTotalsClass
     {
@@ -1140,36 +1161,14 @@ namespace XFS4IoT.CashManagement
     [DataContract]
     public sealed class PositionInfoClass
     {
-        public PositionInfoClass(string Position = null, string AdditionalBunches = null)
+        public PositionInfoClass(PositionEnum? Position = null, string AdditionalBunches = null)
         {
             this.Position = Position;
             this.AdditionalBunches = AdditionalBunches;
         }
 
-        /// <summary>
-        /// Supplies the input or output position as one of the following values. If not specified, the default position
-        /// applies.
-        /// 
-        /// * ```inDefault``` - Default input position.
-        /// * ```inLeft``` - Left input position.
-        /// * ```inRight``` - Right input position.
-        /// * ```inCenter``` - Center input position.
-        /// * ```inTop``` - Top input position.
-        /// * ```inBottom``` - Bottom input position.
-        /// * ```inFront``` - Front input position.
-        /// * ```inRear``` - Rear input position.
-        /// * ```outDefault``` - Default output position.
-        /// * ```outLeft``` - Left output position.
-        /// * ```outRight``` - Right output position.
-        /// * ```outCenter``` - Center output position.
-        /// * ```outTop``` - Top output position.
-        /// * ```outBottom``` - Bottom output position.
-        /// * ```outFront``` - Front output position.
-        /// * ```outRear``` - Rear output position.
-        /// <example>inLeft</example>
-        /// </summary>
         [DataMember(Name = "position")]
-        public string Position { get; init; }
+        public PositionEnum? Position { get; init; }
 
         /// <summary>
         /// Specifies how many more bunches will be required to present the request. Following values are possible:

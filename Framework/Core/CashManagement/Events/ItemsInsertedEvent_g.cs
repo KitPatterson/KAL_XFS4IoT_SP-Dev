@@ -29,36 +29,14 @@ namespace XFS4IoT.CashManagement.Events
         public sealed class PayloadData : MessagePayloadBase
         {
 
-            public PayloadData(string Position = null)
+            public PayloadData(PositionEnum? Position = null)
                 : base()
             {
                 this.Position = Position;
             }
 
-            /// <summary>
-            /// Supplies the input or output position as one of the following values. If not specified, the default position
-            /// applies.
-            /// 
-            /// * ```inDefault``` - Default input position.
-            /// * ```inLeft``` - Left input position.
-            /// * ```inRight``` - Right input position.
-            /// * ```inCenter``` - Center input position.
-            /// * ```inTop``` - Top input position.
-            /// * ```inBottom``` - Bottom input position.
-            /// * ```inFront``` - Front input position.
-            /// * ```inRear``` - Rear input position.
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
-            /// <example>inLeft</example>
-            /// </summary>
             [DataMember(Name = "position")]
-            public string Position { get; init; }
+            public PositionEnum? Position { get; init; }
 
         }
 

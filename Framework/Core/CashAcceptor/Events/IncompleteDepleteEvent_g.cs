@@ -64,7 +64,7 @@ namespace XFS4IoT.CashAcceptor.Events
                 [DataContract]
                 public sealed class DepleteSourceResultsClass
                 {
-                    public DepleteSourceResultsClass(string CashUnitSource = null, NoteIdClass NoteId = null, int? NumberOfItemsRemoved = null)
+                    public DepleteSourceResultsClass(string CashUnitSource = null, CashManagement.CashItemClass NoteId = null, int? NumberOfItemsRemoved = null)
                     {
                         this.CashUnitSource = CashUnitSource;
                         this.NoteId = NoteId;
@@ -79,68 +79,8 @@ namespace XFS4IoT.CashAcceptor.Events
                     [DataMember(Name = "cashUnitSource")]
                     public string CashUnitSource { get; init; }
 
-                    [DataContract]
-                    public sealed class NoteIdClass
-                    {
-                        public NoteIdClass(int? NoteID = null, string Currency = null, double? Value = null, int? Release = null)
-                        {
-                            this.NoteID = NoteID;
-                            this.Currency = Currency;
-                            this.Value = Value;
-                            this.Release = Release;
-                        }
-
-                        /// <summary>
-                        /// Assigned by the XFS4IoT service. A unique number identifying a single cash item. 
-                        /// Each unique combination of the other properties will have a different noteID. 
-                        /// Can be used for migration of _usNoteID_ from XFS 3.x.
-                        /// <example>25</example>
-                        /// </summary>
-                        [DataMember(Name = "noteID")]
-                        [DataTypes(Minimum = 1)]
-                        public int? NoteID { get; init; }
-
-                        /// <summary>
-                        /// ISO 4217 currency.
-                        /// <example>USD</example>
-                        /// </summary>
-                        [DataMember(Name = "currency")]
-                        public string Currency { get; init; }
-
-                        /// <summary>
-                        /// Absolute value of all contents, 0 if mixed. May only be modified in an exchange state if applicable. May be 
-                        /// a floating point value to allow for coins and notes which have a value which is not a whole multiple 
-                        /// of the currency unit.
-                        /// <example>20</example>
-                        /// </summary>
-                        [DataMember(Name = "value")]
-                        public double? Value { get; init; }
-
-                        /// <summary>
-                        /// The release of the cash item. The higher this number is, the newer the release.
-                        /// 
-                        /// If zero or not reported, there is only one release of that cash item or the device is not
-                        /// capable of distinguishing different release of the item, for example in a simple cash dispenser.
-                        /// 
-                        /// An example of how this can be used is being able to sort different releases of the same denomination 
-                        /// note to different storage units to take older notes out of circulation.
-                        /// 
-                        /// This value is device, banknote reader and currency dependent, therefore a release number of the 
-                        /// same cash item will not necessarily have the same value in different systems and any such usage 
-                        /// would be specific to a specific device's configuration.
-                        /// <example>1</example>
-                        /// </summary>
-                        [DataMember(Name = "release")]
-                        [DataTypes(Minimum = 0)]
-                        public int? Release { get; init; }
-
-                    }
-
-                    /// <summary>
-                    /// An object containing information about a single cash item supported by the device.
-                    /// </summary>
                     [DataMember(Name = "noteId")]
-                    public NoteIdClass NoteId { get; init; }
+                    public CashManagement.CashItemClass NoteId { get; init; }
 
                     /// <summary>
                     /// Total number of items removed from this source cash unit of the _noteId_ item type. 

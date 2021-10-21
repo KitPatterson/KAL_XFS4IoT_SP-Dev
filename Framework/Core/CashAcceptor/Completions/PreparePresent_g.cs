@@ -26,7 +26,7 @@ namespace XFS4IoT.CashAcceptor.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, PositionEnum? Position = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, CashManagement.OutputPositionEnum? Position = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
@@ -53,32 +53,8 @@ namespace XFS4IoT.CashAcceptor.Completions
             [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; init; }
 
-            public enum PositionEnum
-            {
-                OutDefault,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear
-            }
-
-            /// <summary>
-            /// Supplies the output position as one of the following values:
-            /// 
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
-            /// </summary>
             [DataMember(Name = "position")]
-            public PositionEnum? Position { get; init; }
+            public CashManagement.OutputPositionEnum? Position { get; init; }
 
         }
     }

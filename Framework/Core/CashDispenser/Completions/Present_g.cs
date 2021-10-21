@@ -26,7 +26,7 @@ namespace XFS4IoT.CashDispenser.Completions
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, string Position = null, string AdditionalBunches = null)
+            public PayloadData(CompletionCodeEnum CompletionCode, string ErrorDescription, ErrorCodeEnum? ErrorCode = null, CashManagement.PositionEnum? Position = null, string AdditionalBunches = null)
                 : base(CompletionCode, ErrorDescription)
             {
                 this.ErrorCode = ErrorCode;
@@ -65,30 +65,8 @@ namespace XFS4IoT.CashDispenser.Completions
             [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; init; }
 
-            /// <summary>
-            /// Supplies the input or output position as one of the following values. If not specified, the default position
-            /// applies.
-            /// 
-            /// * ```inDefault``` - Default input position.
-            /// * ```inLeft``` - Left input position.
-            /// * ```inRight``` - Right input position.
-            /// * ```inCenter``` - Center input position.
-            /// * ```inTop``` - Top input position.
-            /// * ```inBottom``` - Bottom input position.
-            /// * ```inFront``` - Front input position.
-            /// * ```inRear``` - Rear input position.
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
-            /// <example>inLeft</example>
-            /// </summary>
             [DataMember(Name = "position")]
-            public string Position { get; init; }
+            public CashManagement.PositionEnum? Position { get; init; }
 
             /// <summary>
             /// Specifies how many more bunches will be required to present the request. Following values are possible:

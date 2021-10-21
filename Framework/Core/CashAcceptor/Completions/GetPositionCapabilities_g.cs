@@ -35,7 +35,7 @@ namespace XFS4IoT.CashAcceptor.Completions
             [DataContract]
             public sealed class PosCapabilitiesClass
             {
-                public PosCapabilitiesClass(string Position = null, UsageClass Usage = null, bool? ShutterControl = null, bool? ItemsTakenSensor = null, bool? ItemsInsertedSensor = null, RetractAreasClass RetractAreas = null, bool? PresentControl = null, bool? PreparePresent = null)
+                public PosCapabilitiesClass(CashManagement.PositionEnum? Position = null, UsageClass Usage = null, bool? ShutterControl = null, bool? ItemsTakenSensor = null, bool? ItemsInsertedSensor = null, RetractAreasClass RetractAreas = null, bool? PresentControl = null, bool? PreparePresent = null)
                 {
                     this.Position = Position;
                     this.Usage = Usage;
@@ -47,30 +47,8 @@ namespace XFS4IoT.CashAcceptor.Completions
                     this.PreparePresent = PreparePresent;
                 }
 
-                /// <summary>
-                /// Supplies the input or output position as one of the following values. If not specified, the default position
-                /// applies.
-                /// 
-                /// * ```inDefault``` - Default input position.
-                /// * ```inLeft``` - Left input position.
-                /// * ```inRight``` - Right input position.
-                /// * ```inCenter``` - Center input position.
-                /// * ```inTop``` - Top input position.
-                /// * ```inBottom``` - Bottom input position.
-                /// * ```inFront``` - Front input position.
-                /// * ```inRear``` - Rear input position.
-                /// * ```outDefault``` - Default output position.
-                /// * ```outLeft``` - Left output position.
-                /// * ```outRight``` - Right output position.
-                /// * ```outCenter``` - Center output position.
-                /// * ```outTop``` - Top output position.
-                /// * ```outBottom``` - Bottom output position.
-                /// * ```outFront``` - Front output position.
-                /// * ```outRear``` - Rear output position.
-                /// <example>inLeft</example>
-                /// </summary>
                 [DataMember(Name = "position")]
-                public string Position { get; init; }
+                public CashManagement.PositionEnum? Position { get; init; }
 
                 [DataContract]
                 public sealed class UsageClass

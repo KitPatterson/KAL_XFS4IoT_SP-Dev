@@ -56,7 +56,7 @@ namespace XFS4IoT.CashDispenser.Completions
             [DataContract]
             public sealed class CountedCashUnitsClass
             {
-                public CountedCashUnitsClass(int? Dispensed = null, int? Counted = null, ReplenishmentStatusEnum? ReplenishmentStatus = null, StatusEnum? Status = null)
+                public CountedCashUnitsClass(int? Dispensed = null, int? Counted = null, CashManagement.ReplenishmentStatusEnum? ReplenishmentStatus = null, Storage.StatusEnum? Status = null)
                 {
                     this.Dispensed = Dispensed;
                     this.Counted = Counted;
@@ -80,56 +80,11 @@ namespace XFS4IoT.CashDispenser.Completions
                 [DataTypes(Minimum = 1)]
                 public int? Counted { get; init; }
 
-                public enum ReplenishmentStatusEnum
-                {
-                    Ok,
-                    Full,
-                    High,
-                    Low,
-                    Empty
-                }
-
-                /// <summary>
-                /// The state of the media in the unit if it can be determined. Note that overall 
-                /// [status](#storage.getstorage.completion.properties.storage.unit1.status) of the storage unit must
-                /// be taken into account when deciding whether the storage unit is usable and whether replenishment status
-                /// is applicable. In particular, if the overall status is _missing_ this will not be reported.
-                /// The following values are possible:
-                /// 
-                /// * ```ok``` - The storage unit media is in a good state.
-                /// * ```full``` - The storage unit is full.
-                /// * ```high``` - The storage unit is almost full (either sensor based or exceeded the 
-                /// [highThreshold](#storage.getstorage.completion.properties.storage.unit1.cash.configuration.highthreshold).
-                /// * ```low``` - The storage unit is almost empty (either sensor based or below the 
-                /// [lowThreshold](#storage.getstorage.completion.properties.storage.unit1.cash.configuration.lowthreshold)). 
-                /// * ```empty``` - The storage unit is empty, or insufficient items in the storage unit are preventing further 
-                /// dispense operations.
-                /// </summary>
                 [DataMember(Name = "replenishmentStatus")]
-                public ReplenishmentStatusEnum? ReplenishmentStatus { get; init; }
+                public CashManagement.ReplenishmentStatusEnum? ReplenishmentStatus { get; init; }
 
-                public enum StatusEnum
-                {
-                    Ok,
-                    Inoperative,
-                    Missing,
-                    NotConfigured,
-                    Manipulated
-                }
-
-                /// <summary>
-                /// The state of the unit. The following values are possible:
-                /// 
-                /// * ```ok``` - The storage unit is in a good state.
-                /// * ```inoperative``` - The storage unit is inoperative.
-                /// * ```missing``` - The storage unit is missing.
-                /// * ```notConfigured``` - The storage unit has not been configured for use.
-                /// * ```manipulated``` - The storage unit has been inserted (including removal followed by a reinsertion) when 
-                /// the device was not in the exchange state - see [Storage.StartExchange](#storage.startexchange). This storage 
-                /// unit cannot be used. Only applies to services which support the exchange state.
-                /// </summary>
                 [DataMember(Name = "status")]
-                public StatusEnum? Status { get; init; }
+                public Storage.StatusEnum? Status { get; init; }
 
             }
 

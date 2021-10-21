@@ -27,7 +27,7 @@ namespace XFS4IoT.CashDispenser.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, DenominationClass Denomination = null, PositionEnum? Position = null, string Token = null)
+            public PayloadData(int Timeout, DenominateRequestClass Denomination = null, CashManagement.OutputPositionEnum? Position = null, string Token = null)
                 : base(Timeout)
             {
                 this.Denomination = Denomination;
@@ -35,109 +35,22 @@ namespace XFS4IoT.CashDispenser.Commands
                 this.Token = Token;
             }
 
-            [DataContract]
-            public sealed class DenominationClass
-            {
-                public DenominationClass(DenominationClassClass Denomination = null, string Mix = null, int? TellerID = null)
-                {
-                    this.Denomination = Denomination;
-                    this.Mix = Mix;
-                    this.TellerID = TellerID;
-                }
-
-                [DataContract]
-                public sealed class DenominationClassClass
-                {
-                    public DenominationClassClass(Dictionary<string, double> Currencies = null, Dictionary<string, double> Values = null, Dictionary<string, double> CashBox = null)
-                    {
-                        this.Currencies = Currencies;
-                        this.Values = Values;
-                        this.CashBox = CashBox;
-                    }
-
-                    /// <summary>
-                    /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
-                    /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
-                    /// omitted on a request if _values_ specifies the entire request.
-                    /// </summary>
-                    [DataMember(Name = "currencies")]
-                    public Dictionary<string, double> Currencies { get; init; }
-
-                    /// <summary>
-                    /// This list specifies the number of items to take from the cash units. If specified in a request, the output 
-                    /// denomination must include these items.
-                    /// 
-                    /// The property name is storage unit object name as stated by the [Storage.GetStorage](#storage.getstorage)
-                    /// command. The value of the entry is the number of items to take from that unit.
-                    /// </summary>
-                    [DataMember(Name = "values")]
-                    public Dictionary<string, double> Values { get; init; }
-
-                    /// <summary>
-                    /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
-                    /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
-                    /// omitted on a request if _values_ specifies the entire request.
-                    /// </summary>
-                    [DataMember(Name = "cashBox")]
-                    public Dictionary<string, double> CashBox { get; init; }
-
-                }
-
-                /// <summary>
-                /// Specifies a denomination or a denomination request.
-                /// </summary>
-                [DataMember(Name = "denomination")]
-                public DenominationClassClass Denomination { get; init; }
-
-                /// <summary>
-                /// Mix algorithm or house mix table to be used as defined by mixes reported by
-                /// [CashDispenser.GetMixTypes](#cashdispenser.getmixtypes). May be omitted if the request is entirely specified
-                /// by _counts_.
-                /// <example>mix1</example>
-                /// </summary>
-                [DataMember(Name = "mix")]
-                public string Mix { get; init; }
-
-                /// <summary>
-                /// Only applies to Teller Dispensers. Identification of teller.
-                /// </summary>
-                [DataMember(Name = "tellerID")]
-                public int? TellerID { get; init; }
-
-            }
-
             /// <summary>
             /// Denomination object describing the contents of the denomination operation.
             /// </summary>
             [DataMember(Name = "denomination")]
-            public DenominationClass Denomination { get; init; }
-
-            public enum PositionEnum
-            {
-                OutDefault,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear
-            }
+            public DenominateRequestClass Denomination { get; init; }
 
             /// <summary>
-            /// Supplies the output position as one of the following values:
+            /// If specified, defines the [output position](#cashmanagement.outputposition) to which the items are to be 
+            /// dispensed. If not specified, the items are dispensed to one of the following positions as applicable:
             /// 
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
+            /// * teller position if the device is a Teller Dispenser
+            /// * intermediate stacker if the device has one
+            /// * the default position if there is no intermediate stacker.
             /// </summary>
             [DataMember(Name = "position")]
-            public PositionEnum? Position { get; init; }
+            public CashManagement.OutputPositionEnum? Position { get; init; }
 
             /// <summary>
             /// The dispense token that authorizes the dispense operation, as created by the authorizing host. See 

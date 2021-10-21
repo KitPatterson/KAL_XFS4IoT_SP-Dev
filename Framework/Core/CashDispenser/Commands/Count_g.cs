@@ -27,7 +27,7 @@ namespace XFS4IoT.CashDispenser.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, string Unit = null, PositionEnum? Position = null)
+            public PayloadData(int Timeout, string Unit = null, CashManagement.OutputPositionEnum? Position = null)
                 : base(Timeout)
             {
                 this.Unit = Unit;
@@ -46,32 +46,8 @@ namespace XFS4IoT.CashDispenser.Commands
             [DataTypes(Pattern = @"^all$|^.{1,5}$")]
             public string Unit { get; init; }
 
-            public enum PositionEnum
-            {
-                OutDefault,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear
-            }
-
-            /// <summary>
-            /// Supplies the output position as one of the following values:
-            /// 
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
-            /// </summary>
             [DataMember(Name = "position")]
-            public PositionEnum? Position { get; init; }
+            public CashManagement.OutputPositionEnum? Position { get; init; }
 
         }
     }

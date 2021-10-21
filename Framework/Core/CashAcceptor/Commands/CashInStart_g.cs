@@ -27,7 +27,7 @@ namespace XFS4IoT.CashAcceptor.Commands
         public sealed class PayloadData : MessagePayload
         {
 
-            public PayloadData(int Timeout, int? TellerID = null, bool? UseRecycleUnits = null, OutputPositionEnum? OutputPosition = null, InputPositionEnum? InputPosition = null, int? TotalItemsLimit = null, List<AmountLimitClass> AmountLimit = null)
+            public PayloadData(int Timeout, int? TellerID = null, bool? UseRecycleUnits = null, CashManagement.OutputPositionEnum? OutputPosition = null, CashManagement.InputPositionEnum? InputPosition = null, int? TotalItemsLimit = null, List<AmountLimitClass> AmountLimit = null)
                 : base(Timeout)
             {
                 this.TellerID = TellerID;
@@ -53,59 +53,11 @@ namespace XFS4IoT.CashAcceptor.Commands
             [DataMember(Name = "useRecycleUnits")]
             public bool? UseRecycleUnits { get; init; }
 
-            public enum OutputPositionEnum
-            {
-                OutDefault,
-                OutLeft,
-                OutRight,
-                OutCenter,
-                OutTop,
-                OutBottom,
-                OutFront,
-                OutRear
-            }
-
-            /// <summary>
-            /// Supplies the output position as one of the following values:
-            /// 
-            /// * ```outDefault``` - Default output position.
-            /// * ```outLeft``` - Left output position.
-            /// * ```outRight``` - Right output position.
-            /// * ```outCenter``` - Center output position.
-            /// * ```outTop``` - Top output position.
-            /// * ```outBottom``` - Bottom output position.
-            /// * ```outFront``` - Front output position.
-            /// * ```outRear``` - Rear output position.
-            /// </summary>
             [DataMember(Name = "outputPosition")]
-            public OutputPositionEnum? OutputPosition { get; init; }
+            public CashManagement.OutputPositionEnum? OutputPosition { get; init; }
 
-            public enum InputPositionEnum
-            {
-                InDefault,
-                InLeft,
-                InRight,
-                InCenter,
-                InTop,
-                InBottom,
-                InFront,
-                InRear
-            }
-
-            /// <summary>
-            /// Supplies the input position as one of the following values:
-            /// 
-            /// * ```inDefault``` - Default input position.
-            /// * ```inLeft``` - Left input position.
-            /// * ```inRight``` - Right input position.
-            /// * ```inCenter``` - Center input position.
-            /// * ```inTop``` - Top input position.
-            /// * ```inBottom``` - Bottom input position.
-            /// * ```inFront``` - Front input position.
-            /// * ```inRear``` - Rear input position.
-            /// </summary>
             [DataMember(Name = "inputPosition")]
-            public InputPositionEnum? InputPosition { get; init; }
+            public CashManagement.InputPositionEnum? InputPosition { get; init; }
 
             /// <summary>
             /// If set to a non-zero value, specifies a limit on the total number of items to be accepted during the cash-in
@@ -133,9 +85,8 @@ namespace XFS4IoT.CashAcceptor.Commands
                 public string Currency { get; init; }
 
                 /// <summary>
-                /// Absolute value of all contents, 0 if mixed. May only be modified in an exchange state if applicable. May be 
-                /// a floating point value to allow for coins and notes which have a value which is not a whole multiple 
-                /// of the currency unit.
+                /// The maximum absolute value of the specified currency which can be accepted in the cash-in transaction.
+                /// If 0, there is no amount limit applied to the currency.
                 /// <example>20</example>
                 /// </summary>
                 [DataMember(Name = "value")]

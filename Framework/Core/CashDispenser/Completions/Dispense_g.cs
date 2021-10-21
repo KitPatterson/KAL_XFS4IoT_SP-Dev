@@ -85,46 +85,8 @@ namespace XFS4IoT.CashDispenser.Completions
             [DataMember(Name = "errorCode")]
             public ErrorCodeEnum? ErrorCode { get; init; }
 
-            [DataContract]
-            public sealed class DenominationClass
-            {
-                public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, double> Values = null, Dictionary<string, double> CashBox = null)
-                {
-                    this.Currencies = Currencies;
-                    this.Values = Values;
-                    this.CashBox = CashBox;
-                }
-
-                /// <summary>
-                /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
-                /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
-                /// omitted on a request if _values_ specifies the entire request.
-                /// </summary>
-                [DataMember(Name = "currencies")]
-                public Dictionary<string, double> Currencies { get; init; }
-
-                /// <summary>
-                /// This list specifies the number of items to take from the cash units. If specified in a request, the output 
-                /// denomination must include these items.
-                /// 
-                /// The property name is storage unit object name as stated by the [Storage.GetStorage](#storage.getstorage)
-                /// command. The value of the entry is the number of items to take from that unit.
-                /// </summary>
-                [DataMember(Name = "values")]
-                public Dictionary<string, double> Values { get; init; }
-
-                /// <summary>
-                /// List of currency and amount combinations for denomination requests or output. There will be one entry for 
-                /// each currency in the denomination. The property name is the ISO 4217 currency identifier. This list can be 
-                /// omitted on a request if _values_ specifies the entire request.
-                /// </summary>
-                [DataMember(Name = "cashBox")]
-                public Dictionary<string, double> CashBox { get; init; }
-
-            }
-
             /// <summary>
-            /// Specifies a denomination or a denomination request.
+            /// Denomination object describing the contents of the denomination operation.
             /// </summary>
             [DataMember(Name = "denomination")]
             public DenominationClass Denomination { get; init; }

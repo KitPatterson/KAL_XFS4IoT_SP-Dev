@@ -17,7 +17,7 @@ namespace XFS4IoT.CashAcceptor
     [DataContract]
     public sealed class PositionClass
     {
-        public PositionClass(string Position = null, ShutterEnum? Shutter = null, PositionStatusEnum? PositionStatus = null, TransportEnum? Transport = null, TransportStatusEnum? TransportStatus = null, JammedShutterPositionEnum? JammedShutterPosition = null)
+        public PositionClass(CashManagement.PositionEnum? Position = null, ShutterEnum? Shutter = null, PositionStatusEnum? PositionStatus = null, TransportEnum? Transport = null, TransportStatusEnum? TransportStatus = null, JammedShutterPositionEnum? JammedShutterPosition = null)
         {
             this.Position = Position;
             this.Shutter = Shutter;
@@ -27,30 +27,8 @@ namespace XFS4IoT.CashAcceptor
             this.JammedShutterPosition = JammedShutterPosition;
         }
 
-        /// <summary>
-        /// Supplies the input or output position as one of the following values. If not specified, the default position
-        /// applies.
-        /// 
-        /// * ```inDefault``` - Default input position.
-        /// * ```inLeft``` - Left input position.
-        /// * ```inRight``` - Right input position.
-        /// * ```inCenter``` - Center input position.
-        /// * ```inTop``` - Top input position.
-        /// * ```inBottom``` - Bottom input position.
-        /// * ```inFront``` - Front input position.
-        /// * ```inRear``` - Rear input position.
-        /// * ```outDefault``` - Default output position.
-        /// * ```outLeft``` - Left output position.
-        /// * ```outRight``` - Right output position.
-        /// * ```outCenter``` - Center output position.
-        /// * ```outTop``` - Top output position.
-        /// * ```outBottom``` - Bottom output position.
-        /// * ```outFront``` - Front output position.
-        /// * ```outRear``` - Rear output position.
-        /// <example>inLeft</example>
-        /// </summary>
         [DataMember(Name = "position")]
-        public string Position { get; init; }
+        public CashManagement.PositionEnum? Position { get; init; }
 
         public enum ShutterEnum
         {
