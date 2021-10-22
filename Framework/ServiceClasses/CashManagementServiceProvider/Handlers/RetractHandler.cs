@@ -6,6 +6,7 @@
 \***********************************************************************************************/
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
@@ -16,12 +17,12 @@ using XFS4IoTFramework.Common;
 using XFS4IoT.CashManagement.Commands;
 using XFS4IoT.CashManagement.Completions;
 using XFS4IoT.CashManagement;
+using XFS4IoTFramework.Storage;
 
 namespace XFS4IoTFramework.CashManagement
 {
     public partial class RetractHandler
     {
-
         private async Task<RetractCompletion.PayloadData> HandleRetract(IRetractEvents events, RetractCommand retract, CancellationToken cancel)
         {
             if (retract.Payload.RetractArea is not null &&
@@ -35,25 +36,26 @@ namespace XFS4IoTFramework.CashManagement
 
             if (retract.Payload.RetractArea is not null)
             {
-                CashDispenserCapabilitiesClass.RetractAreaEnum retractArea = CashDispenserCapabilitiesClass.RetractAreaEnum.Default;
+                CashManagementCapabilitiesClass.RetractAreaEnum retractArea = CashManagementCapabilitiesClass.RetractAreaEnum.Default;
                 retractArea = retract.Payload.RetractArea switch
                 {
-                    RetractAreaEnum.ItemCassette => CashDispenserCapabilitiesClass.RetractAreaEnum.ItemCassette,
-                    RetractAreaEnum.Reject => CashDispenserCapabilitiesClass.RetractAreaEnum.Reject,
-                    RetractAreaEnum.Retract => CashDispenserCapabilitiesClass.RetractAreaEnum.Retract,
-                    RetractAreaEnum.Stacker => CashDispenserCapabilitiesClass.RetractAreaEnum.Stacker,
-                    RetractAreaEnum.Transport => CashDispenserCapabilitiesClass.RetractAreaEnum.Transport,
-                    _ => CashDispenserCapabilitiesClass.RetractAreaEnum.Default
+                    RetractAreaEnum.ItemCassette => CashManagementCapabilitiesClass.RetractAreaEnum.ItemCassette,
+                    RetractAreaEnum.Reject => CashManagementCapabilitiesClass.RetractAreaEnum.Reject,
+                    RetractAreaEnum.Retract => CashManagementCapabilitiesClass.RetractAreaEnum.Retract,
+                    RetractAreaEnum.Stacker => CashManagementCapabilitiesClass.RetractAreaEnum.Stacker,
+                    RetractAreaEnum.Transport => CashManagementCapabilitiesClass.RetractAreaEnum.Transport,
+                    _ => CashManagementCapabilitiesClass.RetractAreaEnum.Default
                 };
 
-                if (!CashManagement.CashDispenserCapabilities.RetractAreas[retractArea])
+                if (retractArea != CashManagementCapabilitiesClass.RetractAreaEnum.Default &&
+                    !CashManagement.CashManagementCapabilities.RetractAreas.HasFlag(retractArea))
                 {
                     return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
                                                              $"Specified unsupported retract area. {retractArea}",
                                                              RetractCompletion.PayloadData.ErrorCodeEnum.InvalidRetractPosition);
                 }
 
-                if (retractArea == CashDispenserCapabilitiesClass.RetractAreaEnum.Retract)
+                if (retractArea == CashManagementCapabilitiesClass.RetractAreaEnum.Retract)
                 {
                     if (retract.Payload.Index is null)
                     {
@@ -64,8 +66,9 @@ namespace XFS4IoTFramework.CashManagement
                     int index = (int)retract.Payload.Index;
 
                     // Check the index is valid
-                    int totalRetractUnits = (from unit in CashDispenser.CashUnits
-                                             where unit.Value.Type == CashUnit.TypeEnum.RetractCassette
+                    int totalRetractUnits = (from unit in CashManagement.CashUnits
+                                             where unit.Value.Unit.Configuration.Types.HasFlag(CashCapabilitiesClass.TypesEnum.CashOutRetract) ||
+                                                   unit.Value.Unit.Configuration.Types.HasFlag(CashCapabilitiesClass.TypesEnum.CashInRetract)
                                              select unit).Count();
                     if ((int)index > totalRetractUnits)
                     {
@@ -79,20 +82,21 @@ namespace XFS4IoTFramework.CashManagement
             }
             else if (retract.Payload.OutputPosition is not null)
             {
-                CashDispenserCapabilitiesClass.OutputPositionEnum position = retract.Payload.OutputPosition switch
+                CashManagementCapabilitiesClass.PositionEnum position = retract.Payload.OutputPosition switch
                 {
-                    OutputPositionEnum.OutBottom => CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom,
-                    OutputPositionEnum.OutCenter => CashDispenserCapabilitiesClass.OutputPositionEnum.Center,
-                    OutputPositionEnum.OutFront => CashDispenserCapabilitiesClass.OutputPositionEnum.Front,
-                    OutputPositionEnum.OutLeft => CashDispenserCapabilitiesClass.OutputPositionEnum.Left,
-                    OutputPositionEnum.OutRear => CashDispenserCapabilitiesClass.OutputPositionEnum.Rear,
-                    OutputPositionEnum.OutRight => CashDispenserCapabilitiesClass.OutputPositionEnum.Right,
-                    OutputPositionEnum.OutTop => CashDispenserCapabilitiesClass.OutputPositionEnum.Top,
-                    _ => CashDispenserCapabilitiesClass.OutputPositionEnum.Default,
+                    OutputPositionEnum.OutBottom => CashManagementCapabilitiesClass.PositionEnum.OutBottom,
+                    OutputPositionEnum.OutCenter => CashManagementCapabilitiesClass.PositionEnum.OutCenter,
+                    OutputPositionEnum.OutDefault => CashManagementCapabilitiesClass.PositionEnum.OutDefault,
+                    OutputPositionEnum.OutFront => CashManagementCapabilitiesClass.PositionEnum.OutFront,
+                    OutputPositionEnum.OutLeft => CashManagementCapabilitiesClass.PositionEnum.OutLeft,
+                    OutputPositionEnum.OutRear => CashManagementCapabilitiesClass.PositionEnum.OutRear,
+                    OutputPositionEnum.OutRight => CashManagementCapabilitiesClass.PositionEnum.OutRight,
+                    OutputPositionEnum.OutTop => CashManagementCapabilitiesClass.PositionEnum.OutTop,
+                    _ => CashManagementCapabilitiesClass.PositionEnum.NotSupported,
 
                 };
 
-                if (!CashManagement.CashDispenserCapabilities.OutputPositons[position])
+                if (!CashManagement.CashDispenserCapabilities.OutputPositions.HasFlag(position))
                 {
                     return new RetractCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                 $"Specified unsupported output position. {position}");
@@ -109,44 +113,43 @@ namespace XFS4IoTFramework.CashManagement
 
             Logger.Log(Constants.DeviceClass, $"CashDispenserDev.RetractAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
-            List<ItemNumberClass> itemNumber = null;
-            Dictionary<string, ItemMovement> itemMovementResult = new();
+            Dictionary<string, StorageCashInClass> itemMovementResult = new();
 
             if (result.MovementResult != null &&
                 result.MovementResult.Count > 0)
             {
-                itemNumber = new List<RetractCompletion.PayloadData.ItemNumberClass>();
-
                 foreach (var movement in result.MovementResult)
                 {
-                    itemNumber.Add(new RetractCompletion.PayloadData.ItemNumberClass(movement.CurrencyID,
-                                                                                     movement.Values,
-                                                                                     movement.Release,
-                                                                                     movement.Count,
-                                                                                     movement.CashUnit));
-                    if (string.IsNullOrEmpty(movement.CashUnit) ||
-                        !CashDispenser.CashUnits.ContainsKey(movement.CashUnit))
-                    {
-                        continue; // it's not moved into cash unit
-                    }
-
-                    if (!itemMovementResult.ContainsKey(movement.CashUnit))
-                        itemMovementResult.Add(movement.CashUnit, new ItemMovement(DispensedCount: null,
-                                                                                   PresentedCount: null,
-                                                                                   RetractedCount: movement.Count,
-                                                                                   RejectCount: null,
-                                                                                   StoredBankNoteList: null));
-                    else
-                        itemMovementResult[movement.CashUnit].RetractedCount += movement.Count;
+                    Dictionary<string, XFS4IoT.CashManagement.StorageCashCountClass> deposited = new();
+                    foreach (var item in movement.Value.StorageCashInCount.Deposited.ItemCounts)
+                        deposited.Add(item.Key, new XFS4IoT.CashManagement.StorageCashCountClass(item.Value.Fit, item.Value.Unfit, item.Value.Suspect, item.Value.Counterfeit, item.Value.Inked));
+                    Dictionary<string, XFS4IoT.CashManagement.StorageCashCountClass> retracted = new();
+                    foreach (var item in movement.Value.StorageCashInCount.Retracted.ItemCounts)
+                        retracted.Add(item.Key, new XFS4IoT.CashManagement.StorageCashCountClass(item.Value.Fit, item.Value.Unfit, item.Value.Suspect, item.Value.Counterfeit, item.Value.Inked));
+                    Dictionary<string, XFS4IoT.CashManagement.StorageCashCountClass> rejected = new();
+                    foreach (var item in movement.Value.StorageCashInCount.Rejected.ItemCounts)
+                        rejected.Add(item.Key, new XFS4IoT.CashManagement.StorageCashCountClass(item.Value.Fit, item.Value.Unfit, item.Value.Suspect, item.Value.Counterfeit, item.Value.Inked));
+                    Dictionary<string, XFS4IoT.CashManagement.StorageCashCountClass> distributed = new();
+                    foreach (var item in movement.Value.StorageCashInCount.Distributed.ItemCounts)
+                        distributed.Add(item.Key, new XFS4IoT.CashManagement.StorageCashCountClass(item.Value.Fit, item.Value.Unfit, item.Value.Suspect, item.Value.Counterfeit, item.Value.Inked));
+                    Dictionary<string, XFS4IoT.CashManagement.StorageCashCountClass> transport = new();
+                    foreach (var item in movement.Value.StorageCashInCount.Transport.ItemCounts)
+                        transport.Add(item.Key, new XFS4IoT.CashManagement.StorageCashCountClass(item.Value.Fit, item.Value.Unfit, item.Value.Suspect, item.Value.Counterfeit, item.Value.Inked));
+                    itemMovementResult.Add(movement.Key, new StorageCashInClass(movement.Value.StorageCashInCount.RetractOperations,
+                                                            new StorageCashCountsClass(movement.Value.StorageCashInCount.Deposited.Unrecognized, deposited),
+                                                            new StorageCashCountsClass(movement.Value.StorageCashInCount.Retracted.Unrecognized, retracted),
+                                                            new StorageCashCountsClass(movement.Value.StorageCashInCount.Rejected.Unrecognized, rejected),
+                                                            new StorageCashCountsClass(movement.Value.StorageCashInCount.Distributed.Unrecognized, distributed),
+                                                            new StorageCashCountsClass(movement.Value.StorageCashInCount.Transport.Unrecognized, transport)));
                 }
             }
 
-            CashDispenser.UpdateCashUnitAccounting(itemMovementResult);
+            await CashManagement.UpdateCashAccounting(result.MovementResult);
 
             return new RetractCompletion.PayloadData(result.CompletionCode,
                                                      result.ErrorDescription,
                                                      result.ErrorCode,
-                                                     itemNumber);
+                                                     itemMovementResult);
         }
 
     }

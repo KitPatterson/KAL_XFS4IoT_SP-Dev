@@ -27,7 +27,18 @@ namespace XFS4IoTFramework.CardReader
                     _ => ResetDeviceRequest.ToEnum.Default
                 };
             }
+            // Check to parameter with capabilities
+            if (CardReader.CardReaderCapabilities.Type != Common.CardReaderCapabilitiesClass.DeviceTypeEnum.Motor)
+            {
+                if (to != ResetDeviceRequest.ToEnum.Default &&
+                    to != ResetDeviceRequest.ToEnum.currentPosition)
+                {
+                    return new ResetCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                           $"Invalid location specified for card reader type. The DIP, swipe or permanent card can't control media to move.  {CardReader.CardReaderCapabilities.Type} To:{reset.Payload.To}");
+                }
+            }
 
+            // Check storage ID with capabilities
             if (!string.IsNullOrEmpty(reset.Payload.StorageId))
             {
                 if (!CardReader.CardUnits.ContainsKey(reset.Payload.StorageId))
@@ -36,11 +47,21 @@ namespace XFS4IoTFramework.CardReader
                                                            $"Invalid StorageId supplied. {reset.Payload.StorageId}");
                 }
             }
+            else
+            {
+                if (CardReader.CardReaderCapabilities.Type != Common.CardReaderCapabilitiesClass.DeviceTypeEnum.Motor)
+                {
+                     return new ResetCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                            $"Card reader type {reset.Payload.StorageId} is not supporting storage.");
+                }
+            }
 
             Logger.Log(Constants.DeviceClass, "CardReaderDev.ResetDeviceAsync()");
+            
             var result = await Device.ResetDeviceAsync(events,
                                                        new ResetDeviceRequest(to, reset.Payload.StorageId),
                                                        cancel);
+            
             Logger.Log(Constants.DeviceClass, $"CardReaderDev.ResetDeviceAsync() -> {result.CompletionCode}, {result.ErrorCode}");
 
             if (result.CompletionCode == MessagePayload.CompletionCodeEnum.Success)

@@ -36,7 +36,7 @@ namespace XFS4IoTServer
             :
             base(endpointDetails,
                  ServiceName,
-                 new[] { XFSConstants.ServiceClass.Common, XFSConstants.ServiceClass.CardReader },
+                 new[] { XFSConstants.ServiceClass.Common, XFSConstants.ServiceClass.CardReader, XFSConstants.ServiceClass.Storage },
                  device,
                  logger)
         {
@@ -73,12 +73,18 @@ namespace XFS4IoTServer
         public Task ExchangeStateChangedEvent(ExchangeStateChangedEvent.PayloadData Payload) => CommonService.ExchangeStateChangedEvent(Payload);
         #endregion
 
-        #region StorageCard
+        #region Storage Service
 
         /// <summary>
         /// Update storage count from the framework after media movement command is processed
         /// </summary>
         public async Task UpdateCardStorageCount(string storageId, int count) => await StorageService.UpdateCardStorageCount(storageId, count);
+
+        /// <summary>
+        /// UpdateCashAccounting
+        /// Update cash unit status and counts managed by the device specific class.
+        /// </summary>
+        public Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null) => throw new NotSupportedException($"CardReader service provider doesn't support cash storage.");
 
         /// <summary>
         /// Return which type of storage SP is using
@@ -102,6 +108,8 @@ namespace XFS4IoTServer
 
         #endregion
 
+        #region Common Service
+
         /// <summary>
         /// Stores CardReader interface capabilites internally
         /// </summary>
@@ -112,5 +120,6 @@ namespace XFS4IoTServer
         /// </summary>
         public Dictionary<string, CardUnitStorage> CardStorages { get => StorageService.CardUnits; set => StorageService.CardUnits = value; }
 
+        #endregion
     }
 }

@@ -124,7 +124,7 @@ namespace XFS4IoT.Lights
         [DataContract]
         public sealed class FlashRateClass
         {
-            public FlashRateClass(bool? Off = null, string Slow = null, bool? Medium = null, bool? Quick = null, bool? Continuous = null)
+            public FlashRateClass(bool? Off = null, bool? Slow = null, bool? Medium = null, bool? Quick = null, bool? Continuous = null)
             {
                 this.Off = Off;
                 this.Slow = Slow;
@@ -143,7 +143,7 @@ namespace XFS4IoT.Lights
             /// The light can flash slowly.
             /// </summary>
             [DataMember(Name = "slow")]
-            public string Slow { get; init; }
+            public bool? Slow { get; init; }
 
             /// <summary>
             /// The light can flash medium frequency.

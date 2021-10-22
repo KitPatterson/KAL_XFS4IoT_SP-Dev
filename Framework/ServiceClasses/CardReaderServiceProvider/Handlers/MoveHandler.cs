@@ -28,6 +28,8 @@ namespace XFS4IoTFramework.CardReader
             }
 
             MoveCardRequest.MovePosition.MovePositionEnum fromPos = MoveCardRequest.MovePosition.MovePositionEnum.Storage;
+
+            // First to check the specified storage is valid
             if (move.Payload.From != "exit" &&
                 move.Payload.From != "transport")
             {
@@ -35,6 +37,42 @@ namespace XFS4IoTFramework.CardReader
                 {
                     return new MoveCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                           $"Invalid StorageId supplied for From property. {move.Payload.From}");
+                }
+            }
+            if (move.Payload.To != "exit" &&
+                move.Payload.To != "transport")
+            {
+                if (!CardReader.CardUnits.ContainsKey(move.Payload.To))
+                {
+                    return new MoveCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                          $"Invalid StorageId supplied for To property. {move.Payload.To}");
+                }
+            }
+
+            // Check parameters for the type of card reader
+            if (CardReader.CardReaderCapabilities.Type == Common.CardReaderCapabilitiesClass.DeviceTypeEnum.Contactless ||
+                CardReader.CardReaderCapabilities.Type == Common.CardReaderCapabilitiesClass.DeviceTypeEnum.IntelligentContactless ||
+                CardReader.CardReaderCapabilities.Type == Common.CardReaderCapabilitiesClass.DeviceTypeEnum.LatchedDip)
+            {
+                if ((move.Payload.To != "exit" &&
+                     move.Payload.To != "transport") ||
+                    (move.Payload.From != "exit" &&
+                     move.Payload.From != "transport"))
+                {
+                    return new MoveCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                          $"Invalid location specified to or from move mdeia as the contractless cardreader won't have a retain bin or dispensing unit. {move.Payload.To}");
+                }
+                // passing other cases to the device class as may need to turn off RFID or unlatch card
+            }
+            else if (CardReader.CardReaderCapabilities.Type == Common.CardReaderCapabilitiesClass.DeviceTypeEnum.Swipe ||
+                     CardReader.CardReaderCapabilities.Type == Common.CardReaderCapabilitiesClass.DeviceTypeEnum.Dip ||
+                     CardReader.CardReaderCapabilities.Type == Common.CardReaderCapabilitiesClass.DeviceTypeEnum.Permanent)
+            {
+                if (!string.IsNullOrEmpty(move.Payload.To) ||
+                    !string.IsNullOrEmpty(move.Payload.From))
+                {
+                    return new MoveCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                          $"Invalid location specified for card reader type. The DIP, swipe or permanent card can't control media to move.  {CardReader.CardReaderCapabilities.Type} To:{move.Payload.To} From:{move.Payload.From}");
                 }
             }
 

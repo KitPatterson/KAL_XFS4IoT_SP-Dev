@@ -577,7 +577,7 @@ namespace XFS4IoT.CashDispenser
     [DataContract]
     public sealed class DenominationClass
     {
-        public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, double> Values = null, Dictionary<string, double> CashBox = null)
+        public DenominationClass(Dictionary<string, double> Currencies = null, Dictionary<string, int> Values = null, Dictionary<string, double> CashBox = null)
         {
             this.Currencies = Currencies;
             this.Values = Values;
@@ -600,7 +600,7 @@ namespace XFS4IoT.CashDispenser
         /// command. The value of the entry is the number of items to take from that unit.
         /// </summary>
         [DataMember(Name = "values")]
-        public Dictionary<string, double> Values { get; init; }
+        public Dictionary<string, int> Values { get; init; }
 
         /// <summary>
         /// Only applies to Teller Dispensers. Amount to be paid from the teller’s cash box.

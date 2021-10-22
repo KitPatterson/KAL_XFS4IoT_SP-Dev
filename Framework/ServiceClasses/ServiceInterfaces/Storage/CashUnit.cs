@@ -25,6 +25,18 @@ namespace XFS4IoTFramework.Storage
             Manipulated,
         }
 
+        public CashUnitStorage(CashUnitStorageConfiguration StorageConfiguration)
+        {
+            this.PositionName = StorageConfiguration.PositionName;
+            this.Capacity = StorageConfiguration.Capacity;
+            this.Status = StatusEnum.NotConfigured;
+            this.SerialNumber = StorageConfiguration.SerialNumber;
+
+            this.Unit = new CashUnit(StorageConfiguration.Capabilities,
+                                     StorageConfiguration.Configuration,
+                                     StorageConfiguration.CashUnitAdditionalInfo);
+        }
+
         /// <summary>
         /// Fixed physical name for the position.
         /// </summary>
@@ -52,679 +64,631 @@ namespace XFS4IoTFramework.Storage
     }
 
     /// <summary>
+    /// Capabilities of the cash unit
+    /// </summary>
+    [Serializable()]
+    public sealed record CashCapabilitiesClass
+    {
+        [Flags]
+        public enum TypesEnum
+        {
+            CashIn = 0x0001,
+            CashOut = 0x0002,
+            Replenishment = 0x0004,
+            CashInRetract = 0x0008,
+            CashOutRetract = 0x0010,
+            Reject = 0x0020,
+        }
+
+        [Flags]
+        public enum ItemsEnum
+        {
+            Fit = 0x0001,
+            Unfit = 0x0002,
+            Unrecognized = 0x0004,
+            Conterfeit = 0x0008,
+            Suspect = 0x0010,
+            Inked = 0x0020,
+            Coupon = 0x0040,
+            Document = 0x0080,
+        }
+
+        public CashCapabilitiesClass(TypesEnum Types,
+                                     ItemsEnum Items,
+                                     bool HardwareSensors,
+                                     int RetractAreas,
+                                     Dictionary<string, BanknoteItem> BanknoteItems)
+        {
+            this.Types = Types;
+            this.Items = Items;
+            this.HardwareSensors = HardwareSensors;
+            this.RetractAreas = RetractAreas;
+            this.BanknoteItems = BanknoteItems;
+        }
+
+        /// <summary>
+        /// The types of operation the unit is capable to perform. This is a combination of one or 
+        /// more operations
+        /// </summary>
+        public TypesEnum Types { get; init; }
+
+        /// <summary>
+        /// The types of cash media the unit is capable of storing to store.This is a combination of
+        /// one or more item types.May only be modified in an exchange state if applicable.
+        /// </summary>
+        public ItemsEnum Items { get; init; }
+
+        /// <summary>
+        /// The storage unit has hardware sensors that can detect threshold states.
+        /// </summary>
+        public bool HardwareSensors { get; init; }
+
+        /// <summary>
+        ///  If items can be retracted into this storage unit, this is the number of areas within the storage unit which 
+        ///  allow physical separation of different bunches.If there is no physical separation of retracted bunches
+        ///  within this storage unit, this value is 1.
+        /// </summary>
+        public int RetractAreas { get; init; }
+
+        /// <summary>
+        /// If true, indicates that retract capacity is based on counts.
+        /// If false, indicates that retract capacity is based on the number of commands which resulted in items
+        /// being retracted into the storage unit.
+        /// </summary>
+        public bool RetractThresholds { get; init; }
+
+        /// <summary>
+        /// Lists the cash items which the storage unit is physically capable of handling.
+        /// </summary>
+        public Dictionary<string, BanknoteItem> BanknoteItems { get; init; }
+    }
+
+    /// <summary>
+    /// Details of banknote item
+    /// </summary>
+    [Serializable()]
+    public sealed record BanknoteItem
+    {
+        public BanknoteItem(int NoteId,
+                            string Currency,
+                            float Value,
+                            int Release)
+        {
+            this.NoteId = NoteId;
+            this.Currency = Currency;
+            this.Value = Value;
+            this.Release = Release;
+        }
+
+        /// <summary>
+        /// A unique number identifying a single cash item. 
+        /// Each unique combination of the other properties will have a different noteID.
+        /// </summary>
+        public int NoteId { get; init; }
+
+        /// <summary>
+        /// ISO 4217 currency.
+        /// </summary>
+        public string Currency { get; init; }
+
+        /// <summary>
+        /// Absolute value of all contents, 0 if mixed. May only be modified in an exchange state if applicable. May be 
+        /// a floating point value to allow for coins and notes which have a value which is not a whole multiple
+        /// of the currency unit.
+        /// </summary>
+        public float Value { get; init; }
+
+        /// <summary>
+        /// The release of the cash item. The higher this number is, the newer the release.
+        /// </summary>
+        public int Release { get; init; }
+    }
+
+    /// <summary>
+    /// Configuration of the cash unit
+    /// </summary>
+    [Serializable()]
+    public sealed class CashConfigurationClass
+    {
+        public CashConfigurationClass(CashCapabilitiesClass.TypesEnum Types,
+                                      CashCapabilitiesClass.ItemsEnum Items,
+                                      string Currency,
+                                      float Value,
+                                      int HighThreshold,
+                                      int LowThreshold,
+                                      bool AppLockIn,
+                                      bool AppLockOut,
+                                      Dictionary<string, BanknoteItem> BanknoteItems)
+        {
+            this.Types = Types;
+            this.Items = Items;
+            this.Currency = Currency;
+            this.Value = Value;
+            this.HighThreshold = HighThreshold;
+            this.LowThreshold = LowThreshold;
+            this.AppLockIn = AppLockIn;
+            this.AppLockOut = AppLockOut;
+            this.BanknoteItems = BanknoteItems;
+        }
+
+        /// <summary>
+        /// The types of operation the unit is capable of configured to perform. This is a combination of one or 
+        /// more operations
+        /// </summary>
+        public CashCapabilitiesClass.TypesEnum Types { get; set; }
+
+        /// <summary>
+        /// The types of cash media the unit is configured to store. This is a combination of
+        /// one or more item types.May only be modified in an exchange state if applicable.
+        /// </summary>
+        public CashCapabilitiesClass.ItemsEnum Items { get; set; }
+
+        /// <summary>
+        /// ISO 4217 currency.
+        /// </summary>
+        public string Currency { get; set; }
+
+        /// <summary>
+        /// Absolute value of all contents, 0 if mixed. May only be modified in an exchange state if applicable. May be 
+        /// a floating point value to allow for coins and notes which have a value which is not a whole multiple
+        /// of the currency unit.
+        /// </summary>
+        public float Value { get; set; }
+
+        /// <summary>
+        /// If specified, ReplenishmentStatus is set to High if the count is greater than this number.
+        /// </summary>
+        public int HighThreshold { get; set; }
+
+        /// <summary>
+        /// IIf specified, ReplenishmentStatus is set to Low if the count is lower than this number.
+        /// </summary>
+        public int LowThreshold { get; set; }
+
+        /// <summary>
+        /// If true, items cannot be accepted into the storage unit in Cash In operations.
+        /// </summary>
+        public bool AppLockIn { get; set; }
+
+        /// <summary>
+        /// If true, items cannot be dispensed from the storage unit in Cash Out operations.
+        /// </summary>
+        public bool AppLockOut { get; set; }
+
+        /// <summary>
+        /// Lists the cash items which are configured to this unit.
+        /// </summary>
+        public Dictionary<string, BanknoteItem> BanknoteItems { get; set; }
+    }
+
+    /// <summary>
+    /// Status of the cash unit
+    /// </summary>
+    [Serializable()]
+    public sealed class CashStatusClass
+    {
+        public CashStatusClass(CashUnitAdditionalInfoClass AdditionalInfo)
+        {
+            this.Index = AdditionalInfo.Index;
+            InitialCounts = new();
+            StorageCashOutCount = new();
+            StorageCashInCount = new();
+            Count = 0;
+            this.Accuracy = Accuracy;
+            if (AdditionalInfo.AccuracySupported)
+                this.Accuracy = AccuracyEnum.Unknown;
+            else
+                this.Accuracy = AccuracyEnum.NotSupported;
+            ReplenishmentStatus = ReplenishmentStatusEnum.Empty;
+        }
+
+        public enum AccuracyEnum
+        {
+            NotSupported,
+            Accurate, // The count is expected to be accurate. The notes were previously counted and there have since been no events that might have introduced inaccuracy. 
+            AccurateSet, // The count is expected to be accurate. The counts were previously set and there have since been no events that might have introduced inaccuracy.
+            Inaccurate, // The count is likely to be inaccurate. A jam, picking fault, or some other event may have resulted in a counting inaccuracy.
+            Unknown, // The accuracy of count cannot be determined. This may be due to storage unit insertion or some other hardware event.
+        }
+
+        public enum ReplenishmentStatusEnum
+        {
+            Healthy,
+            Full,
+            Low,
+            High,
+            Empty,
+        }
+
+        /// <summary>
+        /// Assigned by the device class. Will be a unique number which can be used to determine 
+        /// usNumber in XFS 3.x migration.This can change as cash storage units are added and removed
+        /// from the storage collection.
+        /// </summary>
+        public int Index { get; init; }
+
+        /// <summary>
+        /// The cash related items which are in the storage unit at the last replenishment.
+        /// </summary>
+        public StorageCashCountClass InitialCounts { get; set; }
+
+        /// <summary>
+        /// The items moved from this storage unit by cash commands to another destination since the last 
+        /// replenishment of this unit.
+        /// </summary>
+        public StorageCashOutCountClass StorageCashOutCount { get; set; }
+
+        /// <summary>
+        /// List of items inserted in this storage unit by cash commands from another source since the last 
+        /// replenishment of this unit.
+        /// </summary>
+        public StorageCashInCountClass StorageCashInCount { get; set; }
+
+        /// <summary>
+        /// Total count of the items in the unit
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// Describes the accuracy of count
+        /// </summary>
+        public AccuracyEnum Accuracy { get; set; }
+
+        /// <summary>
+        /// The state of the media in the unit if it can be determined.
+        /// </summary>
+        public ReplenishmentStatusEnum ReplenishmentStatus { get; set; }
+    }
+
+    /// <summary>
+    /// Representing storage counts including L1 notes
+    /// </summary>
+    public sealed record StorageCashCountClass
+    {
+        public StorageCashCountClass()
+        {
+            Unrecognized = 0;
+            ItemCounts = new();
+        }
+
+        public StorageCashCountClass(int Unrecognized,
+                                     Dictionary<string, CashItemCountClass> ItemCounts)
+        {
+            this.Unrecognized = Unrecognized;
+            this.ItemCounts = ItemCounts;
+        }
+
+        /// <summary>
+        /// Count of unrecognized items handled by the cash interface
+        /// </summary>
+        public int Unrecognized { get; set; }
+
+        /// <summary>
+        /// Counts of cash items broken down by cash item type and classification
+        /// </summary>
+        public Dictionary<string, CashItemCountClass> ItemCounts { get; set; }
+
+        /// <summary>
+        /// Copty structure to the message class generated automatically.
+        /// </summary>
+        /// <returns></returns>
+        public XFS4IoT.CashManagement.StorageCashCountsClass CopyTo()
+        {
+            Dictionary<string, XFS4IoT.CashManagement.StorageCashCountClass> counts = new();
+            foreach (var count in ItemCounts)
+            {
+                counts.Add(count.Key, new XFS4IoT.CashManagement.StorageCashCountClass(count.Value.Fit,
+                                                                                       count.Value.Unfit,
+                                                                                       count.Value.Suspect,
+                                                                                       count.Value.Counterfeit,
+                                                                                       count.Value.Inked));
+            }
+
+            XFS4IoT.CashManagement.StorageCashCountsClass countClass = new XFS4IoT.CashManagement.StorageCashCountsClass(Unrecognized, counts);
+            return countClass;
+        }
+
+        /// <summary>
+        /// Return total counts of items
+        /// </summary>
+        public int Total
+        {
+            get
+            {
+                int total = Unrecognized;
+                if (ItemCounts is not null)
+                {
+                    foreach (var item in ItemCounts)
+                    {
+                        total += item.Value.Fit;
+                        total += item.Value.Unfit;
+                        total += item.Value.Suspect;
+                        total += item.Value.Counterfeit;
+                        total += item.Value.Inked;
+                    }
+                }
+
+                return total;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Details of recognised banknote count
+    /// </summary>
+    [Serializable()]
+    public sealed record CashItemCountClass
+    {
+        public CashItemCountClass()
+        {
+            this.Fit = 0;
+            this.Unfit = 0;
+            this.Suspect = 0;
+            this.Counterfeit = 0;
+            this.Inked = 0;
+        }
+
+        public CashItemCountClass(int Fit,
+                                  int Unfit,
+                                  int Suspect,
+                                  int Conterfeit,
+                                  int Inked)
+        {
+            this.Fit = Fit;
+            this.Unfit = Unfit;
+            this.Suspect = Suspect;
+            this.Counterfeit = Conterfeit;
+            this.Inked = Inked;
+        }
+
+        /// <summary>
+        /// Count of genuine cash items which are fit for recycling.
+        /// </summary>
+        public int Fit { get; set; }
+
+        /// <summary>
+        /// Count of genuine cash items which are unfit for recycling.
+        /// </summary>
+        public int Unfit { get; set; }
+
+        /// <summary>
+        /// Count of suspected counterfeit cash items.
+        /// </summary>
+        public int Suspect { get; set; }
+
+        /// <summary>
+        /// Count of counterfeit cash items.
+        /// </summary>
+        public int Counterfeit { get; set; }
+
+        /// <summary>
+        /// Count of cash items which have been identified as ink stained.
+        /// </summary>
+        public int Inked { get; set; }
+    }
+
+    /// <summary>
+    /// Representing counts moved from the cash unit
+    /// </summary>
+    public sealed record StorageCashOutCountClass
+    {
+        public StorageCashOutCountClass()
+        {
+            Presented = new();
+            Rejected = new();
+            Distributed = new();
+            Unknown = new();
+            Stacked = new();
+            Diverted = new();
+            Transport = new();
+        }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which are or were customer accessible.
+        /// </summary>
+        public StorageCashCountClass Presented { get; set; }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which were invalid and were diverted to a reject storage
+        /// unit and were not customer accessible during the operation.
+        /// </summary>
+        public StorageCashCountClass Rejected { get; set; }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which were moved to a storage unit other than a reject storage unit
+        /// and were not customer accessible during the operation.
+        /// </summary>
+        public StorageCashCountClass Distributed { get; set; }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which moved to an unknown position.
+        /// </summary>
+        public StorageCashCountClass Unknown { get; set; }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which are not customer accessible and are currently stacked
+        /// awaiting presentation to the customer.This item list can increase and decrease as items are moved around in the device.
+        /// </summary>
+        public StorageCashCountClass Stacked { get; set; }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which are not customer accessible and were diverted to a
+        /// temporary location due to being invalid and have not yet been deposited in a storage unit.This item
+        /// list can increase and decrease as items are moved around in the device.
+        /// </summary>
+        public StorageCashCountClass Diverted { get; set; }
+
+        /// <summary>
+        /// The items dispensed from this storage unit which are not customer accessible and which have jammed in
+        /// the transport. This item list can increase and decrease as items are moved around in the device.
+        /// </summary>
+        public StorageCashCountClass Transport { get; set; }
+    }
+
+    /// <summary>
+    /// Representing count stored in the cash unit
+    /// </summary>
+    public sealed record StorageCashInCountClass
+    {
+        public StorageCashInCountClass()
+        {
+            RetractOperations = 0;
+            Deposited = new();
+            Retracted = new();
+            Rejected = new();
+            Distributed = new();
+            Transport = new();
+        }
+
+        /// <summary>
+        /// Number of cash retract operations which resulted in items entering this storage unit. This can be 
+        /// used where devices do not have the capability to count or validate items after presentation.
+        /// </summary>
+        public int RetractOperations { get; set; }
+
+        /// <summary>
+        /// The items deposited in the storage unit during a Cash In transaction.
+        /// </summary>
+        public StorageCashCountClass Deposited { get; set; }
+
+        /// <summary>
+        /// The items deposited in the storage unit after being accessible to a customer. This may be inaccurate 
+        /// or not counted if items are not counted or re-validated after presentation, the number of retract
+        /// operations is also reported separately in RetractOperations.
+        /// </summary>
+        public StorageCashCountClass Retracted { get; set; }
+
+        /// <summary>
+        /// The items deposited in this storage unit originating from another storage unit but rejected due to being 
+        /// invalid.This count may be inaccurate due to the nature of rejected items.
+        /// </summary>
+        public StorageCashCountClass Rejected { get; set; }
+
+        /// <summary>
+        /// The items deposited in this storage unit originating from another storage unit but not rejected.
+        /// </summary>
+        public StorageCashCountClass Distributed { get; set; }
+
+        /// <summary>
+        /// The items which were intended to be deposited in this storage unit but are not yet deposited. Typical use
+        /// case for this property is tracking items after a jam during
+        /// CashAcceptor.CashInEnd
+        /// </summary>
+        public StorageCashCountClass Transport { get; set; }
+    }
+
+    /// <summary>
     /// Cash Unit strcuture the device class supports
     /// </summary>
     [Serializable()]
     public sealed record CashUnit
     {
-        [Flags]
-        public enum ItemTypesEnum
+        public CashUnit(CashCapabilitiesClass Capabilities,
+                        CashConfigurationClass Configuration,
+                        CashUnitAdditionalInfoClass AdditionalInfo)
         {
-            All = 0x0001,
-            Unfit = 0x0002,
-            Individual = 0x0004,
-            Level1 = 0x0008,
-            Level2 = 0x0010,
-            Level3 = 0x0040,
-            ItemProcessor = 0x0080,
-            UnfitIndividual = 0x0100,
+            this.Capabilities = Capabilities;
+            this.Configuration = Configuration;
+            this.Status = new (AdditionalInfo);
         }
 
-        public enum StatusEnum
-        {
-            Ok,
-            Full,
-            High,
-            Low,
-            Empty,
-            Inoperative,
-            Missing,
-            NoValue,
-            NoReference,
-            Manipulated
-        }
+        public CashCapabilitiesClass Capabilities { get; init; }
 
-        public enum TypeEnum
-        {
-            BillCassette,
-            NotApplicable,
-            RejectCassette,
-            CoinCylinder,
-            CoinDispenser,
-            RetractCassette,
-            Coupon,
-            Document,
-            ReplenishmentContainer,
-            Recycling,
-            CashIn
-        }
+        public CashConfigurationClass Configuration { get; init; }
 
-        public CashUnit(StatusEnum Status,
-                        TypeEnum Type,
-                        string CurrencyID,
-                        double Value,
-                        int LogicalCount,
-                        int Maximum,
-                        bool AppLock,
-                        string CashUnitName,
-                        int InitialCount,
-                        int DispensedCount,
-                        int PresentedCount,
-                        int RetractedCount,
-                        int RejectCount,
-                        int Minimum,
-                        string PhysicalPositionName,
-                        string UnitID,
-                        int Count,
-                        int MaximumCapacity,
-                        bool HardwareSensor,
-                        ItemTypesEnum ItemTypes,
-                        int CashInCount,
-                        List<BankNoteNumber> BankNoteNumberList,
-                        List<int> BanknoteIDs)
-        {
-            this.Status = Status;
-            this.Type = Type;
-            this.CurrencyID = CurrencyID;
-            this.Value = Value;
-            this.LogicalCount = LogicalCount;
-            this.Maximum = Maximum;
-            this.AppLock = AppLock;
-            this.CashUnitName = CashUnitName;
-            this.InitialCount = InitialCount;
-            this.DispensedCount = DispensedCount;
-            this.PresentedCount = PresentedCount;
-            this.RetractedCount = RetractedCount;
-            this.RejectCount = RejectCount;
-            this.Minimum = Minimum;
-            this.PhysicalPositionName = PhysicalPositionName;
-            this.UnitID = UnitID;
-            this.Count = Count;
-            this.MaximumCapacity = MaximumCapacity;
-            this.HardwareSensor = HardwareSensor;
-            this.ItemTypes = ItemTypes;
-            this.CashInCount = CashInCount;
-            this.BankNoteNumberList = BankNoteNumberList;
-            this.BanknoteIDs = BanknoteIDs;
-        }
-
-        public CashUnit()
-        {
-            this.Status = StatusEnum.NoValue;
-            this.Type = TypeEnum.NotApplicable;
-            this.CurrencyID = string.Empty;
-            this.Value = double.MinValue;
-            this.LogicalCount = int.MinValue;
-            this.Maximum = int.MinValue;
-            this.AppLock = false;
-            this.CashUnitName = string.Empty;
-            this.InitialCount = int.MinValue;
-            this.DispensedCount = int.MinValue;
-            this.PresentedCount = int.MinValue;
-            this.RetractedCount = int.MinValue;
-            this.RejectCount = int.MinValue;
-            this.Minimum = int.MinValue;
-            this.PhysicalPositionName = string.Empty;
-            this.UnitID = string.Empty;
-            this.Count = int.MinValue;
-            this.MaximumCapacity = int.MinValue;
-            this.HardwareSensor = true;
-            this.ItemTypes = ItemTypesEnum.All;
-            this.CashInCount = int.MinValue;
-            this.BankNoteNumberList = new List<BankNoteNumber>();
-            this.BanknoteIDs = new List<int>();
-        }
-
-        public CashUnit(CashUnitConfiguration Unit)
-        {
-            this.Status = StatusEnum.NoValue;
-            this.Type = Unit.Type;
-            this.CurrencyID = Unit.CurrencyID;
-            this.Value = Unit.Value;
-            this.LogicalCount = 0;
-            this.Maximum = Unit.Maximum;
-            this.AppLock = Unit.AppLock;
-            this.CashUnitName = Unit.CashUnitName;
-            this.InitialCount = 0;
-            this.DispensedCount = 0;
-            this.PresentedCount = 0;
-            this.RetractedCount = 0;
-            this.RejectCount = 0;
-            this.Minimum = Unit.Minimum;
-            this.PhysicalPositionName = Unit.PhysicalPositionName;
-            this.UnitID = Unit.UnitID;
-            this.Count = 0;
-            this.MaximumCapacity = Unit.MaximumCapacity;
-            this.HardwareSensor = Unit.HardwareSensor;
-            this.ItemTypes = Unit.ItemTypes;
-            this.CashInCount = 0;
-            this.BankNoteNumberList = new List<BankNoteNumber>();
-            this.BanknoteIDs = Unit.BanknoteIDs;
-        }
-
-        /// <summary>
-        /// Supplies the status of the cash unit.
-        /// Following values are possible:
-        /// 
-        /// * ```ok``` - The cash unit is in a good state.
-        /// * ```full``` - The cash unit is full.
-        /// * ```high``` - The cash unit is almost full (i.e. reached or exceeded the threshold defined by *maximum*). 
-        /// * ```low``` - The cash unit is almost empty (i.e. reached or below the threshold defined by *minimum*). 
-        /// * ```empty``` - The cash unit is empty, or insufficient items in the cash unit are preventing further dispense operations.
-        /// * ```inoperative``` - The cash unit is inoperative.
-        /// * ```missing``` - The cash unit is missing.
-        /// * ```noValue``` - The values of the specified cash unit are not available.
-        /// * ```noReference``` - There is no reference value available for the notes in this cash unit. The cash unit has not been calibrated.
-        /// * ```manipulated``` - The cash unit has been inserted (including removal followed by a reinsertion) when the device 
-        /// was not in the exchange state. This cash unit cannot be dispensed from.
-        /// </summary>
-        public StatusEnum Status { get; set; }
-
-        /// <summary>
-        /// Type of cash unit. 
-        /// Following values are possible:
-        /// 
-        /// * ```notApplicable``` - Not applicable. Typically means cash unit is missing.
-        /// * ```rejectCassette``` - Reject cash unit. This type will also indicate a combined reject/retract cash unit.
-        /// * ```billCassette``` - Cash unit containing bills.
-        /// * ```coinCylinder``` - Coin cylinder.
-        /// * ```coinDispenser``` - Coin dispenser as a whole unit.
-        /// * ```retractCassette``` - Retract cash unit.
-        /// * ```coupon``` - Cash unit containing coupons or advertising material.
-        /// * ```document``` - Cash unit containing documents.
-        /// * ```replenishmentContainer``` - Replenishment container. A cash unit can be refilled from a replenishment container.
-        /// * ```recycling``` - Recycling cash unit. This unit is only present when the device implements the Dispenser and CashAcceptor interfaces.
-        /// * ```cashIn``` - Cash-in cash unit.
-        /// </summary>
-        public TypeEnum Type { get; private set; }
-
-        /// <summary>
-        /// A three character string storing the ISO format [Ref. 2] Currency ID. This value will be omitted for 
-        /// cash units which contain items of more than one currency type or items to which currency is not applicable. 
-        /// If the *status* field for this cash unit is *noValue* it is the responsibility of the application to assign 
-        /// a value to this field. This value is persistent.
-        /// </summary>
-        public string CurrencyID { get; private set; }
-
-        /// <summary>
-        /// Supplies the value of a single item in the cash unit. This value is expressed as floating point value.
-        /// If the *currencyID* field for this cash unit is omitted, then this 
-        /// field will contain zero. If the *status* field for this cash unit is *noValue* it is the responsibility of the 
-        /// application to assign a value to this field. This value is persistent.
-        /// </summary>
-        public double Value { get; private set; }
-
-        /// <summary>
-        /// The meaning of this count depends on the type of cash unit. This value is persistent.
-        /// For all cash units except retract cash units (*type* is not *retractCassette*) this value specifies 
-        /// the number of items inside the  cash unit.
-        /// For all dispensing cash units (*type* is *billCassette*, *coinCylinder*, 
-        /// *coinDispenser*, *coupon*, *document* or *recycling*), 
-        /// this value includes any items from the cash unit not yet presented to the customer. 
-        /// This count is only decremented when the items are either known to be in customer access or successfully rejected.
-        /// If the cash unit is usable from the CashAcceptor interface (*type* is *recycling*, *cashIn*, *retractCassette* 
-        /// or *rejectCassette*) then this value will be incremented as a result of a cash-in operation.
-        /// Note that for a reject cash unit (*type* is *rejectCassette*), this value is unreliable, since 
-        /// the typical reason for dumping items to the reject cash unit is a suspected count failure.
-        /// For a retract cash unit (*type* is *retractCassette*) this value specifies the number 
-        /// of retract operations which result in items entering the cash unit.
-        /// </summary>
-        public int LogicalCount { get; set; }
-
-        /// <summary>
-        /// When *count* reaches this value the 
-        /// threshold event CashManagement.CashUnitThresholdEvent (*high*) will be generated. This value can be different from
-        /// the actual capacity of the cassette. 
-        /// If this value is non-zero then hardware sensors in the device do not trigger threshold events. If this value is zero 
-        /// then hardware sensors will trigger threshold events if *hardwareSensor* is TRUE. This value is persistent.
-        /// </summary>
-        public int Maximum { get; private set; }
-
-        /// <summary>
-        /// If this value is TRUE items cannot be dispensed from or deposited into the cash unit. 
-        /// If this value is TRUE and the application attempts to use the cash unit a CashManagement.CashUnitErrorEvent 
-        /// event will be generated and an error completion message will be returned. This value is persistent.
-        /// </summary>
-        public bool AppLock { get; private set; }
-
-        /// <summary>
-        /// A name which helps to identify the type of the cash unit. 
-        /// This is especially useful in the case of cash units of type *document* where different 
-        /// documents can have the same currency and value. For example, travelers checks and bank 
-        /// checks may have the same currency and value but still need to be identifiable as different 
-        /// types of document. Where this value is not relevant (e.g. in bill cash units) the property can be omitted. This value is persistent.
-        /// </summary>
-        public string CashUnitName { get; private set; }
-
-        /// <summary>
-        /// Initial number of items contained in the cash unit. This value is persistent.
-        /// </summary>
-        public int InitialCount { get; set; }
-
-        /// <summary>
-        /// The number of items dispensed from this cash unit. 
-        /// This count is incremented when the items are removed from the cash units. 
-        /// This count includes any items that were rejected during the dispense operation and are no longer in this cash unit. 
-        /// This field is always zero for cash units with a *type* of *rejectCassette* or *retractCassette*. This value is persistent.
-        /// </summary>
-        public int DispensedCount { get; set; }
-
-        /// <summary>
-        /// The number of items from this cash unit that have been presented to the customer. 
-        /// This count is incremented when the items are presented to the customer.
-        /// If it is unknown if a customer has been presented with the items, then this count is not updated. 
-        /// This field is always zero for cash units with a *type* of *rejectCassette* or *retractCassette*. This value is persistent.
-        /// </summary>
-        public int PresentedCount { get; set; }
-
-        /// <summary>
-        /// The number of items that have been accessible to a customer and retracted into the 
-        /// cash unit. This value is persistent.
-        /// </summary>
-        public int RetractedCount { get; set; }
-
-        /// <summary>
-        /// The number of items dispensed from this cash unit which have been rejected, are in a cash unit 
-        /// other than this cash unit, and which have not been accessible to a customer. This value may be unreliable, 
-        /// since a typical reason for rejecting items is a suspected pick failure. Other reasons for rejecting items 
-        /// may include incorrect note denominations, classifications not valid for dispensing, or where the transaction 
-        /// has been cancelled and a Reject command has been called. For reject and retract cash units 
-        /// (*type* is *rejectCassette* or *retractCassette*) this field does not apply and will be reported as zero. This value is persistent.
-        /// </summary>
-        public int RejectCount { get; set; }
-
-        /// <summary>
-        /// This field is not applicable to retract and reject cash units. For all cash units which dispense items (all other), when *count*
-        /// reaches this value the threshold event CashManagement.CashUnitThresholdEvent (*low*) will be generated. 
-        /// If this value is non-zero then hardware sensors in the device do not trigger threshold events. 
-        /// If this value is zero then hardware sensors will trigger threshold events if *hardwareSensor* is TRUE. This value is persistent.
-        /// </summary>
-        public int Minimum { get; private set; }
-
-        /// <summary>
-        /// A name identifying the physical location of the cash unit.
-        /// </summary>
-        public string PhysicalPositionName { get; private set; }
-
-        /// <summary>
-        /// A 5 character string uniquely identifying the cash unit.
-        /// </summary>
-        public string UnitID { get; private set; }
-
-        /// <summary>
-        /// As defined by the *logicalCount* description, but with the following exceptions:
-        /// This count does not include items dispensed but not yet presented.
-        /// On cash units with *type* set to \"retractCassette\" the count represents 
-        /// the number of items, unless the device cannot count items during a retract, in which case this count will be zero.
-        /// This value is persistent.
-        /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// The maximum number of items the cash unit can hold. This is only for informational purposes. 
-        /// No threshold event CashManagement.CashUnitThresholdEvent will be generated. This value is persistent.
-        /// </summary>
-        public int MaximumCapacity { get; private set; }
-
-        /// <summary>
-        /// Specifies whether or not threshold events can be generated based on hardware sensors in the device. 
-        /// If this value is TRUE then threshold 
-        /// events may be generated based on hardware sensors as opposed to counts.
-        /// </summary>
-        public bool HardwareSensor { get; private set; }
-
-        /// <summary>
-        /// Specifies the type of items the cash unit takes as a combination of the following flags. 
-        /// The table in the Comments section of this command defines how to interpret the combination of these flags 
-        /// </summary>
-        public ItemTypesEnum ItemTypes { get; private set; }
-
-        /// <summary>
-        /// Count of items that have entered the cash unit. This counter is incremented whenever an item 
-        /// enters a cash unit for any reason, unless it originated 
-        /// from this cash unit but was returned without being accessible to a customer. For a retract cash unit this 
-        /// value represents the total number of items of all types in the cash unit, or if the device cannot count 
-        /// items during a retract operation this value will be zero. This value is persistent.
-        /// </summary>
-        public int CashInCount { get; set; }
-
-        /// <summary>
-        /// Array of banknote numbers the cash unit contains.
-        /// Include all acceptable banknote types and counts here
-        /// </summary>
-        public List<BankNoteNumber> BankNoteNumberList { get; set; }
-
-        /// <summary>
-        /// List of banknote IDs can be stored in this unit
-        /// </summary>
-        public List<int> BanknoteIDs { get; private set; }
-
-        /// <summary>
-        /// Return or set cash unit structure data
-        /// </summary>
-        public CashUnitConfiguration Configuration
-        {
-            get
-            {
-                return new CashUnitConfiguration(this.Type,
-                                                 this.CurrencyID,
-                                                 this.Value,
-                                                 this.Maximum,
-                                                 this.AppLock,
-                                                 this.CashUnitName,
-                                                 this.Minimum,
-                                                 this.PhysicalPositionName,
-                                                 this.UnitID,
-                                                 this.MaximumCapacity,
-                                                 this.HardwareSensor,
-                                                 this.ItemTypes,
-                                                 this.BanknoteIDs);
-            }
-
-            set
-            {
-                this.Type = value.Type;
-                this.CurrencyID = value.CurrencyID;
-                this.Value = value.Value;
-                this.Maximum = value.Maximum;
-                this.AppLock = value.AppLock;
-                this.CashUnitName = value.CashUnitName;
-                this.Minimum = value.Minimum;
-                this.PhysicalPositionName = value.PhysicalPositionName;
-                this.UnitID = value.UnitID;
-                this.MaximumCapacity = value.MaximumCapacity;
-                this.HardwareSensor = value.HardwareSensor;
-                this.ItemTypes = value.ItemTypes;
-                this.BanknoteIDs = value.BanknoteIDs;
-            }
-        }
-
-        /// <summary>
-        /// Return or set various counters
-        /// </summary>
-        public CashUnitAccounting Accounting
-        {
-            get
-            {
-                return new CashUnitAccounting(this.LogicalCount,
-                                              this.InitialCount,
-                                              this.DispensedCount,
-                                              this.PresentedCount,
-                                              this.RetractedCount,
-                                              this.RejectCount,
-                                              this.Count,
-                                              this.CashInCount,
-                                              this.BankNoteNumberList);
-            }
-
-            set
-            {
-                this.LogicalCount = value.LogicalCount;
-                this.InitialCount = value.InitialCount;
-                this.DispensedCount = value.DispensedCount;
-                this.PresentedCount = value.PresentedCount;
-                this.RetractedCount = value.RetractedCount;
-                this.RejectCount = value.RejectCount;
-                this.Count = value.Count;
-                this.CashInCount = value.CashInCount;
-                this.BankNoteNumberList = value.BankNoteNumberList;
-            }
-        }
+        public CashStatusClass Status { get; init; }
     }
 
     /// <summary>
-    /// CashUnitAccounting
-    /// The device specific class update counts after device operation is completed
+    /// Structure receiving from the device
     /// </summary>
-    public sealed record CashUnitAccounting
+    public sealed record CashUnitStorageConfiguration
     {
-        public CashUnitAccounting()
-        {
-            this.LogicalCount = 0;
-            this.InitialCount = 0;
-            this.DispensedCount = 0;
-            this.PresentedCount = 0;
-            this.RetractedCount = 0;
-            this.RejectCount = 0;
-            this.Count = 0;
-            this.CashInCount = 0;
-            this.BankNoteNumberList = new List<BankNoteNumber>();
-        }
-
-        public CashUnitAccounting(int LogicalCount,
-                                  int InitialCount,
-                                  int DispensedCount,
-                                  int PresentedCount,
-                                  int RetractedCount,
-                                  int RejectCount,
-                                  int Count,
-                                  int CashInCount,
-                                  List<BankNoteNumber> BankNoteNumberList) 
-        {
-            this.LogicalCount = LogicalCount;
-            this.InitialCount = InitialCount;
-            this.DispensedCount = DispensedCount;
-            this.PresentedCount = PresentedCount;
-            this.RetractedCount = RetractedCount;
-            this.RejectCount = RejectCount;
-            this.Count = Count;
-            this.CashInCount = CashInCount;
-            this.BankNoteNumberList = BankNoteNumberList;
-        }
+        /// <summary>
+        /// Fixed physical name for the position.
+        /// </summary>
+        public string PositionName { get; init; }
 
         /// <summary>
-        /// The meaning of this count depends on the type of cash unit. This value is persistent.
-        /// For all cash units except retract cash units (*type* is not *retractCassette*) this value specifies 
-        /// the number of items inside the  cash unit.
-        /// For all dispensing cash units (*type* is *billCassette*, *coinCylinder*, 
-        /// *coinDispenser*, *coupon*, *document* or *recycling*), 
-        /// this value includes any items from the cash unit not yet presented to the customer. 
-        /// This count is only decremented when the items are either known to be in customer access or successfully rejected.
-        /// If the cash unit is usable from the CashAcceptor interface (*type* is *recycling*, *cashIn*, *retractCassette* 
-        /// or *rejectCassette*) then this value will be incremented as a result of a cash-in operation.
-        /// Note that for a reject cash unit (*type* is *rejectCassette*), this value is unreliable, since 
-        /// the typical reason for dumping items to the reject cash unit is a suspected count failure.
-        /// For a retract cash unit (*type* is *retractCassette*) this value specifies the number 
-        /// of retract operations which result in items entering the cash unit.
+        /// Fixed physical name for the position.
         /// </summary>
-        public int LogicalCount { get; set; }
+        public int Capacity { get; init; }
 
         /// <summary>
-        /// Initial number of items contained in the cash unit. This value is persistent.
+        /// The storage unit's serial number if it can be read electronically.
         /// </summary>
-        public int InitialCount { get; set; }
+        public string SerialNumber { get; init; }
 
         /// <summary>
-        /// The number of items dispensed from this cash unit. 
-        /// This count is incremented when the items are removed from the cash units. 
-        /// This count includes any items that were rejected during the dispense operation and are no longer in this cash unit. 
-        /// This field is always zero for cash units with a *type* of *rejectCassette* or *retractCassette*. This value is persistent.
+        /// The hardware capabilities of the cash unit
         /// </summary>
-        public int DispensedCount { get; set; }
+        public CashCapabilitiesClass Capabilities { get; init; }
 
         /// <summary>
-        /// The number of items from this cash unit that have been presented to the customer. 
-        /// This count is incremented when the items are presented to the customer.
-        /// If it is unknown if a customer has been presented with the items, then this count is not updated. 
-        /// This field is always zero for cash units with a *type* of *rejectCassette* or *retractCassette*. This value is persistent.
+        /// Current configuration set by the device
         /// </summary>
-        public int PresentedCount { get; set; }
+        public CashConfigurationClass Configuration { get; init; }
 
         /// <summary>
-        /// The number of items that have been accessible to a customer and retracted into the 
-        /// cash unit. This value is persistent.
+        /// Addtional cash unit information
         /// </summary>
-        public int RetractedCount { get; set; }
-
-        /// <summary>
-        /// The number of items dispensed from this cash unit which have been rejected, are in a cash unit 
-        /// other than this cash unit, and which have not been accessible to a customer. This value may be unreliable, 
-        /// since a typical reason for rejecting items is a suspected pick failure. Other reasons for rejecting items 
-        /// may include incorrect note denominations, classifications not valid for dispensing, or where the transaction 
-        /// has been cancelled and a Reject command has been called. For reject and retract cash units 
-        /// (*type* is *rejectCassette* or *retractCassette*) this field does not apply and will be reported as zero. This value is persistent.
-        /// </summary>
-        public int RejectCount { get; set; }
-
-        /// <summary>
-        /// As defined by the *logicalCount* description, but with the following exceptions:
-        /// This count does not include items dispensed but not yet presented.
-        /// On cash units with *type* set to \"retractCassette\" the count represents 
-        /// the number of items, unless the device cannot count items during a retract, in which case this count will be zero.
-        /// This value is persistent.
-        /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// Count of items that have entered the cash unit. This counter is incremented whenever an item 
-        /// enters a cash unit for any reason, unless it originated 
-        /// from this cash unit but was returned without being accessible to a customer. For a retract cash unit this 
-        /// value represents the total number of items of all types in the cash unit, or if the device cannot count 
-        /// items during a retract operation this value will be zero. This value is persistent.
-        /// </summary>
-        public int CashInCount { get; set; }
-
-        /// <summary>
-        /// Array of banknote numbers the cash unit contains.
-        /// Include all acceptable banknote types and counts here
-        /// </summary>
-        public List<BankNoteNumber> BankNoteNumberList { get; set; }
+        public CashUnitAdditionalInfoClass CashUnitAdditionalInfo { get; init; }
     }
 
     /// <summary>
-    /// Cash Unit configuration the device supports
+    /// Additional cash unit information device supports
     /// </summary>
-    public sealed record CashUnitConfiguration
+    public sealed class CashUnitAdditionalInfoClass
     {
-        public CashUnitConfiguration(CashUnit.TypeEnum Type,
-                                     string CurrencyID,
-                                     double Value,
-                                     int Maximum,
-                                     bool AppLock,
-                                     string CashUnitName,
-                                     int Minimum,
-                                     string PhysicalPositionName,
-                                     string UnitID,
-                                     int MaximumCapacity,
-                                     bool HardwareSensor,
-                                     CashUnit.ItemTypesEnum ItemTypes,
-                                     List<int> BanknoteIDs)
+        public CashUnitAdditionalInfoClass(int Index,
+                                           bool AccuracySupported)
         {
-            this.Type = Type;
-            this.CurrencyID = CurrencyID;
-            this.Value = Value;
-            this.Maximum = Maximum;
-            this.AppLock = AppLock;
-            this.CashUnitName = CashUnitName;
-            this.Minimum = Minimum;
-            this.PhysicalPositionName = PhysicalPositionName;
-            this.UnitID = UnitID;
-            this.MaximumCapacity = MaximumCapacity;
-            this.HardwareSensor = HardwareSensor;
-            this.ItemTypes = ItemTypes;
-            this.BanknoteIDs = BanknoteIDs;
+            this.Index = Index;
+            this.AccuracySupported = AccuracySupported;
         }
 
         /// <summary>
-        /// Type of cash unit. 
-        /// Following values are possible:
-        /// 
-        /// * ```notApplicable``` - Not applicable. Typically means cash unit is missing.
-        /// * ```rejectCassette``` - Reject cash unit. This type will also indicate a combined reject/retract cash unit.
-        /// * ```billCassette``` - Cash unit containing bills.
-        /// * ```coinCylinder``` - Coin cylinder.
-        /// * ```coinDispenser``` - Coin dispenser as a whole unit.
-        /// * ```retractCassette``` - Retract cash unit.
-        /// * ```coupon``` - Cash unit containing coupons or advertising material.
-        /// * ```document``` - Cash unit containing documents.
-        /// * ```replenishmentContainer``` - Replenishment container. A cash unit can be refilled from a replenishment container.
-        /// * ```recycling``` - Recycling cash unit. This unit is only present when the device implements the Dispenser and CashAcceptor interfaces.
-        /// * ```cashIn``` - Cash-in cash unit.
+        /// Assigned by the device class. Will be a unique number which can be used to determine 
+        /// usNumber in XFS 3.x migration.This can change as cash storage units are added and removed
+        /// from the storage collection.
         /// </summary>
-        public CashUnit.TypeEnum Type { get; init; }
+        public int Index { get; init; }
 
         /// <summary>
-        /// A three character string storing the ISO format [Ref. 2] Currency ID. This value will be omitted for 
-        /// cash units which contain items of more than one currency type or items to which currency is not applicable. 
-        /// If the *status* field for this cash unit is *noValue* it is the responsibility of the application to assign 
-        /// a value to this field. This value is persistent.
+        /// Accuracy of count supported or not
         /// </summary>
-        public string CurrencyID { get; init; }
+        public bool AccuracySupported { get; set; }
+    }
+
+    /// <summary>
+    /// Counts of the cash unit updated by the device class
+    /// </summary>
+    public sealed class CashUnitCountClass
+    {
+        public CashUnitCountClass(StorageCashOutCountClass StorageCashOutCount,
+                                  StorageCashInCountClass StorageCashInCount,
+                                  int Count)
+        {
+            this.StorageCashOutCount = StorageCashOutCount;
+            this.StorageCashInCount = StorageCashInCount;
+            this.Count = Count;
+        }
 
         /// <summary>
-        /// Supplies the value of a single item in the cash unit. This value is expressed as floating point value.
-        /// If the *currencyID* field for this cash unit is omitted, then this 
-        /// field will contain zero. If the *status* field for this cash unit is *noValue* it is the responsibility of the 
-        /// application to assign a value to this field. This value is persistent.
+        /// The items moved from this storage unit by cash commands to another destination since the last 
+        /// replenishment of this unit.
         /// </summary>
-        public double Value { get; init; }
+        public StorageCashOutCountClass StorageCashOutCount { get; set; }
 
         /// <summary>
-        /// When *count* reaches this value the 
-        /// threshold event CashManagement.CashUnitThresholdEvent (*high*) will be generated. This value can be different from
-        /// the actual capacity of the cassette. 
-        /// If this value is non-zero then hardware sensors in the device do not trigger threshold events. If this value is zero 
-        /// then hardware sensors will trigger threshold events if *hardwareSensor* is TRUE. This value is persistent.
+        /// List of items inserted in this storage unit by cash commands from another source since the last 
+        /// replenishment of this unit.
         /// </summary>
-        public int Maximum { get; init; }
+        public StorageCashInCountClass StorageCashInCount { get; set; }
 
         /// <summary>
-        /// If this value is TRUE items cannot be dispensed from or deposited into the cash unit. 
-        /// If this value is TRUE and the application attempts to use the cash unit a CashManagement.CashUnitErrorEvent 
-        /// event will be generated and an error completion message will be returned. This value is persistent.
+        /// Total count of the items in the unit
         /// </summary>
-        public bool AppLock { get; init; }
-
-        /// <summary>
-        /// A name which helps to identify the type of the cash unit. 
-        /// This is especially useful in the case of cash units of type *document* where different 
-        /// documents can have the same currency and value. For example, travelers checks and bank 
-        /// checks may have the same currency and value but still need to be identifiable as different 
-        /// types of document. Where this value is not relevant (e.g. in bill cash units) the property can be omitted. This value is persistent.
-        /// </summary>
-        public string CashUnitName { get; init; }
-
-        /// <summary>
-        /// This field is not applicable to retract and reject cash units. For all cash units which dispense items (all other), when *count*
-        /// reaches this value the threshold event CashManagement.CashUnitThresholdEvent (*low*) will be generated. 
-        /// If this value is non-zero then hardware sensors in the device do not trigger threshold events. 
-        /// If this value is zero then hardware sensors will trigger threshold events if *hardwareSensor* is TRUE. This value is persistent.
-        /// </summary>
-        public int Minimum { get; init; }
-
-        /// <summary>
-        /// A name identifying the physical location of the cash unit.
-        /// </summary>
-        public string PhysicalPositionName { get; init; }
-
-        /// <summary>
-        /// A 5 character string uniquely identifying the cash unit.
-        /// </summary>
-        public string UnitID { get; init; }
-
-        /// <summary>
-        /// The maximum number of items the cash unit can hold. This is only for informational purposes. 
-        /// No threshold event CashManagement.CashUnitThresholdEvent will be generated. This value is persistent.
-        /// </summary>
-        public int MaximumCapacity { get; init; }
-
-        /// <summary>
-        /// Specifies whether or not threshold events can be generated based on hardware sensors in the device. 
-        /// If this value is TRUE then threshold 
-        /// events may be generated based on hardware sensors as opposed to counts.
-        /// </summary>
-        public bool HardwareSensor { get; init; }
-
-        /// <summary>
-        /// Specifies the type of items the cash unit takes as a combination of the following flags. 
-        /// The table in the Comments section of this command defines how to interpret the combination of these flags 
-        /// </summary>
-        public CashUnit.ItemTypesEnum ItemTypes { get; init; }
-
-        /// <summary>
-        /// List of banknote IDs can be stored in this unit
-        /// </summary>
-        public List<int> BanknoteIDs { get; init; }
-
+        public int Count { get; set; }
     }
 }

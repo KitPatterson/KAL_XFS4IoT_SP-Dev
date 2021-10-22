@@ -15,10 +15,10 @@ using XFS4IoT;
 using XFS4IoT.CashManagement.Events;
 using XFS4IoT.Common.Events;
 using XFS4IoT.Storage.Events;
-using XFS4IoT.CashDispenser.Events;
 using XFS4IoTFramework.CashDispenser;
 using XFS4IoTFramework.CashManagement;
 using XFS4IoTFramework.Common;
+using XFS4IoTFramework.Storage;
 
 namespace XFS4IoTServer
 {
@@ -36,12 +36,13 @@ namespace XFS4IoTServer
             :
             base(endpointDetails,
                  ServiceName,
-                 new[] { XFSConstants.ServiceClass.Common, XFSConstants.ServiceClass.CashManagement, XFSConstants.ServiceClass.CashDispenser },
+                 new[] { XFSConstants.ServiceClass.Common, XFSConstants.ServiceClass.CashManagement, XFSConstants.ServiceClass.CashDispenser, XFSConstants.ServiceClass.Storage },
                  device,
                  logger)
         {
             CommonService = new CommonServiceClass(this, logger);
-            CashManagementService = new CashManagementServiceClass(this, CommonService, logger, persistentData);
+            StorageService = new StorageServiceClass(this, CommonService, logger, persistentData, XFS4IoTFramework.Storage.StorageTypeEnum.Cash);
+            CashManagementService = new CashManagementServiceClass(this, CommonService, StorageService, logger);
             CashDispenserService = new CashDispenserServiceClass(this, CashManagementService, CommonService, logger, persistentData);
         }
 
@@ -76,55 +77,78 @@ namespace XFS4IoTServer
         public Task StorageErrorEvent(StorageErrorEvent.PayloadData Payload) => StorageService.StorageErrorEvent(Payload);
         #endregion
 
-        /// <summary>
-        /// Construct cash unit information given by the device class
-        /// </summary>
-        public void ConstructCashUnits() => CashManagementService.ConstructCashUnits();
-
-        /// <summary>
-        /// Update various counts from the device class
-        /// </summary>
-        public void UpdateCashUnitAccounting(Dictionary<string, ItemMovement> MovementResult) => CashManagementService.UpdateCashUnitAccounting(MovementResult);
-
-        /// <summary>
-        /// Cash unit structure information of this device
-        /// </summary>
-        public Dictionary<string, CashUnit> CashUnits { get => CashManagementService.CashUnits; set => CashManagementService.CashUnits = value; }
-
-        /// <summary>
-        /// This property is set to true once the framework processed first GetCashUnitInfo command on the start of the day.
-        /// </summary>
-        public bool FirstCashUnitInfoCommand { get => CashManagementService.FirstCashUnitInfoCommand; set => CashManagementService.FirstCashUnitInfoCommand = value; }
+        #region Common Service
 
         /// <summary>
         /// Stores CashDispenser interface capabilites internally
         /// </summary>
-        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get => CommonService.CashDispenserCapabilities; set => CommonService.CashDispenserCapabilities = value;  }
+        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get => CommonService.CashDispenserCapabilities; set => CommonService.CashDispenserCapabilities = value; }
 
         /// <summary>
         /// Stores CashManagement interface capabilites internally
         /// </summary>
         public CashManagementCapabilitiesClass CashManagementCapabilities { get => CommonService.CashManagementCapabilities; set => CommonService.CashManagementCapabilities = value; }
 
+        #endregion
 
+        #region Cash Management Service
+
+        /// <summary>
+        /// Update storage count from the framework after media movement command is processed
+        /// </summary>
+        public Task UpdateCardStorageCount(string storageId, int countDelta) => throw new NotSupportedException($"CashManagement service class doesn't support card storage.");
+
+        /// <summary>
+        /// UpdateCashAccounting
+        /// Update cash unit status and counts managed by the device specific class.
+        /// </summary>
+        public async Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null) => await CashManagementService.UpdateCashAccounting(countDelta);
+
+        /// <summary>
+        /// Return which type of storage SP is using
+        /// </summary>
+        public StorageTypeEnum StorageType { get => CashManagementService.StorageType; set => CashManagementService.StorageType = value; }
+
+        /// <summary>
+        /// Store CardUnits and CashUnits persistently
+        /// </summary>
+        public void StorePersistent() => CashManagementService.StorePersistent();
+
+        /// <summary>
+        /// Card storage structure information of this device
+        /// </summary>
+        public Dictionary<string, CardUnitStorage> CardUnits { get => CashManagementService.CardUnits; set => CashManagementService.CardUnits = value; }
+
+        /// <summary>
+        /// Cash storage structure information of this device
+        /// </summary>
+        public Dictionary<string, CashUnitStorage> CashUnits { get => CashManagementService.CashUnits; set => CashManagementService.CashUnits = value; }
+
+        #endregion
+
+        #region CashDispenser Service
         /// <summary>
         /// Add vendor specific mix algorithm
         /// </summary>
-        /// <param name="mixNumber"></param>
+        /// <param name="mixId">ID for the mix</param>
         /// <param name="mix">new mix algorithm to support for a customization</param>
-        public void AddMix(int mixNumber, Mix mix) => CashDispenserService.AddMix(mixNumber, mix);
+        public void AddMix(string mixId, Mix mix) => CashDispenserService.AddMix(mixId, mix);
 
         /// <summary>
         /// Return mix algorithm available
         /// </summary>
-        /// <returns></returns>
-        public Mix GetMix(int mixNumber) => CashDispenserService.GetMix(mixNumber);
+        public Mix GetMix(string mixId) => CashDispenserService.GetMix(mixId);
 
-        public IEnumerator GetMixAlgorithms() => CashDispenserService.GetMixAlgorithms();
+        /// <summary>
+        /// Return mix algorithm supported by the framework or the application set mix tables
+        /// </summary>
+        public Dictionary<string, Mix> GetMixAlgorithms() => CashDispenserService.GetMixAlgorithms();
 
         /// <summary>
         /// Keep last present status
         /// </summary>
         public Dictionary<CashDispenserCapabilitiesClass.OutputPositionEnum, PresentStatus> LastPresentStatus { get => CashDispenserService.LastPresentStatus; set => CashDispenserService.LastPresentStatus = value; }
+
+        #endregion
     }
 }

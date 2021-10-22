@@ -9,11 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XFS4IoT;
-using XFS4IoT.KeyManagement.Events;
-using XFS4IoT.Common.Events;
 using XFS4IoTFramework.Common;
 using XFS4IoTFramework.KeyManagement;
 
@@ -32,7 +28,8 @@ namespace XFS4IoTServer
             if (KeyDetails is null)
                 KeyDetails = new();
 
-            this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(KeyManagementServiceClass));
+            CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(KeyManagementServiceClass));
+            this.CommonService = CommonService.IsA<ICommonService>($"Invalid interface parameter specified for common service. " + nameof(KeyManagementServiceClass));
         }
 
         /// <summary>

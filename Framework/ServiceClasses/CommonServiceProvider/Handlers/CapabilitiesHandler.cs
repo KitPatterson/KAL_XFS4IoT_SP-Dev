@@ -31,146 +31,116 @@ namespace XFS4IoTFramework.Common
 
             if (result.CashDispenser is not null)
             {
-                Dictionary<CashDispenserCapabilitiesClass.RetractAreaEnum, bool> retractAreas = new()
-                {
-                    { CashDispenserCapabilitiesClass.RetractAreaEnum.ItemCassette, false },
-                    { CashDispenserCapabilitiesClass.RetractAreaEnum.Reject, false },
-                    { CashDispenserCapabilitiesClass.RetractAreaEnum.Retract, false },
-                    { CashDispenserCapabilitiesClass.RetractAreaEnum.Stacker, false },
-                    { CashDispenserCapabilitiesClass.RetractAreaEnum.Transport, false },
-                    { CashDispenserCapabilitiesClass.RetractAreaEnum.Default, true }
-                };
+                CashManagementCapabilitiesClass.RetractAreaEnum retractAreas = CashManagementCapabilitiesClass.RetractAreaEnum.Default;
 
                 if (result.CashDispenser.RetractAreas?.ItemCassette is not null &&
                     (bool)result.CashDispenser.RetractAreas?.ItemCassette)
                 {
-                    retractAreas[CashDispenserCapabilitiesClass.RetractAreaEnum.ItemCassette] = true;
+                    retractAreas |= CashManagementCapabilitiesClass.RetractAreaEnum.ItemCassette;
                 }
                 if (result.CashDispenser.RetractAreas?.Reject is not null &&
                     (bool)result.CashDispenser.RetractAreas?.Reject)
                 {
-                    retractAreas[CashDispenserCapabilitiesClass.RetractAreaEnum.Reject] = true;
+                    retractAreas |= CashManagementCapabilitiesClass.RetractAreaEnum.Reject;
                 }
                 if (result.CashDispenser.RetractAreas?.Retract is not null &&
                     (bool)result.CashDispenser.RetractAreas?.Retract)
                 {
-                    retractAreas[CashDispenserCapabilitiesClass.RetractAreaEnum.Retract] = true;
+                    retractAreas |= CashManagementCapabilitiesClass.RetractAreaEnum.Retract;
                 }
                 if (result.CashDispenser.RetractAreas?.Stacker is not null &&
                     (bool)result.CashDispenser.RetractAreas?.Stacker)
                 {
-                    retractAreas[CashDispenserCapabilitiesClass.RetractAreaEnum.Stacker] = true;
+                    retractAreas |= CashManagementCapabilitiesClass.RetractAreaEnum.Stacker;
                 }
                 if (result.CashDispenser.RetractAreas?.Transport is not null &&
                     (bool)result.CashDispenser.RetractAreas?.Transport)
                 {
-                    retractAreas[CashDispenserCapabilitiesClass.RetractAreaEnum.Transport] = true;
+                    retractAreas |= CashManagementCapabilitiesClass.RetractAreaEnum.Transport;
                 }
 
-                Dictionary<CashDispenserCapabilitiesClass.RetractStackerActionEnum, bool> retractStackerActions = new()
-                {
-                    { CashDispenserCapabilitiesClass.RetractStackerActionEnum.ItemCassette, false },
-                    { CashDispenserCapabilitiesClass.RetractStackerActionEnum.Present, false },
-                    { CashDispenserCapabilitiesClass.RetractStackerActionEnum.Reject, false },
-                    { CashDispenserCapabilitiesClass.RetractStackerActionEnum.Retract, false }
-                };
+                CashManagementCapabilitiesClass.RetractStackerActionEnum retractStackerActions = CashManagementCapabilitiesClass.RetractStackerActionEnum.NotSupported;
 
                 if (result.CashDispenser.RetractStackerActions?.ItemCassette is not null &&
                     (bool)result.CashDispenser.RetractStackerActions?.ItemCassette)
                 {
-                    retractStackerActions[CashDispenserCapabilitiesClass.RetractStackerActionEnum.ItemCassette] = true;
+                    retractStackerActions = CashManagementCapabilitiesClass.RetractStackerActionEnum.ItemCassette;
                 }
                 if (result.CashDispenser.RetractStackerActions?.Present is not null &&
                     (bool)result.CashDispenser.RetractStackerActions?.Present)
                 {
-                    retractStackerActions[CashDispenserCapabilitiesClass.RetractStackerActionEnum.Present] = true;
+                    retractStackerActions = CashManagementCapabilitiesClass.RetractStackerActionEnum.Present;
                 }
                 if (result.CashDispenser.RetractStackerActions?.Reject is not null &&
                     (bool)result.CashDispenser.RetractStackerActions?.Reject)
                 {
-                    retractStackerActions[CashDispenserCapabilitiesClass.RetractStackerActionEnum.Reject] = true;
+                    retractStackerActions = CashManagementCapabilitiesClass.RetractStackerActionEnum.Reject;
                 }
                 if (result.CashDispenser.RetractStackerActions?.Retract is not null &&
                     (bool)result.CashDispenser.RetractStackerActions?.Retract)
                 {
-                    retractStackerActions[CashDispenserCapabilitiesClass.RetractStackerActionEnum.Retract] = true;
+                    retractStackerActions = CashManagementCapabilitiesClass.RetractStackerActionEnum.Retract;
                 }
 
-                Dictionary<CashDispenserCapabilitiesClass.RetractTransportActionEnum, bool> retractTransportActions = new()
-                {
-                    { CashDispenserCapabilitiesClass.RetractTransportActionEnum.ItemCassette, false },
-                    { CashDispenserCapabilitiesClass.RetractTransportActionEnum.Present, false },
-                    { CashDispenserCapabilitiesClass.RetractTransportActionEnum.Reject, false },
-                    { CashDispenserCapabilitiesClass.RetractTransportActionEnum.Retract, false }
-                };
+                CashManagementCapabilitiesClass.RetractTransportActionEnum retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.NotSupported;
 
                 if (result.CashDispenser.RetractTransportActions?.ItemCassette is not null &&
                     (bool)result.CashDispenser.RetractTransportActions?.ItemCassette)
                 {
-                    retractTransportActions[CashDispenserCapabilitiesClass.RetractTransportActionEnum.ItemCassette] = true;
+                    retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.ItemCassette;
                 }
                 if (result.CashDispenser.RetractTransportActions?.Present is not null &&
                     (bool)result.CashDispenser.RetractTransportActions?.Present)
                 {
-                    retractTransportActions[CashDispenserCapabilitiesClass.RetractTransportActionEnum.Present] = true;
+                    retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.ItemCassette;
                 }
                 if (result.CashDispenser.RetractTransportActions?.Reject is not null &&
                     (bool)result.CashDispenser.RetractTransportActions?.Reject)
                 {
-                    retractTransportActions[CashDispenserCapabilitiesClass.RetractTransportActionEnum.Reject] = true;
+                    retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.Retract;
                 }
                 if (result.CashDispenser.RetractTransportActions?.Retract is not null &&
                     (bool)result.CashDispenser.RetractTransportActions?.Retract)
                 {
-                    retractTransportActions[CashDispenserCapabilitiesClass.RetractTransportActionEnum.Retract] = true;
+                    retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.Retract;
                 }
 
-                Dictionary<CashDispenserCapabilitiesClass.OutputPositionEnum, bool> outputPositions = new()
-                {
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Center, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Default, true },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Front, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Left, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Rear, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Right, false },
-                    { CashDispenserCapabilitiesClass.OutputPositionEnum.Top, false }
-                };
+                CashDispenserCapabilitiesClass.OutputPositionEnum outputPositions = CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported;
 
                 if (result.CashDispenser.Positions?.Bottom is not null &&
                     (bool)result.CashDispenser.Positions?.Bottom)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom;
                 }
                 if (result.CashDispenser.Positions?.Center is not null &&
                     (bool)result.CashDispenser.Positions?.Center)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Center] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Center;
                 }
                 if (result.CashDispenser.Positions?.Front is not null &&
                     (bool)result.CashDispenser.Positions?.Front)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Front] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Front;
                 }
                 if (result.CashDispenser.Positions?.Left is not null &&
                     (bool)result.CashDispenser.Positions?.Left)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Left] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Left;
                 }
                 if (result.CashDispenser.Positions?.Rear is not null &&
                     (bool)result.CashDispenser.Positions?.Rear)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Rear] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Rear;
                 }
                 if (result.CashDispenser.Positions?.Right is not null &&
                     (bool)result.CashDispenser.Positions?.Right)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Right] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Right;
                 }
                 if (result.CashDispenser.Positions?.Top is not null &&
                     (bool)result.CashDispenser.Positions?.Top)
                 {
-                    outputPositions[CashDispenserCapabilitiesClass.OutputPositionEnum.Top] = true;
+                    outputPositions |= CashDispenserCapabilitiesClass.OutputPositionEnum.Top;
                 }
 
                 Dictionary<CashDispenserCapabilitiesClass.MoveItemEnum, bool> moveItems = new()
@@ -217,8 +187,12 @@ namespace XFS4IoTFramework.Common
                                                                                       RetractStackerActions: retractStackerActions,
                                                                                       IntermediateStacker: result.CashDispenser.IntermediateStacker is not null && (bool)result.CashDispenser.IntermediateStacker,
                                                                                       ItemsTakenSensor: result.CashDispenser.ItemsTakenSensor is not null && (bool)result.CashDispenser.ItemsTakenSensor,
-                                                                                      OutputPositons: outputPositions,
+                                                                                      OutputPositions: outputPositions,
                                                                                       MoveItems: moveItems);
+            }
+
+            if (result.CashAcceptor is not null)
+            {
             }
 
             if (result.CashManagement is not null)
@@ -235,7 +209,43 @@ namespace XFS4IoTFramework.Common
                 if (result.CashManagement.ItemInfoTypes?.ImageFile is not null && (bool)result.CashManagement.ItemInfoTypes?.ImageFile)
                     itemInfo |= CashManagementCapabilitiesClass.ItemInfoTypesEnum.ImageFile;
 
-                Common.CashManagementCapabilities = new CashManagementCapabilitiesClass(exchangeType,
+                CashManagementCapabilitiesClass.PositionEnum positions = CashManagementCapabilitiesClass.PositionEnum.NotSupported;
+                bool shutterControl = false;
+                CashManagementCapabilitiesClass.RetractAreaEnum retractAreas = CashManagementCapabilitiesClass.RetractAreaEnum.Default;
+                CashManagementCapabilitiesClass.RetractStackerActionEnum retractStackerActions = CashManagementCapabilitiesClass.RetractStackerActionEnum.NotSupported;
+                CashManagementCapabilitiesClass.RetractTransportActionEnum retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.NotSupported;
+
+                if (Common.CashDispenserCapabilities is not null)
+                {
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Bottom))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutBottom;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Center))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutCenter;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Default))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutDefault;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Front))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutFront;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Left))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutLeft;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Rear))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutRear;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Right))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutRight;
+                    if (Common.CashDispenserCapabilities.OutputPositions.HasFlag(CashDispenserCapabilitiesClass.OutputPositionEnum.Top))
+                        positions |= CashManagementCapabilitiesClass.PositionEnum.OutTop;
+
+                    shutterControl = Common.CashDispenserCapabilities.ShutterControl;
+                    retractAreas = Common.CashDispenserCapabilities.RetractAreas;
+                    retractStackerActions = Common.CashDispenserCapabilities.RetractStackerActions;
+                    retractTransportActions = Common.CashDispenserCapabilities.RetractTransportActions;
+                }
+
+                Common.CashManagementCapabilities = new CashManagementCapabilitiesClass(positions,
+                                                                                        shutterControl,
+                                                                                        retractAreas,
+                                                                                        retractTransportActions,
+                                                                                        retractStackerActions,
+                                                                                        exchangeType,
                                                                                         itemInfo,
                                                                                         result.CashManagement.SafeDoor is not null && (bool)result.CashManagement.SafeDoor,
                                                                                         result.CashManagement.CashBox is not null && (bool)result.CashManagement.CashBox,
@@ -910,6 +920,72 @@ namespace XFS4IoTFramework.Common
                 }
 
                 Common.KeyboardCapabilities = new KeyboardCapabilitiesClass(keyboardBeep, etsCaps);
+            }
+
+            if (result.Lights is not null)
+            {
+                Dictionary<string, LightsCapabilitiesClass.Light> lights = new();
+                foreach (var light in result.Lights)
+                {
+                    if (light.Value.FlashRate is null)
+                    {
+                        Logger.Warning(Constants.Framework, $"No flash rate is specified for the light. {light.Key}");
+                        continue;
+                    }
+
+                    LightsCapabilitiesClass.FlashRateEnum flashRate = 0;
+                    if (light.Value.FlashRate.Continuous is not null && (bool)light.Value.FlashRate.Continuous)
+                        flashRate |= LightsCapabilitiesClass.FlashRateEnum.Continuous;
+                    if (light.Value.FlashRate.Medium is not null && (bool)light.Value.FlashRate.Medium)
+                        flashRate |= LightsCapabilitiesClass.FlashRateEnum.Medium;
+                    if (light.Value.FlashRate.Off is not null && (bool)light.Value.FlashRate.Off)
+                        flashRate |= LightsCapabilitiesClass.FlashRateEnum.Off;
+                    if (light.Value.FlashRate.Quick is not null && (bool)light.Value.FlashRate.Quick)
+                        flashRate |= LightsCapabilitiesClass.FlashRateEnum.Quick;
+                    if (light.Value.FlashRate.Slow is not null && (bool)light.Value.FlashRate.Slow)
+                        flashRate |= LightsCapabilitiesClass.FlashRateEnum.Slow;
+
+                    LightsCapabilitiesClass.ColorEnum color = LightsCapabilitiesClass.ColorEnum.Default;
+                    if (light.Value.Color?.Blue is not null && (bool)light.Value.Color?.Blue)
+                        color |= LightsCapabilitiesClass.ColorEnum.Blue;
+                    if (light.Value.Color?.Cyan is not null && (bool)light.Value.Color?.Cyan)
+                        color |= LightsCapabilitiesClass.ColorEnum.Cyan;
+                    if (light.Value.Color?.Green is not null && (bool)light.Value.Color?.Green)
+                        color |= LightsCapabilitiesClass.ColorEnum.Green;
+                    if (light.Value.Color?.Magenta is not null && (bool)light.Value.Color?.Magenta)
+                        color |= LightsCapabilitiesClass.ColorEnum.Magenta;
+                    if (light.Value.Color?.White is not null && (bool)light.Value.Color?.White)
+                        color |= LightsCapabilitiesClass.ColorEnum.White;
+                    if (light.Value.Color?.Yellow is not null && (bool)light.Value.Color?.Yellow)
+                        color |= LightsCapabilitiesClass.ColorEnum.Yellow;
+
+                    LightsCapabilitiesClass.DirectionEnum direction = LightsCapabilitiesClass.DirectionEnum.NotSupported;
+                    if (light.Value.Direction?.Entry is not null && (bool)light.Value.Direction?.Entry)
+                        direction |= LightsCapabilitiesClass.DirectionEnum.Entry;
+                    if (light.Value.Direction?.Exit is not null && (bool)light.Value.Direction?.Exit)
+                        direction |= LightsCapabilitiesClass.DirectionEnum.Exit;
+
+                    LightsCapabilitiesClass.LightPostionEnum position = LightsCapabilitiesClass.LightPostionEnum.Default;
+                    if (light.Value.Position?.Bottom is not null && (bool)light.Value.Position?.Bottom)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Bottom;
+                    if (light.Value.Position?.Center is not null && (bool)light.Value.Position?.Center)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Center;
+                    if (light.Value.Position?.Front is not null && (bool)light.Value.Position?.Front)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Front;
+                    if (light.Value.Position?.Left is not null && (bool)light.Value.Position?.Left)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Left;
+                    if (light.Value.Position?.Rear is not null && (bool)light.Value.Position?.Rear)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Rear;
+                    if (light.Value.Position?.Right is not null && (bool)light.Value.Position?.Right)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Right;
+                    if (light.Value.Position?.Top is not null && (bool)light.Value.Position?.Top)
+                        position |= LightsCapabilitiesClass.LightPostionEnum.Top;
+
+
+                    lights.Add(light.Key, new LightsCapabilitiesClass.Light(flashRate, color, direction, position));
+                }
+
+                Common.LightsCapabilities = new LightsCapabilitiesClass(lights);
             }
 
             return Task.FromResult(result);

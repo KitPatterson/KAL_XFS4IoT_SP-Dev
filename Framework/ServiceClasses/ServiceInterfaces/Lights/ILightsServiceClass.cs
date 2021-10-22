@@ -10,7 +10,6 @@
 using System.Threading.Tasks;
 
 using XFS4IoTFramework.Lights;
-using XFS4IoT.Lights.Events;
 
 namespace XFS4IoTServer
 {

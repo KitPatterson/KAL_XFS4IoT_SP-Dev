@@ -71,16 +71,20 @@ namespace XFS4IoTServer
         public Task ExchangeStateChangedEvent(ExchangeStateChangedEvent.PayloadData Payload) => CommonService.ExchangeStateChangedEvent(Payload);
         #endregion
 
-
+        #region Common Service
         /// <summary>
         /// Stores KeyManagement interface capabilites internally
         /// </summary>
-        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set => CommonService.KeyManagementCapabilities = value; }
+        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set { } }
 
         /// <summary>
         /// Stores Crypto interface capabilites internally
         /// </summary>
-        public CryptoCapabilitiesClass CryptoCapabilities { get => CommonService.CryptoCapabilities; set => CommonService.CryptoCapabilities = value; }
+        public CryptoCapabilitiesClass CryptoCapabilities { get => CommonService.CryptoCapabilities; set { } }
+
+        #endregion
+
+        #region KeyManagement Service
 
         /// <summary>
         /// Find keyslot available or being used
@@ -147,5 +151,7 @@ namespace XFS4IoTServer
         /// </summary>
         /// <returns></returns>
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
+
+        #endregion
     }
 }

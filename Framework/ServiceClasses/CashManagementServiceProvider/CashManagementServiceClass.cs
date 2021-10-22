@@ -6,16 +6,12 @@
 \***********************************************************************************************/
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
+using XFS4IoT;
 using XFS4IoTFramework.Common;
 using XFS4IoTFramework.CashManagement;
-using XFS4IoT;
-using XFS4IoTServer;
+using XFS4IoTFramework.Storage;
 
 namespace XFS4IoTServer
 {
@@ -23,24 +19,18 @@ namespace XFS4IoTServer
     {
         public CashManagementServiceClass(IServiceProvider ServiceProvider,
                                           ICommonService CommonService,
-                                          IStorageServiceClass StorageService,
-                                          ILogger logger, 
-                                          IPersistentData PersistentData) 
+                                          IStorageService StorageService,
+                                          ILogger logger) 
             : this(ServiceProvider, logger)
         {
-            this.PersistentData = PersistentData.IsNotNull($"No persistent data interface is set. " + nameof(CashManagementServiceClass));
+            CommonService.IsNotNull($"Unexpected parameter set for common service in the " + nameof(CashManagementServiceClass));
+            this.CommonService = CommonService.IsA<ICommonService>($"Invalid interface parameter specified for common service. " + nameof(CashManagementServiceClass));
 
-            // Load persistent data
-            CashUnits = PersistentData.Load<Dictionary<string, CashUnit>>(ServiceProvider.Name + typeof(CashUnit).FullName);
-            if (CashUnits is null)
-            {
-                Logger.Warning(Constants.Framework, "Failed to load persistent data. It could be a first run and no persistent exists on the file system.");
-                CashUnits = new Dictionary<string, CashUnit>();
-            }
-
-            FirstCashUnitInfoCommand = true;
-            this.CommonService = CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(CashManagementServiceClass));
+            StorageService.IsNotNull($"Unexpected parameter set for storage service in the " + nameof(CashManagementServiceClass));
+            this.StorageService = StorageService.IsA<IStorageService>($"Invalid interface parameter specified for storage service. " + nameof(CashManagementServiceClass));
         }
+
+        #region Common Service
 
         /// <summary>
         /// Common service interface
@@ -48,13 +38,55 @@ namespace XFS4IoTServer
         private ICommonService CommonService { get; init; }
 
         /// <summary>
-        /// Stores CashDispenser interface capabilites internally
+        /// Capabilities of the CashManagement interface
         /// </summary>
-        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get => CommonService.CashDispenserCapabilities; set => CommonService.CashDispenserCapabilities = value; }
+        public CashManagementCapabilitiesClass CashManagementCapabilities { get => CommonService.CashManagementCapabilities; set { } }
 
         /// <summary>
-        /// Stores CashManagement interface capabilites internally
+        /// Capabilities of the CashDispenser interface
         /// </summary>
-        public CashManagementCapabilitiesClass CashManagementCapabilities { get => CommonService.CashManagementCapabilities; set => CommonService.CashManagementCapabilities = value; }
+        public CashDispenserCapabilitiesClass CashDispenserCapabilities { get => CommonService.CashDispenserCapabilities; set { } }
+
+
+        #endregion
+
+        #region Storage Service
+        /// <summary>
+        /// Storage service interface
+        /// </summary>
+        private IStorageService StorageService { get; init; }
+
+        /// <summary>
+        /// Update storage count from the framework after media movement command is processed
+        /// </summary>
+        public Task UpdateCardStorageCount(string storageId, int countDelta) => throw new NotSupportedException($"The CashManagement interface doesn't aupport card unit information.");
+
+        /// <summary>
+        /// UpdateCashAccounting
+        /// Update cash unit status and counts managed by the device specific class.
+        /// </summary>
+        public async Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null) => await StorageService.UpdateCashAccounting(countDelta);
+
+        /// <summary>
+        /// Return which type of storage SP is using
+        /// </summary>
+        public StorageTypeEnum StorageType { get => StorageService.StorageType; set { } }
+
+        /// <summary>
+        /// Store CardUnits and CashUnits persistently
+        /// </summary>
+        public void StorePersistent() => StorageService.StorePersistent();
+
+        /// <summary>
+        /// Card storage structure information of this device
+        /// </summary>
+        public Dictionary<string, CardUnitStorage> CardUnits { get => StorageService.CardUnits; set { } }
+
+        /// <summary>
+        /// Cash storage structure information of this device
+        /// </summary>
+        public Dictionary<string, CashUnitStorage> CashUnits { get => StorageService.CashUnits; set { } }
+
+        #endregion
     }
 }

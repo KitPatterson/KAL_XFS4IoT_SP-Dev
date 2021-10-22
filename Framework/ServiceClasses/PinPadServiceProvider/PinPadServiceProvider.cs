@@ -78,10 +78,11 @@ namespace XFS4IoTServer
         public Task ExchangeStateChangedEvent(ExchangeStateChangedEvent.PayloadData Payload) => CommonService.ExchangeStateChangedEvent(Payload);
         #endregion
 
+        #region Key Management Service
         /// <summary>
         /// Stores KeyManagement interface capabilites internally
         /// </summary>
-        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set => CommonService.KeyManagementCapabilities = value; }
+        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set { } }
 
         /// <summary>
         /// Find keyslot available or being used
@@ -149,10 +150,18 @@ namespace XFS4IoTServer
         /// <returns></returns>
         public SecureKeyEntryStatusClass GetSecureKeyEntryStatus() => KeyManagementService.GetSecureKeyEntryStatus();
 
+        #endregion
+
+        #region PinPad Service
+
         /// <summary>
         /// Return list of PCI Security Standards Council PIN transaction security (PTS) certification held by the PIN device
         /// </summary>
         public PCIPTSDeviceIdClass PCIPTSDeviceId { get => PinPadService.PCIPTSDeviceId; set { } }
+
+        #endregion
+
+        #region Keyboard Service
 
         /// <summary>
         /// Function keys device supported
@@ -168,5 +177,7 @@ namespace XFS4IoTServer
         /// Keyboard layout device supported
         /// </summary>
         public Dictionary<EntryModeEnum, List<FrameClass>> KeyboardLayouts { get => KeyboardService.KeyboardLayouts; set { } }
+
+        #endregion
     }
 }

@@ -24,20 +24,6 @@ namespace XFS4IoTFramework.CardReader
     /// The classes used by the device interface for an Input/Output parameters
 
     /// <summary>
-    /// Device type requested by the framework
-    /// </summary>
-    public enum DeviceTypeEnum
-    {
-        Motor,
-        Swipe,
-        Dip,
-        LatchedDip,
-        Contactless,
-        IntelligentContactless,
-        Permanent,
-    }
-
-    /// <summary>
     /// Media status requested by the framework
     /// </summary>
     public enum MediaStatusEnum
