@@ -75,12 +75,12 @@ namespace XFS4IoTServer
         /// <summary>
         /// Stores KeyManagement interface capabilites internally
         /// </summary>
-        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set { } }
+        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set => CommonService.KeyManagementCapabilities = value; }
 
         /// <summary>
         /// Stores Crypto interface capabilites internally
         /// </summary>
-        public CryptoCapabilitiesClass CryptoCapabilities { get => CommonService.CryptoCapabilities; set { } }
+        public CryptoCapabilitiesClass CryptoCapabilities { get => CommonService.CryptoCapabilities; set => CommonService.CryptoCapabilities = value; }
 
         #endregion
 

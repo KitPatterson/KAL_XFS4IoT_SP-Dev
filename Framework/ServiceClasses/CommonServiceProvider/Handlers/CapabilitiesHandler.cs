@@ -105,7 +105,7 @@ namespace XFS4IoTFramework.Common
                     retractTransportActions = CashManagementCapabilitiesClass.RetractTransportActionEnum.Retract;
                 }
 
-                CashDispenserCapabilitiesClass.OutputPositionEnum outputPositions = CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported;
+                CashDispenserCapabilitiesClass.OutputPositionEnum outputPositions = CashDispenserCapabilitiesClass.OutputPositionEnum.Default;
 
                 if (result.CashDispenser.Positions?.Bottom is not null &&
                     (bool)result.CashDispenser.Positions?.Bottom)
@@ -497,7 +497,7 @@ namespace XFS4IoTFramework.Common
                     keyblockImportformats |= KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.KEYBLOCKB;
                 if (result.KeyManagement.KeyBlockImportFormats?.C is not null && (bool)result.KeyManagement.KeyBlockImportFormats.C)
                     keyblockImportformats |= KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.KEYBLOCKC;
-                if (result.KeyManagement.KeyBlockImportFormats?.C is not null && (bool)result.KeyManagement.KeyBlockImportFormats.D)
+                if (result.KeyManagement.KeyBlockImportFormats?.D is not null && (bool)result.KeyManagement.KeyBlockImportFormats.D)
                     keyblockImportformats |= KeyManagementCapabilitiesClass.KeyBlockImportFormatEmum.KEYBLOCKD;
 
                 KeyManagementCapabilitiesClass.DESKeyLengthEmum desKeyLength = KeyManagementCapabilitiesClass.DESKeyLengthEmum.NotSupported;
@@ -671,7 +671,7 @@ namespace XFS4IoTFramework.Common
                                                                                       signatureScheme,
                                                                                       emvImportScheme,
                                                                                       keyblockImportformats,
-                                                                                      result.KeyManagement.KeyImportThroughParts is not null ? (bool)result.KeyManagement.KeyImportThroughParts : false,
+                                                                                      result.KeyManagement.KeyImportThroughParts is not null && (bool)result.KeyManagement.KeyImportThroughParts,
                                                                                       desKeyLength,
                                                                                       certTypes,
                                                                                       loadCertOptions,

@@ -30,7 +30,7 @@ namespace XFS4IoTServer
     /// It's possible to create other service provider types by combining multiple service classes in the 
     /// same way. 
     /// </remarks>
-    public class CashDispenserServiceProvider : ServiceProvider, ICashDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass, ILightsServiceClass
+    public class CashDispenserServiceProvider : ServiceProvider, ICashDispenserServiceClass, ICashManagementServiceClass, ICommonServiceClass, IStorageServiceClass, ILightsServiceClass
     {
         public CashDispenserServiceProvider(EndpointDetails endpointDetails, string ServiceName, IDevice device, ILogger logger, IPersistentData persistentData)
             :
@@ -41,7 +41,7 @@ namespace XFS4IoTServer
                  logger)
         {
             CommonService = new CommonServiceClass(this, logger);
-            StorageService = new StorageServiceClass(this, CommonService, logger, persistentData, XFS4IoTFramework.Storage.StorageTypeEnum.Cash);
+            StorageService = new StorageServiceClass(this, CommonService, logger, persistentData, StorageTypeEnum.Cash);
             CashManagementService = new CashManagementServiceClass(this, CommonService, StorageService, logger);
             CashDispenserService = new CashDispenserServiceClass(this, CashManagementService, CommonService, logger, persistentData);
         }
@@ -96,13 +96,13 @@ namespace XFS4IoTServer
         /// <summary>
         /// Update storage count from the framework after media movement command is processed
         /// </summary>
-        public Task UpdateCardStorageCount(string storageId, int countDelta) => throw new NotSupportedException($"CashManagement service class doesn't support card storage.");
+        public Task UpdateCardStorageCount(string storageId, int countDelta, CardUnitStorage preservedStorage) => throw new NotSupportedException($"CashManagement service class doesn't support card storage.");
 
         /// <summary>
         /// UpdateCashAccounting
         /// Update cash unit status and counts managed by the device specific class.
         /// </summary>
-        public async Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null) => await CashManagementService.UpdateCashAccounting(countDelta);
+        public async Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null, Dictionary<string, CashUnitStorage> preservedStorage = null) => await CashManagementService.UpdateCashAccounting(countDelta, preservedStorage);
 
         /// <summary>
         /// Return which type of storage SP is using

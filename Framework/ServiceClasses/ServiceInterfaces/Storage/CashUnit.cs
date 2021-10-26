@@ -37,6 +37,18 @@ namespace XFS4IoTFramework.Storage
                                      StorageConfiguration.CashUnitAdditionalInfo);
         }
 
+        public CashUnitStorage(CashUnitStorage Storage)
+        {
+            this.PositionName = Storage.PositionName;
+            this.Capacity = Storage.Capacity;
+            this.Status = Storage.Status;
+            this.SerialNumber = Storage.SerialNumber;
+
+            this.Unit = new CashUnit(Storage.Unit?.Capabilities,
+                                     Storage.Unit?.Configuration,
+                                     Storage.Unit?.Status);
+        }
+
         /// <summary>
         /// Fixed physical name for the position.
         /// </summary>
@@ -106,6 +118,20 @@ namespace XFS4IoTFramework.Storage
             this.BanknoteItems = BanknoteItems;
         }
 
+        public CashCapabilitiesClass(CashCapabilitiesClass Capabilities)
+        {
+            Types = Capabilities.Types;
+            Items = Capabilities.Items;
+            HardwareSensors = Capabilities.HardwareSensors;
+            RetractAreas = Capabilities.RetractAreas;
+            if (Capabilities.BanknoteItems is not null)
+            {
+                BanknoteItems = new();
+                foreach (var item in Capabilities.BanknoteItems)
+                    BanknoteItems.Add(item.Key, new (item.Value));
+            }
+        }
+
         /// <summary>
         /// The types of operation the unit is capable to perform. This is a combination of one or 
         /// more operations
@@ -151,13 +177,21 @@ namespace XFS4IoTFramework.Storage
     {
         public BanknoteItem(int NoteId,
                             string Currency,
-                            float Value,
+                            double Value,
                             int Release)
         {
             this.NoteId = NoteId;
             this.Currency = Currency;
             this.Value = Value;
             this.Release = Release;
+        }
+
+        public BanknoteItem(BanknoteItem Item)
+        {
+            NoteId = Item.NoteId;
+            Currency = Item.Currency;
+            Value = Item.Value;
+            Release = Item.Release;
         }
 
         /// <summary>
@@ -176,7 +210,7 @@ namespace XFS4IoTFramework.Storage
         /// a floating point value to allow for coins and notes which have a value which is not a whole multiple
         /// of the currency unit.
         /// </summary>
-        public float Value { get; init; }
+        public double Value { get; init; }
 
         /// <summary>
         /// The release of the cash item. The higher this number is, the newer the release.
@@ -188,12 +222,12 @@ namespace XFS4IoTFramework.Storage
     /// Configuration of the cash unit
     /// </summary>
     [Serializable()]
-    public sealed class CashConfigurationClass
+    public sealed record CashConfigurationClass
     {
         public CashConfigurationClass(CashCapabilitiesClass.TypesEnum Types,
                                       CashCapabilitiesClass.ItemsEnum Items,
                                       string Currency,
-                                      float Value,
+                                      double Value,
                                       int HighThreshold,
                                       int LowThreshold,
                                       bool AppLockIn,
@@ -209,6 +243,25 @@ namespace XFS4IoTFramework.Storage
             this.AppLockIn = AppLockIn;
             this.AppLockOut = AppLockOut;
             this.BanknoteItems = BanknoteItems;
+        }
+
+        public CashConfigurationClass(CashConfigurationClass Config)
+        {
+            Types = Config.Types;
+            Items = Config.Items;
+            Currency = Config.Currency;
+            Value = Config.Value;
+            HighThreshold = Config.HighThreshold;
+            LowThreshold = Config.LowThreshold;
+            AppLockIn = Config.AppLockIn;
+            AppLockOut = Config.AppLockOut;
+            BanknoteItems = null;
+            if (Config.BanknoteItems is not null)
+            {
+                BanknoteItems = new();
+                foreach (var item in Config.BanknoteItems)
+                    BanknoteItems.Add(item.Key, new(item.Value));
+            }
         }
 
         /// <summary>
@@ -233,7 +286,7 @@ namespace XFS4IoTFramework.Storage
         /// a floating point value to allow for coins and notes which have a value which is not a whole multiple
         /// of the currency unit.
         /// </summary>
-        public float Value { get; set; }
+        public double Value { get; set; }
 
         /// <summary>
         /// If specified, ReplenishmentStatus is set to High if the count is greater than this number.
@@ -265,21 +318,31 @@ namespace XFS4IoTFramework.Storage
     /// Status of the cash unit
     /// </summary>
     [Serializable()]
-    public sealed class CashStatusClass
+    public sealed record CashStatusClass
     {
         public CashStatusClass(CashUnitAdditionalInfoClass AdditionalInfo)
         {
-            this.Index = AdditionalInfo.Index;
+            Index = AdditionalInfo.Index;
             InitialCounts = new();
             StorageCashOutCount = new();
             StorageCashInCount = new();
             Count = 0;
-            this.Accuracy = Accuracy;
             if (AdditionalInfo.AccuracySupported)
-                this.Accuracy = AccuracyEnum.Unknown;
+                Accuracy = AccuracyEnum.Unknown;
             else
-                this.Accuracy = AccuracyEnum.NotSupported;
+                Accuracy = AccuracyEnum.NotSupported;
             ReplenishmentStatus = ReplenishmentStatusEnum.Empty;
+        }
+
+        public CashStatusClass(CashStatusClass Status)
+        {
+            Index = Status.Index;
+            InitialCounts = new(Status.InitialCounts);
+            StorageCashOutCount = new(Status.StorageCashOutCount);
+            StorageCashInCount = new(Status.StorageCashInCount);
+            Count = Status.Count;
+            Accuracy = Status.Accuracy;
+            ReplenishmentStatus = Status.ReplenishmentStatus;
         }
 
         public enum AccuracyEnum
@@ -358,6 +421,18 @@ namespace XFS4IoTFramework.Storage
             this.ItemCounts = ItemCounts;
         }
 
+        public StorageCashCountClass(StorageCashCountClass Count)
+        {
+            Unrecognized = Count.Unrecognized;
+            ItemCounts = null;
+            if (Count.ItemCounts is not null)
+            {
+                ItemCounts = new();
+                foreach (var item in Count.ItemCounts)
+                    ItemCounts.Add(item.Key, new(item.Value));
+            }
+        }
+
         /// <summary>
         /// Count of unrecognized items handled by the cash interface
         /// </summary>
@@ -421,24 +496,33 @@ namespace XFS4IoTFramework.Storage
     {
         public CashItemCountClass()
         {
-            this.Fit = 0;
-            this.Unfit = 0;
-            this.Suspect = 0;
-            this.Counterfeit = 0;
-            this.Inked = 0;
+            Fit = 0;
+            Unfit = 0;
+            Suspect = 0;
+            Counterfeit = 0;
+            Inked = 0;
         }
 
         public CashItemCountClass(int Fit,
                                   int Unfit,
                                   int Suspect,
-                                  int Conterfeit,
+                                  int Counterfeit,
                                   int Inked)
         {
             this.Fit = Fit;
             this.Unfit = Unfit;
             this.Suspect = Suspect;
-            this.Counterfeit = Conterfeit;
+            this.Counterfeit = Counterfeit;
             this.Inked = Inked;
+        }
+
+        public CashItemCountClass(CashItemCountClass ItemCount)
+        {
+            Fit = ItemCount.Fit;
+            Unfit = ItemCount.Unfit;
+            Suspect = ItemCount.Suspect;
+            Counterfeit = ItemCount.Counterfeit;
+            Inked = ItemCount.Inked;
         }
 
         /// <summary>
@@ -481,6 +565,32 @@ namespace XFS4IoTFramework.Storage
             Stacked = new();
             Diverted = new();
             Transport = new();
+        }
+
+        public StorageCashOutCountClass(StorageCashOutCountClass Count)
+        {
+            Presented = null;
+            Rejected = null;
+            Distributed = null;
+            Unknown = null;
+            Stacked = null;
+            Diverted = null;
+            Transport = null;
+
+            if (Count.Presented is not null)
+                Presented = new(Count.Presented);
+            if (Count.Rejected is not null) 
+                Rejected = new(Count.Rejected);
+            if (Count.Distributed is not null) 
+                Distributed = new(Count.Distributed);
+            if (Count.Unknown is not null) 
+                Unknown = new(Count.Unknown);
+            if (Count.Stacked is not null) 
+                Stacked = new(Count.Stacked);
+            if (Count.Diverted is not null) 
+                Diverted = new(Count.Diverted);
+            if (Count.Transport is not null) 
+                Transport = new(Count.Transport);
         }
 
         /// <summary>
@@ -540,6 +650,27 @@ namespace XFS4IoTFramework.Storage
             Transport = new();
         }
 
+        public StorageCashInCountClass(StorageCashInCountClass CashInCount)
+        {
+            Deposited = null;
+            Retracted = null;
+            Rejected = null;
+            Distributed = null;
+            Transport = null;
+
+            RetractOperations = CashInCount.RetractOperations;
+            if (CashInCount.Deposited is not null)
+                Deposited = new(CashInCount.Deposited);
+            if (CashInCount.Retracted is not null) 
+                Retracted = new(CashInCount.Retracted);
+            if (CashInCount.Rejected is not null) 
+                Rejected = new(CashInCount.Rejected);
+            if (CashInCount.Distributed is not null) 
+                Distributed = new(CashInCount.Distributed);
+            if (CashInCount.Transport is not null) 
+                Transport = new(CashInCount.Transport);
+        }
+
         /// <summary>
         /// Number of cash retract operations which resulted in items entering this storage unit. This can be 
         /// used where devices do not have the capability to count or validate items after presentation.
@@ -587,9 +718,18 @@ namespace XFS4IoTFramework.Storage
                         CashConfigurationClass Configuration,
                         CashUnitAdditionalInfoClass AdditionalInfo)
         {
-            this.Capabilities = Capabilities;
-            this.Configuration = Configuration;
+            this.Capabilities = new(Capabilities);
+            this.Configuration = new(Configuration);
             this.Status = new (AdditionalInfo);
+        }
+
+        public CashUnit(CashCapabilitiesClass Capabilities,
+                        CashConfigurationClass Configuration,
+                        CashStatusClass Status)
+        {
+            this.Capabilities = new(Capabilities);
+            this.Configuration = new(Configuration);
+            this.Status = new(Status);
         }
 
         public CashCapabilitiesClass Capabilities { get; init; }
@@ -602,8 +742,23 @@ namespace XFS4IoTFramework.Storage
     /// <summary>
     /// Structure receiving from the device
     /// </summary>
-    public sealed record CashUnitStorageConfiguration
+    public sealed class CashUnitStorageConfiguration
     {
+        public CashUnitStorageConfiguration(string PositionName,
+                                            int Capacity,
+                                            string SerialNumber,
+                                            CashCapabilitiesClass Capabilities,
+                                            CashConfigurationClass Configuration,
+                                            CashUnitAdditionalInfoClass CashUnitAdditionalInfo)
+        {
+            this.PositionName = PositionName;
+            this.Capacity = Capacity;
+            this.SerialNumber = SerialNumber;
+            this.Capabilities = Capabilities;
+            this.Configuration = Configuration;
+            this.CashUnitAdditionalInfo = CashUnitAdditionalInfo;
+        }
+
         /// <summary>
         /// Fixed physical name for the position.
         /// </summary>
@@ -670,7 +825,11 @@ namespace XFS4IoTFramework.Storage
                                   int Count)
         {
             this.StorageCashOutCount = StorageCashOutCount;
+            if (this.StorageCashOutCount is null)
+                this.StorageCashOutCount = new();
             this.StorageCashInCount = StorageCashInCount;
+            if (this.StorageCashInCount is null)
+                this.StorageCashInCount = new();
             this.Count = Count;
         }
 

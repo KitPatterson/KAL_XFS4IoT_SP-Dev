@@ -117,7 +117,7 @@ namespace XFS4IoTFramework.Storage
         public SetCashConfiguration(CashCapabilitiesClass.TypesEnum? Types,
                                     CashCapabilitiesClass.ItemsEnum? Items,
                                     string Currency,
-                                    float? Value,
+                                    double? Value,
                                     int? HighThreshold,
                                     int? LowThreshold,
                                     bool? AppLockIn,
@@ -161,7 +161,7 @@ namespace XFS4IoTFramework.Storage
         /// a floating point value to allow for coins and notes which have a value which is not a whole multiple
         /// of the currency unit.
         /// </summary>
-        public float? Value { get; set; }
+        public double? Value { get; set; }
 
         /// <summary>
         /// If specified, ReplenishmentStatus is set to High if the count is greater than this number.

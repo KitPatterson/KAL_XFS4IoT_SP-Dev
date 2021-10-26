@@ -20,13 +20,13 @@ namespace XFS4IoTServer
     public partial class KeyboardServiceClass
     {
         public KeyboardServiceClass(IServiceProvider ServiceProvider,
-                                    IKeyManagementServiceClass KeyManagement,
+                                    IKeyManagementServiceClass KeyManagementService,
                                     ICommonService CommonService,
                                     ILogger logger)
         : this(ServiceProvider, logger)
         {
-            KeyManagement.IsNotNull($"Unexpected parameter set for key management service in the " + nameof(KeyboardServiceClass));
-            this.KeyManagementService = KeyManagementService.IsA<IKeyManagementServiceClass>($"Invalid interface parameter specified for key management service. " + nameof(KeyboardServiceClass));
+            KeyManagementService.IsNotNull($"Unexpected parameter set for key management service in the " + nameof(KeyboardServiceClass));
+            this.KeyManagementService = KeyManagementService.IsA<IKeyManagementService>($"Invalid interface parameter specified for key management service. " + nameof(KeyboardServiceClass));
 
             CommonService.IsNotNull($"Unexpected parameter set for common service in the " + nameof(KeyboardServiceClass));
             this.CommonService = CommonService.IsA<ICommonService>($"Invalid interface parameter specified for common service. " + nameof(KeyboardServiceClass));
@@ -86,7 +86,7 @@ namespace XFS4IoTServer
         /// <summary>
         /// KeyManagement service interface
         /// </summary>
-        private IKeyManagementServiceClass KeyManagementService { get; init; }
+        private IKeyManagementService KeyManagementService { get; init; }
 
         /// <summary>
         /// Return secure key entry component status

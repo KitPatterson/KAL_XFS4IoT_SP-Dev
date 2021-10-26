@@ -21,8 +21,8 @@ namespace XFS4IoTFramework.Storage
         private async Task<SetStorageCompletion.PayloadData> HandleSetStorage(ISetStorageEvents events, SetStorageCommand setStorage, CancellationToken cancel)
         {
             MessagePayload.CompletionCodeEnum completionCode = MessagePayload.CompletionCodeEnum.InternalError;
-            string errorDescription = string.Empty;
-            SetStorageCompletion.PayloadData.ErrorCodeEnum? errorCode = null;
+            string errorDescription;
+            SetStorageCompletion.PayloadData.ErrorCodeEnum? errorCode;
 
             if (setStorage.Payload.Storage is null ||
                 setStorage.Payload.Storage.Count == 0)
@@ -37,7 +37,7 @@ namespace XFS4IoTFramework.Storage
 
                 foreach (var storage in setStorage.Payload.Storage)
                 {
-                    if (Storage.CardUnits.ContainsKey(storage.Key))
+                    if (!Storage.CardUnits.ContainsKey(storage.Key))
                     {
                         return new SetStorageCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                     $"Unrecognised storage ID for card unit specified. {storage.Key}");
@@ -85,6 +85,8 @@ namespace XFS4IoTFramework.Storage
                     {
                         Storage.CardUnits.ContainsKey(storageToUpdate.Key).IsTrue($"Unexpected storage ID for card unit found. {storageToUpdate.Key}");
 
+                        CardUnitStorage preservedStorage = new(Storage.CardUnits[storageToUpdate.Key]);
+
                         if (storageToUpdate.Value.Configuration is not null)
                         {
                             Storage.CardUnits[storageToUpdate.Key].Unit.Configuration.CardId = storageToUpdate.Value.Configuration.CardId;
@@ -102,7 +104,7 @@ namespace XFS4IoTFramework.Storage
                             Storage.CardUnits[storageToUpdate.Key].Unit.Status.RetainCount = 0;
                         }
 
-                        await Storage.UpdateCardStorageCount(storageToUpdate.Key, 0);
+                        await Storage.UpdateCardStorageCount(storageToUpdate.Key, 0, preservedStorage);
                     }
                 }
 
@@ -112,11 +114,16 @@ namespace XFS4IoTFramework.Storage
             }
             else
             {
-                Dictionary<string, SetCashUnitStorage> cashStorageToSet = new();
+                Dictionary<string, CashUnitStorage> preserved = new();
+                foreach (var unit in Storage.CashUnits)
+                {
+                    preserved.Add(unit.Key, new(unit.Value));
+                }
 
+                Dictionary<string, SetCashUnitStorage> cashStorageToSet = new();
                 foreach (var storage in setStorage.Payload.Storage)
                 {
-                    if (Storage.CashUnits.ContainsKey(storage.Key))
+                    if (!Storage.CashUnits.ContainsKey(storage.Key))
                     {
                         return new SetStorageCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                     $"Unrecognised storage ID for cash unit specified. {storage.Key}");
@@ -199,10 +206,11 @@ namespace XFS4IoTFramework.Storage
                         if (storage.Value.Cash.Configuration.Items?.Unrecognized is not null && (bool)storage.Value.Cash.Configuration.Items?.Unrecognized)
                             items |= CashCapabilitiesClass.ItemsEnum.Unrecognized;
 
-                        Dictionary<string, BanknoteItem> banknoteItems = new();
+                        Dictionary<string, BanknoteItem> banknoteItems = null;
                         if (storage.Value.Cash.Configuration.CashItems is not null &&
                             storage.Value.Cash.Configuration.CashItems.Count > 0)
                         {
+                            banknoteItems = new();
                             foreach (var item in storage.Value.Cash.Configuration.CashItems)
                             {
                                 if (item.Value.NoteID is null)
@@ -223,7 +231,7 @@ namespace XFS4IoTFramework.Storage
 
                                 banknoteItems.Add(item.Key, new BanknoteItem((int)item.Value.NoteID,
                                                                              item.Value.Currency,
-                                                                             (float)item.Value.Value,
+                                                                             (double)item.Value.Value,
                                                                              (int)item.Value.Release));
                             }
                         }
@@ -231,7 +239,7 @@ namespace XFS4IoTFramework.Storage
                         newConfig = new SetCashConfiguration(types,
                                                              items,
                                                              storage.Value.Cash.Configuration.Currency,
-                                                             (float?)storage.Value.Cash.Configuration.Value,
+                                                             storage.Value.Cash.Configuration.Value,
                                                              storage.Value.Cash.Configuration.HighThreshold,
                                                              storage.Value.Cash.Configuration.LowThreshold,
                                                              storage.Value.Cash.Configuration.AppLockIn,
@@ -245,10 +253,11 @@ namespace XFS4IoTFramework.Storage
                     if (storage.Value.Cash.Status is not null &&
                         storage.Value.Cash.Status.Initial is not null)
                     {
-                        Dictionary<string, CashItemCountClass> itemCounts = new();
+                        Dictionary<string, CashItemCountClass> itemCounts = null;
                         if (storage.Value.Cash.Status.Initial.Cash is not null &&
                             storage.Value.Cash.Status.Initial.Cash.Count > 0)
                         {
+                            itemCounts = new();
                             foreach (var item in storage.Value.Cash.Status.Initial.Cash)
                             {
                                 itemCounts.Add(item.Key, new CashItemCountClass(item.Value.Fit is null ? 0 : (int)item.Value.Fit,
@@ -332,7 +341,7 @@ namespace XFS4IoTFramework.Storage
                         }
                     }
 
-                    await Storage.UpdateCashAccounting();
+                    await Storage.UpdateCashAccounting(preservedStorage: preserved);
                 }
 
                 completionCode = result.CompletionCode;

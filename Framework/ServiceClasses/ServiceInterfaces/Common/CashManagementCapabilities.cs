@@ -31,6 +31,7 @@ namespace XFS4IoTFramework.Common
         /// rear - Present items to the rear output position.
         /// reject - Reject bin is used as output location.
         /// </summary>
+        [Flags]
         public enum PositionEnum
         {
             NotSupported = 0,

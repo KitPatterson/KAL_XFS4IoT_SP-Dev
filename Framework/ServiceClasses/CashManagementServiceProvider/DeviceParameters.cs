@@ -304,7 +304,7 @@ namespace XFS4IoTFramework.CashManagement
         }
 
         public ResetDeviceResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                                 Dictionary<string, CashUnitCountClass> MovementResult = null)
+                                 Dictionary<string, CashUnitCountClass> MovementResult)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;
@@ -365,7 +365,7 @@ namespace XFS4IoTFramework.CashManagement
         }
 
         public RetractResult(MessagePayload.CompletionCodeEnum CompletionCode,
-                             Dictionary<string, CashUnitCountClass> MovementResult = null)
+                             Dictionary<string, CashUnitCountClass> MovementResult)
             : base(CompletionCode, null)
         {
             this.ErrorCode = null;

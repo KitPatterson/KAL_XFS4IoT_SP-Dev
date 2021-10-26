@@ -22,7 +22,7 @@ namespace XFS4IoTFramework.CashDispenser
     {
         private async Task<PresentCompletion.PayloadData> HandlePresent(IPresentEvents events, PresentCommand present, CancellationToken cancel)
         {
-            CashDispenserCapabilitiesClass.OutputPositionEnum position = CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported;
+            CashDispenserCapabilitiesClass.OutputPositionEnum position = CashDispenserCapabilitiesClass.OutputPositionEnum.Default;
             if (present.Payload.Position is not null)
             {
                 position = present.Payload.Position switch
@@ -39,10 +39,17 @@ namespace XFS4IoTFramework.CashDispenser
                 };
             }
 
-            if (!CashDispenser.CashDispenserCapabilities.OutputPositions.HasFlag(position))
+            if (position == CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported)
             {
                 return new PresentCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
-                                                         $"Unsupported position. {position}");
+                                                         $"Invalid position specified. {position}");
+            }
+
+            if (!CashDispenser.CashDispenserCapabilities.OutputPositions.HasFlag(position))
+            {
+                return new PresentCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode,
+                                                         $"Unsupported position specified. {position}",
+                                                         PresentCompletion.PayloadData.ErrorCodeEnum.UnsupportedPosition);
             }
                 
             Logger.Log(Constants.DeviceClass, "CashDispenserDev.PresentCashAsync()");

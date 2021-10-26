@@ -38,6 +38,12 @@ namespace XFS4IoTServer
         private ICommonService CommonService { get; init; }
 
         /// <summary>
+        /// Stores KeyManagement interface capabilites internally
+        /// </summary>
+        public KeyManagementCapabilitiesClass KeyManagementCapabilities { get => CommonService.KeyManagementCapabilities; set { } }
+
+
+        /// <summary>
         /// Persistent data storage access
         /// </summary>
         private readonly IPersistentData PersistentData;

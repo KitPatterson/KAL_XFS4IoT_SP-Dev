@@ -107,7 +107,7 @@ namespace XFS4IoTFramework.CashManagement
                         };
 
                         if (position == CashManagementCapabilitiesClass.PositionEnum.NotSupported ||
-                            !CashManagement.CashDispenserCapabilities.OutputPositions.HasFlag(position))
+                            !CashManagement.CashManagementCapabilities.Positions.HasFlag(position))
                         {
                             return new ResetCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
                                                                    $"Specified unsupported output position. {position}");

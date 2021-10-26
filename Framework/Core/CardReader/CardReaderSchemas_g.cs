@@ -188,7 +188,7 @@ namespace XFS4IoT.CardReader
     [DataContract]
     public sealed class CapabilitiesClass
     {
-        public CapabilitiesClass(TypeEnum? Type = null, ReadTracksClass ReadTracks = null, WriteTracksClass WriteTracks = null, ChipProtocolsClass ChipProtocols = null, SecurityTypeEnum? SecurityType = null, PowerOnOptionEnum? PowerOnOption = null, PowerOffOptionEnum? PowerOffOption = null, bool? FluxSensorProgrammable = null, bool? ReadWriteAccessFromExit = null, WriteModeClass WriteMode = null, ChipPowerClass ChipPower = null, MemoryChipProtocolsClass MemoryChipProtocols = null, PositionsClass Positions = null, string CardTakenSensor = null)
+        public CapabilitiesClass(TypeEnum? Type = null, ReadTracksClass ReadTracks = null, WriteTracksClass WriteTracks = null, ChipProtocolsClass ChipProtocols = null, SecurityTypeEnum? SecurityType = null, PowerOnOptionEnum? PowerOnOption = null, PowerOffOptionEnum? PowerOffOption = null, bool? FluxSensorProgrammable = null, bool? ReadWriteAccessFromExit = null, WriteModeClass WriteMode = null, ChipPowerClass ChipPower = null, MemoryChipProtocolsClass MemoryChipProtocols = null, PositionsClass Positions = null, bool? CardTakenSensor = null)
         {
             this.Type = Type;
             this.ReadTracks = ReadTracks;
@@ -674,7 +674,7 @@ namespace XFS4IoT.CardReader
         /// is removed.
         /// </summary>
         [DataMember(Name = "cardTakenSensor")]
-        public string CardTakenSensor { get; init; }
+        public bool? CardTakenSensor { get; init; }
 
     }
 

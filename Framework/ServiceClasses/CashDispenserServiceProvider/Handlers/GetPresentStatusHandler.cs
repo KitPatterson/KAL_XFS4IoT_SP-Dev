@@ -24,7 +24,7 @@ namespace XFS4IoTFramework.CashDispenser
     {
         private Task<GetPresentStatusCompletion.PayloadData> HandleGetPresentStatus(IGetPresentStatusEvents events, GetPresentStatusCommand getPresentStatus, CancellationToken cancel)
         {
-            CashDispenserCapabilitiesClass.OutputPositionEnum position = CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported;
+            CashDispenserCapabilitiesClass.OutputPositionEnum position = CashDispenserCapabilitiesClass.OutputPositionEnum.Default;
             if (getPresentStatus.Payload.Position is not null)
             {
                 position = getPresentStatus.Payload.Position switch
@@ -39,6 +39,12 @@ namespace XFS4IoTFramework.CashDispenser
                     OutputPositionEnum.OutTop => CashDispenserCapabilitiesClass.OutputPositionEnum.Top,
                     _ => CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported
                 };
+            }
+
+            if (position == CashDispenserCapabilitiesClass.OutputPositionEnum.NotSupported)
+            {
+                return Task.FromResult(new GetPresentStatusCompletion.PayloadData(MessagePayload.CompletionCodeEnum.InvalidData,
+                                                                                  $"Specified invalid position {position}"));
             }
 
             if (!CashDispenser.CashDispenserCapabilities.OutputPositions.HasFlag(position))

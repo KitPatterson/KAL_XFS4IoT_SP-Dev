@@ -53,13 +53,13 @@ namespace XFS4IoTServer
         /// <summary>
         /// Update storage count from the framework after media movement command is processed
         /// </summary>
-        public async Task UpdateCardStorageCount(string storageId, int count) => await StorageService.UpdateCardStorageCount(storageId, count);
+        public async Task UpdateCardStorageCount(string storageId, int count, CardUnitStorage preservedStorage) => await StorageService.UpdateCardStorageCount(storageId, count, preservedStorage);
 
         /// <summary>
         /// UpdateCashAccounting
         /// Update cash unit status and counts managed by the device specific class.
         /// </summary>
-        public Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null) => throw new NotSupportedException($"CardReader service provider doesn't support cash storage.");
+        public Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta, Dictionary<string, CashUnitStorage> preservedStorage) => throw new NotSupportedException($"CardReader service provider doesn't support cash storage.");
 
         /// <summary>
         /// Return which type of storage SP is using

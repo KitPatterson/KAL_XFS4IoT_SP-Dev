@@ -22,13 +22,13 @@ namespace XFS4IoTServer
     public partial class CryptoServiceClass
     {
         public CryptoServiceClass(IServiceProvider ServiceProvider,
-                                  IKeyManagementServiceClass KeyManagement,
+                                  IKeyManagementService KeyManagementService,
                                   ICommonService CommonService,
                                   ILogger logger)
         : this(ServiceProvider, logger)
         {
-            KeyManagement.IsNotNull($"Unexpected parameter set for key management service in the " + nameof(CryptoServiceClass));
-            this.KeyManagementService = KeyManagementService.IsA<IKeyManagementServiceClass>($"Invalid interface parameter specified for key management service. " + nameof(CryptoServiceClass));
+            KeyManagementService.IsNotNull($"Unexpected parameter set for key management service in the " + nameof(CryptoServiceClass));
+            this.KeyManagementService = KeyManagementService.IsA<IKeyManagementService>($"Invalid interface parameter specified for key management service. " + nameof(CryptoServiceClass));
 
             CommonService.IsNotNull($"Unexpected parameter set for common service in the " + nameof(CryptoServiceClass));
             this.CommonService = CommonService.IsA<ICommonService>($"Invalid interface parameter specified for common service. " + nameof(CryptoServiceClass));
@@ -56,7 +56,7 @@ namespace XFS4IoTServer
         /// <summary>
         /// KeyManagement service interface
         /// </summary>
-        private IKeyManagementServiceClass KeyManagementService { get; init; }
+        private IKeyManagementService KeyManagementService { get; init; }
 
         /// <summary>
         /// Find keyslot available or being used

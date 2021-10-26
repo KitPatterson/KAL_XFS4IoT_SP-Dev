@@ -91,12 +91,15 @@ namespace XFS4IoTFramework.Storage
         #endregion
 
         /// <summary>
-        /// $ref: ../Docs/StartExchangeDescription.md
+        /// This command puts the device in an exchange state, i.e. a state in which storage units can be emptied, replenished,
+        /// removed or replaced.The command will initiate any physical processes which may be necessary to make the storage units
+        /// accessible.If this command returns a successful completion the device is in an exchange state.
         /// </summary>
         Task<StartExchangeResult> StartExchangeAsync(CancellationToken cancellation);
 
         /// <summary>
-        /// $ref: ../Docs/EndExchangeDescription.md
+        /// This command will end the exchange state. If any physical action took place as a result of the Storage.StartExchange
+        /// command then this command will cause the cash units to be returned to their normal physical state.Any necessary device testing will also be initiated.
         /// </summary>
         Task<EndExchangeResult> EndExchangeAsync(CancellationToken cancellation);
 

@@ -96,7 +96,7 @@ namespace XFS4IoTFramework.CashDispenser
                     return DispensableResultEnum.CashUnitError;
                 }
 
-                if (CashUnits[unit.Key].Unit.Configuration.Types.HasFlag(CashCapabilitiesClass.TypesEnum.CashOut))
+                if (!CashUnits[unit.Key].Unit.Configuration.Types.HasFlag(CashCapabilitiesClass.TypesEnum.CashOut))
                 {
                     Logger.Warning(Constants.Framework, $"Invalid counts to pick from none dispensable unit. {unit.Key}, {CashUnits[unit.Key].Unit.Configuration.Types}" + nameof(IsDispensable));
                     return DispensableResultEnum.CashUnitError;
@@ -110,8 +110,9 @@ namespace XFS4IoTFramework.CashDispenser
                 }
 
                 // Check status
-                if (CashUnits[unit.Key].Status == CashUnitStorage.StatusEnum.Good &&
-                    CashUnits[unit.Key].Unit.Status.ReplenishmentStatus != CashStatusClass.ReplenishmentStatusEnum.Empty)
+                if (CashUnits[unit.Key].Status != CashUnitStorage.StatusEnum.Good ||
+                    (CashUnits[unit.Key].Status == CashUnitStorage.StatusEnum.Good &&
+                     CashUnits[unit.Key].Unit.Status.ReplenishmentStatus == CashStatusClass.ReplenishmentStatusEnum.Empty))
                 {
                     Logger.Warning(Constants.Framework, $"Not good cash unit status to dispense item. {unit.Key}, {CashUnits[unit.Key].Unit.Status.Count}, {CashUnits[unit.Key].Status}" + nameof(IsDispensable));
                     return DispensableResultEnum.CashUnitError;
@@ -521,20 +522,24 @@ namespace XFS4IoTFramework.CashDispenser
         /// Perform dispensing operation
         /// </summary>
         public DispenseRequest(Dictionary<string, int> Values,
+                               bool Present,
                                CashDispenserCapabilitiesClass.OutputPositionEnum? OutputPosition = null,
                                string E2EToken = null,
                                int? CashBox = null)
         {
             this.Values = Values;
+            this.Present = Present;
             this.E2EToken = E2EToken;
             this.CashBox = CashBox;
             this.OutputPosition = OutputPosition;
         }
         public DispenseRequest(Dictionary<string, int> Values,
+                               bool Present,
                                CashDispenserCapabilitiesClass.OutputPositionEnum OutputPosition,
                                string E2EToken = null)
         {
             this.Values = Values;
+            this.Present = Present;
             this.E2EToken = E2EToken;
             CashBox = null;
             this.OutputPosition = OutputPosition;
@@ -542,6 +547,20 @@ namespace XFS4IoTFramework.CashDispenser
 
         public Dictionary<string, int> Values { get; init; }
 
+        /// <summary>
+        /// if this property is true, defines OutputPosition to which the items are to be dispensed.
+        /// Otherwise, one of following location
+        /// * teller position if the device is a Teller Dispenser
+        /// * intermediate stacker if the device has one
+        /// * the default position if there is no intermediate stacker.
+        /// </summary>
+        public bool Present { get; init; }
+        /// <summary>
+        /// Specify the output position item to be dispensed. if it is null, device class move items to one of following.
+        /// - teller position if the device is a Teller Dispenser
+        /// - intermediate stacker if the device has one
+        /// - the default position if there is no intermediate stacker.
+        /// </summary>
         public CashDispenserCapabilitiesClass.OutputPositionEnum? OutputPosition { get; init; }
 
         public int? CashBox { get; init; }

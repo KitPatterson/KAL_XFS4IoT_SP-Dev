@@ -471,7 +471,8 @@ namespace XFS4IoTFramework.CashDispenser
                     if (!unit.Value.Unit.Configuration.Types.HasFlag(CashCapabilitiesClass.TypesEnum.CashOut) || 
                         unit.Value.Unit.Configuration.Currency != ca.Key ||
                         unit.Value.Status != CashUnitStorage.StatusEnum.Good ||
-                        unit.Value.Unit.Status.ReplenishmentStatus == CashStatusClass.ReplenishmentStatusEnum.Empty ||
+                        (unit.Value.Status == CashUnitStorage.StatusEnum.Good &&
+                         unit.Value.Unit.Status.ReplenishmentStatus == CashStatusClass.ReplenishmentStatusEnum.Empty) ||
                         unit.Value.Unit.Configuration.AppLockOut)
                     {
                         continue;
@@ -516,7 +517,8 @@ namespace XFS4IoTFramework.CashDispenser
                             if (!unit.Value.Unit.Configuration.Types.HasFlag(CashCapabilitiesClass.TypesEnum.CashOut) ||
                                 unit.Value.Unit.Configuration.Currency != ca.Key ||
                                 unit.Value.Status != CashUnitStorage.StatusEnum.Good ||
-                                unit.Value.Unit.Status.ReplenishmentStatus == CashStatusClass.ReplenishmentStatusEnum.Empty ||
+                                (unit.Value.Status == CashUnitStorage.StatusEnum.Good &&
+                                 unit.Value.Unit.Status.ReplenishmentStatus == CashStatusClass.ReplenishmentStatusEnum.Empty) ||
                                 unit.Value.Unit.Configuration.AppLockOut)
                             {
                                 // If this cash unit isn't valid, skip it.

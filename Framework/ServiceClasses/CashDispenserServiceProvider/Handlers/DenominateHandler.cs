@@ -23,7 +23,7 @@ namespace XFS4IoTFramework.CashDispenser
     {
         private Task<DenominateCompletion.PayloadData> HandleDenominate(IDenominateEvents events, DenominateCommand denominate, CancellationToken cancel)
         {
-            if (string.IsNullOrEmpty(denominate.Payload.Mix) &&
+            if (!string.IsNullOrEmpty(denominate.Payload.Mix) &&
                 CashDispenser.GetMix(denominate.Payload.Mix) is null)
             {
                 return Task.FromResult(new DenominateCompletion.PayloadData(MessagePayload.CompletionCodeEnum.CommandErrorCode, 

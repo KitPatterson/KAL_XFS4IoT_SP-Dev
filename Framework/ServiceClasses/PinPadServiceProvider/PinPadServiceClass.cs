@@ -20,12 +20,12 @@ namespace XFS4IoTServer
     public partial class PinPadServiceClass
     {
         public PinPadServiceClass(IServiceProvider ServiceProvider,
-                                  IKeyManagementServiceClass KeyManagement,
+                                  IKeyManagementService KeyManagementService,
                                   ICommonService CommonService,
                                   ILogger logger)
         : this(ServiceProvider, logger)
         {
-            KeyManagement.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
+            KeyManagementService.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
             this.KeyManagementService = KeyManagementService.IsA<IKeyManagementService>($"Invalid interface parameter specified for key management service. " + nameof(PinPadServiceClass));
 
             CommonService.IsNotNull($"Unexpected parameter set in the " + nameof(PinPadServiceClass));
