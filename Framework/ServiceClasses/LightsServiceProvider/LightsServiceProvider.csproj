@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>XFS4IoT.SP.Framework.Lights</AssemblyName>
+    <AssemblyName>KAL.XFS4IoT.SP-Dev.Framework.Lights</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
