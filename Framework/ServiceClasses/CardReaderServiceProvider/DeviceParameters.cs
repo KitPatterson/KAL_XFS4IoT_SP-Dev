@@ -387,7 +387,6 @@ namespace XFS4IoTFramework.CardReader
         /// <summary>
         /// EjectCardRequest
         /// </summary>
-        /// <param name="Position">Positon to move card on eject operation</param>
         public MoveCardRequest(MovePosition From, MovePosition To)
         {
             this.From = From;
