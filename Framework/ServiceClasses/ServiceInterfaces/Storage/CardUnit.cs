@@ -32,18 +32,6 @@ namespace XFS4IoTFramework.Storage
                                      StorageConfiguration.Configuration);
         }
 
-        public CardUnitStorage(CardUnitStorage Storage)
-        {
-            this.PositionName = Storage.PositionName;
-            this.Capacity = Storage.Capacity;
-            this.Status = Storage.Status;
-            this.SerialNumber = Storage.SerialNumber;
-
-            this.Unit = new CardUnit(Storage.Unit?.Capabilities,
-                                     Storage.Unit?.Configuration,
-                                     Storage.Unit?.Status);
-        }
-
         /// <summary>
         /// Fixed physical name for the position.
         /// </summary>
@@ -91,12 +79,6 @@ namespace XFS4IoTFramework.Storage
             this.HardwareSensors = HardwareSensors;
         }
 
-        public CardCapabilitiesClass(CardCapabilitiesClass Capabilities)
-        {
-            Type = Capabilities.Type;
-            HardwareSensors = Capabilities.HardwareSensors;
-        }
-
         /// <summary>
         /// The type of card storage
         /// </summary>
@@ -119,12 +101,6 @@ namespace XFS4IoTFramework.Storage
         {
             this.CardId = CardId;
             this.Threshold = Threshold;
-        }
-
-        public CardConfigurationClass(CardConfigurationClass Config)
-        {
-            CardId = Config.CardId;
-            Threshold = Config.Threshold;
         }
 
         /// <summary>
@@ -164,14 +140,6 @@ namespace XFS4IoTFramework.Storage
             this.ReplenishmentStatus = ReplenishmentStatus;
         }
 
-        public CardStatusClass(CardStatusClass Status)
-        {
-            InitialCount = Status.InitialCount;
-            Count = Status.Count;
-            RetainCount = Status.RetainCount;
-            ReplenishmentStatus = Status.ReplenishmentStatus;
-        }
-
         /// <summary>
         /// The initial number of cards in the storage unit.
         /// </summary>
@@ -202,18 +170,9 @@ namespace XFS4IoTFramework.Storage
         public CardUnit(CardCapabilitiesClass Capabilities,
                         CardConfigurationClass Configuration)
         {
-            this.Capabilities = new(Capabilities);
-            this.Configuration = new(Configuration);
+            this.Capabilities = Capabilities;
+            this.Configuration = Configuration;
             this.Status = new CardStatusClass(0, 0, 0, CardStatusClass.ReplenishmentStatusEnum.Empty);
-        }
-
-        public CardUnit(CardCapabilitiesClass Capabilities,
-                        CardConfigurationClass Configuration,
-                        CardStatusClass Status)
-        {
-            this.Capabilities = new(Capabilities);
-            this.Configuration = new(Configuration);
-            this.Status = new(Status);
         }
 
         public CardCapabilitiesClass Capabilities { get; init; }
@@ -226,7 +185,7 @@ namespace XFS4IoTFramework.Storage
     /// <summary>
     /// Structure receiving from the device
     /// </summary>
-    public sealed record CardUnitStorageConfiguration
+    public sealed class CardUnitStorageConfiguration
     {
         public CardUnitStorageConfiguration(string PositionName,
                                             int Capacity,

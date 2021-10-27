@@ -24,13 +24,13 @@ namespace XFS4IoTFramework.Storage
         /// <summary>
         /// Update storage count from the framework after media movement command is processed
         /// </summary>
-        Task UpdateCardStorageCount(string storageId, int countDelta, CardUnitStorage preservedStorage = null);
+        Task UpdateCardStorageCount(string storageId, int countDelta, string preservedStorage = null);
 
         /// <summary>
         /// UpdateCashAccounting
         /// Update cash unit status and counts managed by the device specific class.
         /// </summary>
-        Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null, Dictionary<string, CashUnitStorage> preservedStorage = null);
+        Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta = null, Dictionary<string, string> preservedStorage = null);
 
         /// <summary>
         /// Return which type of storage SP is using

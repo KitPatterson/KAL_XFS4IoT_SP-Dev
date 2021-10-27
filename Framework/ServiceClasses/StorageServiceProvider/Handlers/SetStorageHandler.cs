@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Text.Json;
 using XFS4IoT.Storage.Commands;
 using XFS4IoT.Storage.Completions;
 using XFS4IoT;
@@ -85,7 +86,7 @@ namespace XFS4IoTFramework.Storage
                     {
                         Storage.CardUnits.ContainsKey(storageToUpdate.Key).IsTrue($"Unexpected storage ID for card unit found. {storageToUpdate.Key}");
 
-                        CardUnitStorage preservedStorage = new(Storage.CardUnits[storageToUpdate.Key]);
+                        string preservedStorage = JsonSerializer.Serialize(Storage.CardUnits[storageToUpdate.Key]);
 
                         if (storageToUpdate.Value.Configuration is not null)
                         {
@@ -114,10 +115,10 @@ namespace XFS4IoTFramework.Storage
             }
             else
             {
-                Dictionary<string, CashUnitStorage> preserved = new();
+                Dictionary<string, string> preserved = new();
                 foreach (var unit in Storage.CashUnits)
                 {
-                    preserved.Add(unit.Key, new(unit.Value));
+                    preserved.Add(unit.Key, JsonSerializer.Serialize(unit.Value));
                 }
 
                 Dictionary<string, SetCashUnitStorage> cashStorageToSet = new();

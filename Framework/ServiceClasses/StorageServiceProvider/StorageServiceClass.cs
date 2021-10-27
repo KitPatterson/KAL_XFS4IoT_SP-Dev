@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 using XFS4IoT;
 using XFS4IoTFramework.Storage;
 using XFS4IoTFramework.Common;
@@ -189,12 +190,12 @@ namespace XFS4IoTServer
         /// <summary>
         /// Update storage count from the framework after media movement command is processed
         /// </summary>
-        public async Task UpdateCardStorageCount(string storageId, int countDelta, CardUnitStorage preservedStorage)
+        public async Task UpdateCardStorageCount(string storageId, int countDelta, string preservedStorage)
         {
             CardUnits.ContainsKey(storageId).IsTrue($"Unexpected storageId is passed in before updating card unit counters. {storageId}");
 
-            CardUnitStorage preserved = new(CardUnits[storageId]);
-            if (preservedStorage is not null)
+            string preserved = JsonSerializer.Serialize(CardUnits[storageId]);
+            if (string.IsNullOrEmpty(preservedStorage))
             {
                 preserved = preservedStorage;
             }
@@ -362,7 +363,7 @@ namespace XFS4IoTServer
             }
 
             // Send changed event
-            if (!preserved.Equals(CardUnits[storageId]))
+            if (preserved != JsonSerializer.Serialize(CardUnits[storageId]))
             {
                 StorageUnitClass payload = new(CardUnits[storageId].PositionName,
                                                CardUnits[storageId].Capacity,
@@ -622,12 +623,12 @@ namespace XFS4IoTServer
         /// UpdateCashAccounting
         /// Update cash unit status and counts managed by the device specific class.
         /// </summary>
-        public async Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta, Dictionary<string, CashUnitStorage> preservedStorage)
+        public async Task UpdateCashAccounting(Dictionary<string, CashUnitCountClass> countDelta, Dictionary<string, string> preservedStorage)
         {
-            Dictionary<string, CashUnitStorage> preserved = new();
+            Dictionary<string, string> preserved = new();
             foreach (var unit in CashUnits)
             {
-                preserved.Add(unit.Key, unit.Value);
+                preserved.Add(unit.Key, JsonSerializer.Serialize(unit.Value));
             }
             if (preservedStorage is not null)
                 preserved = preservedStorage;
@@ -936,7 +937,8 @@ namespace XFS4IoTServer
             Dictionary<string, StorageUnitClass> statusChangedUnits = new();
             foreach (var unit in CashUnits)
             {
-                if (unit.Value.Equals(preserved[unit.Key]))
+                if (JsonSerializer.Serialize(unit.Value) == 
+                    preserved[unit.Key])
                 {
                     continue;
                 }
