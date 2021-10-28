@@ -54,8 +54,9 @@ namespace XFS4IoTFramework.CashManagement
             GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
                 InvalidDataException => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.InvalidData,
-                NotImplementedException => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
-                TaskCanceledException or OperationCanceledException => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.Canceled,
+                NotImplementedException or NotSupportedException => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TimeoutCanceledException t when t.IsCancelRequested => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.Canceled,
+                TimeoutCanceledException => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.TimeOut,
                 _ => GetBankNoteTypesCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 

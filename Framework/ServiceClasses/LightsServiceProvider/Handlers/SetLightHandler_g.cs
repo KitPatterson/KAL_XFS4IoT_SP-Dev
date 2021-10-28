@@ -54,8 +54,9 @@ namespace XFS4IoTFramework.Lights
             SetLightCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
                 InvalidDataException => SetLightCompletion.PayloadData.CompletionCodeEnum.InvalidData,
-                NotImplementedException => SetLightCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
-                TaskCanceledException or OperationCanceledException => SetLightCompletion.PayloadData.CompletionCodeEnum.Canceled,
+                NotImplementedException or NotSupportedException => SetLightCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TimeoutCanceledException t when t.IsCancelRequested => SetLightCompletion.PayloadData.CompletionCodeEnum.Canceled,
+                TimeoutCanceledException => SetLightCompletion.PayloadData.CompletionCodeEnum.TimeOut,
                 _ => SetLightCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 
