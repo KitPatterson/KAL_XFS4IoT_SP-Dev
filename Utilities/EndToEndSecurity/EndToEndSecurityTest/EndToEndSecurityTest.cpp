@@ -12,8 +12,6 @@
 using namespace std; 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-mutex threadSafe; 
-
 extern "C" void Log(char const* const Message)
 {
     Logger::WriteMessage( Message );
@@ -315,8 +313,6 @@ namespace EndToEndSecurityTest
     public: 
         TEST_METHOD(NullToken)
         {
-            lock_guard<mutex> guard(threadSafe);
-
             // Valid but unsupported. 
             auto result = ParseDispenseToken(NULL, 123);
             AssertCleanFail(result);
@@ -541,4 +537,83 @@ namespace EndToEndSecurityTest
         }
     };
 
+    TEST_CLASS(DispenserValueTrackingTest)
+    {
+    public:
+        TEST_METHOD(EqualAmount)
+        {
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=123.678XYZ,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ParseDispenseToken(testToken, sizeof(testToken));
+            auto values = GetDispenseKeyValues();
+
+            Assert::IsTrue(result);
+            Assert::AreEqual(unsigned long(123), values->Value);
+            Assert::AreEqual(unsigned long(678), values->Fraction);
+            Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
+
+            result = AuthoriseAgainstToken(123, 678, "XYZ");
+            Assert::IsTrue(result);
+
+            result = AuthoriseAgainstToken(1, 0, "XYZ");
+            Assert::IsFalse(result);
+
+        }
+
+        TEST_METHOD(MultipleDispense)
+        {
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=123.678XYZ,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ParseDispenseToken(testToken, sizeof(testToken));
+            auto values = GetDispenseKeyValues();
+
+            Assert::IsTrue(result);
+            Assert::AreEqual(unsigned long(123), values->Value);
+            Assert::AreEqual(unsigned long(678), values->Fraction);
+            Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
+
+            result = AuthoriseAgainstToken(100, 000, "XYZ");
+            Assert::IsTrue(result);
+            result = AuthoriseAgainstToken(  0, 678, "XYZ");
+            Assert::IsTrue(result);
+            result = AuthoriseAgainstToken( 20, 000, "XYZ");
+            Assert::IsTrue(result);
+            result = AuthoriseAgainstToken(  3, 000, "XYZ");
+            Assert::IsTrue(result);
+
+            result = AuthoriseAgainstToken(  1, 0, "XYZ");
+            Assert::IsFalse(result);
+        }
+        TEST_METHOD(ZeroValueToken)
+        {
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=000.000XYZ,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ParseDispenseToken(testToken, sizeof(testToken));
+            auto values = GetDispenseKeyValues();
+
+            Assert::IsTrue(result);
+            Assert::AreEqual(unsigned long(0), values->Value);
+            Assert::AreEqual(unsigned long(0), values->Fraction);
+            Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
+
+            result = AuthoriseAgainstToken(  1, 0, "XYZ");
+            Assert::IsFalse(result);
+        }
+
+        TEST_METHOD(InvalidCurrency)
+        {
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=123.678XYZ,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ParseDispenseToken(testToken, sizeof(testToken));
+            auto values = GetDispenseKeyValues();
+
+            Assert::IsTrue(result);
+            Assert::AreEqual(unsigned long(123), values->Value);
+            Assert::AreEqual(unsigned long(678), values->Fraction);
+            Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
+
+            result = AuthoriseAgainstToken(123, 678, "ABC");
+            Assert::IsFalse(result);
+        }
+    };
 }

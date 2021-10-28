@@ -17,6 +17,7 @@
 extern C_LINKAGE bool ValidateToken(char const* Token, size_t TokenLength);
 extern C_LINKAGE bool InvalidateToken();
 extern C_LINKAGE bool ParseDispenseToken(char const* const Token, size_t TokenSize);
+extern C_LINKAGE bool AuthoriseAgainstToken(unsigned int UnitValue, unsigned int SubUnitValue, char Currency[3]);
 
 void CleanDispenceValues();
 

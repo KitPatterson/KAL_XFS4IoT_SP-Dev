@@ -20,6 +20,8 @@ const struct DispenseKeyValues_t* const GetDispenseKeyValues()
     return &DispenseKeyValues;
 }
 
+static struct DispenseKeyValues_t RemainingValue = { 0, 0, "   " };
+
 // Forward reference
 bool ExtractValue(char const* const Start, char const* const End, unsigned long* valueOut);
 
@@ -140,6 +142,7 @@ bool ParseDispenseToken(char const* const Token, size_t TokenSize)
     DispenseKeyValues.Currency[1] = CurrencyStart[1];
     DispenseKeyValues.Currency[2] = CurrencyStart[2];
 
+    memcpy_s(&RemainingValue, sizeof(RemainingValue), &DispenseKeyValues, sizeof(DispenseKeyValues));
 
     Log("ParseDispenseToken() ==> true");
     return true;
@@ -174,9 +177,46 @@ bool ExtractValue(char const* const Start, char const* const End, unsigned long 
     return true; 
 }
 
+bool AuthoriseAgainstToken(unsigned int Value, unsigned int Fraction, char Currency[3] )
+{
+    LogV("AuthoriseAgainstToken( Value=%d, Fraction=%d, Currency=\"%c%c%c\" )", Value, Fraction, Currency[0], Currency[1], Currency[2]);
+
+    // Sanity check that the requested currency matches. 
+    // (Note - we only support a single currency per-token at the moment. )
+    if (
+        Currency[0] != RemainingValue.Currency[0] ||
+        Currency[1] != RemainingValue.Currency[1] ||
+        Currency[2] != RemainingValue.Currency[2]
+        )
+    {
+        Log("AuthoriseAgainstToken: Requested dispense currency doesn't match the token currency");
+        return false;
+    }
+
+    // Check that there's enough remaining on the current token
+    if( Value > RemainingValue.Value || 
+        Value == RemainingValue.Value && Fraction > RemainingValue.Fraction )
+    {
+        LogV("AuthoriseAgainstToken: Request to dispense more than the current token authorises. Remaining = %d.%d%c%c%c"
+            , RemainingValue.Value, RemainingValue.Fraction, RemainingValue.Currency[0], RemainingValue.Currency[1], RemainingValue.Currency[2]);
+        return false;
+    }
+
+    // Reduce the current token by the requested amount
+    RemainingValue.Value -= Value; 
+    RemainingValue.Fraction -= Fraction; 
+
+    LogV("AuthoriseAgainstToken: => true");
+    return true;
+}
+
 void CleanDispenceValues()
 {
     DispenseKeyValues.Value = 0;
     DispenseKeyValues.Fraction = 0;
     DispenseKeyValues.Currency[0] = DispenseKeyValues.Currency[1] = DispenseKeyValues.Currency[2] = ' ';
+
+    RemainingValue.Value = 0;
+    RemainingValue.Fraction = 0;
+    RemainingValue.Currency[0] = DispenseKeyValues.Currency[1] = DispenseKeyValues.Currency[2] = ' ';
 }
