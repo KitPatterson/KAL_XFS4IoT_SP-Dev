@@ -19,13 +19,16 @@ extern "C" void Log(char const* const Message)
     Logger::WriteMessage( Message );
 };
 
+static std::string CurrentNonce = "";
+static std::string ExpectedHMAC = ""; 
+static std::string LastToken = ""; 
+
 extern "C" void FatalError(char const* const Message)
 {
     using namespace Microsoft::VisualStudio::CppUnitTestFramework;
     Assert::Fail(ToString(Message).c_str());
 }
 
-static std::string CurrentNonce = "";
 extern "C" void NewNonce(char const ** OutNonce)
 {
     // Value will be set by tests - not the normal nonce behaviour! 
@@ -35,6 +38,7 @@ extern "C" void NewNonce(char const ** OutNonce)
 extern "C" void ClearNonce()
 {
     CurrentNonce = "";
+    LastToken = "";
 }
 
 extern "C" bool CompareNonce(char const* const CommandNonce, unsigned long NonceLength )
@@ -43,14 +47,12 @@ extern "C" bool CompareNonce(char const* const CommandNonce, unsigned long Nonce
     return nonce == CurrentNonce;
 }
 
-static std::string ExpectedHMAC = ""; 
-static std::string LastToken = ""; 
 extern "C" bool CheckHMAC(char const* const Token, unsigned int TokenLength, unsigned char const* const TokenHMAC)
 {
     Assert::IsNotNull(Token);
     Assert::IsNotNull(TokenHMAC);
 
-    static char TokenHMACString[65];
+    static char TokenHMACString[65] ="";
     for (unsigned int i = 0; i < 32; i++)
     {
         sprintf_s((TokenHMACString+(i*2)),3, "%1X%1X", (TokenHMAC[i] & 0xF0) >> 4, TokenHMAC[i] & 0x0F);
@@ -462,4 +464,81 @@ namespace EndToEndSecurityTest
         }
 
     };
+
+    TEST_CLASS(TokenTrackingTest)
+    {
+    public: 
+        // Can use the same token multiple times. 
+        TEST_METHOD(RepeatToken)
+        {
+            InvalidateToken(); // Reset before we start
+
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::IsTrue(result);
+
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = ValidateToken(testToken, sizeof(testToken));
+            Assert::IsTrue(result);
+
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = ValidateToken(testToken, sizeof(testToken));
+
+            Assert::IsTrue(result);
+            // ExpectedHMAC should have been reset when CheckHMAC was called. 
+            Assert::AreEqual(std::string(""), ExpectedHMAC);
+            Assert::AreEqual(std::string("NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256="), LastToken);
+        }
+
+        // Can't use multiple tokens with the same nonce.  
+        TEST_METHOD(DifferentToken)
+        {
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::IsTrue(result);
+
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F3";
+            char const testToken2[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F3";
+            result = ValidateToken(testToken2, sizeof(testToken2));
+
+            Assert::IsFalse(result);
+            // ExpectedHMAC should have been reset when CheckHMAC was called. 
+            Assert::AreEqual(std::string(""), ExpectedHMAC);
+            Assert::AreEqual(std::string("NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256="), LastToken);
+        }
+
+        // Can use a new tokens after resetting the nonce.  
+        TEST_METHOD(NewNonceToken)
+        {
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+
+            auto result = ValidateToken(testToken, sizeof(testToken));
+            Assert::IsTrue(result);
+
+            result = InvalidateToken();
+            Assert::IsTrue(result);
+            Assert::AreEqual(std::string(""), CurrentNonce);
+            Assert::AreEqual(std::string(""), ExpectedHMAC);
+            Assert::AreEqual(std::string(""), LastToken);
+
+            CurrentNonce = "99";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3FFFF";
+            char const testToken2[] = "NONCE=99,TOKENFORMAT=1,TOKENLENGTH=0165,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3FFFF";
+            result = ValidateToken(testToken2, sizeof(testToken2));
+
+            Assert::IsTrue(result);
+            // ExpectedHMAC should have been reset when CheckHMAC was called. 
+            Assert::AreEqual(std::string(""), ExpectedHMAC);
+            Assert::AreEqual(std::string("NONCE=99,TOKENFORMAT=1,TOKENLENGTH=0165,HMACSHA256="), LastToken);
+        }
+    };
+
 }

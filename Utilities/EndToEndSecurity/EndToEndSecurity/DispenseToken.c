@@ -8,6 +8,7 @@
 #include "framework.h"
 #include "tokens.h"
 #include "endtoendsecurity.h"
+#include <climits>
 
 // We currently only support singgle currencies - hence one dispense token. 
 char const DISPENSE_KEY_NAME[] = "DISPENSE";
@@ -31,7 +32,7 @@ bool ExtractValue(char const* const Start, char const* const End, unsigned long*
 /// </remarks>
 /// <param name="Token"></param>
 /// <param name="TokenSize"></param>
-/// <returns></returns>
+/// <returns>if False, do not dispense</returns>
 bool ParseDispenseToken(char const* const Token, size_t TokenSize)
 {
     if (Token == NULL)
