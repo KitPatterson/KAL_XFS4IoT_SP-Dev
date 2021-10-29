@@ -25,6 +25,8 @@ static struct DispenseKeyValues_t RemainingValue = { 0, 0, "   " };
 // Forward reference
 bool ExtractValue(char const* const Start, char const* const End, unsigned long* valueOut);
 
+extern bool CurrentTokenSet;
+
 /// <summary>
 /// Extract required details from a dispense Token. 
 /// </summary>
@@ -37,6 +39,7 @@ bool ExtractValue(char const* const Start, char const* const End, unsigned long*
 /// <returns>if False, do not dispense</returns>
 bool ParseDispenseToken(char const* const Token, size_t TokenSize)
 {
+
     if (Token == NULL)
     {
         Log("ParseDispenseToken: Invalid token");
@@ -177,7 +180,16 @@ bool ExtractValue(char const* const Start, char const* const End, unsigned long 
     return true; 
 }
 
-bool AuthoriseAgainstToken(unsigned int Value, unsigned int Fraction, char Currency[3] )
+/// <summary>
+/// Authorise the given amount based on the current token. 
+/// If the amount is authorised then it will be subtracted from the remaining value for this token - 
+/// this part of the value can't be dispensed again even if the dispense then fails. 
+/// </summary>
+/// <param name="Value">Unit part of the value</param>
+/// <param name="Fraction">fractional part of the value</param>
+/// <param name="Currency">Three char currency ID</param>
+/// <returns></returns>
+bool AuthoriseDispense(unsigned int Value, unsigned int Fraction, char const Currency[3] )
 {
     LogV("AuthoriseAgainstToken( Value=%d, Fraction=%d, Currency=\"%c%c%c\" )", Value, Fraction, Currency[0], Currency[1], Currency[2]);
 
@@ -206,9 +218,75 @@ bool AuthoriseAgainstToken(unsigned int Value, unsigned int Fraction, char Curre
     RemainingValue.Value -= Value; 
     RemainingValue.Fraction -= Fraction; 
 
+    // If we've dispensed all of the value for this token then we can invalidate the token 
+    // and allow a new token to be created and used. 
+    if (RemainingValue.Value == 0 && RemainingValue.Fraction == 0)
+    {
+        LogV("AuthoriseAgainstToken: Full token value has been dispensed. The token/nonce will now be cleared");
+        bool result = InvalidateToken();
+        if (!result)
+        {
+            LogV("AuthoriseAgainstToken: Internal error - Token has been used up, but it couldn't be invalidated");
+            return false;
+        }
+    }
+    else
+    {
+        LogV("AuthoriseAgainstToken: Authorised=%d.%d%c%c%c, remaining=%d.%d%c%c%c",
+             Value, Fraction, Currency[0], Currency[1], Currency[2],
+             RemainingValue.Value, RemainingValue.Fraction, RemainingValue.Currency[0], RemainingValue.Currency[1], RemainingValue.Currency[2]
+            );
+    }
+
     LogV("AuthoriseAgainstToken: => true");
     return true;
 }
+
+/// <summary>
+/// Do a complete authorisation against the token, taking into account if it's been seen before
+/// and tracking the amount of cash already authorised against it. 
+/// </summary>
+/// <param name="Token">Full token string, including HMAC</param>
+/// <param name="TokenLength">Length of the token string, including null</param>
+/// <param name="Value">Unit value of dispense to authorise</param>
+/// <param name="Fraction">Fractional value of dispense, to authorise</param>
+/// <param name="Currency">Currency code of dispense to authorise</param>
+/// <returns>false if the dispense should NOT happen. True if the dispense is authorised</returns>
+bool AuthoriseDispenseAgainstToken(char const* Token, size_t TokenLength, unsigned int Value, unsigned int Fraction, char const Currency[3])
+{
+    LogV("AuthoriseDispenseAgainstToken( Token=\"%.1024s\", TokenSize=%d, Value=%d, Fraction=%d, Currency=\"%c%c%c\"  )", Token, TokenLength, Value, Fraction, Currency[0], Currency[1], Currency[2]);
+
+    bool result = false;
+    bool ExistingToken = CurrentTokenSet; 
+
+    result = ValidateToken(Token, TokenLength);
+    if (!result) 
+    {
+        Log("AuthoriseDispenseAgainstToken: => false");
+        return false;
+    }
+
+    if (!ExistingToken)
+    {
+        result = ParseDispenseToken(Token, TokenLength);
+        if (!result)
+        {
+            Log("AuthoriseDispenseAgainstToken: => false");
+            return false;
+        }
+    }
+
+    result = AuthoriseDispense(Value, Fraction, Currency);
+    if (!result)
+    {
+        Log("AuthoriseDispenseAgainstToken: => false");
+        return false;
+    }
+
+    LogV("AuthoriseDispenseAgainstToken: => true");
+    return true;
+}
+
 
 void CleanDispenceValues()
 {

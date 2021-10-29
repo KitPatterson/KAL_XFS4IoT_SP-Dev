@@ -16,7 +16,6 @@ unsigned int ConvertHex(char high, char low);
 // Create a reference to the Nonce handling functions - this is just to create a compile error 
 // if these functions aren't implemented. 
 void* Pull1 = NewNonce; 
-void* Pull2 = ClearNonce; 
 
 char const NonceStr[] = "NONCE";
 char const HMACSHA256Str[] = "HMACSHA256";
@@ -41,8 +40,8 @@ unsigned int const MaxTokenLength = 1024 + 1;
 // match this then it will be rejected as invalid.
 // This will be cleared when the nonce is cleared such that a new token will be accepted 
 // after that. 
-static bool CurrentTokenSet = false; 
-static char CurrentTokenHMAC[32];
+bool CurrentTokenSet = false; 
+char CurrentTokenHMAC[32];
 
 /// <summary>
 /// Validate that a token has a valid format.

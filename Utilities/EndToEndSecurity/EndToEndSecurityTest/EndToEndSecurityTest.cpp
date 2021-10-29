@@ -552,37 +552,76 @@ namespace EndToEndSecurityTest
             Assert::AreEqual(unsigned long(678), values->Fraction);
             Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
 
-            result = AuthoriseAgainstToken(123, 678, "XYZ");
+            result = AuthoriseDispense(123, 678, "XYZ");
             Assert::IsTrue(result);
 
-            result = AuthoriseAgainstToken(1, 0, "XYZ");
+            result = AuthoriseDispense(1, 0, "XYZ");
             Assert::IsFalse(result);
 
         }
 
         TEST_METHOD(MultipleDispense)
         {
+            InvalidateToken();
+
+            static char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=123.678XYZ,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            bool result = false;
+            DispenseKeyValues_t const *values = NULL;
+
+
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = AuthoriseDispenseAgainstToken(testToken, sizeof(testToken), 100, 000, "XYZ");
+            Assert::IsTrue(result);
+
+
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = AuthoriseDispenseAgainstToken(testToken, sizeof(testToken),   0, 678, "XYZ");
+            Assert::IsTrue(result);
+
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = AuthoriseDispenseAgainstToken(testToken, sizeof(testToken),  20, 000, "XYZ");
+            Assert::IsTrue(result);
+
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = AuthoriseDispenseAgainstToken(testToken, sizeof(testToken),   3, 000, "XYZ");
+            Assert::IsTrue(result);
+
+            CurrentNonce = "";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
+            result = AuthoriseDispenseAgainstToken(testToken, sizeof(testToken),   1, 000, "XYZ");
+            Assert::IsFalse(result);
+        }
+
+        TEST_METHOD(NormalDispenseSequence)
+        {
+            bool result = false;
+            result = InvalidateToken();
+            Assert::IsTrue(result);
+
+            CurrentNonce = "1";
+            ExpectedHMAC = "CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
             char const testToken[] = "NONCE=1,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=123.678XYZ,HMACSHA256=CB735612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F3D2F2";
 
-            auto result = ParseDispenseToken(testToken, sizeof(testToken));
-            auto values = GetDispenseKeyValues();
-
+            result = ValidateToken(testToken, sizeof(testToken));
             Assert::IsTrue(result);
-            Assert::AreEqual(unsigned long(123), values->Value);
-            Assert::AreEqual(unsigned long(678), values->Fraction);
-            Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
-
-            result = AuthoriseAgainstToken(100, 000, "XYZ");
+            result = ParseDispenseToken(testToken, sizeof(testToken));
             Assert::IsTrue(result);
-            result = AuthoriseAgainstToken(  0, 678, "XYZ");
-            Assert::IsTrue(result);
-            result = AuthoriseAgainstToken( 20, 000, "XYZ");
-            Assert::IsTrue(result);
-            result = AuthoriseAgainstToken(  3, 000, "XYZ");
+            result = AuthoriseDispense(123, 678, "XYZ");
             Assert::IsTrue(result);
 
-            result = AuthoriseAgainstToken(  1, 0, "XYZ");
-            Assert::IsFalse(result);
+            CurrentNonce = "2";
+            ExpectedHMAC = "88885612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F38888";
+            char const testToken2[] = "NONCE=2,TOKENFORMAT=1,TOKENLENGTH=0164,DISPENSE1=500.000XYZ,HMACSHA256=88885612FD6141213C2827FB5A6A4F4846D7A7347B15434916FEA6AC16F38888";
+            result = ValidateToken(testToken2, sizeof(testToken2));
+            Assert::IsTrue(result);
+            result = ParseDispenseToken(testToken2, sizeof(testToken2));
+            Assert::IsTrue(result);
+            result = AuthoriseDispense(500, 000, "XYZ");
+            Assert::IsTrue(result);
         }
         TEST_METHOD(ZeroValueToken)
         {
@@ -596,7 +635,7 @@ namespace EndToEndSecurityTest
             Assert::AreEqual(unsigned long(0), values->Fraction);
             Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
 
-            result = AuthoriseAgainstToken(  1, 0, "XYZ");
+            result = AuthoriseDispense(  1, 0, "XYZ");
             Assert::IsFalse(result);
         }
 
@@ -612,7 +651,7 @@ namespace EndToEndSecurityTest
             Assert::AreEqual(unsigned long(678), values->Fraction);
             Assert::AreEqual(std::string("XYZ"), std::string(values->Currency, 3));
 
-            result = AuthoriseAgainstToken(123, 678, "ABC");
+            result = AuthoriseDispense(123, 678, "ABC");
             Assert::IsFalse(result);
         }
     };
