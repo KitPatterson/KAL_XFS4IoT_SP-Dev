@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+	<PropertyGroup>
+		<SymStore>C:\src\NuGetLocal\SymStore\</SymStore>
+	</PropertyGroup>
+</Project>

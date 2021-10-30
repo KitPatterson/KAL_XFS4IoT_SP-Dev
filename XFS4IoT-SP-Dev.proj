@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="All">
+
+	<Import Condition="$([MSBuild]::GetPathOfFileAbove('$(USERNAME).Build.props', '$(MSBuildThisFileDirectory)'))!=''"
+			Project="$([MSBuild]::GetPathOfFileAbove('$(USERNAME).Build.props', '$(MSBuildThisFileDirectory)'))" />
+
+	<Import Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)'))!=''"
+			Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)'))" />
+
+	<Target Name="All"
+			DependsOnTargets="Build;Pack;Push" />
+	
+	<Target Name="RebuildAll"
+			DependsOnTargets="Clean;All" />	
+
+	<PropertyGroup>
+		<Version Condition="'$(Version)'==''">0.0.1</Version>
+		<NugetSource Condition="'$(NugetSource)'==''">Local</NugetSource>
+		<SymStore Condition="'$(SymStore)'==''">$(MSBuildThisFileDirectory)SymStore\</SymStore>
+		<SolutionRoot>$(MSBuildThisFileDirectory)\</SolutionRoot>
+	</PropertyGroup>
+
+	<ItemGroup>
+		
+		<!--Solutions with a custom pack command-->
+		<Solution Include="Utilities\EndToEndSecurity\EndToEndSecurity.sln" >
+			<Pack>nuget pack $(SolutionRoot)\Utilities\EndToEndSecurity\EndToEndSecurity\package\package.nuspec -Version $(Version) -p GithubURL=https://github.com/KAL-ATM-Software/KAL_XFS4IoT_SP-Dev.git</Pack>
+		</Solution>
+		
+		<!--All other solutions-->
+		<Solution Include="**\*.sln" Exclude="@(Solution)"/>
+		
+		<Config Include="Release"/>
+		<Config Include="Debug" />
+
+		<Platform Include="x64"/>
+		<Platform Include="x86"/>
+		<!-- <Platform Include="Win32"/> -->
+
+	</ItemGroup>
+
+	<Target Name="FindSolutions">
+		<ItemGroup>
+			<_Solution Include="@(Solution)">
+				<!-- <Solution>%(_Config.Solution)</Solution>
+					<Properties>Configuration=%(_Config.Identity);Platform=%(_Config.Platform)</Properties>
+					<Platform>%(_Config.Platform)</Platform>
+					<Config>%(_Config.Identity)</Config> -->
+				</_Solution>
+				
+				<_Platform Include="@(Platform)">
+					<Solution>%(_Solution.Identity)</Solution>
+					<Platform>%(_Solution.Platform)</Platform>
+					<Config>%(_Solution.Config)</Config>
+					<Pack>%(_Solution.Pack)</Pack>
+				</_Platform>
+				
+				<_Config Include="@(Config)">				
+					<Solution>%(_Platform.Solution)</Solution>
+					<Platform>%(_Platform.Identity)</Platform>
+					<Config>%(_Platform.Config)</Config>
+					<Pack>%(_Platform.Pack)</Pack>
+				</_Config>
+				
+				<BuildPlan Include="@(_Config)">
+					<Config>%(_Config.Identity)</Config>
+					<Properties>Platform=%(_Config.Platform);Config=%(_Config.Identity)</Properties>
+				</BuildPlan>
+				
+			</ItemGroup>
+			<Message Text=
+"Config:%(BuildPlan.Config) 
+       Solution=%(BuildPlan.Solution); 
+       Platform=%(BuildPlan.Platform) 
+       Properties=%(BuildPlan.Properties)
+       Pack=%(BuildPlan.Pack); 
+"/>
+		</Target>
+		
+	<Target Name="Build"
+			DependsOnTargets="FindSolutions">
+		<MSBuild Targets="Build" Projects="%(BuildPlan.Solution)" Properties="%(_BuildPlan.Properties);Version=$(Version)"/>
+	</Target>
+
+	<Target Name="Restore"
+			DependsOnTargets="FindSolutions">
+		<MSBuild Targets="Restore" Projects="%(BuildPlan.Solution)" Properties="%(_BuildPlan.Properties);Version=$(Version)"/>
+	</Target>
+
+	<Target Name="Clean"
+			DependsOnTargets="FindSolutions">
+		<MSBuild Targets="Clean" Projects="%(BuildPlan.Solution)" Properties="%(_BuildPlan.Properties);Version=$(Version)"/>
+	</Target>
+	
+	<Target Name="Pack"
+			DependsOnTargets="FindSolutions">
+		<MSBuild Condition="'%(BuildPlan.Pack)'==''" Targets="Pack" Projects="%(BuildPlan.Solution)" Properties="%(BuildPlan.Properties);Version=$(Version)" />
+		<Exec Condition="'%(BuildPlan.Pack)'!=''" Command="%(BuildPlan.Pack)" />
+	</Target>
+
+	<Target Name="Push">
+		<ItemGroup>
+			<Packages Include="**\*.nupkg"/>
+			<PackagePaths Include="%(Packages.RootDir)%(Directory)"/>
+		</ItemGroup>
+		<Exec Command="nuget push -source $(NugetSource) %(PackagePaths.Identity)*.nupkg" />
+		<Exec Command='symstore.exe add /r /p /s $(SymStore) /f . /t SP-Dev' />
+	</Target>
+
+</Project>
