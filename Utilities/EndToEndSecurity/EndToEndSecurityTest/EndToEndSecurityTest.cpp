@@ -7,7 +7,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include "EndToEndSecurity.h"
-#include <mutex>
 
 using namespace std; 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

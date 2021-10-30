@@ -54,8 +54,9 @@ namespace XFS4IoTFramework.Storage
             GetStorageCompletion.PayloadData.CompletionCodeEnum errorCode = commandException switch
             {
                 InvalidDataException => GetStorageCompletion.PayloadData.CompletionCodeEnum.InvalidData,
-                NotImplementedException => GetStorageCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
-                TaskCanceledException or OperationCanceledException => GetStorageCompletion.PayloadData.CompletionCodeEnum.Canceled,
+                NotImplementedException or NotSupportedException => GetStorageCompletion.PayloadData.CompletionCodeEnum.UnsupportedCommand,
+                TimeoutCanceledException t when t.IsCancelRequested => GetStorageCompletion.PayloadData.CompletionCodeEnum.Canceled,
+                TimeoutCanceledException => GetStorageCompletion.PayloadData.CompletionCodeEnum.TimeOut,
                 _ => GetStorageCompletion.PayloadData.CompletionCodeEnum.InternalError
             };
 

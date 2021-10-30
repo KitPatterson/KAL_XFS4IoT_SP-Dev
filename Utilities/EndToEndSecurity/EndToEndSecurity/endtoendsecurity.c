@@ -17,6 +17,14 @@ unsigned int ConvertHex(char high, char low);
 // if these functions aren't implemented. 
 void* Pull1 = NewNonce; 
 
+// HMAC of the current 'active' token. It's only possible to use one token at a time, 
+// though it's possible to reuse the same token multiple times. If the token doesn't 
+// match this then it will be rejected as invalid.
+// This will be cleared when the nonce is cleared such that a new token will be accepted 
+// after that. 
+bool CurrentTokenSet = false; 
+char CurrentTokenHMAC[32];
+
 char const NonceStr[] = "NONCE";
 char const HMACSHA256Str[] = "HMACSHA256";
 // length of the HMAC SHA256 string - 256 bit
@@ -35,13 +43,7 @@ unsigned int const MinTokenLength = sizeof(NonceStr) - 1 + 2 + 1 +          // N
 // Max permitted token length, as defined in XFS Spec. (In bytes, plus null)
 unsigned int const MaxTokenLength = 1024 + 1;
 
-// HMAC of the current 'active' token. It's only possible to use one token at a time, 
-// though it's possible to reuse the same token multiple times. If the token doesn't 
-// match this then it will be rejected as invalid.
-// This will be cleared when the nonce is cleared such that a new token will be accepted 
-// after that. 
-bool CurrentTokenSet = false; 
-char CurrentTokenHMAC[32];
+
 
 /// <summary>
 /// Validate that a token has a valid format.
